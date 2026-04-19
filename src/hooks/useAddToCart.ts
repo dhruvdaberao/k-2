@@ -3,12 +3,14 @@
 import { useState, useCallback, useRef } from "react";
 import { handleAddToCart as addToCartLib } from "@/lib/bags";
 import { showToast } from "@/components/Toast";
+import { useAuth } from "./useAuth";
 import { useRouter } from "next/navigation";
 import { pushToDataLayer } from "@/lib/analytics";
 
 type AddToCartState = "idle" | "adding" | "added";
 
 export function useAddToCart() {
+  const { user } = useAuth();
   const [state, setState] = useState<AddToCartState>("idle");
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
@@ -26,7 +28,7 @@ export function useAddToCart() {
 
       // Add to cart (Async/Supabase support)
       try {
-        await addToCartLib(product);
+        await addToCartLib(product, user);
         
         // Track Add to Cart
         pushToDataLayer({

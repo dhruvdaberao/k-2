@@ -10,6 +10,7 @@ import {
   updateQty,
   syncLocalCartToDB,
 } from "@/lib/bags";
+import { useAuth } from "./useAuth";
 
 type CartContextType = {
   cartItems: CartItem[];
@@ -23,27 +24,28 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | null>(null);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const loadCart = useCallback(async () => {
-    const items = await loadCartLib();
+    const items = await loadCartLib(user);
     setCartItems(items);
-  }, []);
+  }, [user]);
 
   const addToCart = useCallback(async (product: any) => {
-    await addToCartLib(product);
+    await addToCartLib(product, user);
     await loadCart();
-  }, [loadCart]);
+  }, [loadCart, user]);
 
   const removeFromCart = useCallback(async (productId: string) => {
-    await removeFromCartLib(productId);
+    await removeFromCartLib(productId, user);
     await loadCart();
-  }, [loadCart]);
+  }, [loadCart, user]);
 
   const updateQuantity = useCallback(async (productId: string, quantity: number) => {
-    await updateQty(productId, quantity);
+    await updateQty(productId, quantity, user);
     await loadCart();
-  }, [loadCart]);
+  }, [loadCart, user]);
 
   useEffect(() => {
     loadCart();
@@ -53,24 +55,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     };
 
     window.addEventListener("bag:changed", onBagChange);
-
-    const { data: listener } = supabase.auth.onAuthStateChange(async (event) => {
-      if (event === "SIGNED_IN") {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          await syncLocalCartToDB(user.id);
-        }
-        await loadCart();
-      }
-
-      if (event === "SIGNED_OUT") {
-        await loadCart();
-      }
-    });
-
     return () => {
       window.removeEventListener("bag:changed", onBagChange);
-      listener.subscription.unsubscribe();
     };
   }, [loadCart]);
 

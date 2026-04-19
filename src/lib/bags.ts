@@ -73,8 +73,13 @@ export function getCart(): CartItem[] {
   return read<CartItem[]>(CART_KEY, []);
 }
 
-export async function loadCart(): Promise<CartItem[]> {
-  const { data: { user } } = await supabase.auth.getUser();
+export async function loadCart(passedUser?: any): Promise<CartItem[]> {
+  console.log("[Cart] loadCart called");
+  let user = passedUser;
+  if (!user) {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  }
   console.log("USER:", user);
 
   if (!user) {
@@ -151,11 +156,15 @@ export async function syncLocalCartToDB(userId?: string): Promise<void> {
   notify();
 }
 
-export async function handleAddToCart(product: any): Promise<void> {
+export async function handleAddToCart(product: any, passedUser?: any): Promise<void> {
   const item = snap(product);
   console.log("ADDING:", item);
 
-  const { data: { user } } = await supabase.auth.getUser();
+  let user = passedUser;
+  if (!user) {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  }
   console.log("USER:", user);
 
   if (!user) {
@@ -214,8 +223,12 @@ export async function handleAddToCart(product: any): Promise<void> {
 
 export const addToCart = handleAddToCart;
 
-export async function updateQty(productId: string, quantity: number): Promise<void> {
-  const { data: { user } } = await supabase.auth.getUser();
+export async function updateQty(productId: string, quantity: number, passedUser?: any): Promise<void> {
+  let user = passedUser;
+  if (!user) {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  }
   console.log("USER:", user);
 
   if (!user) {
@@ -262,8 +275,12 @@ export async function updateQty(productId: string, quantity: number): Promise<vo
   notify();
 }
 
-export async function removeFromCart(productId: string): Promise<void> {
-  const { data: { user } } = await supabase.auth.getUser();
+export async function removeFromCart(productId: string, passedUser?: any): Promise<void> {
+  let user = passedUser;
+  if (!user) {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  }
   console.log("USER:", user);
 
   if (!user) {
@@ -288,8 +305,12 @@ export async function removeFromCart(productId: string): Promise<void> {
   notify();
 }
 
-export async function clearCart(): Promise<void> {
-  const { data: { user } } = await supabase.auth.getUser();
+export async function clearCart(passedUser?: any): Promise<void> {
+  let user = passedUser;
+  if (!user) {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  }
   console.log("USER:", user);
 
   if (!user) {
