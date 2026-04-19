@@ -103,7 +103,7 @@
   display: inline-flex;
   align-items: center;
   text-decoration: none;
-  color: var(--text);
+  color: var(--brand);
   padding: 8px 12px;
   font-size: 14px;
   font-weight: 500;
@@ -143,7 +143,7 @@
   height: 36px;
   align-items: center;
   justify-content: center;
-  color: var(--icon-muted);
+  color: var(--icon-color);
   text-decoration: none;
   transition: color 0.2s ease;
 }

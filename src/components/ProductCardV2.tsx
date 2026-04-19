@@ -173,9 +173,9 @@ export default function ProductCardV2({ p }: { p: Product }) {
                             {getButtonLabel()}
                         </button>
                     ) : qtyInCart > 0 ? (
-                        <div className="inline-counter-container compact">
+                        <div className="inline-counter-container compact !bg-[var(--brand)] !rounded-[var(--btn-radius)]">
                             <button
-                                className="inline-counter-btn"
+                                className="inline-counter-btn !rounded-[var(--btn-radius)] hover:!bg-white/10"
                                 aria-label="Decrease quantity"
                                 onClick={(e) => {
                                     e.preventDefault();
@@ -193,7 +193,7 @@ export default function ProductCardV2({ p }: { p: Product }) {
                                 {qtyInCart}
                             </div>
                             <button
-                                className="inline-counter-btn"
+                                className="inline-counter-btn !rounded-[var(--btn-radius)] hover:!bg-white/10"
                                 aria-label="Increase quantity"
                                 onClick={(e) => {
                                     e.preventDefault();

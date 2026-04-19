@@ -182,14 +182,14 @@ export default function ProductCard({ p }: { p: Product }) {
           </div>
 
           {cartItem && !isCustomOrder ? (
-            <div className="flex items-center justify-between bg-[#2f2a26] rounded-full p-1.5 shadow-md">
+            <div className="flex items-center justify-between bg-[var(--brand)] rounded-[var(--btn-radius)] p-1.5 shadow-md">
               <button 
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   cartItem.quantity <= 1 ? removeFromCart(p.id || p.slug) : updateQuantity(p.id || p.slug, cartItem.quantity - 1);
                 }}
-                className="w-10 h-10 flex items-center justify-center text-white hover:bg-stone-700 rounded-full font-bold transition-all text-2xl"
+                className="inline-counter-btn !rounded-[var(--btn-radius)] hover:!bg-white/10"
                 aria-label="Decrease quantity"
               >
                 &minus;
@@ -201,7 +201,7 @@ export default function ProductCard({ p }: { p: Product }) {
                   e.stopPropagation();
                   updateQuantity(p.id || p.slug, cartItem.quantity + 1);
                 }}
-                className="w-10 h-10 flex items-center justify-center text-white hover:bg-stone-700 rounded-full font-bold transition-all text-2xl"
+                className="inline-counter-btn !rounded-[var(--btn-radius)] hover:!bg-white/10"
                 aria-label="Increase quantity"
               >
                 +

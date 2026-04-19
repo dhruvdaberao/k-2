@@ -66,167 +66,130 @@ export default function CartPage() {
   }
 
   return (
-    <main className="cart-page py-12 px-4 bg-[#FAF7F2] min-h-screen">
-      <div className="max-w-6xl mx-auto">
-        {/* Centered Header */}
-        <header className="mb-12 text-center">
-          <h1 className="text-4xl font-bold font-serif text-[#2f2a26] mb-2">
-            Shopping Cart
+    <main className="cart-page py-8 px-4 bg-[#FAF7F2] min-h-screen">
+      <div className="max-w-5xl mx-auto">
+        {/* Compact Header */}
+        <header className="mb-8 text-center">
+          <h1 className="text-3xl font-bold font-serif text-[#2f2a26] mb-1">
+            Your Cart ({itemCount} items)
           </h1>
-          <div className="flex items-center justify-center gap-2 text-stone-500">
-             <span className="bg-[#2f2a26] text-white px-2.5 py-0.5 rounded-full text-xs font-bold">{itemCount} {itemCount === 1 ? 'item' : 'items'}</span>
-             <span className="italic text-sm">Made to order with care</span>
-          </div>
+          <p className="text-stone-500 italic text-sm">Each piece is made to order with care</p>
         </header>
 
-        {/* Layout Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        {/* Layout Grid - more balanced for compact view */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Main Content (Left) */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Progress Card */}
-            <div className="bg-white rounded-2xl border border-[#eadfcd] p-6 shadow-sm">
+          {/* Main List (Left 7/12) */}
+          <div className="lg:col-span-7 space-y-6">
+            <div className="bg-white rounded-xl border border-[#eadfcd] p-5 shadow-sm">
               <PriceProgressBar subtotal={subtotal} />
             </div>
 
-            {/* Cart Items List */}
-            <div className="space-y-4">
-              {cartItems.map((it) => {
-                console.log("[CartUI] Rendering item:", it.id);
-                return (
-                  <div key={it.id} className="bg-white rounded-2xl border border-[#eadfcd] p-4 shadow-sm group hover:border-[#C2410C] transition-colors">
-                    <div className="flex items-center gap-4 sm:gap-6">
-                      {/* Item Image */}
-                      <NextLink href={`/products/${it.id}`} className="block flex-shrink-0">
-                        <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-stone-50 border border-stone-100 relative">
-                          <img src={it.image} alt={it.name} className="w-full h-full object-cover" />
-                        </div>
-                      </NextLink>
+            {/* Cart Items List - Image 5 Style */}
+            <div className="bg-white rounded-xl border border-[#eadfcd] overflow-hidden shadow-sm">
+              {cartItems.map((it, idx) => (
+                <div 
+                  key={it.id} 
+                  className={`p-4 flex items-center gap-4 ${idx !== cartItems.length - 1 ? 'border-b border-stone-100' : ''}`}
+                >
+                  {/* Thumbnail Row */}
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 bg-stone-50 rounded-lg overflow-hidden border border-stone-100 relative">
+                    <img src={it.image} alt={it.name} className="w-full h-full object-cover" />
+                  </div>
 
-                      {/* Item Details */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex justify-between items-start mb-3">
-                           <div>
-                              <h3 className="text-lg font-bold text-[#2f2a26] line-clamp-1 mb-1">
-                                 <NextLink href={`/products/${it.id}`} className="hover:text-[#C2410C] transition-colors">{it.name.split(" - ")[0]}</NextLink>
-                              </h3>
-                              <p className="text-[#C2410C] font-bold text-lg">₹{it.price}</p>
-                           </div>
-                           <div className="hidden sm:block text-xl font-bold text-[#2f2a26]">₹{it.price * it.quantity}</div>
-                        </div>
-
-                        <div className="flex items-center justify-between gap-4">
-                           {/* Quantity Pill - Image 3/4 style */}
-                           <div className="flex items-center bg-[#2f2a26] rounded-full p-1 shadow-sm">
-                              <button 
-                                onClick={async () => it.quantity <= 1 ? (confirm("Remove item?") && await removeFromCart(it.id)) : await updateQuantity(it.id, it.quantity - 1)}
-                                className="w-8 h-8 flex items-center justify-center text-white hover:bg-stone-700 rounded-full font-bold transition-all text-xl"
-                                aria-label="Decrease quantity"
-                              >
-                                &minus;
-                              </button>
-                              <span className="w-8 text-center text-white font-bold text-base select-none">{it.quantity}</span>
-                              <button 
-                                onClick={async () => await updateQuantity(it.id, it.quantity + 1)}
-                                className="w-8 h-8 flex items-center justify-center text-white hover:bg-stone-700 rounded-full font-bold transition-all text-xl"
-                                aria-label="Increase quantity"
-                              >
-                                +
-                              </button>
-                           </div>
-
-                           {/* Remove Button - Pill style on right */}
-                           <button 
-                             onClick={async () => {
-                               if (confirm("Remove this item from your cart?")) {
-                                 await removeFromCart(it.id);
-                                 showToast("Item removed");
-                               }
-                             }} 
-                             className="border-2 border-[#ef4444] text-[#ef4444] px-6 py-1.5 rounded-full text-sm font-bold hover:bg-[#ef4444] hover:text-white transition-all whitespace-nowrap"
-                           >
-                             Remove
-                           </button>
-                        </div>
+                  {/* Core Info Row */}
+                  <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                    <div className="flex-1">
+                      <h3 className="text-sm sm:text-base font-bold text-[#2f2a26] leading-tight mb-1">
+                        {it.name.split(" - ")[0]}
+                      </h3>
+                      
+                      {/* Quantity Picker Pill - Image 5 Style */}
+                      <div className="inline-flex items-center bg-[var(--brand)] rounded-[8px] p-1 scale-90 origin-left">
+                        <button 
+                          onClick={async () => it.quantity <= 1 ? (confirm("Remove item?") && await removeFromCart(it.id)) : await updateQuantity(it.id, it.quantity - 1)}
+                          className="w-7 h-7 flex items-center justify-center text-white hover:bg-white/10 transition-all text-lg font-bold"
+                        >
+                          &minus;
+                        </button>
+                        <span className="w-6 text-center text-white font-bold text-sm">{it.quantity}</span>
+                        <button 
+                          onClick={async () => await updateQuantity(it.id, it.quantity + 1)}
+                          className="w-7 h-7 flex items-center justify-center text-white hover:bg-white/10 transition-all text-lg font-bold"
+                        >
+                          +
+                        </button>
                       </div>
                     </div>
+
+                    <div className="flex items-center justify-between sm:justify-end gap-6 sm:w-32">
+                      <div className="text-base font-bold text-[#2f2a26]">₹{it.price}</div>
+                      <button 
+                        onClick={async () => confirm("Remove item?") && await removeFromCart(it.id)}
+                        className="text-[10px] font-bold text-red-500 uppercase tracking-tighter border border-red-200 px-2 py-0.5 rounded hover:bg-red-50"
+                      >
+                        Remove
+                      </button>
+                    </div>
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
 
-            {/* Clear All Button */}
+            {/* Clear All Footer */}
             <button 
-              onClick={async () => {
-                if (confirm("Clear your entire shopping bag?")) {
-                  await clearCart();
-                  showToast("Cart cleared");
-                }
-              }} 
-              className="w-full bg-white border border-stone-200 text-stone-500 py-4 rounded-xl text-sm font-bold shadow-sm hover:bg-stone-50 hover:text-[#ef4444] hover:border-[#ef4444] transition-all"
+              onClick={async () => confirm("Clear all items?") && await clearCart()}
+              className="w-full py-3 text-xs font-bold text-stone-400 uppercase tracking-widest bg-white border border-[#eadfcd] rounded-lg hover:text-red-500 hover:border-red-200 transition-all"
             >
-              Clear Shopping Bag
+              Clear All Items
             </button>
           </div>
 
-          {/* Sticky Order Summary (Right) */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl border border-[#eadfcd] p-8 shadow-md sticky top-24">
-              <h3 className="font-bold text-2xl text-[#2f2a26] mb-8 pb-4 border-b border-stone-100">Order Summary</h3>
+          {/* Sidebar (Right 5/12) */}
+          <div className="lg:col-span-5">
+            <div className="bg-white rounded-xl border border-[#eadfcd] p-6 shadow-md">
+              <h3 className="font-bold text-xl text-[#2f2a26] mb-6 pb-3 border-b border-stone-50">Order Summary</h3>
               
-              <div className="space-y-5 text-base text-stone-600">
+              <div className="space-y-4 text-sm text-stone-600">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
                   <span className="font-bold text-[#2f2a26]">₹{subtotal}</span>
                 </div>
                 
                 <div className="flex justify-between">
-                  <span>Estimated Shipping</span>
+                  <span>Shipping Fee</span>
                   <span className="font-bold text-[#2f2a26]">₹{baseShipping}</span>
                 </div>
 
                 {shippingDiscount < 0 && (
-                  <div className="flex justify-between text-green-700 font-semibold bg-green-50 px-3 py-2 rounded-lg -mx-3">
-                    <span className="flex items-center gap-1.5">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                      Free Shipping
-                    </span>
+                  <div className="flex justify-between text-green-700 font-semibold">
+                    <span>Shipping Discount</span>
                     <span>-₹{Math.abs(shippingDiscount)}</span>
                   </div>
                 )}
 
                 {discountAmount > 0 && (
-                  <div className="flex justify-between text-[#C2410C] font-bold bg-[#FFF7ED] px-3 py-2 rounded-lg -mx-3">
-                    <span>Order Discount ({discountPercent}%)</span>
+                  <div className="flex justify-between text-[#C2410C] font-bold">
+                    <span>Discount ({discountPercent}%)</span>
                     <span>-₹{discountAmount}</span>
                   </div>
                 )}
                 
-                <div className="h-px bg-stone-100 my-6" />
+                <div className="h-px bg-stone-100 my-4" />
                 
                 <div className="flex justify-between items-end">
-                  <div className="flex flex-col">
-                    <span className="text-stone-400 text-sm font-medium">Total Amount</span>
-                    <span className="font-bold text-lg text-[#2f2a26]">Grand Total</span>
-                  </div>
-                  <span className="font-bold text-4xl text-[#C2410C]">₹{grandTotal}</span>
+                  <span className="font-bold text-lg text-[#2f2a26]">Total</span>
+                  <span className="font-bold text-2xl text-[var(--brand)]">₹{grandTotal}</span>
                 </div>
               </div>
 
-              <NextLink href="/checkout" className="w-full btn-primary py-5 text-center block rounded-xl shadow-xl mt-10 font-bold text-lg hover:scale-[1.02] transition-transform active:scale-95">
-                Proceed to Checkout
+              <NextLink href="/checkout" className="w-full btn-primary py-4 text-center block rounded-[8px] mt-8 font-bold text-base shadow-lg transition-transform active:scale-95">
+                Checkout
               </NextLink>
               
-              <div className="mt-6 flex items-center justify-center gap-4 text-stone-400">
-                 <div className="flex flex-col items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Secure</span>
-                 </div>
-                 <div className="w-px h-8 bg-stone-100" />
-                 <div className="flex flex-col items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Handmade</span>
-                 </div>
+              <div className="mt-6 flex items-center justify-center gap-3 py-2 bg-[#FAF7F2] rounded-lg text-[10px] font-bold text-stone-400 uppercase tracking-wider">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-green-600"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Cash on Delivery Available
               </div>
             </div>
           </div>
