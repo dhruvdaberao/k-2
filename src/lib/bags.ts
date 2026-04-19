@@ -3,7 +3,7 @@
 
 import { supabase } from "./supabaseClient";
 import productsData from "@/data/products.json";
-import { fetchDBCart, updateDBCartItem, removeDBCartItem, clearDBCart } from "./cartSupabase";
+import { fetchDBCart, updateDBCartItem, removeDBCartItem, clearDBCart, syncLocalCartToDB } from "./cartSupabase";
 
 export type ItemSnapshot = {
   id: string;
@@ -62,32 +62,44 @@ function notify() {
 export async function loadCart(): Promise<CartItem[]> {
   console.log("[Cart] loadCart called");
   const { data: { user } } = await supabase.auth.getUser();
+  console.log("USER:", user);
   
   if (user) {
     console.log("[Cart] User logged in:", user.id);
     
-    // Check if we have un-synced local items
+    // Check if we have un-synced local items for migration (optional but good)
     const local = read<CartItem[]>(CART_KEY, []);
     if (local.length > 0) {
-      console.log("[Cart] Found local items, triggering merge sync...");
+      console.log("[Cart] Found local items, triggering migration...");
       await syncLocalCartToDB(user.id);
     }
 
-    const dbItems = await fetchDBCart(user.id);
-    const data: CartItem[] = dbItems.map(dbItem => {
-      const match = (productsData as any[]).find(p => p.slug === dbItem.product_id);
-      return {
-        id: dbItem.product_id,
-        name: match?.title || "Unknown Item",
-        price: match?.price || 0,
-        image: match?.images?.[0] || "/placeholder.png",
-        quantity: dbItem.quantity
-      };
-    });
+    const { data, error } = await supabase
+      .from("cart")
+      .select("*")
+      .eq("user_id", user.id);
+    
+    console.log("DB CART:", data);
+    console.log("FETCH CART:", data);
 
-    console.log("[Cart] Hydrating local cache from synced DB truth");
-    write(CART_KEY, data);
-    return data;
+    if (error) {
+      console.error("[Cart] DB Fetch error:", error);
+      return [];
+    }
+
+    // Adapt DB rows to CartItem type
+    const cartItems: CartItem[] = (data || []).map((row: any) => ({
+      id: row.product_id,
+      name: row.name,
+      price: row.price,
+      image: row.image,
+      quantity: row.quantity
+    }));
+
+    // Keep local storage in sync for immediate access
+    write(CART_KEY, cartItems);
+    notify();
+    return cartItems;
   } else {
     console.log("[Cart] Guest mode, fetching from localStorage");
     return read<CartItem[]>(CART_KEY, []);
@@ -107,36 +119,51 @@ export async function asyncCartCount(): Promise<number> {
 export async function handleAddToCart(product: any) {
   const p = snap(product);
   console.log("[Cart] handleAddToCart requested for:", p);
+  console.log("Adding product:", p);
 
-  // 1. Update localStorage instantly for immediate UI feedback
+  // 1. Update localStorage instantly for immediate UI feedback (Guest or Auth)
   let cart = read<CartItem[]>(CART_KEY, []);
   const existingLocally = cart.find(i => i.id === p.id);
-  let newQuantity = 1;
-
+  
   if (existingLocally) {
     existingLocally.quantity += 1;
-    newQuantity = existingLocally.quantity;
-    console.log(`[Cart] Incremented local quantity for ${p.id}: ${newQuantity}`);
   } else {
     cart.push({ ...p, quantity: 1 });
-    console.log(`[Cart] Added new item to local cart: ${p.id}`);
   }
-
   write(CART_KEY, cart);
-  notify(); // Triggers Badge and Product Card updates instantly
+  notify();
 
   // 2. Perform background sync to Supabase if logged in
   const { data: { user } } = await supabase.auth.getUser();
   if (user) {
     console.log("[Cart] Logged in user detected, syncing to DB...");
-    // We don't necessarily need to await this if we want "fire and forget" for speed,
-    // but awaiting is safer for errors. Note: UI is already updated.
-    try {
-      await updateDBCartItem(user.id, p.id, newQuantity);
-      console.log("[Cart] DB Sync complete");
-    } catch (err) {
-      console.error("[Cart] DB Sync failed:", err);
+    
+    // Check for existing in DB
+    const { data: existing } = await supabase
+      .from("cart")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("product_id", p.id)
+      .maybeSingle();
+
+    if (existing) {
+      await supabase
+        .from("cart")
+        .update({ quantity: existing.quantity + 1 })
+        .eq("id", existing.id);
+    } else {
+      await supabase.from("cart").insert({
+        user_id: user.id,
+        product_id: p.id,
+        name: p.name,
+        price: p.price,
+        image: p.image,
+        quantity: 1
+      });
     }
+
+    // Refresh everything to be safe
+    await loadCart();
   }
 }
 

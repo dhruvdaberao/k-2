@@ -5,6 +5,9 @@ export type CartDBCore = {
   id?: string;
   user_id: string;
   product_id: string;
+  name: string;
+  price: number;
+  image: string;
   quantity: number;
 };
 
@@ -23,7 +26,12 @@ export async function fetchDBCart(userId: string): Promise<CartDBCore[]> {
  * Atomic-like update/insert for DB cart items. 
  * If quantity <= 0, it removes the item.
  */
-export async function updateDBCartItem(userId: string, productId: string, quantity: number) {
+export async function updateDBCartItem(
+  userId: string, 
+  productId: string, 
+  quantity: number,
+  details?: { name: string; price: number; image: string }
+) {
   console.log(`[Supabase] updateDBCartItem request: user=${userId}, product=${productId}, qty=${quantity}`);
 
   if (quantity <= 0) {
@@ -59,7 +67,14 @@ export async function updateDBCartItem(userId: string, productId: string, quanti
     console.log("[Supabase] Inserting new cart row");
     const { error: insErr } = await supabase
       .from("cart")
-      .insert([{ user_id: userId, product_id: productId, quantity }]);
+      .insert([{ 
+        user_id: userId, 
+        product_id: productId, 
+        quantity, 
+        name: details?.name, 
+        price: details?.price, 
+        image: details?.image 
+      }]);
     
     if (insErr) {
       console.error("[Supabase] Insert failed:", insErr);
