@@ -84,14 +84,17 @@ export default function AccountSettingsPage() {
     }
   };
 
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace("/login");
+    }
+  }, [user, loading, router]);
+
   if (!hydrated || loading) {
     return <main className="checkout-page py-20 text-center text-stone-500" />;
   }
 
-  if (!session) {
-    router.replace("/profile");
-    return null;
-  }
+  if (!user) return null;
 
   return (
     <main className="checkout-page checkout-container pb-20 pt-[120px] profile-page-styles" style={{ paddingTop: '120px' }}>

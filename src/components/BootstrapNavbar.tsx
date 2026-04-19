@@ -5,10 +5,13 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import CartBadge from "@/components/CartBadge";
 import WishlistBadge from "@/components/WishlistBadge";
+import { useAuth } from "@/hooks/useAuth";
 import "./Navbar.css";
 
 export default function BootstrapNavbar() {
   const pathname = usePathname();
+  const { user } = useAuth();
+  const authLink = user ? "/profile" : "/login";
 
   const isActive = (href: string): boolean =>
     href === "/" ? pathname === "/" : pathname?.startsWith(href) ?? false;
@@ -61,8 +64,8 @@ export default function BootstrapNavbar() {
                   <CartBadge />
                 </div>
               </Link>
-              <Link href="/profile" className={`nav-item ${isActive("/profile") ? "active" : ""}`} title="Profile">
-                <span className="nav-label">Profile</span>
+              <Link href={authLink} className={`nav-item ${isActive(authLink) ? "active" : ""}`} title={user ? "Profile" : "Login"}>
+                <span className="nav-label">{user ? "Profile" : "Login"}</span>
               </Link>
             </div>
 
@@ -76,10 +79,10 @@ export default function BootstrapNavbar() {
             </Link>
             
             <Link
-              href="/profile"
-              className={`mobile-top-profile ${isActive("/profile") ? "active" : ""}`}
-              aria-label="User Profile"
-              title="Profile"
+              href={authLink}
+              className={`mobile-top-profile ${isActive(authLink) ? "active" : ""}`}
+              aria-label={user ? "User Profile" : "Login"}
+              title={user ? "Profile" : "Login"}
               style={{ alignItems: "center", marginLeft: "12px" }}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="profile-icon"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>

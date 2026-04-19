@@ -51,21 +51,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(session?.user ?? null);
       
       if (event === 'SIGNED_IN' && session?.user?.id) {
-        fetchProfile(session.user.id);
+        setLoading(true); // Show loading briefly while profile syncs
+        fetchProfile(session.user.id).finally(() => setLoading(false));
       } else if (event === 'SIGNED_OUT') {
         setUser(null);
         setProfile(null);
         setSession(null);
-        // Step 1: Wipe local persistence to prevent leakage
         clearAllLocalData();
       }
-      setLoading(false);
+      // Basic state updates should not block if not signing in/out
+      if (event !== 'SIGNED_IN') setLoading(false);
     });
 
     return () => {
       subscription.unsubscribe();
     };
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-white">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-[var(--brand)] border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-stone-500 font-medium">Loading your account...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <AuthContext.Provider value={{ session, user, profile, loading, refreshProfile }}>

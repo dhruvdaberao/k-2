@@ -17,6 +17,8 @@ import { ORDER_CONFIRMATION_STORAGE_KEY, generateDynamicPdfUrl, generateLocalOrd
 import { supabase } from "@/lib/supabaseClient";
 import type { Product } from "@/types";
 
+import { useAuth } from "@/hooks/useAuth";
+
 // type definition removed, imported from bags
 type CheckoutStep = "details" | "payment" | "summary";
 
@@ -33,25 +35,15 @@ const initialDetails: CheckoutCustomerDetails = {
 };
 
 export default function CheckoutPage() {
-  const router = useRouter();
-  const [items, setItems] = useState<CartItem[]>([]);
-  const [step, setStep] = useState<CheckoutStep>("details");
-  const [details, setDetails] = useState<CheckoutCustomerDetails>(initialDetails);
-  const [paymentMethod, setPaymentMethod] = useState<CheckoutPaymentMethod>("cod");
-  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
+  const { user, loading } = useAuth();
 
   useEffect(() => {
     setHydrated(true);
 
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        showToast("Please login/signup to continue checkout");
-        router.replace("/profile");
-      }
-    };
-    checkAuth();
+    if (!loading && !user) {
+      showToast("Please login/signup to continue checkout");
+      router.replace("/login");
+    }
 
     const restoreDetails = () => {
       try {
