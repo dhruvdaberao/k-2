@@ -68,7 +68,7 @@ export default function LoginPage() {
         router.push("/"); // STEP 2: HOME PAGE REDIRECT
       } else if (authMode === "forgot") {
         const { error } = await supabase.auth.resetPasswordForEmail(authEmail, {
-          redirectTo: `${window.location.origin}/update-password`
+          redirectTo: "https://keshvicrafts-2.vercel.app/reset-password"
         });
         if (error) throw error;
         showToast("Check your email for reset link.");

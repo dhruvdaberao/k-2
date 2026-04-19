@@ -226,7 +226,7 @@ export default function ProfilePage() {
         setModalContent({ title: "Login Successful", message: "Successfully logged in! Welcome back." });
       } else if (authMode === "forgot") {
         const { error } = await supabase.auth.resetPasswordForEmail(authEmail, {
-          redirectTo: `${window.location.origin}/update-password`
+          redirectTo: "https://keshvicrafts-2.vercel.app/reset-password"
         });
         if (error) throw error;
         setModalContent({ title: "Email Sent", message: "Check your email for the password reset link." });
