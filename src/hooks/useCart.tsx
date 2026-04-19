@@ -10,6 +10,7 @@ import {
   updateQty,
   syncLocalCartToDB,
   clearAllLocalData,
+  clearCart as clearCartLib,
 } from "@/lib/bags";
 import { useAuth } from "./useAuth";
 
@@ -20,6 +21,7 @@ type CartContextType = {
   addToCart: (product: any) => Promise<void>;
   removeFromCart: (productId: string) => Promise<void>;
   updateQuantity: (productId: string, quantity: number) => Promise<void>;
+  clearCart: () => Promise<void>;
 };
 
 const CartContext = createContext<CartContextType | null>(null);
@@ -45,6 +47,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const updateQuantity = useCallback(async (productId: string, quantity: number) => {
     await updateQty(productId, quantity, user);
+    await loadCart();
+  }, [loadCart, user]);
+
+  const clearCart = useCallback(async () => {
+    await clearCartLib(user);
     await loadCart();
   }, [loadCart, user]);
 
@@ -84,7 +91,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     addToCart,
     removeFromCart,
     updateQuantity,
-  }), [cartItems, addToCart, loadCart, removeFromCart, updateQuantity]);
+    clearCart,
+  }), [cartItems, addToCart, loadCart, removeFromCart, updateQuantity, clearCart]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

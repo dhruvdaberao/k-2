@@ -117,7 +117,7 @@ export default function LoginPage() {
                     required
                     className="w-full border p-2 rounded"
                   />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '10px', top: '10px', opacity: 0.6 }}>
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="auth-show-btn">
                     {showPassword ? "Hide" : "Show"}
                   </button>
                 </div>
@@ -146,11 +146,11 @@ export default function LoginPage() {
           <div className="mt-8 flex flex-col items-center gap-3 text-sm">
             {authMode === "login" ? (
               <>
-                <button type="button" onClick={() => setAuthMode("forgot")} className="underline text-stone-500">Forgot Password?</button>
-                <p className="text-stone-500">Don't have an account? <button type="button" onClick={() => setAuthMode("signup")} className="font-bold text-[var(--brand)]">Sign Up</button></p>
+                <button type="button" onClick={() => setAuthMode("forgot")} className="auth-link-btn">Forgot Password?</button>
+                <p className="text-stone-500">Don't have an account? <button type="button" onClick={() => setAuthMode("signup")} className="auth-link-btn font-bold text-[var(--brand)]">Sign Up</button></p>
               </>
             ) : (
-              <button type="button" onClick={() => setAuthMode("login")} className="font-bold text-[var(--brand)]">Back to Login</button>
+              <button type="button" onClick={() => setAuthMode("login")} className="auth-link-btn font-bold text-[var(--brand)]">Back to Login</button>
             )}
           </div>
         </div>

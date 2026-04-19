@@ -35,7 +35,7 @@ const initialDetails: CheckoutCustomerDetails = {
 };
 
 export default function CheckoutPage() {
-  const { user, loading } = useAuth();
+  const { user, profile, loading } = useAuth();
   const router = useRouter();
   const [items, setItems] = useState<CartItem[]>([]);
   const [step, setStep] = useState<CheckoutStep>("details");
@@ -53,6 +53,18 @@ export default function CheckoutPage() {
     }
 
     const restoreDetails = () => {
+      if (profile) {
+        setDetails({
+          fullName: profile.name || "",
+          email: user?.email || "",
+          phoneNumber: profile.phone || "",
+          address: profile.address || "",
+          city: profile.city || "",
+          pincode: profile.pincode || "",
+        });
+        return;
+      }
+      
       try {
         const saved = JSON.parse(localStorage.getItem(DETAILS_STORAGE_KEY) || localStorage.getItem(LEGACY_DETAILS_STORAGE_KEY) || "{}");
         setDetails({
@@ -78,7 +90,7 @@ export default function CheckoutPage() {
       window.removeEventListener("bag:changed", refreshCart);
       window.removeEventListener("storage", refreshCart);
     };
-  }, [router, step]);
+  }, [router, step, profile, user]);
 
   const refreshCart = async () => {
     console.log("[Checkout] Refreshing cart data...");
@@ -337,75 +349,53 @@ export default function CheckoutPage() {
 
       <div className="checkout-shell">
         {step === "details" && (
-          <section className="checkout-card checkout-section">
-            <div className="checkout-form-grid">
-              <label className="checkout-field">
-                <span>Full Name</span>
-                <input
-                  type="text"
-                  value={details.fullName}
-                  onChange={(event) => handleFieldChange("fullName", event.target.value)}
-                  placeholder="Name Surname"
-                />
-              </label>
-
-              <label className="checkout-field">
-                <span>Email Address</span>
-                <input
-                  type="email"
-                  value={details.email}
-                  onChange={(event) => handleFieldChange("email", event.target.value)}
-                  placeholder="name@example.com"
-                />
-              </label>
-
-              <label className="checkout-field">
-                <span>Phone Number</span>
-                <input
-                  type="tel"
-                  value={details.phoneNumber}
-                  onChange={(event) => handleFieldChange("phoneNumber", event.target.value)}
-                  placeholder="+91 1234567890"
-                />
-              </label>
-
-              <label className="checkout-field checkout-field--full">
-                <span>Address</span>
-                <textarea
-                  rows={4}
-                  value={details.address}
-                  onChange={(event) => handleFieldChange("address", event.target.value)}
-                  placeholder="House number, street, landmark"
-                />
-              </label>
-
-              <label className="checkout-field">
-                <span>City</span>
-                <input
-                  type="text"
-                  value={details.city}
-                  onChange={(event) => handleFieldChange("city", event.target.value)}
-                  placeholder="Bikini Bottom"
-                />
-              </label>
-
-              <label className="checkout-field">
-                <span>Pincode</span>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  value={details.pincode}
-                  onChange={(event) => handleFieldChange("pincode", event.target.value)}
-                  placeholder="123456"
-                />
-              </label>
+          <section className="checkout-details-summary">
+            <div className="summary-data-grid">
+              <div className="summary-item">
+                <span className="summary-label">Full Name</span>
+                <span className="summary-value">{details.fullName || "Not provided"}</span>
+              </div>
+              <div className="summary-item">
+                <span className="summary-label">Phone Number</span>
+                <span className="summary-value">{details.phoneNumber || "Not provided"}</span>
+              </div>
+              <div className="summary-item">
+                <span className="summary-label">Email</span>
+                <span className="summary-value">{details.email || user?.email || "Not provided"}</span>
+              </div>
+              <div className="summary-item summary-item--full">
+                <span className="summary-label">Delivery Address</span>
+                <span className="summary-value">{details.address || "Not provided"}</span>
+              </div>
+              <div className="summary-item">
+                <span className="summary-label">City</span>
+                <span className="summary-value">{details.city || "Not provided"}</span>
+              </div>
+              <div className="summary-item">
+                <span className="summary-label">Pincode</span>
+                <span className="summary-value">{details.pincode || "Not provided"}</span>
+              </div>
             </div>
 
-            <div className="checkout-actions">
-              <button type="button" className="btn-primary checkout-button" onClick={handleDetailsNext}>
-                Next {"\u2192"}
+            <div className="summary-edit-footer">
+              <button 
+                type="button" 
+                className="btn-secondary text-sm px-4 py-2" 
+                onClick={() => router.push("/profile?edit=true")}
+                style={{ height: 'auto', borderRadius: '8px' }}
+              >
+                Edit Details
               </button>
             </div>
+
+            <div className="checkout-actions mt-10">
+              <button type="button" className="btn-primary checkout-button w-full" onClick={handleDetailsNext}>
+                Proceed to Payment {"\u2192"}
+              </button>
+            </div>
+            {!details.fullName || !details.address || !details.phoneNumber || !details.pincode ? (
+              <p className="text-[11px] text-red-500 mt-3 text-center font-medium">Please click Edit to complete your delivery information.</p>
+            ) : null}
           </section>
         )}
 

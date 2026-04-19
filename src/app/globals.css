@@ -288,8 +288,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-size: 15px;
   font-weight: 500;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 999px; /* ENFORCE CAPSULE AS PER LATEST FEEDBACK */
-  height: 44px; /* MATCH PICKER HEIGHT */
+  border-radius: 12px; /* Standardized curved corners */
+  height: 48px; /* Standardized height */
   text-decoration: none;
   cursor: pointer;
 }
@@ -1205,28 +1205,28 @@ summary::-webkit-details-marker {
   align-items: center !important;
   justify-content: space-between !important;
   background: var(--brand) !important;
-  border-radius: 999px !important; /* Full Capsule */
-  padding: 0 0.75rem !important;
+  border-radius: 12px !important; /* Rounded Rectangle matching buttons */
+  padding: 0 4px !important;
   color: white !important;
-  height: 44px !important; /* EXACT match to btn-primary */
-  min-height: 44px !important;
+  height: 48px !important; /* EXACT match to btn-primary */
+  min-height: 48px !important;
   width: 100% !important;
-  max-width: 120px !important;
+  max-width: 100% !important;
 }
 
 .qty-pill-brand button {
   background: transparent !important;
   border: none !important;
   color: white !important;
-  width: 32px !important;
-  height: 32px !important;
+  width: 48px !important;
+  height: 48px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   font-weight: 500 !important;
   font-size: 20px !important;
   cursor: pointer !important;
-  border-radius: 50%;
+  border-radius: 12px; /* Matches container */
   transition: background 0.2s ease;
 }
 
@@ -1236,9 +1236,13 @@ summary::-webkit-details-marker {
 
 .qty-pill-brand span {
   font-weight: bold !important;
-  font-size: 14px !important;
-  min-width: 20px;
+  font-size: 16px !important;
+  min-width: 32px;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 2px; /* Visual center fix */
 }
 
 /* New Pill Buttons (Image 2 & 4 Style) */
@@ -1459,6 +1463,95 @@ summary::-webkit-details-marker {
 .btn-clear-pill:hover {
   background: var(--brand) !important;
   color: white !important;
+}
+
+/* Auth Page Themed Elements (Image 1 Fix) */
+.auth-show-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #f3f4f6;
+  border: 1.5px solid #e5e7eb;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--brand);
+  opacity: 0.8;
+  transition: all 0.2s ease;
+}
+
+.auth-show-btn:hover {
+  opacity: 1;
+  background: #e5e7eb;
+}
+
+.auth-link-btn {
+  background: transparent;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.auth-link-btn:not(.text-brown) {
+  color: var(--muted);
+  text-decoration: underline;
+}
+
+.auth-link-btn:active {
+  opacity: 0.6;
+}
+
+/* Checkout Summary Card (Image 3 Fix) */
+.checkout-details-summary {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.05);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.summary-data-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.summary-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.summary-value {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.summary-item--full {
+  grid-column: 1 / -1;
+}
+
+.summary-edit-footer {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #f3f4f6;
+  padding-top: 16px;
 }
 
 

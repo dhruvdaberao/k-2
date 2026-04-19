@@ -216,7 +216,7 @@ export default function ProductCard({ p }: { p: Product }) {
               type="button"
               onClick={handleAction}
               disabled={(!inStock && !isCustomOrder)}
-              className={`w-full ${isCustomOrder ? "btn-secondary" : "btn-primary"} h-[52px] font-bold`}
+              className={`w-full ${isCustomOrder ? "btn-secondary" : "btn-primary"} font-bold`}
             >
               {getButtonLabel()}
             </button>

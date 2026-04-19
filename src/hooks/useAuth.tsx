@@ -58,17 +58,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setProfile(null);
         setSession(null);
         clearAllLocalData();
+        setLoading(false);
+      } else {
+        setLoading(false);
       }
-      // Basic state updates should not block if not signing in/out
-      if (event !== 'SIGNED_IN') setLoading(false);
     });
+
+    const timeout = setTimeout(() => setLoading(false), 5000);
 
     return () => {
       subscription.unsubscribe();
+      clearTimeout(timeout);
     };
   }, []);
 
-  if (loading) {
+  if (loading && !session) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-white">
         <div className="flex flex-col items-center gap-4">

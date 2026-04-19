@@ -36,7 +36,8 @@ export default function ClientCardActions({ item }: { item: Item }) {
     else cart.push({ ...item, qty: 1 });
     localStorage.setItem(key, JSON.stringify(cart));
     window.dispatchEvent(new CustomEvent("cart-updated"));
-    alert("Added to cart");
+    showToast(`Added ${item.title} to bag`);
+    setOpen(false);
   }
 
   function addToCollection(name: string) {
@@ -47,7 +48,7 @@ export default function ClientCardActions({ item }: { item: Item }) {
     if (!list.some(x => x.slug === item.slug)) list.push(item);
     map[name] = list;
     localStorage.setItem(key, JSON.stringify(map));
-    alert(`Added to "${name}"`);
+    showToast(`Added to "${name}" collection`);
     setOpen(false);
   }
 

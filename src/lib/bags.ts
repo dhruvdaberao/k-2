@@ -336,7 +336,7 @@ export function getCollections(): Collections {
 export function addToCollection(p: any, name?: string) {
   const colls = getCollections();
   const s = snap(p);
-  const target = (name || prompt("Add to which collection?", "keyring") || "").trim();
+  const target = (name || "Favorites").trim();
   if (!target) return;
 
   const list = colls[target] || [];
