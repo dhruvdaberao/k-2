@@ -1245,6 +1245,25 @@ summary::-webkit-details-marker {
   padding-bottom: 2px; /* Visual center fix */
 }
 
+@media (max-width: 768px) {
+  .qty-pill-brand {
+    height: 32px !important;
+    min-height: 32px !important;
+    border-radius: 6px !important;
+  }
+  .qty-pill-brand button {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 16px !important;
+    border-radius: 6px !important;
+  }
+  .qty-pill-brand span {
+    font-size: 13px !important;
+    min-width: 24px;
+  }
+}
+
+
 /* New Pill Buttons (Image 2 & 4 Style) */
 .btn-remove-pill {
   background: white !important;

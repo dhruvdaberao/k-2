@@ -12,17 +12,7 @@ import type { Product } from "@/types";
 export default function CartPage() {
   const { cartItems, loadCart, removeFromCart, updateQuantity, clearCart } = useCart();
   const [loading, setLoading] = useState(true);
-  const [confirmModal, setConfirmModal] = useState<{
-    show: boolean;
-    title: string;
-    message: string;
-    onConfirm: () => void;
-  }>({
-    show: false,
-    title: "",
-    message: "",
-    onConfirm: () => {},
-  });
+
 
   useEffect(() => {
     const init = async () => {
@@ -106,13 +96,11 @@ export default function CartPage() {
                     <div className="qty-pill-brand-mini">
                       <button onClick={async () => {
                         if (it.quantity <= 1) {
-                          setConfirmModal({
-                            show: true,
-                            title: "Remove Item?",
-                            message: `Are you sure you want to remove ${it.name} from your cart?`,
-                            onConfirm: () => removeFromCart(it.id)
-                          });
+                          if (window.confirm(`Are you sure you want to remove ${it.name} from your cart?`)) {
+                            removeFromCart(it.id);
+                          }
                         } else {
+
                           await updateQuantity(it.id, it.quantity - 1);
                         }
                       }}>&minus;</button>
@@ -124,12 +112,12 @@ export default function CartPage() {
                   {/* Right: Price & Remove */}
                   <div className="cart-item-actions-right">
                     <div className="cart-item-price-main font-serif">₹{it.price * it.quantity}</div>
-                    <button onClick={() => setConfirmModal({
-                      show: true,
-                      title: "Remove Item?",
-                      message: `Remove ${it.name} from your bag?`,
-                      onConfirm: () => removeFromCart(it.id)
-                    })} className="btn-remove-pill">Remove</button>
+                    <button onClick={() => {
+                      if (window.confirm(`Remove ${it.name} from your bag?`)) {
+                        removeFromCart(it.id);
+                      }
+                    }} className="btn-remove-pill">Remove</button>
+
                   </div>
                 </div>
               ))}
@@ -138,12 +126,12 @@ export default function CartPage() {
             {/* Clear All Footer */}
             <div className="text-center mt-4">
               <button 
-                onClick={() => setConfirmModal({
-                  show: true,
-                  title: "Clear Bag?",
-                  message: "This will remove all items from your shopping bag. Continue?",
-                  onConfirm: () => clearCart()
-                })}
+                onClick={() => {
+                  if (window.confirm("This will remove all items from your shopping bag. Continue?")) {
+                    clearCart();
+                  }
+                }}
+
                 className="btn-clear-pill"
               >
                 Clear All Items
@@ -203,36 +191,7 @@ export default function CartPage() {
         </div>
       </div>
 
-      {/* Themed Confirmation Modal */}
-      {confirmModal.show && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-6 z-[10000]" style={{ backdropFilter: 'blur(8px)' }}>
-          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-stone-100 flex flex-col items-center text-center animate-in fade-in zoom-in duration-200">
-            <div className="w-20 h-20 bg-stone-50 rounded-full flex items-center justify-center mb-6">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-            </div>
-            <h3 className="text-2xl font-bold text-stone-900 mb-2">{confirmModal.title}</h3>
-            <p className="text-stone-500 mb-8 max-w-[280px]">{confirmModal.message}</p>
-            
-            <div className="flex flex-col gap-3 w-full">
-              <button 
-                onClick={() => {
-                  confirmModal.onConfirm();
-                  setConfirmModal(prev => ({ ...prev, show: false }));
-                }}
-                className="w-full py-4 bg-stone-900 text-white rounded-2xl font-bold hover:bg-black transition-colors"
-              >
-                Yes, Continue
-              </button>
-              <button 
-                onClick={() => setConfirmModal(prev => ({ ...prev, show: false }))}
-                className="w-full py-4 bg-white text-stone-500 rounded-2xl font-semibold hover:bg-stone-50 transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+
     </main>
   );
 }

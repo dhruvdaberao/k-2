@@ -25,8 +25,8 @@ export default function ProfilePage() {
   // Profile Form State
   const [details, setDetails] = useState<CheckoutCustomerDetails>(initialDetails);
   const [isEditing, setIsEditing] = useState(false);
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState<{ title: string; message: string } | null>(null);
+
   const [hydrated, setHydrated] = useState(false);
 
   // Auth View State
@@ -167,17 +167,14 @@ export default function ProfilePage() {
     await refreshProfile();
   };
 
-  // Step 5: Enhanced Logout logic
   const handleLogout = async () => {
-    setIsLogoutModalOpen(true);
+    if (window.confirm("Do you want to logout?")) {
+      await supabase.auth.signOut();
+      router.push("/login");
+      showToast("Logged out successfully.");
+    }
   };
 
-  const confirmLogout = async () => {
-    await supabase.auth.signOut();
-    router.push("/login");
-    showToast("You have been securely logged out.");
-    setIsLogoutModalOpen(false);
-  };
 
   const handleAuthAction = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -289,32 +286,7 @@ export default function ProfilePage() {
     </div>
   );
 
-  const logoutModalHTML = isLogoutModalOpen && (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-6 z-[10000]" style={{ backdropFilter: 'blur(8px)' }}>
-      <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-stone-100 flex flex-col items-center text-center scale-up-center">
-        <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mb-6">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        </div>
-        <h3 className="text-2xl font-bold text-stone-900 mb-2">Wait, Logout?</h3>
-        <p className="text-stone-500 mb-8 max-w-[260px]">Are you sure you want to sign out from your account?</p>
-        
-        <div className="flex flex-col gap-3 w-full">
-          <button 
-            onClick={confirmLogout}
-            className="w-full py-4 bg-stone-900 text-white rounded-2xl font-bold hover:bg-black transition-colors"
-          >
-            Yes, Log Me Out
-          </button>
-          <button 
-            onClick={() => setIsLogoutModalOpen(false)}
-            className="w-full py-4 bg-white text-stone-500 rounded-2xl font-semibold hover:bg-stone-50 transition-colors"
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+
 
   // --- AUTHENTICATED UI ---
   return (
@@ -470,7 +442,7 @@ export default function ProfilePage() {
         </button>
       </section>
       {profileModalHTML}
-      {logoutModalHTML}
     </main>
+
   );
 }
