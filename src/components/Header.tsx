@@ -19,7 +19,7 @@ export default function Header() {
   const isActive = (href: string) =>
     href === "/"
       ? pathname === "/"
-      : pathname.startsWith(href);
+      : pathname?.startsWith(href);
 
   return (
     <header className="site-header">

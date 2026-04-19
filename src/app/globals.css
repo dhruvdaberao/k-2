@@ -1159,6 +1159,120 @@ summary::-webkit-details-marker {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+/* === Custom Non-Tailwind Style Palette === */
+.radius-8 { border-radius: 8px !important; }
+
+/* Compact Cart Row Styles */
+.cart-list-container {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #eadfcd;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.cart-item-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  padding: 16px !important;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.cart-item-row:last-child {
+  border-bottom: none;
+}
+
+.cart-item-img-container {
+  width: 80px !important;
+  height: 80px !important;
+  flex-shrink: 0 !important;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #f1f1f1;
+}
+
+.cart-item-img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+/* Quantity Picker Pill */
+.qty-pill-brand {
+  display: inline-flex !important;
+  align-items: center !important;
+  background: var(--brand) !important;
+  border-radius: 8px !important;
+  padding: 2px 4px !important;
+  gap: 8px !important;
+  color: white !important;
+}
+
+.qty-pill-brand button {
+  background: transparent !important;
+  border: none !important;
+  color: white !important;
+  width: 28px !important;
+  height: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: bold !important;
+  font-size: 18px !important;
+  cursor: pointer !important;
+  border-radius: 4px;
+}
+
+.qty-pill-brand button:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+.qty-pill-brand span {
+  font-weight: bold !important;
+  font-size: 14px !important;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* New Pill Buttons (Image 2 Style) */
+.btn-remove-pill {
+  background: white !important;
+  color: #ef4444 !important; /* Red-500 */
+  border: 1px solid #fee2e2 !important; /* Red-100 */
+  border-radius: 8px !important;
+  padding: 4px 12px !important;
+  font-size: 11px !important;
+  font-weight: bold !important;
+  text-transform: capitalize !important;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-remove-pill:hover {
+  background: #fef2f2 !important;
+  border-color: #ef4444 !important;
+}
+
+.btn-clear-pill {
+  background: white !important;
+  color: var(--brand) !important;
+  border: 1.5px solid var(--brand) !important;
+  border-radius: 8px !important;
+  padding: 10px 40px !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-clear-pill:hover {
+  background: var(--brand) !important;
+  color: white !important;
+}
+
 
 
 .plp-card .heart-container .svg-container {

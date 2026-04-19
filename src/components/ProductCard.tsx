@@ -182,26 +182,24 @@ export default function ProductCard({ p }: { p: Product }) {
           </div>
 
           {cartItem && !isCustomOrder ? (
-            <div className="flex items-center justify-between bg-[var(--brand)] rounded-[var(--btn-radius)] p-1.5 shadow-md">
+            <div className="qty-pill-brand w-100 justify-content-between p-2">
               <button 
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   cartItem.quantity <= 1 ? removeFromCart(p.id || p.slug) : updateQuantity(p.id || p.slug, cartItem.quantity - 1);
                 }}
-                className="inline-counter-btn !rounded-[var(--btn-radius)] hover:!bg-white/10"
                 aria-label="Decrease quantity"
               >
                 &minus;
               </button>
-              <span className="text-white font-bold text-lg select-none px-4">{cartItem.quantity}</span>
+              <span className="select-none">{cartItem.quantity}</span>
               <button 
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   updateQuantity(p.id || p.slug, cartItem.quantity + 1);
                 }}
-                className="inline-counter-btn !rounded-[var(--btn-radius)] hover:!bg-white/10"
                 aria-label="Increase quantity"
               >
                 +

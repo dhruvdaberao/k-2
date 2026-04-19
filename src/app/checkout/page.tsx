@@ -551,7 +551,7 @@ function resolveProduct(item: CartItem): Product | undefined {
   const exact = (products as Product[]).find((product) => product.slug === item.id);
   if (exact) return exact;
 
-  return (products as Product[]).find((product) => item.id.startsWith(`${product.slug}-`));
+  return (products as Product[]).find((product) => item.id && item.id.startsWith(`${product.slug}-`));
 }
 
 function formatCurrency(amount: number) {

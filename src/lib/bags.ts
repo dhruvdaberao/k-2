@@ -299,13 +299,23 @@ export function toggleWishlist(p: any): boolean {
 }
 
 export function getWishlist(): ItemSnapshot[] {
-  const ids = read<string[]>(WISHLIST_KEY, []);
+  const ids = [...new Set(read<string[]>(WISHLIST_KEY, []))];
   const items = read<Record<string, ItemSnapshot>>(WISHLIST_ITEMS_KEY, {});
-  return ids.map((id) => items[id]).filter(Boolean);
+  const validItems = ids.map((id) => items[id]).filter(Boolean);
+  
+  // Cleanup ghost IDs if needed
+  if (validItems.length !== ids.length) {
+    const cleanedIds = validItems.map(it => it.id);
+    write(WISHLIST_KEY, cleanedIds);
+  }
+  
+  return validItems;
 }
 
 export function wishlistCount(): number {
-  return read<string[]>(WISHLIST_KEY, []).length;
+  const ids = [...new Set(read<string[]>(WISHLIST_KEY, []))];
+  const items = read<Record<string, ItemSnapshot>>(WISHLIST_ITEMS_KEY, {});
+  return ids.filter(id => !!items[id]).length;
 }
 
 export function removeFromWishlist(id: string) {

@@ -52,16 +52,17 @@ export default function WishlistPage() {
           {items.map((it) => {
             // ROBUST LINK FIX: Find matching product by multiple strategies
             const pSlug = (it as any).productSlug;
+            const itemId = it.id || "";
             const foundSlug = (() => {
               if (pSlug) return pSlug;
               // 1. Prefix match (handles "slug-variant")
-              const prefix = (products as any[]).find(p => it.id.startsWith(p.slug));
+              const prefix = (products as any[]).find(p => itemId.startsWith(p.slug));
               if (prefix) return prefix.slug;
               // 2. Title match (handles "Title Saved As Slug")
-              const titleMatch = (products as any[]).find(p => p.title === it.name || p.title === it.id);
+              const titleMatch = (products as any[]).find(p => p.title === it.name || p.title === itemId);
               if (titleMatch) return titleMatch.slug;
               // 3. Fallback normalization ("Crochet Toran" -> "crochet-toran")
-              return it.id.toLowerCase().replace(/\s+/g, '-');
+              return itemId.toLowerCase().replace(/\s+/g, '-');
             })();
 
             return (

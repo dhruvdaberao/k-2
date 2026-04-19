@@ -6,9 +6,9 @@ interface PriceProgressBarProps {
 
 export default function PriceProgressBar({ subtotal }: PriceProgressBarProps) {
     const milestones = [
-        { value: 650, label: "Free Shipping", icon: "shipping" },
-        { value: 1250, label: "10% OFF", icon: "offer" },
-        { value: 1800, label: "20% OFF", icon: "discount" }
+        { value: 650, label: "Free Shipping", icon: "shipping", color: "text-[#15803d]" },
+        { value: 1250, label: "10% OFF", icon: "offer", color: "text-[#15803d]" },
+        { value: 1800, label: "20% OFF", icon: "discount", color: "text-[#15803d]" }
     ];
 
     const maxValue = 1800;
@@ -114,7 +114,7 @@ export default function PriceProgressBar({ subtotal }: PriceProgressBarProps) {
                     return (
                         <div
                             key={milestone.value}
-                            className={`shipping-item flex-1 text-center transition-colors ${isReached ? 'text-[#15803d]' : 'text-[#78716c]'
+                            className={`shipping-item flex-1 text-center transition-colors ${isReached ? (milestone as any).color || 'text-[#15803d]' : 'text-[#78716c]'
                                 }`}
                         >
                             <span className="inline-flex">{renderMilestoneIcon(milestone.icon)}</span>

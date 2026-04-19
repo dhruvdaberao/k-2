@@ -66,67 +66,57 @@ export default function CartPage() {
   }
 
   return (
-    <main className="cart-page py-8 px-4 bg-[#FAF7F2] min-h-screen">
-      <div className="max-w-5xl mx-auto">
+    <main className="cart-page py-4 py-md-5 px-3 bg-[#FAF7F2] min-h-screen">
+      <div className="container">
         {/* Compact Header */}
-        <header className="mb-8 text-center">
-          <h1 className="text-3xl font-bold font-serif text-[#2f2a26] mb-1">
+        <header className="mb-4 text-center">
+          <h1 className="h3 font-serif fw-bold text-[#2f2a26] mb-1">
             Your Cart ({itemCount} items)
           </h1>
-          <p className="text-stone-500 italic text-sm">Each piece is made to order with care</p>
+          <p className="text-secondary fst-italic small">Each piece is made to order with care</p>
         </header>
 
-        {/* Layout Grid - more balanced for compact view */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          {/* Main List (Left 7/12) */}
-          <div className="lg:col-span-7 space-y-6">
-            <div className="bg-white rounded-xl border border-[#eadfcd] p-5 shadow-sm">
-              <PriceProgressBar subtotal={subtotal} />
-            </div>
+        <div className="row g-4 items-start">
+          {/* Main List (Left) */}
+          <div className="col-12 col-lg-7">
+            <PriceProgressBar subtotal={subtotal} />
 
-            {/* Cart Items List - Image 5 Style */}
-            <div className="bg-white rounded-xl border border-[#eadfcd] overflow-hidden shadow-sm">
-              {cartItems.map((it, idx) => (
-                <div 
-                  key={it.id} 
-                  className={`p-4 flex items-center gap-4 ${idx !== cartItems.length - 1 ? 'border-b border-stone-100' : ''}`}
-                >
+            {/* Cart Items List - Image 2 Style */}
+            <div className="cart-list-container">
+              {cartItems.map((it) => (
+                <div key={it.id} className="cart-item-row align-items-center">
                   {/* Thumbnail Row */}
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 bg-stone-50 rounded-lg overflow-hidden border border-stone-100 relative">
-                    <img src={it.image} alt={it.name} className="w-full h-full object-cover" />
+                  <div className="cart-item-img-container">
+                    <img src={it.image} alt={it.name} className="cart-item-img" />
                   </div>
 
                   {/* Core Info Row */}
-                  <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                    <div className="flex-1">
-                      <h3 className="text-sm sm:text-base font-bold text-[#2f2a26] leading-tight mb-1">
+                  <div className="flex-grow-1 d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
+                    <div className="flex-grow-1">
+                      <h3 className="h6 fw-bold text-[#2f2a26] mb-2">
                         {it.name.split(" - ")[0]}
                       </h3>
                       
-                      {/* Quantity Picker Pill - Image 5 Style */}
-                      <div className="inline-flex items-center bg-[var(--brand)] rounded-[8px] p-1 scale-90 origin-left">
+                      <div className="qty-pill-brand">
                         <button 
                           onClick={async () => it.quantity <= 1 ? (confirm("Remove item?") && await removeFromCart(it.id)) : await updateQuantity(it.id, it.quantity - 1)}
-                          className="w-7 h-7 flex items-center justify-center text-white hover:bg-white/10 transition-all text-lg font-bold"
                         >
                           &minus;
                         </button>
-                        <span className="w-6 text-center text-white font-bold text-sm">{it.quantity}</span>
+                        <span>{it.quantity}</span>
                         <button 
                           onClick={async () => await updateQuantity(it.id, it.quantity + 1)}
-                          className="w-7 h-7 flex items-center justify-center text-white hover:bg-white/10 transition-all text-lg font-bold"
                         >
                           +
                         </button>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between sm:justify-end gap-6 sm:w-32">
-                      <div className="text-base font-bold text-[#2f2a26]">₹{it.price}</div>
+                    <div className="d-flex align-items-center gap-3 ms-auto" style={{ minWidth: "140px", justifyContent: "flex-end" }}>
+                      <div className="fw-bold text-[#2f2a26] fs-5">₹{it.price}</div>
                       <button 
                         onClick={async () => confirm("Remove item?") && await removeFromCart(it.id)}
-                        className="text-[10px] font-bold text-red-500 uppercase tracking-tighter border border-red-200 px-2 py-0.5 rounded hover:bg-red-50"
+                        className="btn-remove-pill"
                       >
                         Remove
                       </button>
@@ -137,58 +127,60 @@ export default function CartPage() {
             </div>
 
             {/* Clear All Footer */}
-            <button 
-              onClick={async () => confirm("Clear all items?") && await clearCart()}
-              className="w-full py-3 text-xs font-bold text-stone-400 uppercase tracking-widest bg-white border border-[#eadfcd] rounded-lg hover:text-red-500 hover:border-red-200 transition-all"
-            >
-              Clear All Items
-            </button>
+            <div className="text-center mt-4">
+              <button 
+                onClick={async () => confirm("Clear all items?") && await clearCart()}
+                className="btn-clear-pill"
+              >
+                Clear All Items
+              </button>
+            </div>
           </div>
 
-          {/* Sidebar (Right 5/12) */}
-          <div className="lg:col-span-5">
-            <div className="bg-white rounded-xl border border-[#eadfcd] p-6 shadow-md">
-              <h3 className="font-bold text-xl text-[#2f2a26] mb-6 pb-3 border-b border-stone-50">Order Summary</h3>
+          {/* Sidebar (Right) */}
+          <div className="col-12 col-lg-5">
+            <div className="bg-white rounded-3 border border-[#eadfcd] p-4 shadow-sm">
+              <h3 className="h5 fw-bold text-[#2f2a26] mb-4 pb-3 border-bottom border-light">Order Summary</h3>
               
-              <div className="space-y-4 text-sm text-stone-600">
-                <div className="flex justify-between">
+              <div className="vstack gap-3 small text-secondary">
+                <div className="d-flex justify-content-between text-dark">
                   <span>Subtotal</span>
-                  <span className="font-bold text-[#2f2a26]">₹{subtotal}</span>
+                  <span className="fw-bold">₹{subtotal}</span>
                 </div>
                 
-                <div className="flex justify-between">
+                <div className="d-flex justify-content-between text-dark">
                   <span>Shipping Fee</span>
-                  <span className="font-bold text-[#2f2a26]">₹{baseShipping}</span>
+                  <span className="fw-bold">₹{baseShipping}</span>
                 </div>
 
                 {shippingDiscount < 0 && (
-                  <div className="flex justify-between text-green-700 font-semibold">
+                  <div className="d-flex justify-content-between text-success fw-bold">
                     <span>Shipping Discount</span>
                     <span>-₹{Math.abs(shippingDiscount)}</span>
                   </div>
                 )}
 
                 {discountAmount > 0 && (
-                  <div className="flex justify-between text-[#C2410C] font-bold">
+                  <div className="d-flex justify-content-between text-success fw-bold">
                     <span>Discount ({discountPercent}%)</span>
                     <span>-₹{discountAmount}</span>
                   </div>
                 )}
                 
-                <div className="h-px bg-stone-100 my-4" />
+                <hr className="my-2 border-light" />
                 
-                <div className="flex justify-between items-end">
-                  <span className="font-bold text-lg text-[#2f2a26]">Total</span>
-                  <span className="font-bold text-2xl text-[var(--brand)]">₹{grandTotal}</span>
+                <div className="d-flex justify-content-between align-items-end">
+                  <span className="h6 fw-bold text-dark mb-0">Total</span>
+                  <span className="h4 fw-bold text-brown mb-0" style={{ color: "var(--brand)" }}>₹{grandTotal}</span>
                 </div>
               </div>
 
-              <NextLink href="/checkout" className="w-full btn-primary py-4 text-center block rounded-[8px] mt-8 font-bold text-base shadow-lg transition-transform active:scale-95">
+              <NextLink href="/checkout" className="btn btn-primary w-100 py-3 mt-4 fw-bold radius-8 shadow-sm">
                 Checkout
               </NextLink>
               
-              <div className="mt-6 flex items-center justify-center gap-3 py-2 bg-[#FAF7F2] rounded-lg text-[10px] font-bold text-stone-400 uppercase tracking-wider">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-green-600"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <div className="mt-4 d-flex align-items-center justify-content-center gap-2 py-2 bg-light rounded-3 small fw-bold text-secondary text-uppercase tracking-wider" style={{ fontSize: "10px" }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-success"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 Cash on Delivery Available
               </div>
             </div>
