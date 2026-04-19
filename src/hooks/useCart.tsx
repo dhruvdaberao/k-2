@@ -58,8 +58,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     // Phase 11 & 6: Auto load and sync after login
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("[Cart] Auth event:", event);
+      console.log("[CartHook] Auth event:", event);
       if (event === "SIGNED_IN" && session?.user?.id) {
+        // Step 6: Sync guest -> DB
         await syncLocalCartToDB(session.user.id);
         await loadCart();
       } else if (event === "SIGNED_OUT") {

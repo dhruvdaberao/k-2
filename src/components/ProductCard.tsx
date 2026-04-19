@@ -7,10 +7,12 @@ import { useEffect, useState, MouseEvent } from "react";
 import type { Product } from "@/types";
 import { toggleWishlist } from "@/lib/bags";
 import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
 
 export default function ProductCard({ p }: { p: Product }) {
+  const { user } = useAuth();
   const [hearted, setHearted] = useState(false);
   const { cartItems, addToCart, updateQuantity, removeFromCart } = useCart();
   const router = useRouter();

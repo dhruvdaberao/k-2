@@ -4,29 +4,22 @@ import ImageWithFallback from "@/components/ImageWithFallback";
 import Link from "next/link";
 import { useEffect, useState, MouseEvent } from "react";
 import type { Product } from "@/types";
-import { toggleWishlist, getCart, updateQty, removeFromCart, CartItem } from "@/lib/bags";
-import { useAddToCart } from "@/hooks/useAddToCart";
+import { toggleWishlist } from "@/lib/bags";
+import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
 import "./ProductCardV2.css";
 
 
 export default function ProductCardV2({ p }: { p: Product }) {
+    const { user } = useAuth();
+    const { cartItems, addToCart, updateQuantity, removeFromCart } = useCart();
     const [hearted, setHearted] = useState(false);
-    const [qtyInCart, setQtyInCart] = useState(0);
-    const { addToCart, state } = useAddToCart();
     const router = useRouter();
 
-    useEffect(() => {
-        const updateCartQty = () => {
-            const cart = getCart();
-            const item = cart.find((x: CartItem) => x.id === (p.id || p.slug));
-            setQtyInCart(item ? item.quantity : 0);
-        };
-        updateCartQty();
-        window.addEventListener("bag:changed", updateCartQty);
-        return () => window.removeEventListener("bag:changed", updateCartQty);
-    }, [(p.id || p.slug)]);
+    const cartItem = cartItems.find((it) => it.id === (p.id || p.slug));
+    const qtyInCart = cartItem ? cartItem.quantity : 0;
 
     // Initialize "hearted" from storage on mount or slug change
     useEffect(() => {
@@ -94,8 +87,6 @@ export default function ProductCardV2({ p }: { p: Product }) {
 
     const getButtonLabel = () => {
         if (isCustomOrder) return "Enquire on Instagram";
-        if (state === "adding") return "Adding…";
-        if (state === "added") return "Added ✓";
         return "Add to Cart";
     };
 
@@ -190,7 +181,7 @@ export default function ProductCardV2({ p }: { p: Product }) {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     if (qtyInCart > 1) {
-                                        updateQty((p.id || p.slug), qtyInCart - 1);
+                                        updateQuantity((p.id || p.slug), qtyInCart - 1);
                                     } else {
                                         removeFromCart((p.id || p.slug));
                                     }
@@ -208,7 +199,7 @@ export default function ProductCardV2({ p }: { p: Product }) {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     if (typeof p.stock !== 'number' || qtyInCart < p.stock) {
-                                        updateQty((p.id || p.slug), qtyInCart + 1);
+                                        updateQuantity((p.id || p.slug), qtyInCart + 1);
                                     }
                                 }}
                             >
@@ -219,7 +210,7 @@ export default function ProductCardV2({ p }: { p: Product }) {
                         <button
                             type="button"
                             onClick={handleAction}
-                            disabled={!inStock || state === "adding" || state === "added"}
+                            disabled={!inStock}
                             className="w-full btn-primary btn-sm-mobile"
                         >
                             {getButtonLabel()}

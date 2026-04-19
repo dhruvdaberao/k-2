@@ -74,34 +74,33 @@ export function getCart(): CartItem[] {
 }
 
 export async function loadCart(passedUser?: any): Promise<CartItem[]> {
-  console.log("[Cart] loadCart called");
-  let user = passedUser;
-  if (!user) {
-    const { data } = await supabase.auth.getUser();
-    user = data.user;
-  }
-  
-  // GUEST
+  console.log("[Cart] loadCart triggered");
+  const user = passedUser;
+
+  // GUEST MODE
   if (!user) {
     const local = read<CartItem[]>(CART_KEY, []);
-    console.log("[Cart] GUEST mode, items:", local);
+    console.log("[Cart] Guest session, local items:", local.length);
     return local;
   }
 
-  // LOGGED IN
+  // LOGGED IN MODE
+  console.log("[Cart] Logged-in session for user:", user.id);
   const { data, error } = await supabase
     .from("cart")
     .select("*")
     .eq("user_id", user.id);
 
-  console.log("[Cart] LOGGED IN mode, DB response:", data);
   if (error) {
-    console.error("[Cart] loadCart error:", error);
+    console.error("[Cart] loadCart DB Error:", error.message);
+    // Fallback to local if DB fails? No, return empty to avoid conflicting state
     return [];
   }
 
   const items = normalizeDBRows(data);
-  // Keep local storage in sync for immediate access
+  console.log("[Cart] DB items loaded:", items.length);
+  
+  // Keep local storage mirrored for quick access (no-sync)
   write(CART_KEY, items);
   notify();
   return items;
@@ -109,16 +108,12 @@ export async function loadCart(passedUser?: any): Promise<CartItem[]> {
 
 export async function handleAddToCart(product: any, passedUser?: any): Promise<void> {
   const item = snap(product);
-  console.log("[Cart] Adding product:", item.id);
-
-  let user = passedUser;
-  if (!user) {
-    const { data } = await supabase.auth.getUser();
-    user = data.user;
-  }
+  console.log("[Cart] addToCart intent:", item.id);
+  const user = passedUser;
 
   // -------- GUEST --------
   if (!user) {
+    console.log("[Cart] Guest AddToCart");
     let cart = read<CartItem[]>(CART_KEY, []);
     const existing = cart.find(i => i.id === item.id);
 
@@ -134,22 +129,27 @@ export async function handleAddToCart(product: any, passedUser?: any): Promise<v
   }
 
   // -------- LOGGED IN --------
-  const { data: existing } = await supabase
+  console.log("[Cart] Logged-in AddToCart for:", user.id);
+  const { data: existing, error: fetchError } = await supabase
     .from("cart")
     .select("*")
     .eq("user_id", user.id)
     .eq("product_id", item.id)
     .maybeSingle();
 
+  if (fetchError) {
+    console.error("[Cart] AddToCart DB Fetch Error:", fetchError.message);
+  }
+
   if (existing) {
-    console.log("[Cart] Updating existing DB item quantity");
-    await supabase
+    const { error: updateError } = await supabase
       .from("cart")
       .update({ quantity: existing.quantity + 1 })
       .eq("id", existing.id);
+    
+    if (updateError) console.error("[Cart] Update Error:", updateError.message);
   } else {
-    console.log("[Cart] Inserting new item into DB");
-    await supabase.from("cart").insert({
+    const { error: insertError } = await supabase.from("cart").insert({
       user_id: user.id,
       product_id: item.id,
       name: item.name,
@@ -157,8 +157,11 @@ export async function handleAddToCart(product: any, passedUser?: any): Promise<v
       image: item.image,
       quantity: 1
     });
+
+    if (insertError) console.error("[Cart] Insert Error:", insertError.message);
   }
 
+  // Reload to keep UI in sync
   await loadCart(user);
 }
 
@@ -166,12 +169,7 @@ export const addToCart = handleAddToCart;
 
 export async function updateQty(productId: string, quantity: number, passedUser?: any): Promise<void> {
   console.log(`[Cart] updateQty: ${productId} -> ${quantity}`);
-  
-  let user = passedUser;
-  if (!user) {
-    const { data } = await supabase.auth.getUser();
-    user = data.user;
-  }
+  const user = passedUser;
 
   // GUEST
   if (!user) {
@@ -189,17 +187,19 @@ export async function updateQty(productId: string, quantity: number, passedUser?
 
   // LOGGED IN
   if (quantity <= 0) {
-    await supabase
+    const { error } = await supabase
       .from("cart")
       .delete()
       .eq("user_id", user.id)
       .eq("product_id", productId);
+    if (error) console.error("[Cart] Delete Error:", error.message);
   } else {
-    await supabase
+    const { error } = await supabase
       .from("cart")
       .update({ quantity })
       .eq("user_id", user.id)
       .eq("product_id", productId);
+    if (error) console.error("[Cart] Update Qty Error:", error.message);
   }
 
   await loadCart(user);
@@ -210,11 +210,8 @@ export async function removeFromCart(productId: string, passedUser?: any): Promi
 }
 
 export async function clearCart(passedUser?: any): Promise<void> {
-  let user = passedUser;
-  if (!user) {
-    const { data } = await supabase.auth.getUser();
-    user = data.user;
-  }
+  console.log("[Cart] clearCart intent");
+  const user = passedUser;
 
   if (!user) {
     write(CART_KEY, []);
@@ -222,10 +219,12 @@ export async function clearCart(passedUser?: any): Promise<void> {
     return;
   }
 
-  await supabase
+  const { error } = await supabase
     .from("cart")
     .delete()
     .eq("user_id", user.id);
+  
+  if (error) console.error("[Cart] Clear Cart Error:", error.message);
 
   write(CART_KEY, []);
   notify();
@@ -235,11 +234,12 @@ export async function clearCart(passedUser?: any): Promise<void> {
  * Phase 6: Sync Local to DB on Login
  */
 export async function syncLocalCartToDB(userId: string): Promise<void> {
-  console.log("[Cart] Syncing local cart to DB for user:", userId);
+  console.log("[Cart] Syncing Guest items to DB for:", userId);
   const localCart = read<CartItem[]>(CART_KEY, []);
   if (localCart.length === 0) return;
 
   for (const item of localCart) {
+    // Check if user already has this prod in DB
     const { data: existing } = await supabase
       .from("cart")
       .select("*")
@@ -248,11 +248,13 @@ export async function syncLocalCartToDB(userId: string): Promise<void> {
       .maybeSingle();
 
     if (existing) {
+      // Merge quantity
       await supabase
         .from("cart")
         .update({ quantity: existing.quantity + item.quantity })
         .eq("id", existing.id);
     } else {
+      // Insert new
       await supabase.from("cart").insert({
         user_id: userId,
         product_id: item.id,
@@ -264,7 +266,9 @@ export async function syncLocalCartToDB(userId: string): Promise<void> {
     }
   }
 
+  // Once synced, clear local
   localStorage.removeItem(CART_KEY);
+  console.log("[Cart] Sync complete, local cleared.");
   await loadCart({ id: userId });
 }
 
