@@ -27,7 +27,7 @@ export default function CheckoutAddons({ currentCartSlugs, onAdded }: CheckoutAd
             if (typeof p.stock === "number" && p.stock <= 0) return false;
 
             // Must not be in cart
-            if (currentCartSlugs.includes(p.slug)) return false;
+            if (currentCartSlugs.includes(p.id || p.slug)) return false;
 
             // Prefer certain categories
             const cat = (p.category || "").toLowerCase();
@@ -42,13 +42,13 @@ export default function CheckoutAddons({ currentCartSlugs, onAdded }: CheckoutAd
     const handleAdd = async (product: Product) => {
         await addToCart(product);
         onAdded?.();
-        setAddedSlugs(prev => new Set(prev).add(product.slug));
+        setAddedSlugs(prev => new Set(prev).add(product.id || product.slug));
 
         // Reset after 2 seconds
         setTimeout(() => {
             setAddedSlugs(prev => {
                 const next = new Set(prev);
-                next.delete(product.slug);
+                next.delete(product.id || product.slug);
                 return next;
             });
         }, 2000);
@@ -66,12 +66,12 @@ export default function CheckoutAddons({ currentCartSlugs, onAdded }: CheckoutAd
             {/* Product List */}
             <div className="flex flex-col gap-3">
                 {addonProducts.map(product => {
-                    const isAdded = addedSlugs.has(product.slug);
+                    const isAdded = addedSlugs.has(product.id || product.slug);
                     const imgSrc = (product as any).image || (product as any).img || (product as any).image_url || product.images?.[0] || "/placeholder.png";
 
                     return (
                         <div
-                            key={product.slug}
+                            key={product.id || product.slug}
                             className="addon-item group bg-white rounded-xl p-3 border border-stone-100 flex items-center gap-3 transition-all hover:shadow-md hover:border-stone-200"
                         >
                             {/* Image */}

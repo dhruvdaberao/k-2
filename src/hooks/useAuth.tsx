@@ -51,8 +51,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       if (event === 'SIGNED_IN' && session?.user?.id) {
         fetchProfile(session.user.id);
-        // Refresh cart on login to ensure sync
-        import("@/lib/bags").then(m => m.loadCart());
       } else if (event === 'SIGNED_OUT') {
         setUser(null);
         setProfile(null);
