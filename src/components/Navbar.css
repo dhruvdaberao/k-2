@@ -1,0 +1,314 @@
+:root {
+  --nav-h: 72px;
+  --bottom-nav-h: 60px;
+  --bg-main: #f8f5f2;
+  --bg-nav: #f1ebe6;
+  --primary-brown: #6b4226;
+  --icon-color: var(--primary-brown);
+  --icon-muted: #b8ada4;
+}
+
+.keshvi-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1400;
+  height: calc(var(--nav-h) + env(safe-area-inset-top));
+  background: var(--bg-nav);
+  border-bottom: 1px solid #e6e0d8;
+  backdrop-filter: blur(8px);
+  padding: env(safe-area-inset-top) 16px 0;
+}
+
+.top-navbar {
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  height: 60px;
+}
+
+.nav-inner {
+  max-width: 1280px;
+  height: 100%;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logo-img {
+  width: auto;
+  height: 56px;
+  object-fit: contain;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  mix-blend-mode: multiply; /* Fixes the white box issue by blending with the background */
+}
+
+.logo {
+  height: 56px;
+}
+
+.logo img {
+  height: 56px !important;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.border-none-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.desktop-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-item {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text);
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  position: relative; /* For the underline pseudo-element */
+  transition: color 0.3s ease;
+}
+
+.nav-item.active {
+  color: var(--brand);
+}
+
+.nav-item::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 12px;
+  right: 12px;
+  height: 2px;
+  background: var(--brand);
+  transform: scaleX(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.nav-item.active::after {
+  transform: scaleX(1);
+}
+
+.nav-item:hover {
+  color: var(--brand);
+}
+
+.mobile-top-search,
+.mobile-top-profile {
+  display: none;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  color: var(--icon-muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.mobile-top-search .search-icon {
+  color: var(--icon-color);
+  stroke: var(--icon-color);
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease, stroke 0.2s ease;
+}
+
+.mobile-top-search:hover,
+.mobile-top-search:active,
+.mobile-top-search.active,
+.mobile-top-profile:hover,
+.mobile-top-profile:active,
+.mobile-top-profile.active {
+  color: var(--icon-color);
+}
+
+.mobile-top-search:hover .search-icon,
+.mobile-top-search:active .search-icon,
+.mobile-top-search.active .search-icon,
+.mobile-top-profile:hover .profile-icon,
+.mobile-top-profile:active .profile-icon,
+.mobile-top-profile.active .profile-icon {
+  color: var(--icon-color);
+  stroke: var(--icon-color);
+}
+
+.cart-wrapper,
+.cart-wrapper-text,
+.wishlist-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.cart-wrapper-text .cart-badge,
+.wishlist-wrapper .wishlist-badge {
+  position: relative !important;
+  top: 0 !important;
+  right: 0 !important;
+  margin-left: 6px !important;
+}
+
+/* Mobile badges remain absolute on the icon in bottom nav */
+.mobile-bottom-nav .cart-wrapper .cart-badge,
+.mobile-bottom-nav .wishlist-wrapper .wishlist-badge {
+  position: absolute !important;
+  top: -4px !important;
+  right: -6px !important;
+  margin-left: 0 !important;
+}
+
+.mobile-bottom-nav {
+  display: none;
+}
+
+body {
+  padding-top: calc(var(--nav-h) + env(safe-area-inset-top));
+}
+
+@media (max-width: 768px) {
+  .desktop-links {
+    display: none;
+  }
+
+  .mobile-top-search,
+  .mobile-top-profile {
+    display: inline-flex;
+  }
+
+  .logo-img {
+    width: auto;
+    height: 56px;
+  }
+
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    height: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+    background: var(--bg-nav);
+    border-top: 1px solid #e6e0d8;
+    z-index: 1350;
+    align-items: stretch;
+    justify-content: space-between;
+    transform: translateZ(0);
+  }
+
+  .bottom-nav-item {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--primary-brown);
+    opacity: 1;
+    gap: 3px;
+    height: 100%;
+    font-size: 11px;
+    font-weight: 500;
+    position: relative;
+    transition: color 0.2s ease, opacity 0.2s ease;
+  }
+
+  .bottom-nav-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--primary-brown);
+    stroke: var(--primary-brown);
+    fill: none;
+    stroke-width: 1.8;
+    opacity: 1;
+    transition: fill 0.2s ease, stroke 0.2s ease, color 0.2s ease;
+  }
+
+  .mobile-bottom-nav .bottom-nav-item svg {
+    stroke: #6b4226;
+    fill: none;
+    stroke-width: 1.8;
+    opacity: 1;
+  }
+
+  .mobile-bottom-nav .bottom-nav-item span {
+    color: var(--primary-brown);
+  }
+
+  .bottom-nav-item.active {
+    color: var(--primary-brown);
+  }
+
+  .bottom-nav-item.active .bottom-nav-icon,
+  .mobile-bottom-nav .bottom-nav-item.active svg {
+    stroke: #6b4226;
+    fill: none;
+    stroke-width: 2.4;
+  }
+
+  .bottom-nav-label {
+    color: var(--primary-brown);
+    font-size: 11px;
+    line-height: 1;
+  }
+
+  body {
+    padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + 12px);
+  }
+
+  .main-content,
+  .checkout-flow,
+  .collections-page {
+    padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + 20px);
+  }
+}

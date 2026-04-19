@@ -1,0 +1,158 @@
+.search-overlay {
+  position: fixed;
+  top: var(--nav-h, 60px);
+  left: 0;
+  right: 0;
+  bottom: calc(var(--bottom-nav-h, 60px) + env(safe-area-inset-bottom));
+  background: rgba(26, 26, 26, 0.2);
+  z-index: 1100;
+  padding: 12px;
+}
+
+.search-content {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  gap: 12px;
+}
+
+.search-header {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.close-search-btn {
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.search-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.search-input-wrapper {
+  position: relative;
+}
+
+.search-input-wrapper .search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: #6b4226;
+}
+
+.search-input {
+  width: 100%;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 10px 10px 10px 40px;
+  font-size: 15px;
+  background: #fff;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #6b4226;
+  box-shadow: 0 0 0 2px rgba(107, 66, 38, 0.08);
+}
+
+.search-live-results {
+  overflow-y: auto;
+  min-height: 120px;
+}
+
+.results-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  text-decoration: none;
+  border: 1px solid #f0f0f0;
+  border-radius: 12px;
+}
+
+.result-image {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.result-info {
+  min-width: 0;
+}
+
+.result-name {
+  margin: 0 0 2px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.result-price {
+  margin: 0 0 2px;
+  font-size: 13px;
+  color: var(--brand);
+  font-weight: 700;
+}
+
+.result-cat {
+  font-size: 11px;
+  color: #737373;
+}
+
+.view-all-results {
+  width: 100%;
+  height: 44px;
+  border: none;
+  border-radius: 12px;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 600;
+}
+
+.search-empty-state,
+.search-hint {
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.no-results-msg {
+  margin: 0;
+  font-weight: 600;
+}
+
+.try-else-msg {
+  margin: 0;
+  color: #737373;
+  font-size: 14px;
+}

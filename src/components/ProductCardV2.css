@@ -1,0 +1,188 @@
+/* --- CARD MICRO-INTERACTIONS --- */
+.plp-card {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  background: var(--surface);
+  border: 1px solid rgba(229, 231, 235, 0.8) !important; 
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02) !important;
+  /* Force uniform card sizing */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+.plp-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.06), 0 4px 8px rgba(0, 0, 0, 0.03) !important;
+  border-color: rgba(229, 231, 235, 0.9) !important;
+}
+
+.plp-card .product-title-link {
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.plp-card .product-title-link:hover {
+  color: var(--brand);
+}
+
+.plp-card img.object-cover {
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.plp-card:hover img.object-cover {
+  transform: scale(1.06) !important;
+}
+
+/* --- Force uniform image height --- */
+.plp-card .relative.w-full.bg-stone-100 {
+  flex-shrink: 0;
+  aspect-ratio: 1 / 1 !important;
+  width: 100% !important;
+  position: relative !important;
+  height: auto !important;
+}
+
+.plp-card .relative.aspect-square {
+  aspect-ratio: 1 / 1 !important;
+  width: 100% !important;
+  height: 100% !important;
+  position: relative !important;
+}
+
+/* Force image to fill container */
+.plp-card img.object-cover {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+
+/* --- Force uniform content height --- */
+.plp-card .flex.flex-col.flex-grow {
+  flex: 1;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0; /* Webkit fix */
+}
+
+/* --- ADD TO CART INLINE COUNTER --- */
+.inline-counter-container {
+  display: flex;
+  align-items: center;
+  background: #2f2a26; 
+  border-radius: 9999px;
+  height: 44px; 
+  overflow: hidden;
+  width: 100%; 
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(47, 42, 38, 0.15);
+}
+
+.inline-counter-btn {
+  width: 44px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0); 
+  border: none;
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.inline-counter-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.inline-counter-value {
+  flex: 1;
+  text-align: center;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  background: transparent;
+  user-select: none;
+}
+
+/* --- COMPACT MOBILE STYLES --- */
+@media (max-width: 767px) {
+  .plp-card {
+    border-radius: 10px !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .plp-card .flex.flex-col.flex-grow {
+    padding: 8px !important; /* Even more compact padding */
+    gap: 4px !important; /* Reduced gap */
+  }
+
+  .plp-card h3 {
+    font-size: 13px !important;
+    line-height: 1.2 !important;
+    margin-bottom: 4px !important;
+    min-height: 1.4em !important;
+    max-height: 1.4em !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* Price styling */
+  .plp-card .text-base.md\:text-lg {
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    margin-bottom: 2px !important;
+  }
+
+  /* Description text if present */
+  .plp-card .text-\[10px\].text-stone-500 {
+    font-size: 9px !important;
+    margin-bottom: 2px !important;
+  }
+
+  .btn-sm-mobile {
+    padding: 0.35rem 0.5rem !important;
+    font-size: 11px !important;
+    min-height: 32px !important;
+    border-radius: 6px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.3px !important;
+  }
+
+  .inline-counter-container.compact {
+    height: 32px !important;
+    border-radius: 6px !important;
+  }
+
+  .inline-counter-container.compact .inline-counter-btn {
+    width: 28px !important;
+    font-size: 1rem !important;
+  }
+
+  .inline-counter-container.compact .inline-counter-value {
+    font-size: 0.75rem !important;
+  }
+
+  /* Spacing between sections */
+  .plp-card .mt-auto {
+    margin-top: auto !important;
+    padding-top: 2px !important;
+  }
+}
+
+
+
