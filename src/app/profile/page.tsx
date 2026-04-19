@@ -267,6 +267,21 @@ export default function ProfilePage() {
     );
   }
 
+  const profileModalHTML = modalContent && (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[9999]" style={{ backdropFilter: 'blur(4px)' }}>
+      <div className="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl animate-in fade-in zoom-in duration-200">
+        <h3 className="text-xl font-bold mb-2" style={{ color: "var(--brand)" }}>{modalContent.title}</h3>
+        <p className="text-stone-600 mb-6 leading-relaxed">{modalContent.message}</p>
+        <button 
+          onClick={() => setModalContent(null)}
+          className="btn-primary w-full py-3 rounded-xl shadow-lg"
+        >
+          Sounds Good
+        </button>
+      </div>
+    </div>
+  );
+
   // --- AUTHENTICATED UI ---
   return (
     <main className="checkout-page checkout-container pb-20 profile-page-styles">
