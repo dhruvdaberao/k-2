@@ -1198,15 +1198,16 @@ summary::-webkit-details-marker {
   object-fit: cover !important;
 }
 
-/* Quantity Picker Pill */
+/* Quantity Picker Pill - Optimized for Full Width & Small Icons */
 .qty-pill-brand {
   display: inline-flex !important;
   align-items: center !important;
+  justify-content: space-between !important;
   background: var(--brand) !important;
   border-radius: 8px !important;
-  padding: 2px 4px !important;
-  gap: 8px !important;
+  padding: 0.75rem 1.25rem !important; /* Matches btn-primary height */
   color: white !important;
+  min-height: 48px !important;
 }
 
 .qty-pill-brand button {

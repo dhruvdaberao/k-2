@@ -182,7 +182,7 @@ export default function ProductCard({ p }: { p: Product }) {
           </div>
 
           {cartItem && !isCustomOrder ? (
-            <div className="qty-pill-brand w-100 justify-content-between p-2">
+            <div className="qty-pill-brand w-full">
               <button 
                 onClick={(e) => {
                   e.preventDefault();

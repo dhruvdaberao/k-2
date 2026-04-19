@@ -173,7 +173,7 @@ export default function ProductCardV2({ p }: { p: Product }) {
                             {getButtonLabel()}
                         </button>
                     ) : qtyInCart > 0 ? (
-                        <div className="qty-pill-brand" style={{ width: "fit-content", margin: "0 auto" }}>
+                        <div className="qty-pill-brand w-full">
                             <button
                                 aria-label="Decrease quantity"
                                 onClick={(e) => {
