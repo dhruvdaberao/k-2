@@ -9,6 +9,7 @@ import {
   removeFromCart as removeFromCartLib,
   updateQty,
   syncLocalCartToDB,
+  clearAllLocalData,
 } from "@/lib/bags";
 import { useAuth } from "./useAuth";
 
@@ -65,6 +66,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         await loadCart();
       } else if (event === "SIGNED_OUT") {
         setCartItems([]);
+        // Local content is cleared by AuthProvider, so loadCart will return []
         await loadCart();
       }
     });

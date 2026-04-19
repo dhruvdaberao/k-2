@@ -23,12 +23,18 @@ export default function ProductCardV2({ p }: { p: Product }) {
 
     // Initialize "hearted" from storage on mount or slug change
     useEffect(() => {
-        try {
-            const slugs = JSON.parse(localStorage.getItem("wishlist:v1") || "[]") as string[];
-            setHearted(slugs.includes((p.id || p.slug)));
-        } catch {
-            // ignore
-        }
+        const update = () => {
+            try {
+                const slugs = JSON.parse(localStorage.getItem("wishlist:v1") || "[]") as string[];
+                setHearted(slugs.includes((p.id || p.slug)));
+            } catch {
+                setHearted(false);
+            }
+        };
+
+        update();
+        window.addEventListener("bag:changed", update);
+        return () => window.removeEventListener("bag:changed", update);
     }, [(p.id || p.slug)]);
 
     const encoded = encodeURIComponent((p.id || p.slug));

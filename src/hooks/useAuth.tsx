@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabaseClient";
+import { clearAllLocalData } from "@/lib/bags";
 
 type AuthContextType = {
   session: Session | null;
@@ -54,6 +55,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else if (event === 'SIGNED_OUT') {
         setUser(null);
         setProfile(null);
+        setSession(null);
+        // Step 1: Wipe local persistence to prevent leakage
+        clearAllLocalData();
       }
       setLoading(false);
     });

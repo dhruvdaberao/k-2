@@ -355,3 +355,17 @@ export function removeFromCollection(name: string, id: string) {
   write(COLLECTIONS_KEY, colls);
   notify();
 }
+
+/**
+ * STRATEGY: Hard clear all local persistence on Logout
+ * Prevents session leakage.
+ */
+export function clearAllLocalData() {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(CART_KEY);
+  localStorage.removeItem(WISHLIST_KEY);
+  localStorage.removeItem(WISHLIST_ITEMS_KEY);
+  localStorage.removeItem(COLLECTIONS_KEY);
+  notify();
+  console.log("[Bags] All local storage data cleared.");
+}
