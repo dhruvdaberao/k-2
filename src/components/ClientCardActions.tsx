@@ -1,6 +1,8 @@
 
 "use client";
 import * as React from "react";
+import { showToast } from "./Toast";
+
 
 type Item = { slug: string; title: string; price: number; image?: string };
 
