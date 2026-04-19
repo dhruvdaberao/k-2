@@ -6,13 +6,13 @@ import Link from "next/link";
 import { useEffect, useState, MouseEvent } from "react";
 import type { Product } from "@/types";
 import { toggleWishlist } from "@/lib/bags";
-import { useAddToCart } from "@/hooks/useAddToCart";
+import { useCart } from "@/hooks/useCart";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
 
 export default function ProductCard({ p }: { p: Product }) {
   const [hearted, setHearted] = useState(false);
-  const { addToCart, state } = useAddToCart();
+  const { cartItems, addToCart, updateQuantity, removeFromCart } = useCart();
   const router = useRouter();
 
   // Initialize "hearted" from storage on mount or slug change
@@ -76,10 +76,10 @@ export default function ProductCard({ p }: { p: Product }) {
 
   const getButtonLabel = () => {
     if (isCustomOrder) return "Enquire on Instagram";
-    if (state === "adding") return "Adding…";
-    if (state === "added") return "Added ✓";
     return "Add to Cart";
   };
+
+  const cartItem = cartItems.find((it) => it.id === p.id);
 
   const visibleBadges = badges.slice(0, 2);
   const overflowCount = badges.length - 2;
@@ -179,14 +179,42 @@ export default function ProductCard({ p }: { p: Product }) {
             <span className="text-lg font-bold text-neutral-900">{priceDisplay}</span>
           </div>
 
-          <button
-            type="button"
-            onClick={handleAction}
-            disabled={(!inStock && !isCustomOrder) || state === "adding" || state === "added"}
-            className={`w-full ${isCustomOrder ? "btn-secondary" : "btn-primary"}`}
-          >
-            {getButtonLabel()}
-          </button>
+          {cartItem && !isCustomOrder ? (
+            <div className="flex items-center justify-between bg-[#2f2a26] rounded-full p-1.5 shadow-md">
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  cartItem.quantity <= 1 ? removeFromCart(p.id || p.slug) : updateQuantity(p.id || p.slug, cartItem.quantity - 1);
+                }}
+                className="w-10 h-10 flex items-center justify-center text-white hover:bg-stone-700 rounded-full font-bold transition-all text-2xl"
+                aria-label="Decrease quantity"
+              >
+                &minus;
+              </button>
+              <span className="text-white font-bold text-lg select-none px-4">{cartItem.quantity}</span>
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  updateQuantity(p.id || p.slug, cartItem.quantity + 1);
+                }}
+                className="w-10 h-10 flex items-center justify-center text-white hover:bg-stone-700 rounded-full font-bold transition-all text-2xl"
+                aria-label="Increase quantity"
+              >
+                +
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={handleAction}
+              disabled={(!inStock && !isCustomOrder)}
+              className={`w-full ${isCustomOrder ? "btn-secondary" : "btn-primary"} h-[52px] font-bold`}
+            >
+              {getButtonLabel()}
+            </button>
+          )}
         </div>
       </div>
     </article>

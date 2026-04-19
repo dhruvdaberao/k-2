@@ -55,8 +55,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     };
 
     window.addEventListener("bag:changed", onBagChange);
+
+    // Phase 11 & 6: Auto load and sync after login
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("[Cart] Auth event:", event);
+      if (event === "SIGNED_IN" && session?.user?.id) {
+        await syncLocalCartToDB(session.user.id);
+        await loadCart();
+      } else if (event === "SIGNED_OUT") {
+        setCartItems([]);
+        await loadCart();
+      }
+    });
+
     return () => {
       window.removeEventListener("bag:changed", onBagChange);
+      subscription.unsubscribe();
     };
   }, [loadCart]);
 
