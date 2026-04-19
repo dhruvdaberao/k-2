@@ -288,7 +288,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-size: 15px;
   font-weight: 500;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: var(--btn-radius);
+  border-radius: 999px; /* ENFORCE CAPSULE AS PER LATEST FEEDBACK */
+  height: 44px; /* MATCH PICKER HEIGHT */
   text-decoration: none;
   cursor: pointer;
 }
@@ -1198,31 +1199,35 @@ summary::-webkit-details-marker {
   object-fit: cover !important;
 }
 
-/* Quantity Picker Pill - Optimized for Full Width & Small Icons */
+/* Quantity Picker Pill - Optimized for matching primary button height */
 .qty-pill-brand {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: space-between !important;
   background: var(--brand) !important;
-  border-radius: 8px !important;
-  padding: 0.75rem 1.25rem !important; /* Matches btn-primary height */
+  border-radius: 999px !important; /* Full Capsule */
+  padding: 0 0.75rem !important;
   color: white !important;
-  min-height: 48px !important;
+  height: 44px !important; /* EXACT match to btn-primary */
+  min-height: 44px !important;
+  width: 100% !important;
+  max-width: 120px !important;
 }
 
 .qty-pill-brand button {
   background: transparent !important;
   border: none !important;
   color: white !important;
-  width: 28px !important;
-  height: 28px !important;
+  width: 32px !important;
+  height: 32px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  font-weight: bold !important;
-  font-size: 18px !important;
+  font-weight: 500 !important;
+  font-size: 20px !important;
   cursor: pointer !important;
-  border-radius: 4px;
+  border-radius: 50%;
+  transition: background 0.2s ease;
 }
 
 .qty-pill-brand button:hover {
@@ -1236,37 +1241,219 @@ summary::-webkit-details-marker {
   text-align: center;
 }
 
-/* New Pill Buttons (Image 2 Style) */
+/* New Pill Buttons (Image 2 & 4 Style) */
 .btn-remove-pill {
   background: white !important;
-  color: #ef4444 !important; /* Red-500 */
-  border: 1px solid #fee2e2 !important; /* Red-100 */
-  border-radius: 8px !important;
-  padding: 4px 12px !important;
+  color: #DC2626 !important; /* Red-600 */
+  border: 1.5px solid #FEE2E2 !important; /* Red-100 */
+  border-radius: 999px !important; /* FULL CAPSULE */
+  padding: 6px 14px !important;
   font-size: 11px !important;
-  font-weight: bold !important;
+  font-weight: 700 !important;
   text-transform: capitalize !important;
   transition: all 0.2s ease;
   cursor: pointer;
+  box-shadow: 0 1px 2px rgba(220, 38, 38, 0.05);
 }
 
 .btn-remove-pill:hover {
-  background: #fef2f2 !important;
-  border-color: #ef4444 !important;
+  background: #FEF2F2 !important;
+  border-color: #DC2626 !important;
+  transform: translateY(-1px);
 }
 
+/* Clear All Items - Image 4 Style */
 .btn-clear-pill {
   background: white !important;
   color: var(--brand) !important;
   border: 1.5px solid var(--brand) !important;
-  border-radius: 8px !important;
-  padding: 10px 40px !important;
+  border-radius: 999px !important; 
+  padding: 8px 32px !important;
   font-size: 13px !important;
-  font-weight: 800 !important;
+  font-weight: 700 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.5px !important;
   transition: all 0.2s ease;
   cursor: pointer;
+  margin-top: 2rem;
+}
+
+/* ====== REFINED CART LAYOUT (Image 4 Style) ====== */
+.cart-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cart-item-row-refined {
+  display: flex !important;
+  align-items: center !important;
+  background: white !important;
+  border-radius: 16px !important;
+  padding: 12px 16px !important;
+  gap: 16px;
+  border: 1px solid rgba(0,0,0,0.03) !important;
+  transition: transform 0.2s ease;
+}
+
+.cart-item-thumbnail {
+  width: 72px !important;
+  height: 72px !important;
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fdfbf7;
+}
+
+.cart-item-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cart-item-info-center {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.cart-item-name {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #2f2a26 !important;
+  margin: 0 !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.qty-pill-brand-mini {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  background: var(--brand) !important;
+  border-radius: 999px !important;
+  padding: 0 4px !important;
+  color: white !important;
+  height: 32px !important;
+  width: 90px !important;
+}
+
+.qty-pill-brand-mini button {
+  background: transparent !important;
+  border: none !important;
+  color: white !important;
+  width: 24px !important;
+  height: 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 16px !important;
+  cursor: pointer !important;
+}
+
+.qty-pill-brand-mini span {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  min-width: 14px;
+  text-align: center;
+}
+
+.cart-item-actions-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+  padding-left: 8px;
+}
+
+.cart-item-price-main {
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  color: #2f2a26 !important;
+}
+
+/* Color correction: Discount makes it look Green (Image 4) */
+.text-success {
+  color: #16a34a !important; /* Proper Emerald Green */
+}
+
+/* ====== REFINED CHECKOUT ITEM STRIP (Image 4 Style) ====== */
+.checkout-item-summary-strip {
+  margin-bottom: 2rem;
+  padding: 0 4px;
+}
+
+.checkout-item-summary-strip__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checkout-item-summary-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.03);
+}
+
+.checkout-item-summary-thumb {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fdfbf7;
+}
+
+.checkout-item-summary-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.checkout-item-summary-content {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.checkout-item-summary-name {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #2f2a26 !important;
+  margin: 0 !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.checkout-item-summary-meta {
+  font-size: 11px !important;
+  color: #737373 !important;
+  margin: 0 !important;
+}
+
+/* Refined Checkout Fields */
+.checkout-field input, 
+.checkout-field textarea {
+  border-radius: 12px !important;
+  border: 1.5px solid #E5E7EB !important;
+  padding: 0.875rem 1rem !important;
+  transition: all 0.2s ease;
+  font-size: 14px !important;
+}
+
+.checkout-field input:focus, 
+.checkout-field textarea:focus {
+  border-color: var(--brand) !important;
+  box-shadow: 0 0 0 4px rgba(74, 50, 25, 0.05) !important;
+  outline: none;
 }
 
 .btn-clear-pill:hover {

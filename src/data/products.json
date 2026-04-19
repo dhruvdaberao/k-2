@@ -6,7 +6,7 @@
     "description": "Handmade crochet tulip keyring crafted with love \u2014 perfect for keys, bags, and gifting.",
     "price": 90,
     "images": [
-      "/uploads/products/keychains/tulip_keychain.PNG"
+      "/uploads/products/keychains/tulip_keychain.png"
     ],
     "category": "Keyrings",
     "stock": 999,
@@ -88,7 +88,7 @@
     "description": "Handmade crochet strawberry keyring crafted with love \u2014 perfect for keys, bags, and gifting.",
     "price": 50,
     "images": [
-      "/uploads/products/keychains/strawberry_keychain.PNG"
+      "/uploads/products/keychains/strawberry_keychain.png"
     ],
     "category": "Keyrings",
     "stock": 999,
@@ -129,7 +129,7 @@
     "description": "Handmade crochet evil eye keyring crafted with love \u2014 perfect for keys, bags, and gifting.",
     "price": 85,
     "images": [
-      "/uploads/products/keychains/evileye_keychain.PNG"
+      "/uploads/products/keychains/evileye_keychain.png"
     ],
     "category": "Keyrings",
     "stock": 999,
@@ -211,9 +211,9 @@
     "description": "Handmade crochet scrunchie \u2014 lightweight, durable, and perfect for everyday use.",
     "price": 135,
     "images": [
-      "/uploads/products/Hair/Scrunchie_lb.PNG",
-      "/uploads/products/Hair/Scrunchie_pp.PNG",
-      "/uploads/products/Hair/Scrunchie_red.PNG"
+      "/uploads/products/Hair/Scrunchie_lb.png",
+      "/uploads/products/Hair/Scrunchie_pp.png",
+      "/uploads/products/Hair/Scrunchie_red.png"
     ],
     "category": "Accessories",
     "stock": 999,
@@ -235,7 +235,7 @@
         "slug": "pink",
         "price": 135,
         "images": [
-          "/uploads/products/Hair/Scrunchie_pp.PNG"
+          "/uploads/products/Hair/Scrunchie_pp.png"
         ],
         "stock": 999
       },
@@ -244,7 +244,7 @@
         "slug": "red",
         "price": 135,
         "images": [
-          "/uploads/products/Hair/Scrunchie_red.PNG"
+          "/uploads/products/Hair/Scrunchie_red.png"
         ],
         "stock": 999
       },
@@ -253,7 +253,7 @@
         "slug": "lavender",
         "price": 135,
         "images": [
-          "/uploads/products/Hair/Scrunchie_lb.PNG"
+          "/uploads/products/Hair/Scrunchie_lb.png"
         ],
         "stock": 999
       }
@@ -324,7 +324,7 @@
     "description": "Handmade crochet coin purse \u2014 lightweight, durable, and perfect for everyday use.",
     "price": 150,
     "images": [
-      "/uploads/products/bags/coin_purse.PNG"
+      "/uploads/products/bags/coin_purse.png"
     ],
     "category": "Accessories",
     "stock": 999,
@@ -366,8 +366,8 @@
     "price": 230,
     "images": [
       "/uploads/products/Flowers/sunflower.png",
-      "/uploads/products/Flowers/red_sunflower.PNG",
-      "/uploads/products/Flowers/indi_sunflower.PNG"
+      "/uploads/products/Flowers/red_sunflower.png",
+      "/uploads/products/Flowers/indi_sunflower.png"
     ],
     "category": "Flowers",
     "stock": 999,
@@ -408,7 +408,7 @@
     "description": "Everlasting handmade crochet rose \u2014 perfect for gifting and minimal home decor.",
     "price": 230,
     "images": [
-      "/uploads/products/Flowers/indi_red_rose.PNG"
+      "/uploads/products/Flowers/indi_red_rose.png"
     ],
     "category": "Flowers",
     "stock": 999,
@@ -430,7 +430,7 @@
         "slug": "pink",
         "price": 230,
         "images": [
-          "/uploads/products/Flowers/indi_pink_rose.PNG"
+          "/uploads/products/Flowers/indi_pink_rose.png"
         ],
         "stock": 999
       },
@@ -439,7 +439,7 @@
         "slug": "red",
         "price": 245,
         "images": [
-          "/uploads/products/Flowers/indi_red_rose.PNG"
+          "/uploads/products/Flowers/indi_red_rose.png"
         ],
         "stock": 999
       },
@@ -448,7 +448,7 @@
         "slug": "white",
         "price": 230,
         "images": [
-          "/uploads/products/Flowers/indi_white_rose.PNG"
+          "/uploads/products/Flowers/indi_white_rose.png"
         ],
         "stock": 999
       }
@@ -520,7 +520,7 @@
     "description": "Handmade crochet rose pot \u2014 aesthetic, evergreen decor for any space.",
     "price": 370,
     "images": [
-      "/uploads/products/flowerpot/rose_pot.PNG"
+      "/uploads/products/flowerpot/rose_pot.png"
     ],
     "category": "Pots",
     "stock": 16,
@@ -561,10 +561,10 @@
     "description": "Cute handmade crochet turtle \u2014 a small decor piece that adds character to your room.",
     "price": 180,
     "images": [
-      "/uploads/products/turtle/turtle.PNG",
-      "/uploads/products/turtle/turtle_1.PNG",
-      "/uploads/products/turtle/turtle_2.PNG",
-      "/uploads/products/turtle/turtle_3.PNG"
+      "/uploads/products/turtle/turtle.png",
+      "/uploads/products/turtle/turtle_1.png",
+      "/uploads/products/turtle/turtle_2.png",
+      "/uploads/products/turtle/turtle_3.png"
     ],
     "category": "Home Decor",
     "stock": 999,
@@ -605,7 +605,7 @@
     "description": "Handmade crochet curtain ropes to elevate your curtains with a soft, elegant handmade touch.",
     "price": 135,
     "images": [
-      "/uploads/products/Curtain_ropes.PNG"
+      "/uploads/products/Curtain_ropes.png"
     ],
     "category": "Home Decor",
     "stock": 999,
@@ -646,7 +646,7 @@
     "description": "Festive handmade crochet toran for your entrance \u2014 perfect for celebrations and daily decor.",
     "price": 700,
     "images": [
-      "/uploads/products/TraditionalToran.PNG"
+      "/uploads/products/TraditionalToran.png"
     ],
     "category": "Home Decor",
     "stock": 6,
@@ -688,7 +688,7 @@
     "description": "Premium, highly detailed handmade crochet toran \u2014 a statement festive piece.",
     "price": 2030,
     "images": [
-      "/uploads/products/FloralToran.PNG"
+      "/uploads/products/FloralToran.png"
     ],
     "category": "Home Decor",
     "stock": 2,
@@ -731,7 +731,7 @@
     "description": "Handmade crochet bread bag \u2014 sturdy, stylish, and perfect for everyday carry.",
     "price": 560,
     "images": [
-      "/uploads/products/bags/BreadBag.PNG"
+      "/uploads/products/bags/BreadBag.png"
     ],
     "category": "Bags",
     "stock": 5,
@@ -815,8 +815,8 @@
     "description": "Custom handmade crochet top. Enquire on Instagram to confirm measurements, customization, and delivery timeline.",
     "price": 700,
     "images": [
-      "/uploads/products/Apparels/red_backless.PNG",
-      "/uploads/products/Apparels/red_backless_1.PNG",
+      "/uploads/products/Apparels/red_backless.png",
+      "/uploads/products/Apparels/red_backless_1.png",
       "/uploads/products/Apparels/top_backless.jpg",
       "/uploads/products/Apparels/top_backless_1.jpg"
     ],
@@ -867,10 +867,10 @@
     "description": "Custom handmade crochet top. Enquire on Instagram to confirm measurements, customization, and delivery timeline.",
     "price": 1489,
     "images": [
-      "/uploads/products/Apparels/Brown_sleeves.PNG",
-      "/uploads/products/Apparels/Brown_sleeves_1.PNG",
-      "/uploads/products/Apparels/Brown_sleeves_2.PNG",
-      "/uploads/products/Apparels/Brown_sleeves_3.PNG"
+      "/uploads/products/Apparels/Brown_sleeves.png",
+      "/uploads/products/Apparels/Brown_sleeves_1.png",
+      "/uploads/products/Apparels/Brown_sleeves_2.png",
+      "/uploads/products/Apparels/Brown_sleeves_3.png"
     ],
     "category": "Clothing",
     "stock": 999,
@@ -919,10 +919,10 @@
     "description": "Custom handmade crochet top. Enquire on Instagram to confirm measurements, customization, and delivery timeline.",
     "price": 1150,
     "images": [
-      "/uploads/products/Apparels/black_one_sider.PNG",
-      "/uploads/products/Apparels/black_one_sider_1.PNG",
-      "/uploads/products/Apparels/black_one_sider_2.PNG",
-      "/uploads/products/Apparels/black_one_sider_3.PNG",
+      "/uploads/products/Apparels/black_one_sider.png",
+      "/uploads/products/Apparels/black_one_sider_1.png",
+      "/uploads/products/Apparels/black_one_sider_2.png",
+      "/uploads/products/Apparels/black_one_sider_3.png",
       "/uploads/products/Apparels/black_top_1.jpg",
       "/uploads/products/Apparels/black_top.jpg",
       "/uploads/products/Apparels/black_top_2.jpg"
@@ -974,7 +974,7 @@
     "description": "Handmade crochet book cover designed for the Geeta \u2014 protects your book and looks beautiful on the shelf.",
     "price": 720,
     "images": [
-      "/uploads/products/BookCuddler.PNG",
+      "/uploads/products/BookCuddler.png",
       "/uploads/hero/Book-Cuddler-1.jpg"
     ],
     "category": "Book Cover",
@@ -1016,10 +1016,10 @@
     "description": "Handmade crochet doll with quirky personality \u2014 a fun decor collectible and gifting piece.",
     "price": 650,
     "images": [
-      "/uploads/products/Antyprenuer/Antyprenuer.PNG",
-      "/uploads/products/Antyprenuer/Antyprenuer_2.PNG",
-      "/uploads/products/Antyprenuer/Antyprenuer_3.PNG",
-      "/uploads/products/Antyprenuer/Antyprenuer_4.PNG"
+      "/uploads/products/Antyprenuer/Antyprenuer.png",
+      "/uploads/products/Antyprenuer/Antyprenuer_2.png",
+      "/uploads/products/Antyprenuer/Antyprenuer_3.png",
+      "/uploads/products/Antyprenuer/Antyprenuer_4.png"
     ],
     "category": "doll",
     "stock": 10,

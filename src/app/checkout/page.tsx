@@ -36,6 +36,13 @@ const initialDetails: CheckoutCustomerDetails = {
 
 export default function CheckoutPage() {
   const { user, loading } = useAuth();
+  const router = useRouter();
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [step, setStep] = useState<CheckoutStep>("details");
+  const [details, setDetails] = useState<CheckoutCustomerDetails>(initialDetails);
+  const [paymentMethod, setPaymentMethod] = useState<CheckoutPaymentMethod>("cod");
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     setHydrated(true);
@@ -302,30 +309,29 @@ export default function CheckoutPage() {
                   </svg>
                 ) : stepItem.number}
               </div>
-              <span className={`checkout-stepper__label ${isActive ? "is-active" : ""} ${!isActive ? "checkout-stepper__label--hidden-mobile" : ""}`}>{stepItem.label}</span>
+              <span className={`checkout-stepper__label ${isActive ? "is-active" : ""} ${!isActive ? "checkout-stepper__label--hidden-mobile" : "fw-bold"}`}>{stepItem.label}</span>
               {index < 2 && <div className="checkout-stepper__line" aria-hidden="true" />}
             </div>
           );
         })}
       </div>
 
-      {/* Item summary strip */}
+      {/* Item summary strip - Properly Spaced Pattern */}
       {enrichedItems.length > 0 && (
-        <div className="checkout-item-thumbs">
-          {enrichedItems.map((item, i) => (
-            <div className="checkout-item-thumb-row" key={`thumb-${item.id}-${i}`}>
-              <img
-                src={item.image || "/placeholder.png"}
-                alt={item.name}
-                className="checkout-item-thumb"
-              />
-              <div className="checkout-item-thumb-info">
-                <p className="checkout-item-thumb-name">{item.name.split(" - ")[0]}</p>
-                <p className="checkout-item-thumb-qty">Qty {item.quantity}{item.name.includes(" - ") ? ` · ${item.name.split(" - ")[1]}` : ""}</p>
+        <div className="checkout-item-summary-strip">
+          <div className="checkout-item-summary-strip__inner">
+            {enrichedItems.map((item, i) => (
+              <div className="checkout-item-summary-row" key={`thumb-${item.id}-${i}`}>
+                <div className="checkout-item-summary-thumb">
+                  <img src={item.image || "/placeholder.png"} alt={item.name} />
+                </div>
+                <div className="checkout-item-summary-content">
+                  <p className="checkout-item-summary-name">{item.name.split(" - ")[0]}</p>
+                  <p className="checkout-item-summary-meta">Qty {item.quantity} · ₹{item.price * item.quantity}</p>
+                </div>
               </div>
-              <span className="checkout-item-thumb-price">₹{item.price * item.quantity}</span>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
 
@@ -435,10 +441,10 @@ export default function CheckoutPage() {
 
             <div className="checkout-actions checkout-actions--between">
               <button type="button" className="btn-secondary checkout-button checkout-button--ghost" onClick={() => setStep("details")}>
-                Back
+                &larr; Back
               </button>
               <button type="button" className="btn-primary checkout-button" onClick={handlePaymentNext}>
-                Next {"\u2192"}
+                Next Step &rarr;
               </button>
             </div>
           </section>
@@ -520,10 +526,10 @@ export default function CheckoutPage() {
 
             <div className="checkout-actions checkout-actions--between">
               <button type="button" className="btn-secondary checkout-button checkout-button--ghost" onClick={() => setStep("payment")}>
-                Back
+                &larr; Back
               </button>
               <button type="button" className="btn-primary checkout-button" onClick={handlePlaceOrder} disabled={isPlacingOrder}>
-                {isPlacingOrder ? "Placing Order..." : "Place Order"}
+                {isPlacingOrder ? "Processing..." : "Confirm & Place Order"}
               </button>
             </div>
             <p className="checkout-note" style={{ marginTop: "1rem", fontSize: "0.85rem", color: "#666", lineHeight: "1.4" }}>

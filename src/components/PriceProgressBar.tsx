@@ -66,19 +66,19 @@ export default function PriceProgressBar({ subtotal }: PriceProgressBarProps) {
     };
 
     return (
-        <div className="shipping-card mb-6">
+        <div className="mb-8">
             {/* Message */}
-            <p className={`text-sm font-semibold ${messageColor} mb-3 text-center`}>
+            <p className={`text-sm font-semibold ${messageColor} mb-4 text-center`}>
                 {message}
             </p>
 
             {/* Progress Bar Container */}
             <div className="relative mb-4">
                 {/* Background Track */}
-                <div className="h-3 bg-white/60 rounded-full overflow-hidden shadow-inner">
+                <div className="h-3 bg-stone-200/50 rounded-full overflow-hidden shadow-inner">
                     {/* Progress Fill */}
                     <div
-                        className="h-full bg-gradient-to-r from-[#f59e0b] via-[#d97706] to-[#b45309] transition-all duration-500 ease-out shadow-sm"
+                        className="h-full bg-gradient-to-r from-[#16a34a] to-[#15803d] transition-all duration-500 ease-out shadow-sm"
                         style={{ width: `${progress}%` }}
                     />
                 </div>

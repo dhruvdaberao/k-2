@@ -81,46 +81,29 @@ export default function CartPage() {
           <div className="col-12 col-lg-7">
             <PriceProgressBar subtotal={subtotal} />
 
-            {/* Cart Items List - Image 2 Style */}
-            <div className="cart-list-container">
+            {/* Cart Items List - Image 4 Pattern */}
+            <div className="cart-list-wrapper">
               {cartItems.map((it) => (
-                <div key={it.id} className="cart-item-row align-items-center">
-                  {/* Thumbnail Row */}
-                  <div className="cart-item-img-container">
-                    <img src={it.image} alt={it.name} className="cart-item-img" />
+                <div key={it.id} className="cart-item-row-refined shadow-sm">
+                  {/* Left: Thumbnail */}
+                  <div className="cart-item-thumbnail">
+                    <img src={it.image} alt={it.name} />
                   </div>
 
-                  {/* Core Info Row */}
-                  <div className="flex-grow-1 d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
-                    <div className="flex-grow-1">
-                      <h3 className="h6 fw-bold text-[#2f2a26] mb-2">
-                        {it.name.split(" - ")[0]}
-                      </h3>
-                      
-                      <div className="qty-pill-brand">
-                        <button 
-                          onClick={async () => it.quantity <= 1 ? (confirm("Remove item?") && await removeFromCart(it.id)) : await updateQuantity(it.id, it.quantity - 1)}
-                        >
-                          &minus;
-                        </button>
-                        <span>{it.quantity}</span>
-                        <button 
-                          onClick={async () => await updateQuantity(it.id, it.quantity + 1)}
-                        >
-                          +
-                        </button>
-                      </div>
+                  {/* Center: Details & Picker */}
+                  <div className="cart-item-info-center">
+                    <h3 className="cart-item-name">{it.name.split(" - ")[0]}</h3>
+                    <div className="qty-pill-brand-mini">
+                      <button onClick={async () => it.quantity <= 1 ? (confirm("Remove item?") && await removeFromCart(it.id)) : await updateQuantity(it.id, it.quantity - 1)}>&minus;</button>
+                      <span>{it.quantity}</span>
+                      <button onClick={async () => await updateQuantity(it.id, it.quantity + 1)}>+</button>
                     </div>
+                  </div>
 
-                    <div className="d-flex align-items-center gap-3 ms-auto" style={{ minWidth: "140px", justifyContent: "flex-end" }}>
-                      <div className="fw-bold text-[#2f2a26] fs-5">₹{it.price}</div>
-                      <button 
-                        onClick={async () => confirm("Remove item?") && await removeFromCart(it.id)}
-                        className="btn-remove-pill"
-                      >
-                        Remove
-                      </button>
-                    </div>
+                  {/* Right: Price & Remove */}
+                  <div className="cart-item-actions-right">
+                    <div className="cart-item-price-main font-serif">₹{it.price * it.quantity}</div>
+                    <button onClick={async () => confirm("Remove item?") && await removeFromCart(it.id)} className="btn-remove-pill">Remove</button>
                   </div>
                 </div>
               ))}
@@ -138,8 +121,10 @@ export default function CartPage() {
           </div>
 
           {/* Sidebar (Right) */}
+          {/* Sidebar (Right) - Image 4 Style (No redundant card bg) */}
           <div className="col-12 col-lg-5">
-            <div className="bg-white rounded-3 border border-[#eadfcd] p-4 shadow-sm">
+            <div className="p-0">
+              <h3 className="h5 fw-bold text-[#2f2a26] mb-4 pb-3 border-bottom border-light">Order Summary</h3>
               <h3 className="h5 fw-bold text-[#2f2a26] mb-4 pb-3 border-bottom border-light">Order Summary</h3>
               
               <div className="vstack gap-3 small text-secondary">
@@ -175,11 +160,11 @@ export default function CartPage() {
                 </div>
               </div>
 
-              <NextLink href="/checkout" className="btn btn-primary w-100 py-3 mt-4 fw-bold radius-8 shadow-sm">
+              <NextLink href="/checkout" className="btn-primary w-100 py-3 mt-4 fw-bold shadow-sm">
                 Checkout
               </NextLink>
               
-              <div className="mt-4 d-flex align-items-center justify-content-center gap-2 py-2 bg-light rounded-3 small fw-bold text-secondary text-uppercase tracking-wider" style={{ fontSize: "10px" }}>
+              <div className="mt-4 d-flex align-items-center justify-content-center gap-2 py-2 small fw-bold text-secondary text-uppercase tracking-wider" style={{ fontSize: "10px" }}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-success"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 Cash on Delivery Available
               </div>
