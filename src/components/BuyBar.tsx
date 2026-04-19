@@ -27,7 +27,7 @@ export default function BuyBar({
   }, [slug]);
 
   async function onAddToCart() {
-    await handleAddToCart({ slug, title, price, image: image || "/placeholder.png" });
+    await handleAddToCart({ id: slug, slug, title, price, image: image || "/placeholder.png" });
     trackEvent({ action: "add_to_cart", category: "Ecommerce", label: title, value: price });
   }
 
@@ -41,7 +41,7 @@ export default function BuyBar({
   }
 
   async function onBuyNow() {
-    await handleAddToCart({ slug, title, price, image: image || "/placeholder.png" });
+    await handleAddToCart({ id: slug, slug, title, price, image: image || "/placeholder.png" });
     trackEvent({ action: "begin_checkout", category: "Ecommerce", label: title, value: price });
     setTimeout(() => router.push("/cart"), 100);
   }

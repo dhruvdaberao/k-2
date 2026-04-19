@@ -1,37 +1,27 @@
 // app/cart/page.tsx
 "use client";
 
-import { loadCart, updateQty, removeFromCart, clearCart, CartItem } from "@/lib/bags";
+import { clearCart } from "@/lib/bags";
+import { useCart } from "@/hooks/useCart";
 import { useEffect, useState } from "react";
 import NextLink from "next/link";
 import products from "@/data/products.json"; 
-import { calculateShipping } from "@/lib/shipping";
 import { showToast } from "@/components/Toast";
 import PriceProgressBar from "@/components/PriceProgressBar";
 import type { Product } from "@/types";
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const { cartItems, loadCart, removeFromCart, updateQuantity } = useCart();
   const [loading, setLoading] = useState(true);
 
-  const refresh = async () => {
-    try {
-      const data = await loadCart();
-      console.log("[CartPage] Refreshing items in UI:", data);
-      setCartItems(data);
-    } catch (err) {
-      console.error("[CartPage] Load failed:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    refresh();
-    const h = () => refresh();
-    window.addEventListener("bag:changed", h);
-    return () => window.removeEventListener("bag:changed", h);
-  }, []);
+    const init = async () => {
+      await loadCart();
+      setLoading(false);
+    };
+
+    init();
+  }, [loadCart]);
 
   const subtotal = cartItems.reduce((s, it) => s + it.price * it.quantity, 0);
   const itemCount = cartItems.reduce((n, it) => n + it.quantity, 0);
@@ -129,7 +119,7 @@ export default function CartPage() {
                            {/* Quantity Pill - Image 3/4 style */}
                            <div className="flex items-center bg-[#2f2a26] rounded-full p-1 shadow-sm">
                               <button 
-                                onClick={async () => it.quantity <= 1 ? (confirm("Remove item?") && await removeFromCart(it.id)) : await updateQty(it.id, it.quantity - 1)}
+                                onClick={async () => it.quantity <= 1 ? (confirm("Remove item?") && await removeFromCart(it.id)) : await updateQuantity(it.id, it.quantity - 1)}
                                 className="w-8 h-8 flex items-center justify-center text-white hover:bg-stone-700 rounded-full font-bold transition-all text-xl"
                                 aria-label="Decrease quantity"
                               >
@@ -137,7 +127,7 @@ export default function CartPage() {
                               </button>
                               <span className="w-8 text-center text-white font-bold text-base select-none">{it.quantity}</span>
                               <button 
-                                onClick={async () => await updateQty(it.id, it.quantity + 1)}
+                                onClick={async () => await updateQuantity(it.id, it.quantity + 1)}
                                 className="w-8 h-8 flex items-center justify-center text-white hover:bg-stone-700 rounded-full font-bold transition-all text-xl"
                                 aria-label="Increase quantity"
                               >

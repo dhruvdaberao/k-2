@@ -14,7 +14,7 @@ export function useAddToCart() {
   const router = useRouter();
 
   const addToCart = useCallback(
-    async (product: { slug: string; title: string; price: number; images?: string[]; variants?: any[] }, options?: { showToast?: boolean; redirect?: boolean }) => {
+    async (product: { id?: string; slug: string; title: string; price: number; images?: string[]; variants?: any[] }, options?: { showToast?: boolean; redirect?: boolean }) => {
       // Prevent double taps
       if (state === "adding" || state === "added") return;
 

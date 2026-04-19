@@ -9,6 +9,7 @@ import AnalyticsTracker from "@/components/AnalyticsTracker";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import { GoogleTagManager } from '@next/third-parties/google';
 import { AuthProvider } from "@/hooks/useAuth";
+import { CartProvider } from "@/hooks/useCart";
 
 export const metadata = {
   metadataBase: new URL("https://keshvicrafts.in"),
@@ -62,14 +63,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AnalyticsTracker />
         <ServiceWorkerRegister />
         <AuthProvider>
-          <BootstrapNavbar />
+          <CartProvider>
+            <BootstrapNavbar />
 
-          {/* Remove .container here so hero can be full width */}
-          {children}
+            {/* Remove .container here so hero can be full width */}
+            {children}
 
-          <Footer />
+            <Footer />
 
-          <Toast />
+            <Toast />
+          </CartProvider>
         </AuthProvider>
 
         {/* Bootstrap JS */}

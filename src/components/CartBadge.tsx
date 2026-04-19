@@ -1,29 +1,12 @@
-// components/CartBadge.tsx
 "use client";
 
-import { asyncCartCount } from "@/lib/bags";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
+import { useCart } from "@/hooks/useCart";
 
 export default function CartBadge({ size = "md" }: { size?: "sm" | "md" }) {
-  const [n, setN] = useState(0);
+  const { cartItems } = useCart();
 
-  const refresh = async () => {
-    try {
-      const c = await asyncCartCount();
-      setN(c);
-    } catch { }
-  };
-
-  useEffect(() => {
-    refresh();
-    const onChange = () => refresh();
-    window.addEventListener("bag:changed", onChange);
-    window.addEventListener("storage", onChange);
-    return () => {
-      window.removeEventListener("bag:changed", onChange);
-      window.removeEventListener("storage", onChange);
-    };
-  }, []);
+  const n = useMemo(() => cartItems.reduce((sum, item) => sum + item.quantity, 0), [cartItems]);
 
   if (!n) return null;
 

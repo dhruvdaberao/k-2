@@ -20,25 +20,25 @@ export default function ProductCardV2({ p }: { p: Product }) {
     useEffect(() => {
         const updateCartQty = () => {
             const cart = getCart();
-            const item = cart.find((x: CartItem) => x.id === p.slug);
+            const item = cart.find((x: CartItem) => x.id === (p.id || p.slug));
             setQtyInCart(item ? item.quantity : 0);
         };
         updateCartQty();
         window.addEventListener("bag:changed", updateCartQty);
         return () => window.removeEventListener("bag:changed", updateCartQty);
-    }, [p.slug]);
+    }, [(p.id || p.slug)]);
 
     // Initialize "hearted" from storage on mount or slug change
     useEffect(() => {
         try {
             const slugs = JSON.parse(localStorage.getItem("wishlist:v1") || "[]") as string[];
-            setHearted(slugs.includes(p.slug));
+            setHearted(slugs.includes((p.id || p.slug)));
         } catch {
             // ignore
         }
-    }, [p.slug]);
+    }, [(p.id || p.slug)]);
 
-    const encoded = encodeURIComponent(p.slug);
+    const encoded = encodeURIComponent((p.id || p.slug));
     const inStock = typeof p.stock === "number" ? p.stock > 0 : true;
     const isCustomOrder = p.type === "custom-order";
 
@@ -76,7 +76,7 @@ export default function ProductCardV2({ p }: { p: Product }) {
                 category: "Card",
                 label: p.title,
                 location: "card",
-                slug: p.slug
+                slug: (p.id || p.slug)
             });
         } else {
             // Add to Cart action
@@ -190,9 +190,9 @@ export default function ProductCardV2({ p }: { p: Product }) {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     if (qtyInCart > 1) {
-                                        updateQty(p.slug, qtyInCart - 1);
+                                        updateQty((p.id || p.slug), qtyInCart - 1);
                                     } else {
-                                        removeFromCart(p.slug);
+                                        removeFromCart((p.id || p.slug));
                                     }
                                 }}
                             >
@@ -208,7 +208,7 @@ export default function ProductCardV2({ p }: { p: Product }) {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     if (typeof p.stock !== 'number' || qtyInCart < p.stock) {
-                                        updateQty(p.slug, qtyInCart + 1);
+                                        updateQty((p.id || p.slug), qtyInCart + 1);
                                     }
                                 }}
                             >
