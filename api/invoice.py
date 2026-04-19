@@ -135,10 +135,15 @@ def generate_invoice():
         logo_img = _get_image(logo_url, width=35 * mm) # Balanced size
     
     if not logo_img:
-        logo_paths = ["public/uploads/hero/logo.png", "uploads/hero/logo.png"]
+        base_path = Path(__file__).parent.parent
+        logo_paths = [
+            base_path / "public" / "uploads" / "hero" / "logo.png",
+            base_path / "uploads" / "hero" / "logo.png"
+        ]
         for p in logo_paths:
-            logo_img = _get_image(p, width=35 * mm)
-            if logo_img: break
+            if p.exists():
+                logo_img = _get_image(str(p), width=35 * mm)
+                if logo_img: break
 
     # Header Table: [ Heading | Logo ]
     header_data = [[
