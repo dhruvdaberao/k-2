@@ -169,7 +169,11 @@ export default function ProfilePage() {
 
   const handleLogout = async () => {
     if (window.confirm("Do you want to logout?")) {
-      await supabase.auth.signOut();
+      try {
+        await supabase.auth.signOut();
+      } catch (err) {
+        console.warn("Supabase sign out lock error (ignoring):", err);
+      }
       router.push("/login");
       showToast("Logged out successfully.");
     }
