@@ -48,7 +48,7 @@ function toStableId(product: any): string {
   return String(product?.id || product?.slug || "");
 }
 
-function snap(product: any): ItemSnapshot {
+export function snap(product: any): ItemSnapshot {
   const id = toStableId(product);
   return {
     id,
