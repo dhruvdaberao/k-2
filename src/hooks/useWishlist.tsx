@@ -12,7 +12,6 @@ import {
 import { useAuth } from "./useAuth";
 
 type WishlistContextType = {
-  wishlistItems: ItemSnapshot[];
   wishlist: string[];
   loading: boolean;
   loadWishlist: () => Promise<void>;
