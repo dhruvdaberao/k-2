@@ -9,7 +9,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { useWishlist } from "@/hooks/useWishlist";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
-import HeartIcon from "@/components/HeartIcon";
 import "./ProductCardV2.css";
 
 

@@ -10,7 +10,6 @@ import { useWishlist } from "@/hooks/useWishlist";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
-import HeartIcon from "@/components/HeartIcon";
 
 export default function ProductCard({ p }: { p: Product }) {
   const { user } = useAuth();
