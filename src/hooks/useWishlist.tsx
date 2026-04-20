@@ -1,4 +1,5 @@
 "use client";
+// Force rebuild for UI consistency refinement
 
 import { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
 import { supabase } from "@/lib/supabaseClient";

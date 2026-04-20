@@ -76,7 +76,7 @@
   display: flex;
   align-items: center;
   background: #2f2a26; 
-  border-radius: 9999px;
+  border-radius: 12px;
   height: 44px; 
   overflow: hidden;
   width: 100%; 
@@ -165,7 +165,7 @@
 
   .inline-counter-container.compact {
     height: 32px !important;
-    border-radius: 6px !important;
+    border-radius: 8px !important;
   }
 
   .inline-counter-container.compact .inline-counter-btn {

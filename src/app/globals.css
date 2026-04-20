@@ -411,7 +411,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   padding: 0 6px;
   align-items: center;
   justify-content: center;
-  border-radius: 999px;
+  border-radius: 6px; /* Rectangular-curved count badge */
   background: #141414;
   color: #fff;
   font-size: 11px;
@@ -3174,4 +3174,36 @@ body .btn-outline {
   body .inline-counter-container {
     border-radius: 6px !important; /* Smaller radius for smaller height ensures non-pill look */
   }
+}
+
+/* Force Rectangular-Curved Quantity Picker Globally */
+.qty-pill-brand {
+  display: flex !important;
+  align-items: center !important;
+  background: #2f2a26 !important;
+  border-radius: 12px !important;
+  height: 48px !important;
+  overflow: hidden !important;
+  color: white !important;
+}
+
+.qty-pill-brand button {
+  flex: 0 0 48px !important;
+  background: transparent !important;
+  border: none !important;
+  color: white !important;
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+}
+
+.qty-pill-brand span {
+  flex: 1 !important;
+  text-align: center !important;
+  font-weight: 700 !important;
+}
+
+/* Ensure Red Heart Outline Consistency */
+svg[stroke="red"] {
+  stroke: red !important;
 }
