@@ -23,6 +23,23 @@
   --spacing-xl: 24px;
 }
 
+/* Custom Empty Cart Card Styling */
+.empty-cart-card {
+  background: var(--surface);
+  border: 1px solid #f0e6d6;
+  border-radius: 40px;
+  padding: 3rem 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  max-width: 480px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.empty-cart-card svg {
+  color: #8a7b6a;
+  margin-bottom: 1.5rem;
+}
+
 @layer base {
   * {
     box-sizing: border-box
