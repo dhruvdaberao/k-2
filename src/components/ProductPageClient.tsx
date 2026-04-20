@@ -10,7 +10,8 @@ import type { Product, ProductVariant } from "@/types";
 import { trackEvent } from "@/lib/analytics";
 import { useEffect } from "react";
 import SeoContentSection from "@/components/SeoContentSection";
-import WishlistHeart from "@/components/WishlistHeart";
+import HeartIcon from "@/components/HeartIcon";
+import { useWishlist } from "@/hooks/useWishlist";
 
 export default function ProductPageClient({
   product,
@@ -19,6 +20,9 @@ export default function ProductPageClient({
   product: Product;
   relatedProducts: Product[];
 }) {
+  const { toggleWishlist, isWishlisted } = useWishlist();
+  const isHearted = isWishlisted(product.id || product.slug);
+
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
     product.variants && product.variants.length > 0 ? product.variants[0] : null
   );
@@ -73,18 +77,22 @@ export default function ProductPageClient({
             heartButton={
               <div className="product-page-actions" style={{ 
                 position: "absolute", 
-                top: "12px", 
-                right: "12px", 
+                top: "16px", 
+                right: "16px", 
                 display: "flex", 
                 flexDirection: "row", 
-                gap: "8px", 
+                gap: "12px", 
                 zIndex: 40 
               }}>
-                <WishlistHeart product={product} size={28} className="pdp-heart-icon" />
+                <HeartIcon 
+                  filled={isHearted} 
+                  onClick={() => toggleWishlist(product)} 
+                  className="cursor-pointer"
+                />
                 
                 <button
                   onClick={onShareClick}
-                  className="product-page-share flex items-center justify-center transition-all duration-200"
+                  className="product-page-share flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
                   aria-label="Share product"
                   title="Share product"
                   type="button"
@@ -94,8 +102,8 @@ export default function ProductPageClient({
                     padding: 0
                   }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="#4A3219" stroke="#4A3219" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <circle cx={18} cy={5} r={3} fill="#4A3219"/><circle cx={6} cy={12} r={3} fill="#4A3219"/><circle cx={18} cy={19} r={3} fill="#4A3219"/><line x1={8.59} y1={13.51} x2={15.42} y2={17.49}/><line x1={15.41} y1={6.51} x2={8.59} y2={10.49}/>
+                  <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx={18} cy={5} r={3}/><circle cx={6} cy={12} r={3}/><circle cx={18} cy={19} r={3}/><line x1={8.59} y1={13.51} x2={15.42} y2={17.49}/><line x1={15.41} y1={6.51} x2={8.59} y2={10.49}/>
                   </svg>
                 </button>
               </div>

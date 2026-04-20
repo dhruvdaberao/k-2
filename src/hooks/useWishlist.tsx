@@ -25,67 +25,129 @@ const WishlistContext = createContext<WishlistContextType | null>(null);
 
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
-  const [wishlistItems, setWishlistItems] = useState<ItemSnapshot[]>([]);
+  const [wishlist, setWishlist] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isToggling, setIsToggling] = useState(false);
 
   const loadWishlist = useCallback(async () => {
     try {
-      const items = await loadWishlistLib(user);
-      setWishlistItems(items);
+      const { data: sessionData } = await supabase.auth.getSession();
+      const currentUser = sessionData?.session?.user;
+
+      if (!currentUser) {
+        const local = JSON.parse(localStorage.getItem("wishlist") || "[]");
+        setWishlist(Array.isArray(local) ? local : []);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("wishlist")
+        .select("product_id")
+        .eq("user_id", currentUser.id);
+
+      if (error) throw error;
+      setWishlist(data.map(item => item.product_id));
     } catch (err) {
-      console.error("WISHLIST HOOK ERROR (Load):", err);
+      console.error("WISHLIST LOAD ERROR:", err);
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, []);
 
   const toggleWishlist = useCallback(async (product: any) => {
-    const item = snap(product);
-    const wasWishlisted = wishlistItems.some(i => i.id === item.id);
+    const productId = product.id || product.slug;
+    const { data: sessionData } = await supabase.auth.getSession();
+    const currentUser = sessionData?.session?.user;
 
-    // OPTIMISTIC UPDATE: Instant UI feedback
-    setWishlistItems(prev => {
-      if (wasWishlisted) {
-        return prev.filter(i => i.id !== item.id);
+    if (!currentUser) {
+      // GUEST MODE
+      let local = JSON.parse(localStorage.getItem("wishlist") || "[]");
+      if (!Array.isArray(local)) local = [];
+
+      if (local.includes(productId)) {
+        local = local.filter((id: string) => id !== productId);
       } else {
-        return [...prev, item];
+        local.push(productId);
       }
-    });
+
+      localStorage.setItem("wishlist", JSON.stringify(local));
+      setWishlist(local);
+      return;
+    }
+
+    // LOGGED IN FLOW
+    // Optimistic Update
+    const wasWishlisted = wishlist.includes(productId);
+    setWishlist(prev => wasWishlisted ? prev.filter(id => id !== productId) : [...prev, productId]);
 
     try {
-      await toggleWishlistLib(product, user);
-      // loadWishlist will eventually sync with ground truth
+      const { data: existing, error: fetchError } = await supabase
+        .from("wishlist")
+        .select("*")
+        .eq("user_id", currentUser.id)
+        .eq("product_id", productId)
+        .maybeSingle();
+
+      if (fetchError) throw fetchError;
+
+      if (existing) {
+        await supabase
+          .from("wishlist")
+          .delete()
+          .eq("user_id", currentUser.id)
+          .eq("product_id", productId);
+      } else {
+        await supabase.from("wishlist").insert([
+          {
+            user_id: currentUser.id,
+            product_id: productId,
+            name: product.name || product.title,
+            price: product.price,
+            image: product.image || product.images?.[0]
+          }
+        ]);
+      }
       await loadWishlist();
     } catch (err) {
-      console.error("WISHLIST HOOK ERROR (Toggle):", err);
-      // Revert or re-sync if failed
-      await loadWishlist();
+      console.error("WISHLIST TOGGLE ERROR:", err);
+      await loadWishlist(); // Revert on error
     }
-  }, [wishlistItems, loadWishlist, user]);
+  }, [wishlist, loadWishlist]);
 
   const isWishlisted = useCallback((productId: string) => {
-    return wishlistItems.some(item => item.id === productId);
-  }, [wishlistItems]);
+    return wishlist.includes(productId);
+  }, [wishlist]);
 
-  const itemCount = useMemo(() => wishlistItems.length, [wishlistItems]);
+  const itemCount = useMemo(() => wishlist.length, [wishlist]);
 
   useEffect(() => {
     loadWishlist();
 
-    const onBagChange = () => {
-      loadWishlist();
-    };
-
+    const onBagChange = () => loadWishlist();
     window.addEventListener("bag:changed", onBagChange);
     window.addEventListener("storage", onBagChange);
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("[Wishlist] Auth event:", event);
       if (event === "SIGNED_IN" && session?.user?.id) {
-        await syncLocalWishlistToDB(session.user.id);
+        // Step 6: Sync guest -> DB
+        const currentUser = session.user;
+        const local = JSON.parse(localStorage.getItem("wishlist") || "[]");
+        
+        if (Array.isArray(local) && local.length > 0) {
+          for (const id of local) {
+            // Find product details from products data for accurate storage if needed, 
+            // but the user's upsert only showed product_id. 
+            // I'll use upsert as requested.
+            await supabase.from("wishlist").upsert({
+              user_id: currentUser.id,
+              product_id: id
+            });
+          }
+          localStorage.removeItem("wishlist");
+        }
         await loadWishlist();
       } else if (event === "SIGNED_OUT") {
-        setWishlistItems([]);
+        setWishlist([]);
         await loadWishlist();
       }
     });
@@ -98,14 +160,15 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   }, [loadWishlist]);
 
   const value = useMemo(() => ({
-    wishlistItems,
+    wishlistItems: [], // Backward compatibility placeholder
+    wishlist,
     loading,
     loadWishlist,
     toggleWishlist,
     isWishlisted,
     itemCount,
-    isToggling
-  }), [wishlistItems, loading, loadWishlist, toggleWishlist, isWishlisted, itemCount, isToggling]);
+    isToggling: false
+  }), [wishlist, loading, loadWishlist, toggleWishlist, isWishlisted, itemCount]);
 
   return <WishlistContext.Provider value={value}>{children}</WishlistContext.Provider>;
 }

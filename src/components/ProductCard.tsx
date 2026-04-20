@@ -10,12 +10,15 @@ import { useWishlist } from "@/hooks/useWishlist";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
-import WishlistHeart from "@/components/WishlistHeart";
+import HeartIcon from "@/components/HeartIcon";
 
 export default function ProductCard({ p }: { p: Product }) {
   const { user } = useAuth();
   const { cartItems, addToCart, updateQuantity, removeFromCart } = useCart();
+  const { toggleWishlist, isWishlisted } = useWishlist();
   const router = useRouter();
+
+  const isHearted = isWishlisted(p.id || p.slug);
 
   const encoded = encodeURIComponent(p.slug);
   const inStock = typeof p.stock === "number" ? p.stock > 0 : true;
@@ -71,7 +74,7 @@ export default function ProductCard({ p }: { p: Product }) {
   const overflowCount = badges.length - 2;
 
   return (
-    <article className="plp-card-mobile h-full flex flex-col relative group bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+    <article className="relative plp-card-mobile h-full flex flex-col group bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-sm hover:shadow-md transition-shadow duration-300">
 
       {/* MEDIA WRAPPER */}
       <div className="relative w-full bg-stone-100 overflow-hidden">
@@ -96,8 +99,11 @@ export default function ProductCard({ p }: { p: Product }) {
         </Link>
 
         {/* Wishlist Button */}
-        <div className="absolute top-3 right-3 z-20">
-          <WishlistHeart product={p} size={22} className="card-heart-icon" />
+        <div className="absolute top-3 right-3 cursor-pointer z-10">
+          <HeartIcon 
+            filled={isHearted} 
+            onClick={() => toggleWishlist(p)} 
+          />
         </div>
 
         {/* Badges - Top Left */}

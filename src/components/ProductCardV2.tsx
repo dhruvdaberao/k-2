@@ -8,13 +8,14 @@ import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
-import WishlistHeart from "@/components/WishlistHeart";
+import HeartIcon from "@/components/HeartIcon";
 import "./ProductCardV2.css";
 
 
 export default function ProductCardV2({ p }: { p: Product }) {
     const { user } = useAuth();
     const { cartItems, addToCart, updateQuantity, removeFromCart } = useCart();
+    const { toggleWishlist, isWishlisted } = useWishlist();
     const router = useRouter();
 
     const cartItem = cartItems.find((it) => it.id === (p.id || p.slug));
@@ -23,6 +24,8 @@ export default function ProductCardV2({ p }: { p: Product }) {
     const encoded = encodeURIComponent((p.id || p.slug));
     const inStock = typeof p.stock === "number" ? p.stock > 0 : true;
     const isCustomOrder = p.type === "custom-order";
+
+    const isHearted = isWishlisted(p.id || p.slug);
 
     // Resolve badges: prioritize array, fallback to single string, or compute from logic
     const badges = p.badges && p.badges.length > 0 ? p.badges : (p.badge ? [p.badge] : []);
@@ -62,7 +65,7 @@ export default function ProductCardV2({ p }: { p: Product }) {
 
     const handleCardClick = (e: MouseEvent) => {
         // Don't navigate if clicking on buttons
-        if ((e.target as HTMLElement).closest("button")) {
+        if ((e.target as HTMLElement).closest("button") || (e.target as HTMLElement).closest("svg")) {
             e.preventDefault();
             return;
         }
@@ -77,7 +80,7 @@ export default function ProductCardV2({ p }: { p: Product }) {
     const overflowCount = badges.length - 2;
 
     return (
-        <article className="plp-card-mobile plp-card h-full flex flex-col relative group bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+        <article className="relative plp-card-mobile plp-card h-full flex flex-col group bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-sm hover:shadow-md transition-shadow duration-300">
 
             {/* MEDIA WRAPPER - Relative container for Image + Badges + Heart */}
             <div className="relative w-full bg-stone-100 overflow-hidden">
@@ -103,8 +106,11 @@ export default function ProductCardV2({ p }: { p: Product }) {
                 </Link>
 
                 {/* Wishlist Button */}
-                <div className="absolute top-2 right-2 z-20">
-                    <WishlistHeart product={p} size={22} className="card-heart-icon" />
+                <div className="absolute top-3 right-3 cursor-pointer z-10">
+                    <HeartIcon 
+                        filled={isHearted} 
+                        onClick={() => toggleWishlist(p)} 
+                    />
                 </div>
 
 
