@@ -285,7 +285,7 @@ export async function loadWishlist(passedUser?: any): Promise<ItemSnapshot[]> {
 
   const { data, error } = await supabase
     .from("wishlist")
-    .select("product_id, name, price, image")
+    .select("product_id")
     .eq("user_id", user.id);
 
   if (error) {
@@ -295,9 +295,9 @@ export async function loadWishlist(passedUser?: any): Promise<ItemSnapshot[]> {
 
   const items: ItemSnapshot[] = (data || []).map(row => ({
     id: row.product_id,
-    name: row.name,
-    price: Number(row.price || 0),
-    image: row.image || "/placeholder.png"
+    name: "Product", // Placeholder since we only store IDs for speed/reliability
+    price: 0,
+    image: "/placeholder.png"
   }));
 
   // Sync local mirror
@@ -329,7 +329,7 @@ export async function toggleWishlist(product: any, passedUser?: any): Promise<vo
   // DB MODE
   const { data: existing, error: fetchError } = await supabase
     .from("wishlist")
-    .select("id")
+    .select("product_id")
     .eq("user_id", user.id)
     .eq("product_id", item.id)
     .maybeSingle();
@@ -343,15 +343,13 @@ export async function toggleWishlist(product: any, passedUser?: any): Promise<vo
     const { error: deleteError } = await supabase
       .from("wishlist")
       .delete()
-      .eq("id", existing.id);
+      .eq("user_id", user.id)
+      .eq("product_id", item.id);
     if (deleteError) console.error("[Wishlist] Delete Error:", deleteError.message);
   } else {
     const { error: insertError } = await supabase.from("wishlist").insert({
       user_id: user.id,
-      product_id: item.id,
-      name: item.name,
-      price: item.price,
-      image: item.image
+      product_id: item.id
     });
     if (insertError) console.error("[Wishlist] Insert Error:", insertError.message);
   }
@@ -385,10 +383,7 @@ export async function syncLocalWishlistToDB(userId: string): Promise<void> {
       if (!existing) {
         const { error: insertError } = await supabase.from("wishlist").insert({
           user_id: userId,
-          product_id: item.id,
-          name: item.name,
-          price: item.price,
-          image: item.image
+          product_id: item.id
         });
         
         if (insertError) {
