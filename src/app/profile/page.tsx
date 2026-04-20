@@ -250,26 +250,7 @@ export default function ProfilePage() {
   };
 
   // Step 3-4: Loading Guards
-  if (loading) {
-    return (
-      <main className="flex h-screen items-center justify-center">
-        <p className="text-stone-500 font-medium italic">Loading profile security...</p>
-      </main>
-    );
-  }
-
-  if (!user) return null; // Let the redirect effect handle it
-
-  if (profile === undefined && !details.fullName && !details.phoneNumber) {
-    return (
-      <main className="flex h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-[var(--brand)] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-stone-500">Loading your profile data...</p>
-        </div>
-      </main>
-    );
-  }
+  if (!user && !loading) return null; // Let the redirect effect handle it
 
   const profileModalHTML = modalContent && (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[9999]" style={{ backdropFilter: 'blur(4px)' }}>
@@ -315,7 +296,7 @@ export default function ProfilePage() {
           color: white;
         }
       `}} />
-      <div className="checkout-header flex flex-col items-center justify-center gap-4" style={{ marginTop: '100px', paddingTop: '40px' }}>
+      <div className="checkout-header flex flex-col items-center justify-center gap-4" style={{ marginTop: '40px' }}>
         <div className="flex items-center gap-6">
           <h1 className="checkout-title m-0 text-3xl md:text-5xl" style={{ lineHeight: '1' }}>Your Profile</h1>
           <button 
@@ -328,7 +309,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      <section className="checkout-card mx-auto max-w-xl w-full">
+      <section className="checkout-card mx-3 md:mx-auto max-w-xl w-auto md:w-full">
         <div className="flex justify-between items-center mb-6 border-b pb-4 px-2">
           <h2 className="text-xl font-bold" style={{ color: "var(--text)" }}>Personal Information</h2>
           {!isEditing ? (
