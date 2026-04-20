@@ -6,6 +6,7 @@ import { useState, MouseEvent } from "react";
 import type { Product } from "@/types";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
+import { useWishlist } from "@/hooks/useWishlist";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
 import HeartIcon from "@/components/HeartIcon";
