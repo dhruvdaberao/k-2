@@ -285,12 +285,12 @@ export async function loadWishlist(passedUser?: any): Promise<ItemSnapshot[]> {
 
   const { data, error } = await supabase
     .from("wishlist")
-    .select("*")
+    .select("product_id, name, price, image")
     .eq("user_id", user.id);
 
   if (error) {
     console.error("[Wishlist] load DB Error:", error.message);
-    return [];
+    return read<ItemSnapshot[]>(WISHLIST_KEY, []); // fallback to local on error
   }
 
   const items: ItemSnapshot[] = (data || []).map(row => ({
@@ -300,8 +300,6 @@ export async function loadWishlist(passedUser?: any): Promise<ItemSnapshot[]> {
     image: row.image || "/placeholder.png"
   }));
 
-  console.log("[Wishlist] DB items loaded:", items.length);
-  
   // Sync local mirror
   write(WISHLIST_KEY, items);
   notify();
@@ -312,21 +310,15 @@ export async function toggleWishlist(product: any, passedUser?: any): Promise<vo
   const item = snap(product);
   const user = passedUser;
 
-  console.log("WISHLIST DEBUG - USER:", user?.id);
-  console.log("WISHLIST DEBUG - PRODUCT ID:", item.id);
-
   if (!user) {
-    // LOCAL MODE
+    // GUEST MODE
     let wishlist = read<ItemSnapshot[]>(WISHLIST_KEY, []);
-    const existsIndex = wishlist.findIndex(i => i.id === item.id);
+    const existingIndex = wishlist.findIndex(i => i.id === item.id);
 
-    if (existsIndex > -1) {
-      wishlist.splice(existsIndex, 1);
+    if (existingIndex > -1) {
+      wishlist.splice(existingIndex, 1);
     } else {
-      // Prevent duplicates in local storage manually
-      if (!wishlist.some(i => i.id === item.id)) {
-        wishlist.push(item);
-      }
+      wishlist.push(item);
     }
 
     write(WISHLIST_KEY, wishlist);
@@ -335,50 +327,36 @@ export async function toggleWishlist(product: any, passedUser?: any): Promise<vo
   }
 
   // DB MODE
-  try {
-    const { data: existing, error: fetchError } = await supabase
-      .from("wishlist")
-      .select("id")
-      .eq("user_id", user.id)
-      .eq("product_id", item.id)
-      .maybeSingle();
+  const { data: existing, error: fetchError } = await supabase
+    .from("wishlist")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("product_id", item.id)
+    .maybeSingle();
 
-    if (fetchError) {
-      console.error("WISHLIST ERROR (Fetch):", fetchError);
-      throw fetchError;
-    }
-
-    if (existing) {
-      const { error: deleteError } = await supabase
-        .from("wishlist")
-        .delete()
-        .eq("id", existing.id);
-      
-      if (deleteError) {
-        console.error("WISHLIST ERROR (Delete):", deleteError);
-        throw deleteError;
-      }
-    } else {
-      const { error: insertError } = await supabase.from("wishlist").insert([
-        {
-          user_id: user.id,
-          product_id: item.id,
-          name: item.name,
-          price: item.price,
-          image: item.image
-        }
-      ]);
-      
-      if (insertError) {
-        console.error("WISHLIST ERROR (Insert):", insertError);
-        throw insertError;
-      }
-    }
-  } catch (err) {
-    console.error("WISHLIST OPERATION FAILED:", err);
-    throw err;
+  if (fetchError) {
+    console.error("[Wishlist] Toggle Fetch Error:", fetchError.message);
+    return;
   }
 
+  if (existing) {
+    const { error: deleteError } = await supabase
+      .from("wishlist")
+      .delete()
+      .eq("id", existing.id);
+    if (deleteError) console.error("[Wishlist] Delete Error:", deleteError.message);
+  } else {
+    const { error: insertError } = await supabase.from("wishlist").insert({
+      user_id: user.id,
+      product_id: item.id,
+      name: item.name,
+      price: item.price,
+      image: item.image
+    });
+    if (insertError) console.error("[Wishlist] Insert Error:", insertError.message);
+  }
+
+  // Final reload
   await loadWishlist(user);
 }
 

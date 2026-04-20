@@ -2,26 +2,23 @@
 
 import ImageWithFallback from "@/components/ImageWithFallback";
 import Link from "next/link";
-import { useEffect, useState, MouseEvent } from "react";
+import { useState, MouseEvent } from "react";
 import type { Product } from "@/types";
 import { useCart } from "@/hooks/useCart";
-import { useWishlist } from "@/hooks/useWishlist";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
+import WishlistHeart from "@/components/WishlistHeart";
 import "./ProductCardV2.css";
 
 
 export default function ProductCardV2({ p }: { p: Product }) {
     const { user } = useAuth();
     const { cartItems, addToCart, updateQuantity, removeFromCart } = useCart();
-    const { toggleWishlist: toggleWishlistHook, isWishlisted, isToggling } = useWishlist();
     const router = useRouter();
 
     const cartItem = cartItems.find((it) => it.id === (p.id || p.slug));
     const qtyInCart = cartItem ? cartItem.quantity : 0;
-
-    const hearted = isWishlisted(p.id || p.slug);
 
     const encoded = encodeURIComponent((p.id || p.slug));
     const inStock = typeof p.stock === "number" ? p.stock > 0 : true;
@@ -35,11 +32,6 @@ export default function ProductCardV2({ p }: { p: Product }) {
         ? (p.priceLabel || `Starts at ₹${p.minPrice || p.price}`)
         : `₹${p.price}`;
 
-    const onHeartClick = async (e: MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-        await toggleWishlistHook(p);
-    };
 
     const handleAction = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -110,34 +102,10 @@ export default function ProductCardV2({ p }: { p: Product }) {
                     </div>
                 </Link>
 
-                {/* Wishlist Button - Using globals.css styles */}
-                <button
-                    onClick={onHeartClick}
-                    className={`heart-container ${hearted ? "wishlisted" : ""} ${isToggling ? "opacity-50 pointer-events-none" : ""}`}
-                    aria-label={hearted ? "Remove from wishlist" : "Add to wishlist"}
-                    type="button"
-                    title={hearted ? "Remove from wishlist" : "Add to wishlist"}
-                    disabled={isToggling}
-                >
-                    <div className="svg-container">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="var(--heart-color)" className="svg-outline" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-                        </svg>
-
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="var(--heart-color)" className="svg-filled">
-                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-                        </svg>
-
-                        <svg xmlns="http://www.w3.org/2000/svg" height="100" width="100" className="svg-celebrate" viewBox="0 0 100 100">
-                            <polygon points="10,10 20,20"></polygon>
-                            <polygon points="10,50 20,50"></polygon>
-                            <polygon points="20,80 30,70"></polygon>
-                            <polygon points="90,10 80,20"></polygon>
-                            <polygon points="90,50 80,50"></polygon>
-                            <polygon points="80,80 70,70"></polygon>
-                        </svg>
-                    </div>
-                </button>
+                {/* Wishlist Button */}
+                <div className="absolute top-2 right-2 z-20">
+                    <WishlistHeart product={p} size={22} className="card-heart-icon" />
+                </div>
 
 
             </div>

@@ -6,7 +6,8 @@ import {
   ItemSnapshot, 
   loadWishlist as loadWishlistLib, 
   toggleWishlist as toggleWishlistLib,
-  syncLocalWishlistToDB 
+  syncLocalWishlistToDB,
+  snap
 } from "@/lib/bags";
 import { useAuth } from "./useAuth";
 
@@ -40,17 +41,28 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   const toggleWishlist = useCallback(async (product: any) => {
-    if (isToggling) return;
-    setIsToggling(true);
+    const item = snap(product);
+    const wasWishlisted = wishlistItems.some(i => i.id === item.id);
+
+    // OPTIMISTIC UPDATE: Instant UI feedback
+    setWishlistItems(prev => {
+      if (wasWishlisted) {
+        return prev.filter(i => i.id !== item.id);
+      } else {
+        return [...prev, item];
+      }
+    });
+
     try {
       await toggleWishlistLib(product, user);
+      // loadWishlist will eventually sync with ground truth
       await loadWishlist();
     } catch (err) {
       console.error("WISHLIST HOOK ERROR (Toggle):", err);
-    } finally {
-      setIsToggling(false);
+      // Revert or re-sync if failed
+      await loadWishlist();
     }
-  }, [isToggling, loadWishlist, user]);
+  }, [wishlistItems, loadWishlist, user]);
 
   const isWishlisted = useCallback((productId: string) => {
     return wishlistItems.some(item => item.id === productId);
