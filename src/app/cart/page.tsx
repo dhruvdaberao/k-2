@@ -197,6 +197,3 @@ export default function CartPage() {
     </main>
   );
 }
-/main>
-  );
-}
