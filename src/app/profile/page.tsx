@@ -301,8 +301,8 @@ export default function ProfilePage() {
         }
       `}} />
       <div className="checkout-header flex flex-col items-center justify-center gap-4" style={{ marginTop: '40px' }}>
-        <div className="flex items-center gap-6">
-          <h1 className="checkout-title m-0 text-3xl md:text-5xl" style={{ lineHeight: '1' }}>Your Profile</h1>
+        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 text-center">
+          <h1 className="checkout-title m-0 text-3xl md:text-5xl" style={{ lineHeight: '1.2' }}>Your Profile</h1>
           <button 
             onClick={handleLogout} 
             className="btn-primary px-6 py-2 shadow-sm rounded-lg"
@@ -314,8 +314,8 @@ export default function ProfilePage() {
       </div>
 
       <section className="checkout-card mx-3 md:mx-auto max-w-xl w-auto md:w-full">
-        <div className="flex justify-between items-center mb-6 border-b pb-4 px-2">
-          <h2 className="text-xl font-bold" style={{ color: "var(--text)" }}>Personal Information</h2>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b pb-4 px-2">
+          <h2 className="text-xl font-bold" style={{ color: "var(--text)", margin: 0 }}>Personal Information</h2>
           {!isEditing ? (
             <button onClick={() => setIsEditing(true)} className="btn-edit text-sm">
               Edit

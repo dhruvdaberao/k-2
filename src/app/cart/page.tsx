@@ -45,39 +45,36 @@ export default function CartPage() {
   const grandTotal = subtotal + baseShipping + shippingDiscount - discountAmount;
 
   if (loading) {
-    return <main className="cart-page py-20 text-center text-stone-500 font-serif">Loading your shopping bag...</main>;
+    return <main className="cart-page py-20 text-center text-stone-500 font-serif">Loading your cart...</main>;
   }
 
   return (
     <main className="cart-page py-4 py-md-5 px-3 bg-[#FAF7F2] min-h-screen">
       <div className="container">
         {/* Header - Always visible as per Image 2 */}
-        <header className="mb-8 text-center pt-2">
-          <h1 className="h2 font-serif fw-bold text-[#2f2a26] mb-1">
-            Your Cart ({itemCount} items)
-          </h1>
-          <p className="text-secondary fst-italic small">Each piece is made to order with care</p>
+        <header className="mb-0 text-center pt-2">
+          <h1 className="h1 font-serif fw-bold text-[#2f2a26] mb-1">Cart</h1>
         </header>
 
         {cartItems.length === 0 ? (
-          /* Empty State Card - Matching Image 2 */
-          <div className="empty-cart-card">
-            <div className="mx-auto d-flex justify-content-center align-items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+          /* Minimalist Empty State - Matching Wishlist Style */
+          <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4 max-w-md mx-auto">
+            <div className="mb-8 opacity-30">
+              <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/>
                 <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.56-7.43H5.12"/>
               </svg>
             </div>
             
-            <h2 className="h4 font-serif fw-bold text-[#2f2a26] mb-3">Your cart is empty</h2>
+            <h2 className="text-2xl font-serif font-bold text-[#2f2a26] mb-3">Your cart is empty</h2>
             
-            <p className="text-secondary mb-8 px-4" style={{ fontSize: '0.95rem' }}>
+            <p className="text-stone-500 mb-10 text-sm italic">
               Looks like you haven't found your perfect piece yet.
             </p>
             
             <NextLink 
               href="/collections" 
-              className="btn btn-primary rounded-pill px-5 py-3 fw-bold shadow-sm"
+              className="btn btn-primary px-10 py-3 rounded-full font-bold shadow-sm"
               style={{ minWidth: '220px' }}
             >
               Browse Collections
