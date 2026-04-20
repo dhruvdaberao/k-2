@@ -8,7 +8,7 @@ import ProductCard from "@/components/ProductCardV2";
 import Link from "next/link";
 import type { Product, ProductVariant } from "@/types";
 import { trackEvent } from "@/lib/analytics";
-import { toggleWishlist } from "@/lib/bags";
+import { useWishlist } from "@/hooks/useWishlist";
 import { useEffect } from "react";
 import SeoContentSection from "@/components/SeoContentSection";
 
@@ -23,20 +23,14 @@ export default function ProductPageClient({
     product.variants && product.variants.length > 0 ? product.variants[0] : null
   );
 
-  const [hearted, setHearted] = useState(false);
+  const { toggleWishlist: toggleWishlistHook, isWishlisted } = useWishlist();
 
-  // Initialize wishlist state
-  useEffect(() => {
-      try {
-          const slugs = JSON.parse(localStorage.getItem("wishlist:v1") || "[]") as string[];
-          setHearted(slugs.includes(product.slug));
-      } catch {}
-  }, [product.slug]);
+  const hearted = isWishlisted(product.id || product.slug);
 
-  const onHeartClick = (e: React.MouseEvent) => {
+  const onHeartClick = async (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      setHearted(toggleWishlist(product));
+      await toggleWishlistHook(product);
   };
 
   const onShareClick = async (e: React.MouseEvent) => {

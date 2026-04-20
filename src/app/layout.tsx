@@ -10,6 +10,7 @@ import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import { GoogleTagManager } from '@next/third-parties/google';
 import { AuthProvider } from "@/hooks/useAuth";
 import { CartProvider } from "@/hooks/useCart";
+import { WishlistProvider } from "@/hooks/useWishlist";
 
 export const metadata = {
   metadataBase: new URL("https://keshvicrafts.in"),
@@ -64,14 +65,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ServiceWorkerRegister />
         <AuthProvider>
           <CartProvider>
-            <BootstrapNavbar />
+            <WishlistProvider>
+              <BootstrapNavbar />
 
-            {/* Remove .container here so hero can be full width */}
-            {children}
+              {/* Remove .container here so hero can be full width */}
+              {children}
 
-            <Footer />
+              <Footer />
 
-            <Toast />
+              <Toast />
+            </WishlistProvider>
           </CartProvider>
         </AuthProvider>
 

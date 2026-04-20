@@ -1,24 +1,10 @@
 // components/WishlistBadge.tsx
 "use client";
 
-import { wishlistCount } from "@/lib/bags";
-import { useEffect, useState } from "react";
+import { useWishlist } from "@/hooks/useWishlist";
 
 export default function WishlistBadge({ size = "md" }: { size?: "sm" | "md" }) {
-  const [n, setN] = useState(0);
-
-  const refresh = () => setN(wishlistCount());
-
-  useEffect(() => {
-    refresh();
-    const onChange = () => refresh();
-    window.addEventListener("bag:changed", onChange);
-    window.addEventListener("storage", onChange);
-    return () => {
-      window.removeEventListener("bag:changed", onChange);
-      window.removeEventListener("storage", onChange);
-    };
-  }, []);
+  const { itemCount: n } = useWishlist();
 
   if (!n) return null;
 

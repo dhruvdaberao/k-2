@@ -1,7 +1,7 @@
 // app/wishlist/page.tsx
 "use client";
 
-import { getWishlist, removeFromWishlist, addToCart } from "@/lib/bags";
+import { useWishlist } from "@/hooks/useWishlist";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,28 +10,13 @@ import products from "@/data/products.json";
 
 
 export default function WishlistPage() {
-  const [items, setItems] = useState<any[]>([]);
-  const [mounted, setMounted] = useState(false);
+  const { wishlistItems: items, loading } = useWishlist();
 
-  const refresh = () => setItems(getWishlist());
-
-  useEffect(() => {
-    setMounted(true);
-    refresh();
-    const h = () => refresh();
-    window.addEventListener("bag:changed", h);
-    window.addEventListener("storage", h);
-    return () => {
-      window.removeEventListener("bag:changed", h);
-      window.removeEventListener("storage", h);
-    };
-  }, []);
-
-  if (!mounted) {
+  if (loading) {
     return (
-      <div className="container py-4">
+      <div className="container py-4 flex flex-col items-center justify-center min-h-[40vh]">
         <h1>Wishlist</h1>
-        <p className="mt-3">Loading...</p>
+        <p className="mt-3 text-stone-500 italic">Finding your saved pieces...</p>
       </div>
     );
   }
@@ -42,7 +27,7 @@ export default function WishlistPage() {
 
       {items.length === 0 ? (
         <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-          <h2 className="text-xl font-semibold text-[#2f2a26] mb-4">Nothing saved yet</h2>
+          <h2 className="text-xl font-semibold text-[#2f2a26] mb-4">Your wishlist is empty</h2>
           <Link href="/" className="btn-primary px-8 py-3">
             Browse products
           </Link>

@@ -16,8 +16,7 @@ export type CartItem = ItemSnapshot & {
 type Collections = Record<string, ItemSnapshot[]>;
 
 const CART_KEY = "cart";
-const WISHLIST_KEY = "wishlist:v1";
-const WISHLIST_ITEMS_KEY = "wishlist:items:v1";
+const WISHLIST_KEY = "wishlist";
 const COLLECTIONS_KEY = "collections:v1";
 
 function read<T>(key: string, fallback: T): T {
@@ -278,54 +277,136 @@ export async function asyncCartCount(): Promise<number> {
 }
 
 /* -------------- WISHLIST -------------- */
-export function toggleWishlist(p: any): boolean {
-  const s = snap(p);
-  const set = new Set<string>(read<string[]>(WISHLIST_KEY, []));
-  const items = read<Record<string, ItemSnapshot>>(WISHLIST_ITEMS_KEY, {});
-
-  let nowIn = false;
-  if (set.has(s.id)) {
-    set.delete(s.id);
-    delete items[s.id];
-  } else {
-    set.add(s.id);
-    items[s.id] = s;
-    nowIn = true;
+export async function loadWishlist(passedUser?: any): Promise<ItemSnapshot[]> {
+  const user = passedUser;
+  if (!user) {
+    return read<ItemSnapshot[]>(WISHLIST_KEY, []);
   }
-  write(WISHLIST_KEY, [...set]);
-  write(WISHLIST_ITEMS_KEY, items);
+
+  const { data, error } = await supabase
+    .from("wishlist")
+    .select("*")
+    .eq("user_id", user.id);
+
+  if (error) {
+    console.error("[Wishlist] load DB Error:", error.message);
+    return [];
+  }
+
+  const items: ItemSnapshot[] = (data || []).map(row => ({
+    id: row.product_id,
+    name: row.name,
+    price: Number(row.price || 0),
+    image: row.image || "/placeholder.png"
+  }));
+
+  // Sync local mirror
+  write(WISHLIST_KEY, items);
   notify();
-  return nowIn;
+  return items;
+}
+
+export async function toggleWishlist(product: any, passedUser?: any): Promise<void> {
+  const item = snap(product);
+  const user = passedUser;
+
+  if (!user) {
+    // LOCAL MODE
+    let wishlist = read<ItemSnapshot[]>(WISHLIST_KEY, []);
+    const exists = wishlist.find(i => i.id === item.id);
+
+    if (exists) {
+      wishlist = wishlist.filter(i => i.id !== item.id);
+    } else {
+      wishlist.push(item);
+    }
+
+    write(WISHLIST_KEY, wishlist);
+    notify();
+    return;
+  }
+
+  // DB MODE
+  const { data: existing } = await supabase
+    .from("wishlist")
+    .select("*")
+    .eq("user_id", user.id)
+    .eq("product_id", item.id);
+
+  if (existing && existing.length > 0) {
+    await supabase
+      .from("wishlist")
+      .delete()
+      .eq("user_id", user.id)
+      .eq("product_id", item.id);
+  } else {
+    await supabase.from("wishlist").insert([
+      {
+        user_id: user.id,
+        product_id: item.id,
+        name: item.name,
+        price: item.price,
+        image: item.image
+      }
+    ]);
+  }
+
+  await loadWishlist(user);
+}
+
+export async function syncLocalWishlistToDB(userId: string): Promise<void> {
+  const local = read<ItemSnapshot[]>(WISHLIST_KEY, []);
+  if (local.length === 0) return;
+
+  for (const item of local) {
+    const { data: existing } = await supabase
+      .from("wishlist")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("product_id", item.id)
+      .maybeSingle();
+
+    if (!existing) {
+      await supabase.from("wishlist").insert({
+        user_id: userId,
+        product_id: item.id,
+        name: item.name,
+        price: item.price,
+        image: item.image
+      });
+    }
+  }
+
+  write(WISHLIST_KEY, []);
+  localStorage.removeItem(WISHLIST_KEY);
+  await loadWishlist({ id: userId });
 }
 
 export function getWishlist(): ItemSnapshot[] {
-  const ids = [...new Set(read<string[]>(WISHLIST_KEY, []))];
-  const items = read<Record<string, ItemSnapshot>>(WISHLIST_ITEMS_KEY, {});
-  const validItems = ids.map((id) => items[id]).filter(Boolean);
-  
-  // Cleanup ghost IDs if needed
-  if (validItems.length !== ids.length) {
-    const cleanedIds = validItems.map(it => it.id);
-    write(WISHLIST_KEY, cleanedIds);
-  }
-  
-  return validItems;
+  return read<ItemSnapshot[]>(WISHLIST_KEY, []);
 }
 
 export function wishlistCount(): number {
-  const ids = [...new Set(read<string[]>(WISHLIST_KEY, []))];
-  const items = read<Record<string, ItemSnapshot>>(WISHLIST_ITEMS_KEY, {});
-  return ids.filter(id => !!items[id]).length;
+  return read<ItemSnapshot[]>(WISHLIST_KEY, []).length;
 }
 
-export function removeFromWishlist(id: string) {
-  const set = new Set<string>(read<string[]>(WISHLIST_KEY, []));
-  const items = read<Record<string, ItemSnapshot>>(WISHLIST_ITEMS_KEY, {});
-  set.delete(id);
-  delete items[id];
-  write(WISHLIST_KEY, [...set]);
-  write(WISHLIST_ITEMS_KEY, items);
-  notify();
+export async function removeFromWishlist(id: string, passedUser?: any) {
+  const user = passedUser;
+  if (!user) {
+    let wishlist = read<ItemSnapshot[]>(WISHLIST_KEY, []);
+    wishlist = wishlist.filter(i => i.id !== id);
+    write(WISHLIST_KEY, wishlist);
+    notify();
+    return;
+  }
+
+  await supabase
+    .from("wishlist")
+    .delete()
+    .eq("user_id", user.id)
+    .eq("product_id", id);
+
+  await loadWishlist(user);
 }
 
 /* ------------- COLLECTIONS ------------ */
@@ -364,7 +445,6 @@ export function clearAllLocalData() {
   if (typeof window === "undefined") return;
   localStorage.removeItem(CART_KEY);
   localStorage.removeItem(WISHLIST_KEY);
-  localStorage.removeItem(WISHLIST_ITEMS_KEY);
   localStorage.removeItem(COLLECTIONS_KEY);
   notify();
   console.log("[Bags] All local storage data cleared.");

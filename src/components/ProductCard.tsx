@@ -5,33 +5,19 @@ import ImageWithFallback from "@/components/ImageWithFallback";
 import Link from "next/link";
 import { useEffect, useState, MouseEvent } from "react";
 import type { Product } from "@/types";
-import { toggleWishlist } from "@/lib/bags";
 import { useCart } from "@/hooks/useCart";
+import { useWishlist } from "@/hooks/useWishlist";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
 
 export default function ProductCard({ p }: { p: Product }) {
   const { user } = useAuth();
-  const [hearted, setHearted] = useState(false);
+  const { wishlistItems, toggleWishlist: toggleWishlistHook, isWishlisted } = useWishlist();
   const { cartItems, addToCart, updateQuantity, removeFromCart } = useCart();
   const router = useRouter();
 
-  // Initialize "hearted" from storage on mount or slug change
-  useEffect(() => {
-    const update = () => {
-      try {
-        const slugs = JSON.parse(localStorage.getItem("wishlist:v1") || "[]") as string[];
-        setHearted(slugs.includes(p.id || p.slug));
-      } catch {
-        setHearted(false);
-      }
-    };
-
-    update();
-    window.addEventListener("bag:changed", update);
-    return () => window.removeEventListener("bag:changed", update);
-  }, [p.id, p.slug]);
+  const hearted = isWishlisted(p.id || p.slug);
 
   const encoded = encodeURIComponent(p.slug);
   const inStock = typeof p.stock === "number" ? p.stock > 0 : true;
@@ -45,11 +31,10 @@ export default function ProductCard({ p }: { p: Product }) {
     ? (p.priceLabel || `Starts at ₹${p.minPrice || p.price}`)
     : `₹${p.price}`;
 
-  const onHeartClick = (e: MouseEvent<HTMLButtonElement>) => {
+  const onHeartClick = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    const next = toggleWishlist(p);
-    setHearted(next);
+    await toggleWishlistHook(p);
   };
 
   const handleAction = (e: MouseEvent<HTMLButtonElement>) => {
