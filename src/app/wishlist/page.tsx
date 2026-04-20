@@ -44,11 +44,9 @@ export default function WishlistPage() {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="plp-grid-mobile">
           {wishlistProducts.map((p: any) => (
-            <div key={p.id} className="wishlist-item">
-              <ProductCard p={p} />
-            </div>
+            <ProductCard key={p.id || p.slug} p={p} />
           ))}
         </div>
       )}
