@@ -10,7 +10,6 @@ import type { Product, ProductVariant } from "@/types";
 import { trackEvent } from "@/lib/analytics";
 import { useEffect } from "react";
 import SeoContentSection from "@/components/SeoContentSection";
-import HeartIcon from "@/components/HeartIcon";
 import { useWishlist } from "@/hooks/useWishlist";
 
 export default function ProductPageClient({
