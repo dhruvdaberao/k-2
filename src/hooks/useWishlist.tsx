@@ -59,6 +59,10 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     const { data: sessionData } = await supabase.auth.getSession();
     const currentUser = sessionData?.session?.user;
 
+    // OPTIMISTIC UPDATE
+    const wasWishlisted = wishlist.includes(productId);
+    setWishlist(prev => wasWishlisted ? prev.filter(id => id !== productId) : [...prev, productId]);
+
     if (!currentUser) {
       // GUEST MODE
       let local = JSON.parse(localStorage.getItem("wishlist") || "[]");
@@ -71,15 +75,10 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       }
 
       localStorage.setItem("wishlist", JSON.stringify(local));
-      setWishlist(local);
       return;
     }
 
     // LOGGED IN FLOW
-    // Optimistic Update
-    const wasWishlisted = wishlist.includes(productId);
-    setWishlist(prev => wasWishlisted ? prev.filter(id => id !== productId) : [...prev, productId]);
-
     try {
       const { data: existing, error: fetchError } = await supabase
         .from("wishlist")
@@ -110,7 +109,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       await loadWishlist();
     } catch (err) {
       console.error("WISHLIST TOGGLE ERROR:", err);
-      await loadWishlist(); // Revert on error
+      await loadWishlist(); // Revert on failure
     }
   }, [wishlist, loadWishlist]);
 
@@ -130,15 +129,12 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("[Wishlist] Auth event:", event);
       if (event === "SIGNED_IN" && session?.user?.id) {
-        // Step 6: Sync guest -> DB
+        // Sync guest -> DB
         const currentUser = session.user;
         const local = JSON.parse(localStorage.getItem("wishlist") || "[]");
         
         if (Array.isArray(local) && local.length > 0) {
           for (const id of local) {
-            // Find product details from products data for accurate storage if needed, 
-            // but the user's upsert only showed product_id. 
-            // I'll use upsert as requested.
             await supabase.from("wishlist").upsert({
               user_id: currentUser.id,
               product_id: id
@@ -161,7 +157,6 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   }, [loadWishlist]);
 
   const value = useMemo(() => ({
-    wishlistItems: [], // Backward compatibility placeholder
     wishlist,
     loading,
     loadWishlist,
