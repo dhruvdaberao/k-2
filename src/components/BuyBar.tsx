@@ -54,7 +54,7 @@ export default function BuyBar({
           className="btn-primary"
           onClick={onBuyNow}
           disabled={disabled}
-          style={{ flex: "1 1 auto", minWidth: "140px", borderRadius: "99px", height: "48px" }}
+          style={{ flex: "1 1 auto", minWidth: "140px", borderRadius: "12px", height: "48px" }}
         >
           Buy Now
         </button>
@@ -69,7 +69,7 @@ export default function BuyBar({
             justifyContent: "center",
             gap: "0",
             background: "#2f2a26",
-            borderRadius: "99px",
+            borderRadius: "12px",
             overflow: "hidden",
             height: "48px",
           }}>
@@ -133,7 +133,7 @@ export default function BuyBar({
             className="btn-secondary"
             onClick={onAddToCart}
             disabled={disabled}
-            style={{ flex: "1 1 auto", minWidth: "140px", borderRadius: "99px", height: "48px" }}
+            style={{ flex: "1 1 auto", minWidth: "140px", borderRadius: "12px", height: "48px" }}
           >
             Add to Cart
           </button>
