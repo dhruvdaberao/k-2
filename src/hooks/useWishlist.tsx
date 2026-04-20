@@ -30,7 +30,9 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     try {
       setLoading(true);
       const items = await loadWishlistLib(user);
-      setWishlist(items.map(i => i.id));
+      // Ensure unique valid IDs
+      const uniqueIds = Array.from(new Set(items.map(i => String(i.id)).filter(id => id && id !== "undefined")));
+      setWishlist(uniqueIds);
     } catch (err) {
       console.error("WISHLIST LOAD ERROR:", err);
     } finally {
@@ -43,18 +45,21 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     
     // Optimistic Update
     const wasWishlisted = wishlist.includes(productId);
-    setWishlist(prev => 
-      wasWishlisted 
+    setWishlist(prev => {
+      const next = wasWishlisted 
         ? prev.filter(id => id !== productId) 
-        : [...prev, productId]
-    );
+        : [...prev, productId];
+      // Final safety deduplication
+      return Array.from(new Set(next.filter(id => id && id !== "undefined")));
+    });
 
     try {
       await toggleWishlistLib(product, user);
       // lib/bags.ts calls loadWishlist(user) and notify() internally, 
       // but we should sync our local state just in case.
       const updated = await loadWishlistLib(user);
-      setWishlist(updated.map(i => i.id));
+      const uniqueIds = Array.from(new Set(updated.map(i => String(i.id)).filter(id => id && id !== "undefined")));
+      setWishlist(uniqueIds);
     } catch (err) {
       console.error("WISHLIST TOGGLE ERROR:", err);
       await loadWishlist(); // Revert on failure
@@ -76,7 +81,8 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const handleSync = () => {
       const items = getWishlist();
-      setWishlist(items.map(i => i.id));
+      const uniqueIds = Array.from(new Set(items.map(i => String(i.id)).filter(id => id && id !== "undefined")));
+      setWishlist(uniqueIds);
     };
     window.addEventListener("bag:changed", handleSync);
     window.addEventListener("storage", handleSync);
