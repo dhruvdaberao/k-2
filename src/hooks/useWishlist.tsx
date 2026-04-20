@@ -9,6 +9,7 @@ import {
   getWishlist 
 } from "@/lib/bags";
 import { useAuth } from "./useAuth";
+import products from "@/data/products.json";
 
 type WishlistContextType = {
   wishlist: string[];
@@ -26,13 +27,19 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const filterValidIds = useCallback((ids: string[]) => {
+    const validIds = ids.filter(id => {
+      const exists = products.some(p => p.id === id || p.slug === id);
+      return exists && id && id !== "undefined";
+    });
+    return Array.from(new Set(validIds));
+  }, []);
+
   const loadWishlist = useCallback(async () => {
     try {
       setLoading(true);
       const items = await loadWishlistLib(user);
-      // Ensure unique valid IDs
-      const uniqueIds = Array.from(new Set(items.map(i => String(i.id)).filter(id => id && id !== "undefined")));
-      setWishlist(uniqueIds);
+      setWishlist(filterValidIds(items.map(i => String(i.id))));
     } catch (err) {
       console.error("WISHLIST LOAD ERROR:", err);
     } finally {
@@ -49,8 +56,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       const next = wasWishlisted 
         ? prev.filter(id => id !== productId) 
         : [...prev, productId];
-      // Final safety deduplication
-      return Array.from(new Set(next.filter(id => id && id !== "undefined")));
+      return filterValidIds(next);
     });
 
     try {
@@ -58,8 +64,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       // lib/bags.ts calls loadWishlist(user) and notify() internally, 
       // but we should sync our local state just in case.
       const updated = await loadWishlistLib(user);
-      const uniqueIds = Array.from(new Set(updated.map(i => String(i.id)).filter(id => id && id !== "undefined")));
-      setWishlist(uniqueIds);
+      setWishlist(filterValidIds(updated.map(i => String(i.id))));
     } catch (err) {
       console.error("WISHLIST TOGGLE ERROR:", err);
       await loadWishlist(); // Revert on failure
@@ -81,8 +86,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const handleSync = () => {
       const items = getWishlist();
-      const uniqueIds = Array.from(new Set(items.map(i => String(i.id)).filter(id => id && id !== "undefined")));
-      setWishlist(uniqueIds);
+      setWishlist(filterValidIds(items.map(i => String(i.id))));
     };
     window.addEventListener("bag:changed", handleSync);
     window.addEventListener("storage", handleSync);
