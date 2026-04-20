@@ -15,7 +15,7 @@ import "./ProductCardV2.css";
 export default function ProductCardV2({ p }: { p: Product }) {
     const { user } = useAuth();
     const { cartItems, addToCart, updateQuantity, removeFromCart } = useCart();
-    const { toggleWishlist: toggleWishlistHook, isWishlisted } = useWishlist();
+    const { toggleWishlist: toggleWishlistHook, isWishlisted, isToggling } = useWishlist();
     const router = useRouter();
 
     const cartItem = cartItems.find((it) => it.id === (p.id || p.slug));
@@ -113,10 +113,11 @@ export default function ProductCardV2({ p }: { p: Product }) {
                 {/* Wishlist Button - Using globals.css styles */}
                 <button
                     onClick={onHeartClick}
-                    className={`heart-container ${hearted ? "wishlisted" : ""}`}
+                    className={`heart-container ${hearted ? "wishlisted" : ""} ${isToggling ? "opacity-50 pointer-events-none" : ""}`}
                     aria-label={hearted ? "Remove from wishlist" : "Add to wishlist"}
                     type="button"
                     title={hearted ? "Remove from wishlist" : "Add to wishlist"}
+                    disabled={isToggling}
                 >
                     <div className="svg-container">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="var(--heart-color)" className="svg-outline" strokeLinecap="round" strokeLinejoin="round">

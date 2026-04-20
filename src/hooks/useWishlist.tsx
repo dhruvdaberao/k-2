@@ -17,6 +17,7 @@ type WishlistContextType = {
   toggleWishlist: (product: any) => Promise<void>;
   isWishlisted: (productId: string) => boolean;
   itemCount: number;
+  isToggling: boolean;
 };
 
 const WishlistContext = createContext<WishlistContextType | null>(null);
@@ -25,17 +26,31 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const [wishlistItems, setWishlistItems] = useState<ItemSnapshot[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isToggling, setIsToggling] = useState(false);
 
   const loadWishlist = useCallback(async () => {
-    const items = await loadWishlistLib(user);
-    setWishlistItems(items);
-    setLoading(false);
+    try {
+      const items = await loadWishlistLib(user);
+      setWishlistItems(items);
+    } catch (err) {
+      console.error("WISHLIST HOOK ERROR (Load):", err);
+    } finally {
+      setLoading(false);
+    }
   }, [user]);
 
   const toggleWishlist = useCallback(async (product: any) => {
-    await toggleWishlistLib(product, user);
-    await loadWishlist();
-  }, [loadWishlist, user]);
+    if (isToggling) return;
+    setIsToggling(true);
+    try {
+      await toggleWishlistLib(product, user);
+      await loadWishlist();
+    } catch (err) {
+      console.error("WISHLIST HOOK ERROR (Toggle):", err);
+    } finally {
+      setIsToggling(false);
+    }
+  }, [isToggling, loadWishlist, user]);
 
   const isWishlisted = useCallback((productId: string) => {
     return wishlistItems.some(item => item.id === productId);
@@ -76,8 +91,9 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     loadWishlist,
     toggleWishlist,
     isWishlisted,
-    itemCount
-  }), [wishlistItems, loading, loadWishlist, toggleWishlist, isWishlisted, itemCount]);
+    itemCount,
+    isToggling
+  }), [wishlistItems, loading, loadWishlist, toggleWishlist, isWishlisted, itemCount, isToggling]);
 
   return <WishlistContext.Provider value={value}>{children}</WishlistContext.Provider>;
 }

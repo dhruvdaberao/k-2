@@ -26,10 +26,18 @@ export default function WishlistPage() {
       <h1>Wishlist</h1>
 
       {items.length === 0 ? (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-          <h2 className="text-xl font-semibold text-[#2f2a26] mb-4">Your wishlist is empty</h2>
-          <Link href="/" className="btn-primary px-8 py-3">
-            Browse products
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4 max-w-md mx-auto">
+          <div className="mb-6 opacity-20">
+            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+          </div>
+          <h2 className="text-xl font-serif font-bold text-[#2f2a26] mb-2">Your wishlist is empty</h2>
+          <p className="text-stone-500 mb-8 text-sm italic">
+            Save your favorite handcrafted pieces here to keep track of what you love.
+          </p>
+          <Link href="/collections" className="btn-primary px-8 py-3 rounded-pill fw-bold">
+            Browse Collections
           </Link>
         </div>
       ) : (

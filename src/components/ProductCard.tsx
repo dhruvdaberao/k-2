@@ -13,7 +13,7 @@ import { trackEvent } from "@/lib/analytics";
 
 export default function ProductCard({ p }: { p: Product }) {
   const { user } = useAuth();
-  const { wishlistItems, toggleWishlist: toggleWishlistHook, isWishlisted } = useWishlist();
+  const { wishlistItems, toggleWishlist: toggleWishlistHook, isWishlisted, isToggling } = useWishlist();
   const { cartItems, addToCart, updateQuantity, removeFromCart } = useCart();
   const router = useRouter();
 
@@ -107,17 +107,18 @@ export default function ProductCard({ p }: { p: Product }) {
           className={`absolute top-3 right-3 flex items-center justify-center rounded-full shadow-lg transition-all active:scale-95 border border-stone-200/50 force-visible ${hearted
             ? "bg-white text-red-600"
             : "bg-white/95 text-neutral-500 hover:text-red-500"
-            }`}
+            } ${isToggling ? "opacity-50 pointer-events-none" : ""}`}
           style={{
             width: '40px',
             height: '40px',
             zIndex: 20, // Clean z-index
-            pointerEvents: 'auto',
+            pointerEvents: isToggling ? 'none' : 'auto',
           }}
           onClick={onHeartClick}
           aria-label={hearted ? "Remove from wishlist" : "Add to wishlist"}
           type="button"
           title={hearted ? "Remove from wishlist" : "Add to wishlist"}
+          disabled={isToggling}
         >
           {hearted ? (
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">

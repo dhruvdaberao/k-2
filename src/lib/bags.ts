@@ -300,6 +300,8 @@ export async function loadWishlist(passedUser?: any): Promise<ItemSnapshot[]> {
     image: row.image || "/placeholder.png"
   }));
 
+  console.log("[Wishlist] DB items loaded:", items.length);
+  
   // Sync local mirror
   write(WISHLIST_KEY, items);
   notify();
@@ -310,15 +312,21 @@ export async function toggleWishlist(product: any, passedUser?: any): Promise<vo
   const item = snap(product);
   const user = passedUser;
 
+  console.log("WISHLIST DEBUG - USER:", user?.id);
+  console.log("WISHLIST DEBUG - PRODUCT ID:", item.id);
+
   if (!user) {
     // LOCAL MODE
     let wishlist = read<ItemSnapshot[]>(WISHLIST_KEY, []);
-    const exists = wishlist.find(i => i.id === item.id);
+    const existsIndex = wishlist.findIndex(i => i.id === item.id);
 
-    if (exists) {
-      wishlist = wishlist.filter(i => i.id !== item.id);
+    if (existsIndex > -1) {
+      wishlist.splice(existsIndex, 1);
     } else {
-      wishlist.push(item);
+      // Prevent duplicates in local storage manually
+      if (!wishlist.some(i => i.id === item.id)) {
+        wishlist.push(item);
+      }
     }
 
     write(WISHLIST_KEY, wishlist);
@@ -327,58 +335,98 @@ export async function toggleWishlist(product: any, passedUser?: any): Promise<vo
   }
 
   // DB MODE
-  const { data: existing } = await supabase
-    .from("wishlist")
-    .select("*")
-    .eq("user_id", user.id)
-    .eq("product_id", item.id);
-
-  if (existing && existing.length > 0) {
-    await supabase
+  try {
+    const { data: existing, error: fetchError } = await supabase
       .from("wishlist")
-      .delete()
+      .select("id")
       .eq("user_id", user.id)
-      .eq("product_id", item.id);
-  } else {
-    await supabase.from("wishlist").insert([
-      {
-        user_id: user.id,
-        product_id: item.id,
-        name: item.name,
-        price: item.price,
-        image: item.image
+      .eq("product_id", item.id)
+      .maybeSingle();
+
+    if (fetchError) {
+      console.error("WISHLIST ERROR (Fetch):", fetchError);
+      throw fetchError;
+    }
+
+    if (existing) {
+      const { error: deleteError } = await supabase
+        .from("wishlist")
+        .delete()
+        .eq("id", existing.id);
+      
+      if (deleteError) {
+        console.error("WISHLIST ERROR (Delete):", deleteError);
+        throw deleteError;
       }
-    ]);
+    } else {
+      const { error: insertError } = await supabase.from("wishlist").insert([
+        {
+          user_id: user.id,
+          product_id: item.id,
+          name: item.name,
+          price: item.price,
+          image: item.image
+        }
+      ]);
+      
+      if (insertError) {
+        console.error("WISHLIST ERROR (Insert):", insertError);
+        throw insertError;
+      }
+    }
+  } catch (err) {
+    console.error("WISHLIST OPERATION FAILED:", err);
+    throw err;
   }
 
   await loadWishlist(user);
 }
 
 export async function syncLocalWishlistToDB(userId: string): Promise<void> {
+  console.log("[Wishlist] Starting Sync for user:", userId);
   const local = read<ItemSnapshot[]>(WISHLIST_KEY, []);
-  if (local.length === 0) return;
-
-  for (const item of local) {
-    const { data: existing } = await supabase
-      .from("wishlist")
-      .select("id")
-      .eq("user_id", userId)
-      .eq("product_id", item.id)
-      .maybeSingle();
-
-    if (!existing) {
-      await supabase.from("wishlist").insert({
-        user_id: userId,
-        product_id: item.id,
-        name: item.name,
-        price: item.price,
-        image: item.image
-      });
-    }
+  if (local.length === 0) {
+    console.log("[Wishlist] No local items to sync.");
+    return;
   }
 
-  write(WISHLIST_KEY, []);
-  localStorage.removeItem(WISHLIST_KEY);
+  try {
+    for (const item of local) {
+      const { data: existing, error: checkError } = await supabase
+        .from("wishlist")
+        .select("id")
+        .eq("user_id", userId)
+        .eq("product_id", item.id)
+        .maybeSingle();
+
+      if (checkError) {
+        console.error("WISHLIST SYNC ERROR (Check):", checkError);
+        continue; // Skip faulty item but continue sync
+      }
+
+      if (!existing) {
+        const { error: insertError } = await supabase.from("wishlist").insert({
+          user_id: userId,
+          product_id: item.id,
+          name: item.name,
+          price: item.price,
+          image: item.image
+        });
+        
+        if (insertError) {
+          console.error("WISHLIST SYNC ERROR (Insert):", insertError);
+        }
+      }
+    }
+
+    // Success: Clear local
+    write(WISHLIST_KEY, []);
+    localStorage.removeItem(WISHLIST_KEY);
+    console.log("[Wishlist] Sync complete. Local storage cleared.");
+  } catch (syncErr) {
+    console.error("WISHLIST SYNC CRITICAL FAILURE:", syncErr);
+  }
+  
   await loadWishlist({ id: userId });
 }
 
