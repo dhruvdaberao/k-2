@@ -71,6 +71,16 @@ export default function OrderDetailPage() {
   const [cancelling, setCancelling] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelError, setCancelError] = useState(false);
+  const [invoiceUrl, setInvoiceUrl] = useState<string>("#");
+
+
+  useEffect(() => {
+    if (!order) return;
+
+    const orderId = order.display_id || order.id;
+    const invoiceUrl = `${window.location.origin}/api/invoice?orderId=${orderId}`;
+    setInvoiceUrl(invoiceUrl);
+  }, [order]);
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -376,7 +386,7 @@ export default function OrderDetailPage() {
             Need Help?
           </a>
           <a
-            href={`/api/invoice?orderId=${encodeURIComponent(order.display_id || order.id)}`}
+            href={invoiceUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="od-btn od-btn--download"

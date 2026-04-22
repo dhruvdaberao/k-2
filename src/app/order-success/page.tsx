@@ -19,8 +19,8 @@ export default function OrderSuccessPage() {
     }
 
     try {
-      const url = `${window.location.origin}/api/invoice?orderId=${encodeURIComponent(orderId)}`;
-      setInvoiceUrl(url);
+      const invoiceUrl = `${window.location.origin}/api/invoice?orderId=${orderId}`;
+      setInvoiceUrl(invoiceUrl);
     } catch (e) {
       console.error("Failed to load invoice url", e);
     } finally {
