@@ -2,7 +2,7 @@
 
 import { supabase } from "@/lib/supabaseClient";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import products from "@/data/products.json";
 import { useRouter } from "next/navigation";
 import { clearCart, loadCart as getAsyncCart } from "@/lib/bags";
@@ -54,9 +54,51 @@ export default function CheckoutPage() {
     return [...items, ...addonItems];
   }, [items, addonItems]);
 
+  const refreshCart = useCallback(async () => {
+    // Don't redirect during order placement or if order was just finished
+    if (isPlacingOrder || orderCompleted) {
+      console.log("[Checkout] Skip refreshCart: Order in progress or completed");
+      return;
+    }
+
+    // Local explicit search param read to side-step app suspense bounds safely
+    const isBuyNow = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("buyNow") === "true";
+
+    // Check for direct checkout item first explicitly
+    if (isBuyNow) {
+      const directItem = getDirectCheckoutItem();
+      if (directItem) {
+        console.log("[Checkout] Using direct checkout item:", directItem);
+        setIsDirectCheckout(true);
+        setItems([{
+          id: directItem.product_id,
+          name: directItem.name,
+          price: directItem.price,
+          quantity: directItem.quantity,
+          image: directItem.image,
+        }]);
+        return;
+      }
+    } else {
+      // Clear direct checkout item so it doesn't pollute later
+      clearDirectCheckoutItem();
+      setIsDirectCheckout(false);
+    }
+
+    console.log("[Checkout] Refreshing cart data...");
+    const currentCart = await getAsyncCart();
+    if (currentCart.length === 0) {
+      console.warn("[Checkout] Cart is empty, redirecting...");
+      showToast("Your cart is empty.");
+      router.replace("/cart");
+      return;
+    }
+    console.log("[Checkout] Items loaded:", currentCart);
+    setItems(currentCart);
+  }, [isPlacingOrder, orderCompleted, router]);
+
   useEffect(() => {
     setHydrated(true);
-
 
     let hasInitialized = false;
 
@@ -103,49 +145,6 @@ export default function CheckoutPage() {
       window.removeEventListener("storage", refreshCart);
     };
   }, [router, step, profile, user, refreshCart]);
-
-  const refreshCart = useCallback(async () => {
-    // Don't redirect during order placement or if order was just finished
-    if (isPlacingOrder || orderCompleted) {
-      console.log("[Checkout] Skip refreshCart: Order in progress or completed");
-      return;
-    }
-
-    // Local explicit search param read to side-step app suspense bounds safely
-    const isBuyNow = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("buyNow") === "true";
-
-    // Check for direct checkout item first explicitly
-    if (isBuyNow) {
-      const directItem = getDirectCheckoutItem();
-      if (directItem) {
-        console.log("[Checkout] Using direct checkout item:", directItem);
-        setIsDirectCheckout(true);
-        setItems([{
-          id: directItem.product_id,
-          name: directItem.name,
-          price: directItem.price,
-          quantity: directItem.quantity,
-          image: directItem.image,
-        }]);
-        return;
-      }
-    } else {
-      // Clear direct checkout item so it doesn't pollute later
-      clearDirectCheckoutItem();
-      setIsDirectCheckout(false);
-    }
-
-    console.log("[Checkout] Refreshing cart data...");
-    const currentCart = await getAsyncCart();
-    if (currentCart.length === 0) {
-      console.warn("[Checkout] Cart is empty, redirecting...");
-      showToast("Your cart is empty.");
-      router.replace("/cart");
-      return;
-    }
-    console.log("[Checkout] Items loaded:", currentCart);
-    setItems(currentCart);
-  }, [isPlacingOrder, orderCompleted, router]);
 
   const handleAddonAdded = (product: Product) => {
     const addonItem: CartItem = {
