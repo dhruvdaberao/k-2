@@ -1,7 +1,9 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
+
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+
 import {
   CartItem,
   addToCart as addToCartLib,
@@ -27,34 +29,52 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | null>(null);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
+  
   const { user } = useAuth();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-
-  const loadCart = useCallback(async () => {
-    const items = await loadCartLib(user);
-    setCartItems(items);
+  const loadingRef = useRef(false);
+  const userRef = useRef(user);
+  
+  // Keep userRef in sync without triggering re-renders
+  useEffect(() => {
+    userRef.current = user;
   }, [user]);
 
+  const loadCart = useCallback(async () => {
+    // Prevent concurrent loads
+    if (loadingRef.current) return;
+    loadingRef.current = true;
+    try {
+      const items = await loadCartLib(userRef.current);
+      setCartItems(items);
+    } catch (err) {
+      console.error("[CartHook] loadCart error:", err);
+    } finally {
+      loadingRef.current = false;
+    }
+  }, []); // Stable reference — no dependencies
+
   const addToCart = useCallback(async (product: any) => {
-    await addToCartLib(product, user);
+    await addToCartLib(product, userRef.current);
     await loadCart();
-  }, [loadCart, user]);
+  }, [loadCart]);
 
   const removeFromCart = useCallback(async (productId: string) => {
-    await removeFromCartLib(productId, user);
+    await removeFromCartLib(productId, userRef.current);
     await loadCart();
-  }, [loadCart, user]);
+  }, [loadCart]);
 
   const updateQuantity = useCallback(async (productId: string, quantity: number) => {
-    await updateQty(productId, quantity, user);
+    await updateQty(productId, quantity, userRef.current);
     await loadCart();
-  }, [loadCart, user]);
+  }, [loadCart]);
 
   const clearCart = useCallback(async () => {
-    await clearCartLib(user);
+    await clearCartLib(userRef.current);
     await loadCart();
-  }, [loadCart, user]);
+  }, [loadCart]);
 
+  // Initial load + auth state listener (runs once)
   useEffect(() => {
     loadCart();
 
@@ -64,17 +84,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     window.addEventListener("bag:changed", onBagChange);
 
-    // Phase 11 & 6: Auto load and sync after login
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("[CartHook] Auth event:", event);
       if (event === "SIGNED_IN" && session?.user?.id) {
-        // Step 6: Sync guest -> DB
         await syncLocalCartToDB(session.user.id);
         await loadCart();
       } else if (event === "SIGNED_OUT") {
         setCartItems([]);
-        // Local content is cleared by AuthProvider, so loadCart will return []
-        await loadCart();
       }
     });
 
@@ -82,7 +98,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       window.removeEventListener("bag:changed", onBagChange);
       subscription.unsubscribe();
     };
-  }, [loadCart]);
+  }, [loadCart]); // loadCart is now stable (empty deps), so this runs once
+
+  // Reload cart when user changes (login/logout)
+  useEffect(() => {
+    loadCart();
+  }, [user, loadCart]);
 
   const value = useMemo(() => ({
     cartItems,

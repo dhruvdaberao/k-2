@@ -7,7 +7,7 @@ import type { Product } from "@/types";
 
 interface CheckoutAddonsProps {
     currentCartSlugs: string[];
-    onAdded?: () => void;
+    onAdded?: (product: Product) => void;
 }
 
 export default function CheckoutAddons({ currentCartSlugs, onAdded }: CheckoutAddonsProps) {
@@ -40,8 +40,7 @@ export default function CheckoutAddons({ currentCartSlugs, onAdded }: CheckoutAd
     if (addonProducts.length === 0) return null;
 
     const handleAdd = async (product: Product) => {
-        await addToCart(product);
-        onAdded?.();
+        onAdded?.(product);
         setAddedSlugs(prev => new Set(prev).add(product.id || product.slug));
 
         // Reset after 2 seconds

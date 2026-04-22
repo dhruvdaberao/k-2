@@ -1,11 +1,13 @@
 "use client";
 
+import { supabase } from "@/lib/supabaseClient";
+
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { showToast } from "@/components/Toast";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 import type { CheckoutCustomerDetails } from "@/lib/checkout";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/lib/supabaseClient";
 import { syncLocalCartToDB } from "@/lib/cartSupabase";
 
 const initialDetails: CheckoutCustomerDetails = {
@@ -18,13 +20,14 @@ const initialDetails: CheckoutCustomerDetails = {
 };
 
 export default function ProfilePage() {
-  const router = useRouter();
+    const router = useRouter();
   const searchParams = useSearchParams();
   const { session, user, profile, loading, refreshProfile } = useAuth();
   
   // Profile Form State
   const [details, setDetails] = useState<CheckoutCustomerDetails>(initialDetails);
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [modalContent, setModalContent] = useState<{ title: string; message: string } | null>(null);
 
   const [hydrated, setHydrated] = useState(false);
@@ -100,14 +103,20 @@ export default function ProfilePage() {
 
   const saveDetails = async () => {
     if (!details.fullName || !details.email || !details.phoneNumber) {
-      showToast("Name, Email, and Phone are required.");
+      showToast("Please fill all required fields");
       return;
     }
     
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(details.email)) {
+      showToast("Enter valid email");
+      return;
+    }
+
     // RegEx Validation Overrides
     const phoneRegex = /^[+]?[0-9\s\-]{10,15}$/;
-    if (!phoneRegex.test(details.phoneNumber)) {
-      showToast("Please enter a valid phone number.");
+    if (!phoneRegex.test(details.phoneNumber) || details.phoneNumber.replace(/[^0-9]/g,"").length < 10) {
+      showToast("Please enter a valid phone number (10+ digits).");
       return;
     }
 
@@ -126,6 +135,8 @@ export default function ProfilePage() {
       showToast("Email updates are locked to Account Settings.");
     }
 
+    setIsSaving(true);
+    
     const { data: updateData, error: profileError } = await supabase.from('profiles').update({
       name: details.fullName,
       phone: details.phoneNumber,
@@ -137,6 +148,7 @@ export default function ProfilePage() {
     if (profileError) {
       console.error("Update Error:", profileError);
       showToast(profileError.message || "Failed to save profile.");
+      setIsSaving(false);
       return;
     }
     
@@ -163,20 +175,22 @@ export default function ProfilePage() {
     }
     
     setIsEditing(false);
+    setIsSaving(false);
     setModalContent({ title: "Profile Saved", message: "Your profile has been successfully updated." });
     await refreshProfile();
   };
 
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
   const handleLogout = async () => {
-    if (window.confirm("Do you want to logout?")) {
-      try {
-        await supabase.auth.signOut();
-      } catch (err) {
-        console.warn("Supabase sign out lock error (ignoring):", err);
-      }
-      router.push("/login");
-      showToast("Logged out successfully.");
+    setShowLogoutModal(false);
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.warn("Supabase sign out lock error (ignoring):", err);
     }
+    router.push("/login");
+    showToast("Logged out successfully.");
   };
 
 
@@ -301,30 +315,35 @@ export default function ProfilePage() {
         }
       `}} />
       <div className="checkout-header flex flex-col items-center justify-center gap-4" style={{ marginTop: '40px' }}>
-        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 text-center">
-          <h1 className="checkout-title m-0 text-3xl md:text-5xl" style={{ lineHeight: '1.2' }}>Your Profile</h1>
-          <button 
-            onClick={handleLogout} 
-            className="btn-primary px-6 py-2 shadow-sm rounded-lg"
-            style={{ width: 'auto', margin: 0, fontSize: '15px' }}
-          >
-            Log Out
-          </button>
-        </div>
+        <h1 className="checkout-title m-0 text-3xl md:text-5xl text-center" style={{ lineHeight: '1.2' }}>Your Profile</h1>
       </div>
 
-      <section className="checkout-card mx-3 md:mx-auto max-w-xl w-auto md:w-full">
+      <section className="checkout-card mx-3 md:mx-auto max-w-xl w-auto md:w-full bg-[#f3ede6] rounded-2xl shadow-sm border border-[#e6ded4]">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b pb-4 px-2">
           <h2 className="text-xl font-bold" style={{ color: "var(--text)", margin: 0 }}>Personal Information</h2>
-          {!isEditing ? (
-            <button onClick={() => setIsEditing(true)} className="btn-edit text-sm">
-              Edit
+          <div className="flex gap-3 items-center flex-wrap">
+            {!isEditing ? (
+              <button onClick={() => setIsEditing(true)} className="btn-edit text-sm">
+                Edit
+              </button>
+            ) : (
+              <button 
+                onClick={saveDetails} 
+                disabled={isSaving}
+                className="btn-edit text-sm" 
+                style={{ background: isSaving ? "#c9b99a" : "var(--brand)", color: "white", pointerEvents: isSaving ? 'none' : 'auto' }}
+              >
+                {isSaving ? "Saving..." : "Save Changes"}
+              </button>
+            )}
+            <button 
+              onClick={() => setShowLogoutModal(true)} 
+              className="px-4 py-2 rounded-lg text-sm font-medium transition-opacity hover:opacity-90"
+              style={{ background: "#5a3e2b", color: "white", border: "none" }}
+            >
+              Log Out
             </button>
-          ) : (
-            <button onClick={saveDetails} className="btn-edit text-sm" style={{ background: "var(--brand)", color: "white" }}>
-              Save Changes
-            </button>
-          )}
+          </div>
         </div>
 
         <div className="checkout-form-grid" style={{ pointerEvents: isEditing ? 'auto' : 'none', opacity: isEditing ? 1 : 0.8 }}>
@@ -403,7 +422,7 @@ export default function ProfilePage() {
       {/* Action Buttons */}
       <section className="mx-auto flex flex-wrap justify-center gap-4 mt-8 px-4 md:px-0" style={{ maxWidth: '900px' }}>
         <button 
-          onClick={() => showToast("Order history will be available soon.")} 
+          onClick={() => router.push("/orders")} 
           className="btn-primary py-3 px-8 shadow-sm rounded-lg font-medium transition-transform active:scale-95"
           style={{ width: 'auto', minWidth: '220px', flex: '1 1 auto', maxWidth: '300px' }}
         >
@@ -427,6 +446,17 @@ export default function ProfilePage() {
         </button>
       </section>
       {profileModalHTML}
+
+      <ConfirmModal
+        isOpen={showLogoutModal}
+        title="Log out?"
+        message="Are you sure you want to log out of your account?"
+        confirmLabel="Log Out"
+        cancelLabel="Cancel"
+        destructive
+        onConfirm={handleLogout}
+        onCancel={() => setShowLogoutModal(false)}
+      />
     </main>
 
   );

@@ -24,9 +24,9 @@ from reportlab.platypus import (
 app = Flask(__name__)
 CORS(app)
 
-ACCENT = colors.HexColor("#D8C3A5")
-TEXT = colors.HexColor("#2E2E2E")
-LIGHT_BG = colors.HexColor("#FDFBF7")
+ACCENT = colors.HexColor("#F5EFE6")  # Light beige
+TEXT = colors.HexColor("#2f2a26")    # Dark text
+BRAND = colors.HexColor("#5a3e2b")   # Brown headings
 
 
 def _get_image(url_or_path: str, width: float = None) -> Image | None:
@@ -87,8 +87,16 @@ def generate_invoice():
         parent=styles["Normal"],
         fontName="Helvetica-Bold",
         fontSize=18,
-        alignment=0, # Left-aligned for table cell
-        textColor=TEXT
+        alignment=0, # Left-aligned
+        textColor=BRAND
+    )
+
+    style_subtitle = ParagraphStyle(
+        "Subtitle",
+        parent=styles["Normal"],
+        fontName="Helvetica-Oblique",
+        fontSize=11,
+        textColor=colors.HexColor("#6b6b6b")
     )
     
     style_label = ParagraphStyle(
@@ -96,7 +104,7 @@ def generate_invoice():
         parent=styles["Normal"],
         fontName="Helvetica-Bold",
         fontSize=10,
-        textColor=TEXT
+        textColor=BRAND
     )
     
     style_value = ParagraphStyle(
@@ -111,14 +119,20 @@ def generate_invoice():
         "Footer",
         parent=styles["Normal"],
         fontName="Helvetica",
-        fontSize=9,
+        fontSize=10,
         alignment=1,
-        textColor=colors.HexColor("#666666")
+        textColor=BRAND
+    )
+
+    style_right = ParagraphStyle(
+        "RightAlign",
+        parent=style_value,
+        alignment=2
     )
 
     elements = []
 
-    # --- 1. HEADER SECTION (Heading Left, Logo Right) ---
+    # --- 1. HEADER SECTION ---
     doc_type = request.args.get("t", "invoice").lower()
     if doc_type == "order_details":
         heading_text = "ORDER DETAILS"
@@ -132,7 +146,7 @@ def generate_invoice():
     origin = data.get("h", "")
     if origin:
         logo_url = f"{origin.rstrip('/')}/uploads/hero/logo.png"
-        logo_img = _get_image(logo_url, width=35 * mm) # Balanced size
+        logo_img = _get_image(logo_url, width=40 * mm)
     
     if not logo_img:
         base_path = Path(__file__).parent.parent
@@ -142,12 +156,20 @@ def generate_invoice():
         ]
         for p in logo_paths:
             if p.exists():
-                logo_img = _get_image(str(p), width=35 * mm)
+                logo_img = _get_image(str(p), width=40 * mm)
                 if logo_img: break
 
-    # Header Table: [ Heading | Logo ]
+    # Header Table: [ Brand Details | Logo ]
+    brand_content = [
+        Paragraph("<font size='26'><b>Keshvi Crafts</b></font>", style_title),
+        Spacer(1, 2 * mm),
+        Paragraph("Handmade with Love", style_subtitle),
+        Spacer(1, 8 * mm),
+        Paragraph(f"<font size='16'><b>{heading_text}</b></font>", style_title)
+    ]
+
     header_data = [[
-        Paragraph(f"<font size='22'><b>{heading_text}</b></font>", style_title),
+        brand_content,
         logo_img if logo_img else ""
     ]]
     
@@ -155,23 +177,23 @@ def generate_invoice():
     header_table.setStyle(TableStyle([
         ('ALIGN', (0, 0), (0, 0), 'LEFT'),
         ('ALIGN', (1, 0), (1, 0), 'RIGHT'),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), # Exact center alignment
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ('TOPPADDING', (0, 0), (-1, -1), 0),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
     ]))
     elements.append(header_table)
     
-    # Official Line
     pdf_line = Table([[""]], colWidths=[170 * mm])
-    pdf_line.setStyle(TableStyle([('LINEBELOW', (0, 0), (-1, -1), 2, ACCENT)]))
+    pdf_line.setStyle(TableStyle([('LINEBELOW', (0, 0), (-1, -1), 1.5, ACCENT)]))
     elements.append(pdf_line)
-    elements.append(Spacer(1, 10 * mm))
+    elements.append(Spacer(1, 8 * mm))
 
     # --- 2. ORDER INFO ---
     order_id = data.get('o', 'N/A')
     date_str = data.get('c', datetime.now(timezone.utc).isoformat())
     payment_mode = data.get('pm', 'cod').upper()
-    payment_label = "Cash on Delivery" if payment_mode == 'COD' else "Online / Prepaid"
+    payment_label = "Cash on Delivery (COD)" if payment_mode == 'COD' else "Online / Prepaid"
+    payment_status = "Pending" if payment_mode == 'COD' else "Completed"
 
     try:
         dt = datetime.fromisoformat(date_str.replace('Z', '+00:00'))
@@ -180,36 +202,42 @@ def generate_invoice():
         formatted_date = date_str
 
     info_data = [
-        [Paragraph(f"<b>Order ID:</b> {order_id}", style_value), 
-         Paragraph(f"<b>Date:</b> {formatted_date}", style_footer)],
-        [Paragraph(f"<b>Payment Mode:</b> {payment_label}", style_value), ""]
+        [
+            Paragraph(f"<b>Order ID:</b> {order_id}", style_value), 
+            Paragraph(f"<b>Order Date:</b> {formatted_date}", style_right)
+        ],
+        [
+            Paragraph(f"<b>Payment Method:</b> {payment_label}", style_value),
+            Paragraph(f"<b>Payment Status:</b> {payment_status}", style_right)
+        ]
     ]
     info_table = Table(info_data, colWidths=[100 * mm, 70 * mm])
     info_table.setStyle(TableStyle([
-        ('ALIGN', (0, 0), (0, 1), 'LEFT'),
-        ('ALIGN', (1, 0), (1, 0), 'RIGHT'),
+        ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+        ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('TOPPADDING', (0, 0), (-1, -1), 4),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
     ]))
     elements.append(info_table)
     elements.append(Spacer(1, 10 * mm))
 
-
     # --- 3. CUSTOMER DETAILS ---
     user = data.get("u", {})
-    elements.append(Paragraph("<b>Customer Details</b>", style_label))
+    elements.append(Paragraph("<b>CUSTOMER DETAILS</b>", style_label))
     elements.append(Spacer(1, 4))
-    elements.append(Paragraph(f"Name: {user.get('n', '-')}", style_value))
-    elements.append(Paragraph(f"Phone: {user.get('p', '-')}", style_value))
+    elements.append(Paragraph(f"<b>Name:</b> {user.get('n', '-')}", style_value))
+    elements.append(Paragraph(f"<b>Email:</b> {user.get('e', '-')}", style_value))
+    elements.append(Paragraph(f"<b>Phone:</b> {user.get('p', '-')}", style_value))
     addr = f"{user.get('a', '-')}, {user.get('c', '-')}, {user.get('z', '-')}"
-    elements.append(Paragraph(f"Address: {addr}", style_value))
+    elements.append(Paragraph(f"<b>Address:</b> {addr}", style_value))
     elements.append(Spacer(1, 12 * mm))
 
-    # --- 4. PRODUCT TABLE ---
-    headers = ["Product Name", "Qty", "Price", "Total"]
+    # --- 4. ITEM TABLE ---
+    headers = ["Product Name", "Quantity", "Price", "Total"]
     table_data = [headers]
     
-    col_widths = [90 * mm, 12 * mm, 34 * mm, 34 * mm]
+    col_widths = [90 * mm, 20 * mm, 30 * mm, 30 * mm]
     
     for item in data.get("i", []):
         row = [
@@ -222,27 +250,22 @@ def generate_invoice():
 
     invoice_table = Table(table_data, colWidths=col_widths, repeatRows=1)
     
-    # Table Styling
     invoice_table.setStyle(TableStyle([
-        # Header
         ('BACKGROUND', (0, 0), (-1, 0), ACCENT),
-        ('TEXTCOLOR', (0, 0), (-1, 0), TEXT),
+        ('TEXTCOLOR', (0, 0), (-1, 0), BRAND),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('FONTSIZE', (0, 0), (-1, 0), 10),
-        # Alignment
-        ('ALIGN', (0, 0), (0, 0), 'LEFT'),    # Header: Name
-        ('ALIGN', (1, 0), (1, 0), 'CENTER'),  # Header: Qty
-        ('ALIGN', (2, 0), (-1, 0), 'RIGHT'),  # Header: Price/Total
         
-        ('ALIGN', (0, 1), (0, -1), 'LEFT'),   # Data: Name
-        ('ALIGN', (1, 1), (1, -1), 'CENTER'), # Data: Qty
-        ('ALIGN', (2, 1), (2, -1), 'RIGHT'),  # Data: Price
-        ('ALIGN', (3, 1), (3, -1), 'RIGHT'),  # Data: Total
+        ('ALIGN', (0, 0), (0, 0), 'LEFT'),  
+        ('ALIGN', (1, 0), (1, 0), 'CENTER'), 
+        ('ALIGN', (2, 0), (-1, 0), 'RIGHT'), 
         
-        # Grid/Borders
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#DDDDDD")),
+        ('ALIGN', (0, 1), (0, -1), 'LEFT'),  
+        ('ALIGN', (1, 1), (1, -1), 'CENTER'), 
+        ('ALIGN', (2, 1), (2, -1), 'RIGHT'),  
+        ('ALIGN', (3, 1), (3, -1), 'RIGHT'),  
         
-        # Padding
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#E5E5E5")),
         ('TOPPADDING', (0, 0), (-1, -1), 10),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
         ('LEFTPADDING', (0, 0), (-1, -1), 10),
@@ -253,8 +276,6 @@ def generate_invoice():
     elements.append(Spacer(1, 10 * mm))
 
     # --- 5. SUMMARY SECTION ---
-    # Right-aligned Summary Table
-    # Summary Data
     subtotal = data.get("s", 0)
     discount = data.get("d", 0)
     shipping_fee = data.get("sh", 40)
@@ -264,19 +285,19 @@ def generate_invoice():
 
     summary_data = [
         ["Subtotal", _currency(subtotal)],
-        ["Shipping Fee", _currency(shipping_fee)]
+        ["Shipping", _currency(shipping_fee)]
     ]
     
     if shipping_discount < 0:
         summary_data.append(["Shipping Discount", f"-{_currency(abs(shipping_discount))}"])
         
     if discount > 0:
-        label = f"Order Discount ({discount_pct}%)" if discount_pct else "Order Discount"
+        label = f"Discount ({discount_pct}%)" if discount_pct else "Discount"
         summary_data.append([label, f"-{_currency(discount)}"])
         
-    summary_data.append(["Final Amount", _currency(final_total)])
+    summary_data.append(["Grand Total", _currency(final_total)])
     
-    summary_table = Table(summary_data, colWidths=[136 * mm, 34 * mm])
+    summary_table = Table(summary_data, colWidths=[130 * mm, 40 * mm])
     summary_table.hAlign = 'RIGHT'
     summary_table.setStyle(TableStyle([
         ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
@@ -289,30 +310,28 @@ def generate_invoice():
         ('LEFTPADDING', (0, 0), (-1, -1), 10),
         ('RIGHTPADDING', (0, 0), (-1, -1), 10),
         
-        # Border
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#DDDDDD")),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#E5E5E5")),
         
-        # Final Amount Highlighting (Last Row)
         ('BACKGROUND', (0, -1), (1, -1), ACCENT),
         ('FONTNAME', (0, -1), (1, -1), 'Helvetica-Bold'),
-        ('TOPPADDING', (0, -1), (1, -1), 10),
-        ('BOTTOMPADDING', (0, -1), (1, -1), 10),
+        ('TEXTCOLOR', (0, -1), (1, -1), BRAND),
+        ('TOPPADDING', (0, -1), (1, -1), 12),
+        ('BOTTOMPADDING', (0, -1), (1, -1), 12),
     ]))
     elements.append(summary_table)
     
     elements.append(Spacer(1, 20 * mm))
 
     # --- 6. FOOTER SECTION ---
-    # Using a heart symbol that is safe for standard PDF fonts
-    elements.append(Paragraph("Thank you for shopping with Keshvi Crafts <font color='#e63946' size='12'>♥</font>", style_footer))
-    elements.append(Paragraph("Support: @keshvi_crafts | WhatsApp: 7507996961", style_footer))
+    elements.append(Paragraph("<b>Thank you for shopping with Keshvi Crafts <font color='#fba21c'>♥</font></b>", style_footer))
+    elements.append(Spacer(1, 2 * mm))
+    elements.append(Paragraph("<font color='#6b6b6b'>Support: @keshvi_crafts | WhatsApp: +91-7507996961</font>", ParagraphStyle("SubFooter", parent=style_footer, fontSize=8)))
 
     # Build PDF
     doc.build(elements)
     
     buffer.seek(0)
-    filename_prefix = heading_text.title().replace(" ", "")
-    filename = f"{filename_prefix}_{data.get('o', 'KC')}.pdf"
+    filename = f"Invoice-{data.get('o', 'KC')}.pdf"
     return send_file(
         buffer,
         mimetype="application/pdf",

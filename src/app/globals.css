@@ -1183,9 +1183,35 @@ summary::-webkit-details-marker {
   background: white !important;
   border-radius: 16px !important;
   padding: 12px 16px !important;
-  gap: 16px;
+  gap: 12px;
   border: 1px solid rgba(0,0,0,0.03) !important;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.cart-item--selected {
+  border-color: rgba(107, 62, 46, 0.15) !important;
+}
+
+/* ── Cart Checkbox ─────────────────────── */
+.cart-checkbox {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: #6B3E2E;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.cart-select-all {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 4px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #5A3E2B;
+  cursor: pointer;
+  user-select: none;
 }
 
 .cart-item-thumbnail {
@@ -1260,6 +1286,12 @@ summary::-webkit-details-marker {
   gap: 10px;
   flex-shrink: 0;
   padding-left: 8px;
+}
+
+.cart-item-bottom-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .cart-item-price-main {
@@ -3180,7 +3212,7 @@ body .btn-outline {
 .qty-pill-brand {
   display: flex !important;
   align-items: center !important;
-  background: #2f2a26 !important;
+  background: var(--brand) !important;
   border-radius: 12px !important;
   height: 48px !important;
   overflow: hidden !important;

@@ -7,12 +7,19 @@ import NextLink from "next/link";
 import products from "@/data/products.json"; 
 import { showToast } from "@/components/Toast";
 import PriceProgressBar from "@/components/PriceProgressBar";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 import type { Product } from "@/types";
+
+import NextImage from "next/image";
 
 export default function CartPage() {
   const { cartItems, loadCart, removeFromCart, updateQuantity, clearCart } = useCart();
   const [loading, setLoading] = useState(true);
-
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  // Modal state for confirmations
+  const [removeTarget, setRemoveTarget] = useState<{ id: string; name: string } | null>(null);
+  const [showClearAll, setShowClearAll] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -23,11 +30,32 @@ export default function CartPage() {
     init();
   }, [loadCart]);
 
-  const subtotal = cartItems.reduce((s, it) => s + it.price * it.quantity, 0);
-  const itemCount = cartItems.reduce((n, it) => n + it.quantity, 0);
+  // Select all items whenever cart changes
+  useEffect(() => {
+    setSelectedItems(cartItems.map((it) => it.id));
+  }, [cartItems]);
+
+  const toggleItem = (id: string) => {
+    setSelectedItems((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  const toggleAll = () => {
+    if (selectedItems.length === cartItems.length) {
+      setSelectedItems([]);
+    } else {
+      setSelectedItems(cartItems.map((it) => it.id));
+    }
+  };
+
+  // Only compute totals from SELECTED items
+  const selectedCartItems = cartItems.filter((it) => selectedItems.includes(it.id));
+  const subtotal = selectedCartItems.reduce((s, it) => s + it.price * it.quantity, 0);
+  const itemCount = selectedCartItems.reduce((n, it) => n + it.quantity, 0);
 
   // Discount Logic
-  const discountableSubtotal = cartItems.reduce((s, it) => {
+  const discountableSubtotal = selectedCartItems.reduce((s, it) => {
     const p = (products as Product[]).find(x => x.slug === it.id);
     if (p?.type === "custom-order") return s;
     return s + it.price * it.quantity;
@@ -44,16 +72,52 @@ export default function CartPage() {
   const shippingDiscount = isFreeShipping ? -baseShipping : 0;
   const grandTotal = subtotal + baseShipping + shippingDiscount - discountAmount;
 
+  const handleQuantityUpdate = async (id: string, newQuantity: number) => {
+    if (isUpdating) return;
+    setIsUpdating(true);
+    try {
+      await updateQuantity(id, newQuantity);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   if (loading) {
-    return <main className="cart-page py-20 text-center text-stone-500 font-serif">Loading your cart...</main>;
+    return (
+      <main className="cart-page py-4 py-md-5 px-3 bg-[#FAF7F2] min-h-screen">
+        <div className="container" style={{ maxWidth: '900px' }}>
+          <header className="mb-8 text-center pt-2">
+            <div className="h-8 w-32 bg-stone-200 animate-pulse rounded-md mx-auto mb-1"></div>
+          </header>
+          <div className="row g-4 items-start">
+            <div className="col-12 col-lg-7">
+              <div className="flex flex-col gap-4">
+                {[1, 2].map(i => (
+                  <div key={i} className="cart-item-row-refined shadow-sm animate-pulse opacity-60">
+                    <div className="w-[84px] h-[84px] bg-stone-200 rounded-xl flex-shrink-0" />
+                    <div className="flex-1 flex flex-col justify-center gap-3 py-2">
+                      <div className="h-4 w-3/4 bg-stone-200 rounded"></div>
+                      <div className="h-6 w-20 bg-stone-200 rounded-full"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="col-12 col-lg-5">
+              <div className="h-64 w-full bg-stone-200 rounded-2xl animate-pulse opacity-60"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
   }
 
   return (
     <main className="cart-page py-4 py-md-5 px-3 bg-[#FAF7F2] min-h-screen">
       <div className="container">
-        {/* Header - Always visible as per Image 2 */}
-        <header className="mb-0 text-center pt-2">
-          <h1 className="h1 font-serif fw-bold text-[#2f2a26] mb-1">Cart</h1>
+        {/* Header - left-aligned matching Wishlist */}
+        <header className="mb-8 pt-2">
+          <h1 className="text-3xl font-serif font-bold text-[#2f2a26]">Cart</h1>
         </header>
 
         {cartItems.length === 0 ? (
@@ -81,17 +145,28 @@ export default function CartPage() {
             </NextLink>
           </div>
         ) : (
-          <div className="row g-4 items-start">
+          <div className="row g-4 items-start" style={{ pointerEvents: isUpdating ? 'none' : 'auto', opacity: isUpdating ? 0.8 : 1 }}>
             {/* Main List (Left) */}
             <div className="col-12 col-lg-7">
               <PriceProgressBar subtotal={subtotal} />
 
+              {/* Select All */}
+              <label className="cart-select-all">
+                <input
+                  type="checkbox"
+                  checked={selectedItems.length === cartItems.length && cartItems.length > 0}
+                  onChange={toggleAll}
+                  className="cart-checkbox"
+                />
+                <span>Select All ({cartItems.length})</span>
+              </label>
+
               <div className="cart-list-wrapper">
                 {cartItems.map((it) => (
-                  <div key={it.id} className="cart-item-row-refined shadow-sm">
+                  <div key={it.id} className={`cart-item-row-refined shadow-sm${selectedItems.includes(it.id) ? " cart-item--selected" : ""}`}>
                     {/* Left: Thumbnail */}
-                    <div className="cart-item-thumbnail">
-                      <img src={it.image} alt={it.name} />
+                    <div className="cart-item-thumbnail relative" style={{ width: 84, height: 84 }}>
+                      <NextImage src={it.image} alt={it.name} fill style={{ objectFit: 'cover' }} sizes="84px" />
                     </div>
 
                     {/* Center: Details & Picker */}
@@ -100,26 +175,28 @@ export default function CartPage() {
                       <div className="qty-pill-brand-mini">
                         <button onClick={async () => {
                           if (it.quantity <= 1) {
-                            if (window.confirm(`Are you sure you want to remove ${it.name} from your cart?`)) {
-                              removeFromCart(it.id);
-                            }
+                            setRemoveTarget({ id: it.id, name: it.name });
                           } else {
-                            await updateQuantity(it.id, it.quantity - 1);
+                            await handleQuantityUpdate(it.id, it.quantity - 1);
                           }
                         }}>&minus;</button>
                         <span>{it.quantity}</span>
-                        <button onClick={async () => await updateQuantity(it.id, it.quantity + 1)}>+</button>
+                        <button onClick={() => handleQuantityUpdate(it.id, it.quantity + 1)}>+</button>
                       </div>
                     </div>
 
-                    {/* Right: Price & Remove */}
+                    {/* Right: Price, Checkbox & Remove */}
                     <div className="cart-item-actions-right">
                       <div className="cart-item-price-main font-serif">₹{it.price * it.quantity}</div>
-                      <button onClick={() => {
-                        if (window.confirm(`Remove ${it.name} from your bag?`)) {
-                          removeFromCart(it.id);
-                        }
-                      }} className="btn-remove-pill">Remove</button>
+                      <div className="cart-item-bottom-actions">
+                        <input
+                          type="checkbox"
+                          checked={selectedItems.includes(it.id)}
+                          onChange={() => toggleItem(it.id)}
+                          className="cart-checkbox"
+                        />
+                        <button onClick={() => setRemoveTarget({ id: it.id, name: it.name })} className="btn-remove-pill">Remove</button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -128,11 +205,7 @@ export default function CartPage() {
               {/* Clear All Footer */}
               <div className="text-center mt-4">
                 <button 
-                  onClick={() => {
-                    if (window.confirm("This will remove all items from your shopping bag. Continue?")) {
-                      clearCart();
-                    }
-                  }}
+                  onClick={() => setShowClearAll(true)}
                   className="btn-clear-pill"
                 >
                   Clear All Items
@@ -147,7 +220,7 @@ export default function CartPage() {
                 
                 <div className="vstack gap-3 small text-secondary">
                   <div className="d-flex justify-content-between text-dark">
-                    <span>Subtotal</span>
+                    <span>Subtotal ({itemCount} item{itemCount !== 1 ? "s" : ""})</span>
                     <span className="fw-bold">₹{subtotal}</span>
                   </div>
                   
@@ -178,8 +251,13 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                <NextLink href="/checkout" className="btn btn-primary w-100 py-3 mt-4 fw-bold shadow-sm">
-                  Checkout
+                <NextLink
+                  href="/checkout"
+                  className={`btn btn-primary w-100 py-3 mt-4 fw-bold shadow-sm${selectedItems.length === 0 ? " disabled opacity-50 pe-none" : ""}`}
+                  aria-disabled={selectedItems.length === 0}
+                  onClick={(e) => { if (selectedItems.length === 0) e.preventDefault(); }}
+                >
+                  {selectedItems.length === 0 ? "Select items to checkout" : `Checkout (${itemCount})`}
                 </NextLink>
                 
                 <div className="mt-4 d-flex align-items-center justify-content-center gap-2 py-2 small fw-bold text-secondary text-uppercase tracking-wider" style={{ fontSize: "10px" }}>
@@ -191,6 +269,36 @@ export default function CartPage() {
           </div>
         )}
       </div>
+
+      {/* ── Remove Item Confirmation ── */}
+      <ConfirmModal
+        isOpen={!!removeTarget}
+        title="Remove item?"
+        message={removeTarget ? `Remove "${removeTarget.name}" from your bag?` : ""}
+        confirmLabel="Remove"
+        cancelLabel="Keep"
+        destructive
+        onConfirm={() => {
+          if (removeTarget) removeFromCart(removeTarget.id);
+          setRemoveTarget(null);
+        }}
+        onCancel={() => setRemoveTarget(null)}
+      />
+
+      {/* ── Clear All Confirmation ── */}
+      <ConfirmModal
+        isOpen={showClearAll}
+        title="Clear cart?"
+        message="This will remove all items from your shopping bag. This action cannot be undone."
+        confirmLabel="Clear All"
+        cancelLabel="Cancel"
+        destructive
+        onConfirm={() => {
+          clearCart();
+          setShowClearAll(false);
+        }}
+        onCancel={() => setShowClearAll(false)}
+      />
     </main>
   );
 }

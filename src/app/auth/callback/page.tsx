@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
 export default function AuthCallbackPage() {
-  const router = useRouter();
+    const router = useRouter();
   const [message, setMessage] = useState("Verifying...");
 
   useEffect(() => {

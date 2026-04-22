@@ -1,8 +1,10 @@
 "use client";
 
+import { supabase } from "@/lib/supabaseClient";
+
 import { createContext, useContext, useEffect, useState } from "react";
 import { Session, User } from "@supabase/supabase-js";
-import { supabase } from "@/lib/supabaseClient";
+
 import { clearAllLocalData } from "@/lib/bags";
 
 type AuthContextType = {
@@ -22,6 +24,7 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any | null>(null);
@@ -74,11 +77,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   if (loading && !session) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-white">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-[var(--brand)] border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-stone-500 font-medium">Loading your account...</p>
-        </div>
+      <div style={{ position: 'fixed', inset: 0, backgroundColor: '#F5EFE6', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999 }}>
+        <div style={{ width: 40, height: 40, border: '4px solid #e6ded4', borderTop: '4px solid #5a3e2b', borderRadius: '50%', animation: 'auth-spin 0.8s linear infinite' }} />
+        <style>{`@keyframes auth-spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }

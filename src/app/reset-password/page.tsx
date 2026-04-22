@@ -1,12 +1,13 @@
 "use client";
 
+import { supabase } from "@/lib/supabaseClient";
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
 import { showToast } from "@/components/Toast";
 
 export default function ResetPasswordPage() {
-  const router = useRouter();
+    const router = useRouter();
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
@@ -43,7 +44,6 @@ export default function ResetPasswordPage() {
 
       if (error) throw error;
 
-      alert("Password updated successfully!");
       showToast("Security updated. Please login with your new password.");
 
       // IMPORTANT: Sign out to clear the temporary session

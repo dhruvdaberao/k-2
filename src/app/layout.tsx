@@ -11,6 +11,7 @@ import { GoogleTagManager } from '@next/third-parties/google';
 import { AuthProvider } from "@/hooks/useAuth";
 import { CartProvider } from "@/hooks/useCart";
 import { WishlistProvider } from "@/hooks/useWishlist";
+import SupabaseProvider from "@/components/SupabaseProvider";
 
 export const metadata = {
   metadataBase: new URL("https://keshvicrafts.in"),
@@ -63,20 +64,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <GoogleTagManager gtmId="GTM-MFVDFHT3" />
         <AnalyticsTracker />
         <ServiceWorkerRegister />
-        <AuthProvider>
-          <CartProvider>
-            <WishlistProvider>
-              <BootstrapNavbar />
+        <SupabaseProvider>
+          <AuthProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <BootstrapNavbar />
 
-              {/* Remove .container here so hero can be full width */}
-              {children}
+                {/* Remove .container here so hero can be full width */}
+                {children}
 
-              <Footer />
+                <Footer />
 
-              <Toast />
-            </WishlistProvider>
-          </CartProvider>
-        </AuthProvider>
+                <Toast />
+              </WishlistProvider>
+            </CartProvider>
+          </AuthProvider>
+        </SupabaseProvider>
 
         {/* Bootstrap JS */}
         <Script

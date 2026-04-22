@@ -1,5 +1,7 @@
 "use client";
 
+import { supabase } from "@/lib/supabaseClient";
+
 import { useEffect, useMemo, useState } from "react";
 import products from "@/data/products.json";
 import { useRouter } from "next/navigation";
@@ -14,12 +16,12 @@ import {
   getPaymentMethodLabel,
 } from "@/lib/checkout";
 import { ORDER_CONFIRMATION_STORAGE_KEY, generateDynamicPdfUrl, generateLocalOrderId } from "@/lib/orderClient";
-import { supabase } from "@/lib/supabaseClient";
+import { handlePlaceOrder as placeOrderInDB } from "@/lib/placeOrder";
+import { getDirectCheckoutItem, clearDirectCheckoutItem } from "@/lib/directCheckout";
 import type { Product } from "@/types";
 
 import { useAuth } from "@/hooks/useAuth";
 
-// type definition removed, imported from bags
 type CheckoutStep = "details" | "payment" | "summary";
 
 const OWNER_PHONE_NUMBER = "7507996961";
@@ -35,24 +37,30 @@ const initialDetails: CheckoutCustomerDetails = {
 };
 
 export default function CheckoutPage() {
-  const { user, profile, loading } = useAuth();
+    const { user, profile, loading } = useAuth();
   const router = useRouter();
   const [items, setItems] = useState<CartItem[]>([]);
+  const [addonItems, setAddonItems] = useState<CartItem[]>([]);
   const [step, setStep] = useState<CheckoutStep>("details");
   const [details, setDetails] = useState<CheckoutCustomerDetails>(initialDetails);
   const [paymentMethod, setPaymentMethod] = useState<CheckoutPaymentMethod>("cod");
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [isDirectCheckout, setIsDirectCheckout] = useState(false);
+
+  // Merge carts locally for calculation and order hooks
+  const finalItems = useMemo(() => {
+    return [...items, ...addonItems];
+  }, [items, addonItems]);
 
   useEffect(() => {
     setHydrated(true);
 
-    if (!loading && !user) {
-      showToast("Please login/signup to continue checkout");
-      router.replace("/login");
-    }
+
+    let hasInitialized = false;
 
     const restoreDetails = () => {
+      // ... same logic
       if (profile) {
         setDetails({
           fullName: profile.name || "",
@@ -80,8 +88,11 @@ export default function CheckoutPage() {
       }
     };
 
-    restoreDetails();
-    refreshCart();
+    if (!hasInitialized) {
+      hasInitialized = true;
+      restoreDetails();
+      refreshCart();
+    }
 
     window.addEventListener("bag:changed", refreshCart);
     window.addEventListener("storage", refreshCart);
@@ -93,6 +104,33 @@ export default function CheckoutPage() {
   }, [router, step, profile, user]);
 
   const refreshCart = async () => {
+    // Don't redirect during order placement — the cart will be empty by design
+    if (isPlacingOrder) return;
+
+    // Local explicit search param read to side-step app suspense bounds safely
+    const isBuyNow = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("buyNow") === "true";
+
+    // Check for direct checkout item first explicitly
+    if (isBuyNow) {
+      const directItem = getDirectCheckoutItem();
+      if (directItem) {
+        console.log("[Checkout] Using direct checkout item:", directItem);
+        setIsDirectCheckout(true);
+        setItems([{
+          id: directItem.product_id,
+          name: directItem.name,
+          price: directItem.price,
+          quantity: directItem.quantity,
+          image: directItem.image,
+        }]);
+        return;
+      }
+    } else {
+      // Clear direct checkout item so it doesn't pollute later
+      clearDirectCheckoutItem();
+      setIsDirectCheckout(false);
+    }
+
     console.log("[Checkout] Refreshing cart data...");
     const currentCart = await getAsyncCart();
     if (currentCart.length === 0) {
@@ -105,8 +143,23 @@ export default function CheckoutPage() {
     setItems(currentCart);
   };
 
+  const handleAddonAdded = (product: Product) => {
+    const addonItem: CartItem = {
+      id: product.id || product.slug || "",
+      name: product.title,
+      price: product.price,
+      quantity: 1,
+      image: (product as any).image || (product as any).img || (product as any).image_url || product.images?.[0] || "/placeholder.png"
+    };
+    setAddonItems(prev => {
+      if (prev.some(it => it.id === addonItem.id)) return prev;
+      return [...prev, addonItem];
+    });
+    showToast(`Added ${product.title}`);
+  };
+
   const enrichedItems = useMemo(() => {
-    return items.map((item) => {
+    return finalItems.map((item) => {
       const product = resolveProduct(item);
       return {
         ...item,
@@ -115,7 +168,7 @@ export default function CheckoutPage() {
         checkoutUrl: product?.checkoutUrl,
       };
     });
-  }, [items]);
+  }, [finalItems]);
 
   const subtotal = enrichedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
@@ -188,20 +241,64 @@ export default function CheckoutPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handlePlaceOrder = async () => {
-    if (items.length === 0) {
+  const onPlaceOrder = async () => {
+    if (isPlacingOrder) return;
+    
+    if (finalItems.length === 0) {
       showToast("Your cart is empty.");
       router.replace("/cart");
       return;
     }
 
+    if (!profile?.name || !user?.email || !profile?.phone) {
+      showToast("Please complete your profile before placing order");
+      router.push("/profile?edit=true");
+      return;
+    }
+
     try {
+      console.log("Placing order...");
       setIsPlacingOrder(true);
+
+      const {
+        data: { session }
+      } = await supabase.auth.getSession();
+
+      const authUser = session?.user;
+
+      console.log("FIXED USER:", authUser);
+
+      if (!authUser) {
+        showToast("Session not ready, retrying...");
+        setIsPlacingOrder(false);
+        return;
+      }
+
+      const mappedFinalItems = finalItems.map(item => ({
+        product_id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image || ""
+      }));
       
-      const orderId = generateLocalOrderId();
+      const result = await placeOrderInDB(mappedFinalItems);
+      console.log("Order result:", result);
+
+      if (!result.success) {
+        console.error("[Checkout] DB order failed:", result.error);
+        showToast(result.error || "Order failed");
+        setIsPlacingOrder(false);
+        return; // finally block will reset isPlacingOrder, but user explicitly wants it reset here too
+      }
+
+      window.dispatchEvent(new CustomEvent("bag:changed"));
+      setItems([]);
+      setAddonItems([]);
+
+      const orderId = result.displayId || result.orderId || generateLocalOrderId();
       const createdAt = new Date().toISOString();
 
-      // Prepare stateless order data
       const orderData = {
         o: orderId,
         c: createdAt,
@@ -230,10 +327,7 @@ export default function CheckoutPage() {
       };
 
       const dynamicPdfUrl = generateDynamicPdfUrl(orderData);
-      const isCod = paymentMethod === "cod";
-      const docType = isCod ? "invoice" : "order_details";
-      const invoiceUrl = `${dynamicPdfUrl}&t=${docType}`;
-      
+
       localStorage.setItem(
         ORDER_CONFIRMATION_STORAGE_KEY,
         JSON.stringify({
@@ -245,28 +339,29 @@ export default function CheckoutPage() {
         })
       );
 
-      await clearCart();
-      const linkLabel = isCod ? "Invoice" : "Order Details";
-      const instaText = `Hi, my order is placed (ID: ${orderId}). ${linkLabel}: ${invoiceUrl}`;
-      const instaUrl = `https://ig.me/m/keshvi_crafts`;
-      
-      // Copy to clipboard since Instagram doesn't support pre-filled text in URL
-      try {
-        await navigator.clipboard.writeText(instaText);
-        showToast("Order link copied! Please paste it in Instagram.");
-      } catch (err) {
-        console.error("Failed to copy text: ", err);
-      }
+      // Navigate FIRST — before clearing cart to prevent empty cart flash
+      router.push(`/order-success?orderId=${orderId}`);
 
-      // Try to open Instagram DM in a new tab
-      const instaWindow = window.open(instaUrl, "_blank", "noopener,noreferrer");
-      if (!instaWindow) {
-        console.warn("Instagram popup was blocked.");
-      }
+      // Clear cart in background AFTER navigation starts
+      clearCart();
+      clearDirectCheckoutItem();
 
-      router.push("/order-confirmed");
-    } catch (error) {
-      console.error("Order process error:", error);
+      // Fire-and-forget email (don't block navigation)
+      fetch("/api/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "order_placed",
+          userEmail: details.email,
+          orderId: orderId,
+          items: finalItems.map(item => ({ name: item.name, quantity: item.quantity, price: item.price })),
+          total: total
+        })
+      }).catch(emailErr => {
+        console.error("Order Email Error (Non-blocking):", emailErr);
+      });
+    } catch (err) {
+      console.error("ORDER ERROR:", err);
       showToast("Something went wrong. Please try again.");
     } finally {
       setIsPlacingOrder(false);
@@ -277,7 +372,7 @@ export default function CheckoutPage() {
     return <main className="checkout-page checkout-container checkout-flow py-10" />;
   }
 
-  if (items.length === 0) {
+  if (finalItems.length === 0 && !isPlacingOrder) {
     return (
       <main className="checkout-page checkout-container checkout-flow py-10 text-center">
         <h1 className="checkout-title">Checkout</h1>
@@ -289,6 +384,16 @@ export default function CheckoutPage() {
   return (
     <main className="checkout-page checkout-container checkout-flow">
       <meta name="robots" content="noindex" />
+
+      {/* Full-page processing overlay */}
+      {isPlacingOrder && (
+        <div style={{ position: 'fixed', inset: 0, background: '#FAF8F5', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 99999, gap: 16 }}>
+          <div style={{ width: 44, height: 44, border: '4px solid #e6ded4', borderTop: '4px solid #5a3e2b', borderRadius: '50%', animation: 'co-spin 0.8s linear infinite' }} />
+          <p style={{ color: '#5a3e2b', fontSize: 16, fontWeight: 600, fontFamily: 'Georgia, serif' }}>Processing your order...</p>
+          <p style={{ color: '#8B7355', fontSize: 13 }}>Please wait, do not close this page</p>
+          <style>{`@keyframes co-spin { to { transform: rotate(360deg); } }`}</style>
+        </div>
+      )}
 
       <div className="checkout-header">
         <h1 className="checkout-title">
@@ -512,20 +617,25 @@ export default function CheckoutPage() {
               </div>
             )}
 
-            <CheckoutAddons currentCartSlugs={items.map((item) => item.id)} onAdded={refreshCart} />
+            <CheckoutAddons currentCartSlugs={finalItems.map((item) => item.id)} onAdded={handleAddonAdded} />
 
             <div className="checkout-actions checkout-actions--between">
               <button type="button" className="btn-secondary checkout-button checkout-button--ghost" onClick={() => setStep("payment")}>
                 &larr; Back
               </button>
-              <button type="button" className="btn-primary checkout-button" onClick={handlePlaceOrder} disabled={isPlacingOrder}>
-                {isPlacingOrder ? "Processing..." : "Confirm & Place Order"}
+              <button
+                type="button"
+                className="btn-primary checkout-button"
+                onClick={onPlaceOrder}
+                disabled={isPlacingOrder}
+                aria-busy={isPlacingOrder}
+                style={isPlacingOrder ? { pointerEvents: "none", opacity: 0.7 } : undefined}
+              >
+                {isPlacingOrder ? "Processing…" : "Confirm & Place Order"}
               </button>
             </div>
             <p className="checkout-note" style={{ marginTop: "1rem", fontSize: "0.85rem", color: "#666", lineHeight: "1.4" }}>
-              Note: On clicking "Place Order", you will be redirected to Instagram. 
-              <b> The order link will be copied to your clipboard</b>—please paste it in the chat to ensure your order is confirmed. 
-              After sending, please return to this page to download your professional Invoice / Order Details.
+              Note: An invoice and full summary will be generated securely on the next page.
             </p>
           </section>
         )}

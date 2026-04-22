@@ -1,13 +1,14 @@
 "use client";
 
+import { supabase } from "@/lib/supabaseClient";
+
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
 import { showToast } from "@/components/Toast";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function AccountSettingsPage() {
-  const router = useRouter();
+    const router = useRouter();
   const { session, user, loading } = useAuth();
   
   const [hydrated, setHydrated] = useState(false);

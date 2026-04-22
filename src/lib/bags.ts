@@ -74,21 +74,22 @@ export function getCart(): CartItem[] {
 
 export async function loadCart(passedUser?: any): Promise<CartItem[]> {
   console.log("[Cart] loadCart triggered");
-  const user = passedUser;
+  const { data: sessionData } = await supabase.auth.getSession();
+  const actualUser = passedUser || sessionData?.session?.user;
 
   // GUEST MODE
-  if (!user) {
+  if (!actualUser) {
     const local = read<CartItem[]>(CART_KEY, []);
     console.log("[Cart] Guest session, local items:", local.length);
     return local;
   }
 
   // LOGGED IN MODE
-  console.log("[Cart] Logged-in session for user:", user.id);
+  console.log("[Cart] Logged-in session for user:", actualUser.id);
   const { data, error } = await supabase
     .from("cart")
     .select("*")
-    .eq("user_id", user.id);
+    .eq("user_id", actualUser.id);
 
   if (error) {
     console.error("[Cart] loadCart DB Error:", error.message);
@@ -108,7 +109,8 @@ export async function loadCart(passedUser?: any): Promise<CartItem[]> {
 export async function handleAddToCart(product: any, passedUser?: any): Promise<void> {
   const item = snap(product);
   console.log("[Cart] addToCart intent:", item.id);
-  const user = passedUser;
+  const { data: sessionData } = await supabase.auth.getSession();
+  const user = passedUser || sessionData?.session?.user;
 
   // -------- GUEST --------
   if (!user) {
@@ -168,9 +170,10 @@ export const addToCart = handleAddToCart;
 
 export async function updateQty(productId: string, quantity: number, passedUser?: any): Promise<void> {
   console.log(`[Cart] updateQty: ${productId} -> ${quantity}`);
-  const user = passedUser;
+  const { data: sessionData } = await supabase.auth.getSession();
+  const user = passedUser || sessionData?.session?.user;
 
-  // GUEST
+  // -------- GUEST
   if (!user) {
     let cart = read<CartItem[]>(CART_KEY, []);
     if (quantity <= 0) {
@@ -210,7 +213,8 @@ export async function removeFromCart(productId: string, passedUser?: any): Promi
 
 export async function clearCart(passedUser?: any): Promise<void> {
   console.log("[Cart] clearCart intent");
-  const user = passedUser;
+  const { data: sessionData } = await supabase.auth.getSession();
+  const user = passedUser || sessionData?.session?.user;
 
   if (!user) {
     write(CART_KEY, []);
