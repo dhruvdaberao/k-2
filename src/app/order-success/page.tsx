@@ -74,9 +74,9 @@ export default function OrderSuccessPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <Link
             href="/orders"
-            style={{ display: 'flex', height: 46, alignItems: 'center', justifyContent: 'center', borderRadius: 10, background: '#5a3e2b', color: '#ffffff', fontWeight: 600, fontSize: 14, textDecoration: 'none', border: 'none', cursor: 'pointer', transition: 'opacity 0.2s' }}
+            style={{ display: 'flex', height: 46, alignItems: 'center', justifyContent: 'center', borderRadius: 10, background: '#5a3e2b', fontWeight: 600, fontSize: 14, textDecoration: 'none', border: 'none', cursor: 'pointer', transition: 'opacity 0.2s' }}
           >
-            View My Orders
+            <span style={{ color: '#ffffff' }}>View My Orders</span>
           </Link>
 
           {invoiceUrl && (
