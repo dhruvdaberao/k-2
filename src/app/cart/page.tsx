@@ -165,8 +165,8 @@ export default function CartPage() {
                 {cartItems.map((it) => (
                   <div key={it.id} className={`cart-item-row-refined shadow-sm${selectedItems.includes(it.id) ? " cart-item--selected" : ""}`}>
                     {/* Left: Thumbnail */}
-                    <div className="cart-item-thumbnail relative" style={{ width: 84, height: 84 }}>
-                      <NextImage src={it.image} alt={it.name} fill style={{ objectFit: 'cover' }} sizes="84px" />
+                    <div className="cart-item-thumbnail relative" style={{ width: 72, height: 72 }}>
+                      <NextImage src={it.image} alt={it.name} fill style={{ objectFit: 'cover' }} sizes="72px" />
                     </div>
 
                     {/* Center: Details & Picker */}

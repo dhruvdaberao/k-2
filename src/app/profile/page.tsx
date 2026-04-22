@@ -346,7 +346,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="checkout-form-grid" style={{ pointerEvents: isEditing ? 'auto' : 'none', opacity: isEditing ? 1 : 0.8 }}>
+        <div className="checkout-form-grid" style={{ opacity: isEditing ? 1 : 0.8 }} onClick={(e) => { if (!isEditing) { e.preventDefault(); showToast("Click Edit to update your details"); } }}>
           <label className="checkout-field">
             <span>Full Name</span>
             <input

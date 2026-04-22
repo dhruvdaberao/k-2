@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabaseClient';
-import { PDFDocument, rgb, StandardFonts, degrees } from 'pdf-lib';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 /**
  * Draws a clean, professional ecommerce invoice
@@ -14,29 +15,24 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'Missing orderId parameter' }, { status: 400 });
     }
 
+    // Initialize session-aware Supabase client
+    const supabase = createRouteHandlerClient({ cookies });
+
     // Fetch order from DB — try display_id first, then id
-    let order = null;
-    
-    // Try display_id match first (e.g. KC-20260422-1090)
-    const { data: byDisplayId } = await supabase
+    // We use a single query with .or() for better performance and reliability
+    const { data: order, error: fetchError } = await supabase
       .from('orders')
       .select('*')
-      .eq('display_id', orderId)
+      .or(`display_id.eq."${orderId}",id.eq."${orderId}"`)
       .maybeSingle();
-    
-    if (byDisplayId) {
-      order = byDisplayId;
-    } else {
-      // Fallback: try by UUID id
-      const { data: byId } = await supabase
-        .from('orders')
-        .select('*')
-        .eq('id', orderId)
-        .maybeSingle();
-      order = byId;
+
+    if (fetchError) {
+      console.error('[Invoice API] DB Fetch Error:', fetchError);
+      return NextResponse.json({ error: 'Database error', details: fetchError.message }, { status: 500 });
     }
 
     if (!order) {
+      console.error(`[Invoice API] Order not found for ID: ${orderId}`);
       return NextResponse.json({ error: 'Order not found' }, { status: 404 });
     }
 

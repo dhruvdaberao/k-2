@@ -1186,6 +1186,8 @@ summary::-webkit-details-marker {
   gap: 12px;
   border: 1px solid rgba(0,0,0,0.03) !important;
   transition: transform 0.2s ease, border-color 0.2s ease;
+  overflow: hidden;
+  max-width: 100%;
 }
 
 .cart-item--selected {
@@ -3206,33 +3208,6 @@ body .btn-outline {
   body .inline-counter-container {
     border-radius: 6px !important; /* Smaller radius for smaller height ensures non-pill look */
   }
-}
-
-/* Force Rectangular-Curved Quantity Picker Globally */
-.qty-pill-brand {
-  display: flex !important;
-  align-items: center !important;
-  background: var(--brand) !important;
-  border-radius: 12px !important;
-  height: 48px !important;
-  overflow: hidden !important;
-  color: white !important;
-}
-
-.qty-pill-brand button {
-  flex: 0 0 48px !important;
-  background: transparent !important;
-  border: none !important;
-  color: white !important;
-  font-size: 1.2rem !important;
-  font-weight: 700 !important;
-  cursor: pointer !important;
-}
-
-.qty-pill-brand span {
-  flex: 1 !important;
-  text-align: center !important;
-  font-weight: 700 !important;
 }
 
 /* Ensure Red Heart Outline Consistency */

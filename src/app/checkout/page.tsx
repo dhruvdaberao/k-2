@@ -45,6 +45,7 @@ export default function CheckoutPage() {
   const [details, setDetails] = useState<CheckoutCustomerDetails>(initialDetails);
   const [paymentMethod, setPaymentMethod] = useState<CheckoutPaymentMethod>("cod");
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [orderCompleted, setOrderCompleted] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const [isDirectCheckout, setIsDirectCheckout] = useState(false);
 
@@ -101,11 +102,14 @@ export default function CheckoutPage() {
       window.removeEventListener("bag:changed", refreshCart);
       window.removeEventListener("storage", refreshCart);
     };
-  }, [router, step, profile, user]);
+  }, [router, step, profile, user, refreshCart]);
 
-  const refreshCart = async () => {
-    // Don't redirect during order placement — the cart will be empty by design
-    if (isPlacingOrder) return;
+  const refreshCart = useCallback(async () => {
+    // Don't redirect during order placement or if order was just finished
+    if (isPlacingOrder || orderCompleted) {
+      console.log("[Checkout] Skip refreshCart: Order in progress or completed");
+      return;
+    }
 
     // Local explicit search param read to side-step app suspense bounds safely
     const isBuyNow = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("buyNow") === "true";
@@ -141,7 +145,7 @@ export default function CheckoutPage() {
     }
     console.log("[Checkout] Items loaded:", currentCart);
     setItems(currentCart);
-  };
+  }, [isPlacingOrder, orderCompleted, router]);
 
   const handleAddonAdded = (product: Product) => {
     const addonItem: CartItem = {
@@ -293,9 +297,10 @@ export default function CheckoutPage() {
       }
 
       window.dispatchEvent(new CustomEvent("bag:changed"));
-      setItems([]);
-      setAddonItems([]);
-
+      
+      // Do NOT clear local items instantly - let the FullPageLoader stay active
+      // until navigation to order-success completes.
+      
       const orderId = result.displayId || result.orderId || generateLocalOrderId();
       const createdAt = new Date().toISOString();
 
@@ -339,12 +344,17 @@ export default function CheckoutPage() {
         })
       );
 
-      // Navigate FIRST — before clearing cart to prevent empty cart flash
-      router.push(`/order-success?orderId=${orderId}`);
+      // Mark as completed to stop any "cart empty" redirect logic from firing
+      setOrderCompleted(true);
 
-      // Clear cart in background AFTER navigation starts
-      clearCart();
-      clearDirectCheckoutItem();
+      // Navigate FIRST — before clearing cart to prevent empty cart flash
+      router.replace(`/order-success?orderId=${orderId}`);
+
+      // Delay cart clear so navigation completes before any state changes
+      setTimeout(() => {
+        clearCart();
+        clearDirectCheckoutItem();
+      }, 2000);
 
       // Fire-and-forget email (don't block navigation)
       fetch("/api/send-email", {
@@ -363,16 +373,27 @@ export default function CheckoutPage() {
     } catch (err) {
       console.error("ORDER ERROR:", err);
       showToast("Something went wrong. Please try again.");
-    } finally {
-      setIsPlacingOrder(false);
+      setIsPlacingOrder(false); // Only reset on ERROR — not on success
     }
   };
+
+  // ── STEP 1: Full-page loader blocks EVERYTHING during order ──
+  if (isPlacingOrder) {
+    return (
+      <div style={{ position: 'fixed', inset: 0, background: '#FAF8F5', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 99999, gap: 16 }}>
+        <div style={{ width: 44, height: 44, border: '4px solid #e6ded4', borderTop: '4px solid #5a3e2b', borderRadius: '50%', animation: 'co-spin 0.8s linear infinite' }} />
+        <p style={{ color: '#5a3e2b', fontSize: 16, fontWeight: 600, fontFamily: 'Georgia, serif' }}>Placing your order...</p>
+        <p style={{ color: '#8B7355', fontSize: 13 }}>Please wait, do not close this page</p>
+        <style>{`@keyframes co-spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
 
   if (!hydrated) {
     return <main className="checkout-page checkout-container checkout-flow py-10" />;
   }
 
-  if (finalItems.length === 0 && !isPlacingOrder) {
+  if (finalItems.length === 0) {
     return (
       <main className="checkout-page checkout-container checkout-flow py-10 text-center">
         <h1 className="checkout-title">Checkout</h1>
@@ -384,16 +405,6 @@ export default function CheckoutPage() {
   return (
     <main className="checkout-page checkout-container checkout-flow">
       <meta name="robots" content="noindex" />
-
-      {/* Full-page processing overlay */}
-      {isPlacingOrder && (
-        <div style={{ position: 'fixed', inset: 0, background: '#FAF8F5', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 99999, gap: 16 }}>
-          <div style={{ width: 44, height: 44, border: '4px solid #e6ded4', borderTop: '4px solid #5a3e2b', borderRadius: '50%', animation: 'co-spin 0.8s linear infinite' }} />
-          <p style={{ color: '#5a3e2b', fontSize: 16, fontWeight: 600, fontFamily: 'Georgia, serif' }}>Processing your order...</p>
-          <p style={{ color: '#8B7355', fontSize: 13 }}>Please wait, do not close this page</p>
-          <style>{`@keyframes co-spin { to { transform: rotate(360deg); } }`}</style>
-        </div>
-      )}
 
       <div className="checkout-header">
         <h1 className="checkout-title">

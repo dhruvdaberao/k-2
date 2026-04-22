@@ -6,19 +6,26 @@ export default function FullPageLoader() {
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: '#F5EFE6',
+        backgroundColor: '#ffffff',
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 99999,
+        gap: 20,
       }}
     >
+      <img
+        src="/uploads/hero/logo.png"
+        alt="Keshvi Crafts"
+        style={{ height: 90, width: 'auto', mixBlendMode: 'multiply' }}
+      />
       <div
         style={{
-          width: 40,
-          height: 40,
-          border: '4px solid #e6ded4',
-          borderTop: '4px solid #5a3e2b',
+          width: 36,
+          height: 36,
+          border: '3px solid #e6ded4',
+          borderTop: '3px solid #5a3e2b',
           borderRadius: '50%',
           animation: 'fpl-spin 0.8s linear infinite',
         }}
