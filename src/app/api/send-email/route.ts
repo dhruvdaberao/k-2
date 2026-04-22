@@ -10,8 +10,8 @@ type EmailPayload = {
 
 // Reusable email wrapper to ensure consistent branding
 const generateEmailLayout = (content: string, showButton: boolean = false, orderId: string = '') => {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://keshvicrafts.com';
-  const invoiceLink = `${siteUrl}/api/invoice?orderId=${orderId}`;
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const invoiceUrl = `${baseUrl}/api/invoice?orderId=${orderId}`;
 
   return `
     <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #F5EFE6; padding: 40px 10px; margin: 0;">
@@ -30,7 +30,7 @@ const generateEmailLayout = (content: string, showButton: boolean = false, order
         ${showButton && orderId ? `
           <!-- Action Button -->
           <div style="text-align: center; margin: 35px 0 20px;">
-            <a href="${invoiceLink}" style="background-color: #5a3e2b; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: bold; font-size: 16px; display: inline-block;">
+            <a href="${invoiceUrl}" style="background-color: #5a3e2b; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: bold; font-size: 16px; display: inline-block;">
               Download Invoice
             </a>
           </div>
