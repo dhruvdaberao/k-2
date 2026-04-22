@@ -49,11 +49,6 @@ export default function CheckoutPage() {
   const [hydrated, setHydrated] = useState(false);
   const [isDirectCheckout, setIsDirectCheckout] = useState(false);
 
-  // Merge carts locally for calculation and order hooks
-  const finalItems = useMemo(() => {
-    return [...items, ...addonItems];
-  }, [items, addonItems]);
-
   const refreshCart = useCallback(async () => {
     // Don't redirect during order placement or if order was just finished
     if (isPlacingOrder || orderCompleted) {
@@ -96,6 +91,11 @@ export default function CheckoutPage() {
     console.log("[Checkout] Items loaded:", currentCart);
     setItems(currentCart);
   }, [isPlacingOrder, orderCompleted, router]);
+
+  // Merge carts locally for calculation and order hooks
+  const finalItems = useMemo(() => {
+    return [...items, ...addonItems];
+  }, [items, addonItems]);
 
   useEffect(() => {
     setHydrated(true);
