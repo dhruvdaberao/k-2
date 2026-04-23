@@ -16,6 +16,7 @@ const initialDetails: CheckoutCustomerDetails = {
   phoneNumber: "",
   address: "",
   city: "",
+  state: "",
   pincode: "",
 };
 
@@ -50,7 +51,7 @@ export default function ProfilePage() {
   // Step 7: Protected Route Redirect
   useEffect(() => {
     if (!loading && !user) {
-      router.push("/login");
+      router.push("/auth");
     }
   }, [user, loading, router]);
 

@@ -31,7 +31,8 @@ export default function OrderSuccessPage() {
       }
 
       // 2. Fallback to a plain orderId reference if storage missing
-      const fallbackUrl = `${window.location.origin}/api/invoice?orderId=${orderId}`;
+      const token = searchParams?.get("token");
+      const fallbackUrl = `${window.location.origin}/api/invoice?orderId=${orderId}${token ? `&token=${token}` : ""}`;
       setInvoiceUrl(fallbackUrl);
     } catch (e) {
       console.error("Failed to load invoice url", e);

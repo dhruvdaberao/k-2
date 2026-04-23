@@ -11,7 +11,7 @@ import "./Navbar.css";
 export default function BootstrapNavbar() {
   const pathname = usePathname();
   const { user } = useAuth();
-  const authLink = user ? "/profile" : "/login";
+  const authLink = user ? "/profile" : "/auth";
 
   const isActive = (href: string): boolean =>
     href === "/" ? pathname === "/" : pathname?.startsWith(href) ?? false;

@@ -12,7 +12,7 @@ import ConfirmModal from "@/components/ui/ConfirmModal";
 import { generateDynamicPdfUrl } from "@/lib/orderClient";
 
 // ─── Types ─────────────────────────────────────────────────────────────────
-type OrderStatus = "placed" | "confirmed" | "shipped" | "delivered" | "cancelled";
+type OrderStatus = "placed" | "confirmed" | "shipped" | "delivered";
 
 type DeliveryAddress = {
   name?: string;
@@ -57,7 +57,6 @@ const STATUS_CONFIG: Record<OrderStatus, { label: string; bg: string; text: stri
   confirmed: { label: "Confirmed", bg: "#E0ECFA", text: "#3B6CB5" },
   shipped:   { label: "Shipped",   bg: "#FDF0E1", text: "#B5651D" },
   delivered: { label: "Delivered", bg: "#E3F2E8", text: "#3D7A4F" },
-  cancelled: { label: "Cancelled", bg: "#F5E1E1", text: "#A33B3B" },
 };
 
 function formatDate(iso: string): string {
@@ -86,8 +85,6 @@ export default function OrderDetailPage() {
   const [items, setItems] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-  const [cancelling, setCancelling] = useState(false);
-  const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelError, setCancelError] = useState(false);
   const [invoiceUrl, setInvoiceUrl] = useState<string>("#");
 
@@ -179,94 +176,9 @@ export default function OrderDetailPage() {
 
   // ── Cancel order handler ───────────────────────────────────────────────
   const handleCancelClick = () => {
-    if (!order) return;
-    const orderTime = new Date(order.created_at);
-    const now = new Date();
-    const diffHours = (now.getTime() - orderTime.getTime()) / (1000 * 60 * 60);
-
-    if (diffHours > 12) {
-      setCancelError(true);
-    } else {
-      setShowCancelModal(true);
-    }
+    showToast("Please contact support to cancel an order.");
   };
 
-  const handleCancelOrder = async () => {
-    if (!order || cancelling) return;
-    setCancelling(true);
-
-    try {
-      // Try updating by UUID id first
-      const cancelledAt = new Date().toISOString();
-      
-      // Try with cancelled_at first; if column doesn't exist, retry without
-      let updateResult = await supabase
-        .from("orders")
-        .update({ status: "cancelled", cancelled_at: cancelledAt })
-        .eq("id", order.id)
-        .select();
-
-      // If error mentions cancelled_at column, retry without it
-      if (updateResult.error && updateResult.error.message?.includes("cancelled_at")) {
-        console.warn("[OrderDetail] cancelled_at column not found, updating without it");
-        updateResult = await supabase
-          .from("orders")
-          .update({ status: "cancelled" })
-          .eq("id", order.id)
-          .select();
-      }
-
-      console.log("[OrderDetail] Cancel update result (by id):", updateResult);
-
-      // If no rows matched by UUID, try by display_id
-      if (!updateResult.data || updateResult.data.length === 0) {
-        console.log("[OrderDetail] Fallback: trying cancel by display_id...");
-        updateResult = await supabase
-          .from("orders")
-          .update({ status: "cancelled" })
-          .eq("display_id", order.display_id || order.id)
-          .select();
-        console.log("[OrderDetail] Cancel update result (by display_id):", updateResult);
-      }
-
-      if (updateResult.error) {
-        console.error("[OrderDetail] Cancel error:", updateResult.error.message);
-        showToast("Failed to cancel order. Please try again.");
-      } else if (!updateResult.data || updateResult.data.length === 0) {
-        console.error("[OrderDetail] Cancel: no rows updated. Possible RLS issue.");
-        showToast("Unable to cancel — please contact support.");
-      } else {
-        // Successfully cancelled — update local state 
-        setOrder({ ...order, status: "cancelled", cancelled_at: cancelledAt });
-        showToast("Order cancelled successfully.");
-        router.refresh();
-
-        // ── Trigger Cancellation Email (Non-Blocking) ──
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user && user.email) {
-          fetch("/api/v2mail", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              type: "order_cancelled",
-              userEmail: user.email,
-              orderId: order.display_id || order.id,
-              items: items,
-              total: order.total_amount
-            })
-          }).catch(emailErr => {
-            console.error("[OrderDetail] Non-fatal: cancel email failed", emailErr);
-          });
-        }
-      }
-    } catch (err) {
-      console.error("[OrderDetail] Cancel unexpected error:", err);
-      showToast("Something went wrong.");
-    } finally {
-      setCancelling(false);
-      setShowCancelModal(false);
-    }
-  };
 
   // ── WhatsApp help link ─────────────────────────────────────────────────
   const whatsappLink = order
@@ -354,23 +266,6 @@ export default function OrderDetailPage() {
         </div>
 
         {/* ── Cancelled Banner ──────────────────────────── */}
-        {status === "cancelled" && (
-          <div style={{ background: '#F5E1E1', border: '1px solid #E8B4B4', borderRadius: 14, padding: '14px 18px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 10 }}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A33B3B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="15" y1="9" x2="9" y2="15" />
-              <line x1="9" y1="9" x2="15" y2="15" />
-            </svg>
-            <div>
-              <p style={{ margin: 0, fontWeight: 600, color: '#A33B3B', fontSize: 14 }}>Order Cancelled</p>
-              {order.cancelled_at && (
-                <p style={{ margin: 0, color: '#A33B3B', fontSize: 12, opacity: 0.8 }}>
-                  Cancelled on {formatDate(order.cancelled_at)}
-                </p>
-              )}
-            </div>
-          </div>
-        )}
 
         {/* ── Payment Info ────────────────────────────── */}
         <div className="od-card">
@@ -483,27 +378,8 @@ export default function OrderDetailPage() {
       </div>
 
       {/* ── Cancel Confirmation Modal ────────────────── */}
-      <ConfirmModal
-        isOpen={showCancelModal}
-        title="Cancel Order"
-        message="Are you sure you want to cancel this order?"
-        confirmLabel={cancelling ? "Cancelling..." : "Confirm"}
-        cancelLabel="Cancel"
-        destructive
-        onConfirm={handleCancelOrder}
-        onCancel={() => setShowCancelModal(false)}
-      />
 
       {/* ── Cannot Cancel Modal ────────────────── */}
-      <ConfirmModal
-        isOpen={cancelError}
-        title="Cannot Cancel Order"
-        message="Orders can only be cancelled within 12 hours of placement."
-        confirmLabel="Okay"
-        cancelLabel="Close"
-        onConfirm={() => setCancelError(false)}
-        onCancel={() => setCancelError(false)}
-      />
     </main>
   );
 }

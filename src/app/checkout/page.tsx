@@ -4,7 +4,7 @@ import { supabase } from "@/lib/supabaseClient";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import products from "@/data/products.json";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { clearCart, loadCart as getAsyncCart } from "@/lib/bags";
 import { type CartItem } from "@/lib/bags";
 import { calculateShipping } from "@/lib/shipping";
@@ -22,7 +22,7 @@ import type { Product } from "@/types";
 
 import { useAuth } from "@/hooks/useAuth";
 
-type CheckoutStep = "details" | "payment" | "summary";
+type CheckoutStep = 1 | 2 | 3; // 1: details, 2: payment, 3: summary
 
 const OWNER_PHONE_NUMBER = "7507996961";
 const DETAILS_STORAGE_KEY = "checkout:details:v1";
@@ -33,16 +33,19 @@ const initialDetails: CheckoutCustomerDetails = {
   phoneNumber: "",
   address: "",
   city: "",
+  state: "",
   pincode: "",
 };
 
 export default function CheckoutPage() {
     const { user, profile, loading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isGuest = searchParams.get("guest") === "true";
   const [items, setItems] = useState<CartItem[]>([]);
   const [addonItems, setAddonItems] = useState<CartItem[]>([]);
   const hasInitialized = useRef(false);
-  const [step, setStep] = useState<CheckoutStep>("details");
+  const [step, setStep] = useState<CheckoutStep>(1);
   const [details, setDetails] = useState<CheckoutCustomerDetails>(initialDetails);
   const [paymentMethod, setPaymentMethod] = useState<CheckoutPaymentMethod>("cod");
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
@@ -51,6 +54,7 @@ export default function CheckoutPage() {
   const [placedInvoiceUrl, setPlacedInvoiceUrl] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const [isDirectCheckout, setIsDirectCheckout] = useState(false);
+  const [isGuestLocked, setIsGuestLocked] = useState(false);
 
   const refreshCart = useCallback(async () => {
     // Don't redirect during order placement or if order was just finished
@@ -101,13 +105,14 @@ export default function CheckoutPage() {
 
     const restoreDetails = () => {
       // ... same logic
-      if (profile) {
+      if (profile && !isGuest) {
         setDetails({
           fullName: profile.name || "",
           email: user?.email || "",
           phoneNumber: profile.phone || "",
           address: profile.address || "",
           city: profile.city || "",
+          state: profile.state || "",
           pincode: profile.pincode || "",
         });
         return;
@@ -121,6 +126,7 @@ export default function CheckoutPage() {
           phoneNumber: saved.phoneNumber || saved.phone || "",
           address: saved.address || "",
           city: saved.city || "",
+          state: saved.state || "",
           pincode: saved.pincode || "",
         });
       } catch {
@@ -142,6 +148,10 @@ export default function CheckoutPage() {
       window.removeEventListener("storage", refreshCart);
     };
   }, [router, step, profile, user, refreshCart]);
+
+  useEffect(() => {
+    console.log("🚀 Current Checkout Step:", step);
+  }, [step]);
 
   const handleAddonAdded = (product: Product) => {
     const addonItem: CartItem = {
@@ -210,7 +220,7 @@ export default function CheckoutPage() {
   };
 
   const handleDetailsNext = () => {
-    if (!details.fullName || !details.email || !details.phoneNumber || !details.address || !details.city || !details.pincode) {
+    if (!details.fullName || !details.email || !details.phoneNumber || !details.address || !details.city || !details.pincode || !details.state) {
       showToast("Please complete all required details.");
       return;
     }
@@ -224,11 +234,12 @@ export default function CheckoutPage() {
         phone: details.phoneNumber,
         address: details.address,
         city: details.city,
+        state: details.state,
         pincode: details.pincode,
       })
     );
 
-    setStep("payment");
+    setStep(2);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -237,26 +248,47 @@ export default function CheckoutPage() {
       showToast("Online payment is not available currently.");
       return;
     }
-    setStep("summary");
+    setStep(3);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleGuestDetailsToggle = () => {
+    if (!isGuestLocked) {
+      if (!details.fullName || !details.email || !details.phoneNumber || !details.address || !details.city || !details.state || !details.pincode) {
+        showToast("Please fill all the fields to continue");
+        return;
+      }
+      setIsGuestLocked(true);
+      setStep(2);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      showToast("Details saved!");
+    } else {
+      setIsGuestLocked(false);
+    }
   };
 
   const onPlaceOrder = async () => {
     if (isPlacingOrder) return;
     
+    console.log("🚀 Placing order started");
+
     if (finalItems.length === 0) {
       showToast("Your cart is empty.");
       return;
     }
 
-    if (!profile?.name || !user?.email || !profile?.phone) {
+    if (isGuest && !isGuestLocked) {
+      showToast("Please complete and save your details first.");
+      return;
+    }
+
+    if (!isGuest && (!profile?.name || !user?.email || !profile?.phone)) {
       showToast("Please complete your profile before placing order");
       router.push("/profile?edit=true");
       return;
     }
 
     try {
-      console.log("Placing order...");
       setIsPlacingOrder(true);
 
       const {
@@ -265,9 +297,7 @@ export default function CheckoutPage() {
 
       const authUser = session?.user;
 
-      console.log("FIXED USER:", authUser);
-
-      if (!authUser) {
+      if (!authUser && !isGuest) {
         showToast("Session not ready, retrying...");
         setIsPlacingOrder(false);
         return;
@@ -281,20 +311,18 @@ export default function CheckoutPage() {
         image: item.image || ""
       }));
       
+      console.log("📦 Creating order in DB...");
       const result = await placeOrderInDB(mappedFinalItems, details);
-      console.log("Order result:", result);
+      console.log("✅ Order result:", result);
 
       if (!result.success) {
         console.error("[Checkout] DB order failed:", result.error);
         showToast(result.error || "Order failed");
         setIsPlacingOrder(false);
-        return; // finally block will reset isPlacingOrder, but user explicitly wants it reset here too
+        return;
       }
 
       window.dispatchEvent(new CustomEvent("bag:changed"));
-      
-      // Do NOT clear local items instantly - let the FullPageLoader stay active
-      // until navigation to order-success completes.
       
       const orderId = result.displayId || result.orderId || generateLocalOrderId();
       const createdAt = new Date().toISOString();
@@ -316,6 +344,7 @@ export default function CheckoutPage() {
           p: details.phoneNumber,
           a: details.address,
           c: details.city,
+          s: details.state,
           z: details.pincode,
         },
         i: enrichedItems.map((item) => ({
@@ -339,19 +368,7 @@ export default function CheckoutPage() {
         })
       );
 
-      // Mark as completed to show the Success UI immediately on THIS page
-      setPlacedOrderId(orderId);
-      setPlacedInvoiceUrl(dynamicPdfUrl);
-      setIsOrderPlaced(true);
-      setIsPlacingOrder(false);
-
-      // Delay cart clear so the UI has time to transition
-      setTimeout(() => {
-        clearCart();
-        clearDirectCheckoutItem();
-      }, 1000);
-
-      // Fire-and-forget email (don't block navigation)
+      // Fire-and-forget email
       const emailPayload = {
         type: "order_placed",
         userEmail: details.email || user?.email || "",
@@ -366,26 +383,29 @@ export default function CheckoutPage() {
         customerName: details.fullName || profile?.name || "Customer"
       };
 
-      console.log("[Checkout] Triggering order email...", emailPayload.userEmail);
-
-      fetch("/api/v2mail", {
+      console.log("📧 Sending order email...", emailPayload.userEmail);
+      fetch("/api/send-email", { // Use the new consistent API
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(emailPayload)
-      }).then(async res => {
-        if (!res.ok) {
-          const txt = await res.text();
-          console.error("[Checkout] Email API failed:", txt);
-        } else {
-          console.log("[Checkout] Email sent successfully!");
-        }
-      }).catch(emailErr => {
-        console.error("[Checkout] Email sending fatal error:", emailErr);
-      });
+      }).catch(e => console.error("Email error:", e));
+
+      // Mark order as placed to prevent empty-cart flicker/redirect
+      setIsOrderPlaced(true);
+
+      // ── REDIRECT TO SUCCESS PAGE ──
+      console.log("🏁 Redirecting to success page...");
+      
+      // Clear cart before moving
+      clearCart();
+      clearDirectCheckoutItem();
+      
+      const successUrl = `/order-success?orderId=${orderId}${result.accessToken ? `&token=${result.accessToken}` : ""}`;
+      router.push(successUrl);
     } catch (err) {
-      console.error("ORDER ERROR:", err);
-      showToast("Something went wrong. Please try again.");
-      setIsPlacingOrder(false); // Only reset on ERROR — not on success
+      console.error("❌ Critical Order error:", err);
+      showToast("Failed to place order. Please try again.");
+      setIsPlacingOrder(false);
     }
   };
 
@@ -402,73 +422,14 @@ export default function CheckoutPage() {
     );
   }
 
-  // ── STEP 2: Success Screen Design (Image 2 Replication) ──
-  if (isOrderPlaced && placedOrderId) {
-    return (
-      <main style={{ minHeight: '90vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 16px', background: '#FAF8F5', fontFamily: "inherit" }}>
-        {/* Card Container */}
-        <div style={{ background: '#ffffff', maxWidth: 420, width: '100%', borderRadius: 24, padding: '48px 28px 40px', textAlign: 'center', boxShadow: '0 4px 20px rgba(90,62,43,0.06)', border: '1px solid #f0e6d2' }}>
-          
-          {/* Green circle with tick */}
-          <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#f0fdf4', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
-            <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-            </div>
-          </div>
-
-          <h1 style={{ fontSize: 26, fontWeight: 800, color: '#2f2a26', margin: '0 0 8px', letterSpacing: '-0.5px' }}>
-            Order Confirmed
-          </h1>
-          <p style={{ fontSize: 15, color: '#666', margin: '0 0 32px', lineHeight: 1.5 }}>
-            Your order has been successfully placed
-          </p>
-
-          {/* Order ID box */}
-          <div style={{ background: '#fcfaf7', border: '1px solid #f0e6d2', borderRadius: 16, padding: '16px 20px', marginBottom: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 14, color: '#8c7e6a', fontWeight: 600 }}>Order ID</span>
-            <span style={{ fontSize: 14, fontWeight: 800, color: '#2f2a26', fontFamily: 'monospace' }}>{placedOrderId}</span>
-          </div>
-
-          {/* Buttons */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            <button
-              onClick={() => router.push("/orders")}
-              style={{ display: 'flex', height: 52, alignItems: 'center', justifyContent: 'center', borderRadius: 12, background: '#5a3e2b', color: 'white', fontWeight: 700, fontSize: 15, border: 'none', cursor: 'pointer' }}
-            >
-              View My Orders
-            </button>
-
-            <button
-              onClick={() => window.open(placedInvoiceUrl || "/api/invoice?orderId=" + placedOrderId, "_blank")}
-              style={{ display: 'flex', height: 52, alignItems: 'center', justifyContent: 'center', gap: 10, borderRadius: 12, background: 'white', color: '#5a3e2b', fontWeight: 700, fontSize: 15, border: '1.5px solid #5a3e2b', cursor: 'pointer' }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
-              Download Invoice
-            </button>
-          </div>
-        </div>
-
-        <button
-          onClick={() => router.push('/')}
-          style={{ marginTop: 24, background: 'none', border: 'none', color: '#8B7355', fontSize: 14, cursor: 'pointer', textDecoration: 'underline', fontWeight: 600 }}
-        >
-          Continue Shopping
-        </button>
-      </main>
-    );
-  }
+  // ── Success Screen is now handled by redirecting to /order-success ──
 
   if (!hydrated) {
     return <main className="checkout-page checkout-container checkout-flow py-10" />;
   }
 
   // PREVENT REDIRECTS: If cart is empty, show a friendly local UI instead of redirecting.
+  // Exception: If we just placed an order, don't show the empty cart screen (allow redirect to success page)
   if (finalItems.length === 0 && !isOrderPlaced) {
     return (
       <main className="checkout-page checkout-container checkout-flow py-20 text-center">
@@ -493,9 +454,9 @@ export default function CheckoutPage() {
 
       <div className="checkout-header">
         <h1 className="checkout-title">
-          {step === "details" && "Your Details"}
-          {step === "payment" && "Select Payment Method"}
-          {step === "summary" && "Order Summary"}
+          {step === 1 && "Your Details"}
+          {step === 2 && "Select Payment Method"}
+          {step === 3 && "Order Summary"}
         </h1>
         <p className="checkout-note">
           A clean, guided checkout for your handmade order.
@@ -504,14 +465,12 @@ export default function CheckoutPage() {
 
       <div className="checkout-stepper" aria-label="Checkout progress">
         {[
-          { key: "details", label: "Your Details", number: "1" },
-          { key: "payment", label: "Payment", number: "2" },
-          { key: "summary", label: "Summary", number: "3" },
+          { key: 1, label: "Your Details", number: "1" },
+          { key: 2, label: "Payment", number: "2" },
+          { key: 3, label: "Summary", number: "3" },
         ].map((stepItem, index) => {
-          const currentIndex = ["details", "payment", "summary"].indexOf(step);
-          const itemIndex = ["details", "payment", "summary"].indexOf(stepItem.key);
           const isActive = stepItem.key === step;
-          const isComplete = currentIndex > itemIndex;
+          const isComplete = step > stepItem.key;
 
           return (
             <div className="checkout-stepper__item" key={stepItem.key}>
@@ -549,58 +508,176 @@ export default function CheckoutPage() {
       )}
 
       <div className="checkout-shell">
-        {step === "details" && (
-          <section className="checkout-details-summary">
-            <div className="summary-data-grid">
-              <div className="summary-item">
-                <span className="summary-label">Full Name</span>
-                <span className="summary-value">{details.fullName || "Not provided"}</span>
-              </div>
-              <div className="summary-item">
-                <span className="summary-label">Phone Number</span>
-                <span className="summary-value">{details.phoneNumber || "Not provided"}</span>
-              </div>
-              <div className="summary-item">
-                <span className="summary-label">Email</span>
-                <span className="summary-value">{details.email || user?.email || "Not provided"}</span>
-              </div>
-              <div className="summary-item summary-item--full">
-                <span className="summary-label">Delivery Address</span>
-                <span className="summary-value">{details.address || "Not provided"}</span>
-              </div>
-              <div className="summary-item">
-                <span className="summary-label">City</span>
-                <span className="summary-value">{details.city || "Not provided"}</span>
-              </div>
-              <div className="summary-item">
-                <span className="summary-label">Pincode</span>
-                <span className="summary-value">{details.pincode || "Not provided"}</span>
-              </div>
-            </div>
+        {step === 1 && (
+          isGuest ? (
+            <section className="checkout-card checkout-section">
+              <div className="checkout-form-grid">
+                <label className="checkout-field">
+                  <span>Full Name</span>
+                  <input
+                    type="text"
+                    value={details.fullName}
+                    onChange={(e) => handleFieldChange("fullName", e.target.value)}
+                    placeholder="Your Name"
+                    disabled={isGuestLocked}
+                    className="w-full border p-2 rounded"
+                    style={isGuestLocked ? { opacity: 0.7 } : undefined}
+                  />
+                </label>
 
-            <div className="summary-edit-footer">
-              <button 
-                type="button" 
-                className="btn-secondary text-sm px-4 py-2" 
-                onClick={() => router.push("/profile?edit=true")}
-                style={{ height: 'auto', borderRadius: '8px' }}
-              >
-                Edit Details
-              </button>
-            </div>
+                <label className="checkout-field">
+                  <span>Email Address</span>
+                  <input
+                    type="email"
+                    value={details.email}
+                    onChange={(e) => handleFieldChange("email", e.target.value)}
+                    placeholder="name@example.com"
+                    disabled={isGuestLocked}
+                    className="w-full border p-2 rounded"
+                    style={isGuestLocked ? { opacity: 0.7 } : undefined}
+                  />
+                </label>
 
-            <div className="checkout-actions mt-10">
-              <button type="button" className="btn-primary checkout-button w-full" onClick={handleDetailsNext}>
-                Proceed to Payment {"\u2192"}
-              </button>
-            </div>
-            {!details.fullName || !details.address || !details.phoneNumber || !details.pincode ? (
-              <p className="text-[11px] text-red-500 mt-3 text-center font-medium">Please click Edit to complete your delivery information.</p>
-            ) : null}
-          </section>
+                <label className="checkout-field">
+                  <span>Phone Number</span>
+                  <input
+                    type="tel"
+                    value={details.phoneNumber}
+                    onChange={(e) => handleFieldChange("phoneNumber", e.target.value)}
+                    placeholder="+91 1234567890"
+                    disabled={isGuestLocked}
+                    className="w-full border p-2 rounded"
+                    style={isGuestLocked ? { opacity: 0.7 } : undefined}
+                  />
+                </label>
+
+                <label className="checkout-field checkout-field--full">
+                  <span>Delivery Address</span>
+                  <textarea
+                    rows={3}
+                    value={details.address}
+                    onChange={(e) => handleFieldChange("address", e.target.value)}
+                    placeholder="House, street, landmark"
+                    disabled={isGuestLocked}
+                    className="w-full border p-2 rounded"
+                    style={isGuestLocked ? { opacity: 0.7 } : undefined}
+                  />
+                </label>
+
+                <label className="checkout-field">
+                  <span>City</span>
+                  <input
+                    type="text"
+                    value={details.city}
+                    onChange={(e) => handleFieldChange("city", e.target.value)}
+                    placeholder="Bikini Bottom"
+                    disabled={isGuestLocked}
+                    className="w-full border p-2 rounded"
+                    style={isGuestLocked ? { opacity: 0.7 } : undefined}
+                  />
+                </label>
+
+                <label className="checkout-field">
+                  <span>State</span>
+                  <input
+                    type="text"
+                    value={details.state}
+                    onChange={(e) => handleFieldChange("state", e.target.value)}
+                    placeholder="Maharashtra"
+                    disabled={isGuestLocked}
+                    className="w-full border p-2 rounded"
+                    style={isGuestLocked ? { opacity: 0.7 } : undefined}
+                  />
+                </label>
+
+                <label className="checkout-field">
+                  <span>Pincode</span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={details.pincode}
+                    onChange={(e) => handleFieldChange("pincode", e.target.value)}
+                    placeholder="123456"
+                    disabled={isGuestLocked}
+                    className="w-full border p-2 rounded"
+                    style={isGuestLocked ? { opacity: 0.7 } : undefined}
+                  />
+                </label>
+              </div>
+
+              <div className="checkout-actions mt-10 flex flex-col gap-3">
+                <button 
+                  type="button" 
+                  className="btn-primary checkout-button w-full" 
+                  onClick={handleGuestDetailsToggle}
+                >
+                  {isGuestLocked ? "Edit Details" : "Save & Continue to Payment"}
+                </button>
+                
+                {isGuestLocked && (
+                  <button type="button" className="btn-primary checkout-button w-full" onClick={handleDetailsNext} style={{ background: 'transparent', color: 'var(--brand)', border: '2px solid var(--brand)' }}>
+                    Proceed to Payment {"\u2192"}
+                  </button>
+                )}
+              </div>
+            </section>
+          ) : (
+            <section className="checkout-details-summary">
+              <div className="summary-data-grid">
+                <div className="summary-item">
+                  <span className="summary-label">Full Name</span>
+                  <span className="summary-value">{details.fullName || "Not provided"}</span>
+                </div>
+                <div className="summary-item">
+                  <span className="summary-label">Phone Number</span>
+                  <span className="summary-value">{details.phoneNumber || "Not provided"}</span>
+                </div>
+                <div className="summary-item">
+                  <span className="summary-label">Email</span>
+                  <span className="summary-value">{details.email || user?.email || "Not provided"}</span>
+                </div>
+                <div className="summary-item summary-item--full">
+                  <span className="summary-label">Delivery Address</span>
+                  <span className="summary-value">{details.address || "Not provided"}</span>
+                </div>
+                <div className="summary-item">
+                  <span className="summary-label">City</span>
+                  <span className="summary-value">{details.city || "Not provided"}</span>
+                </div>
+                <div className="summary-item">
+                  <span className="summary-label">State</span>
+                  <span className="summary-value">{details.state || "Not provided"}</span>
+                </div>
+                <div className="summary-item">
+                  <span className="summary-label">Pincode</span>
+                  <span className="summary-value">{details.pincode || "Not provided"}</span>
+                </div>
+              </div>
+
+              <div className="summary-edit-footer">
+                <button 
+                  type="button" 
+                  className="btn-secondary text-sm px-4 py-2" 
+                  onClick={() => router.push("/profile?edit=true")}
+                  style={{ height: 'auto', borderRadius: '8px' }}
+                >
+                  Edit Details
+                </button>
+              </div>
+
+              <div className="checkout-actions mt-10">
+                <button type="button" className="btn-primary checkout-button w-full" onClick={handleDetailsNext}>
+                  Proceed to Payment {"\u2192"}
+                </button>
+              </div>
+              {!details.fullName || !details.address || !details.phoneNumber || !details.pincode ? (
+                <p className="text-[11px] text-red-500 mt-3 text-center font-medium">Please click Edit to complete your delivery information.</p>
+              ) : null}
+            </section>
+          )
         )}
 
-        {step === "payment" && (
+        {step === 2 && (
           <section className="checkout-card checkout-section">
             <div className="checkout-payment-grid">
               <button
@@ -631,7 +708,7 @@ export default function CheckoutPage() {
             </div>
 
             <div className="checkout-actions checkout-actions--between">
-              <button type="button" className="btn-secondary checkout-button checkout-button--ghost" onClick={() => setStep("details")}>
+              <button type="button" className="btn-secondary checkout-button checkout-button--ghost" onClick={() => setStep(1)}>
                 &larr; Back
               </button>
               <button type="button" className="btn-primary checkout-button" onClick={handlePaymentNext}>
@@ -641,7 +718,7 @@ export default function CheckoutPage() {
           </section>
         )}
 
-        {step === "summary" && (
+        {step === 3 && (
           <section className="checkout-card checkout-card--summary checkout-section order-summary">
             <div className="checkout-summary-list checkout-items">
               {enrichedItems.map((it) => (
@@ -716,7 +793,7 @@ export default function CheckoutPage() {
             <CheckoutAddons currentCartSlugs={finalItems.map((item) => item.id)} onAdded={handleAddonAdded} />
 
             <div className="checkout-actions checkout-actions--between">
-              <button type="button" className="btn-secondary checkout-button checkout-button--ghost" onClick={() => setStep("payment")}>
+              <button type="button" className="btn-secondary checkout-button checkout-button--ghost" onClick={() => setStep(2)}>
                 &larr; Back
               </button>
               <button

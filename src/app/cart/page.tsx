@@ -11,9 +11,11 @@ import ConfirmModal from "@/components/ui/ConfirmModal";
 import type { Product } from "@/types";
 
 import NextImage from "next/image";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function CartPage() {
   const { cartItems, loadCart, removeFromCart, updateQuantity, clearCart } = useCart();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
@@ -253,14 +255,36 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                <NextLink
-                  href="/checkout"
-                  className={`btn btn-primary w-100 py-3 mt-4 fw-bold shadow-sm${selectedItems.length === 0 ? " disabled opacity-50 pe-none" : ""}`}
-                  aria-disabled={selectedItems.length === 0}
-                  onClick={(e) => { if (selectedItems.length === 0) e.preventDefault(); }}
-                >
-                  {selectedItems.length === 0 ? "Select items to checkout" : `Checkout (${itemCount})`}
-                </NextLink>
+                {user ? (
+                  <NextLink
+                    href="/checkout"
+                    className={`btn btn-primary w-100 py-3 mt-4 fw-bold shadow-sm${selectedItems.length === 0 ? " disabled opacity-50 pe-none" : ""}`}
+                    aria-disabled={selectedItems.length === 0}
+                    onClick={(e) => { if (selectedItems.length === 0) e.preventDefault(); }}
+                  >
+                    {selectedItems.length === 0 ? "Select items to checkout" : `Checkout (${itemCount})`}
+                  </NextLink>
+                ) : (
+                  <div className="flex flex-col gap-3 mt-4">
+                    <NextLink
+                      href="/auth"
+                      className={`btn btn-primary w-100 py-3 fw-bold shadow-sm${selectedItems.length === 0 ? " disabled opacity-50 pe-none" : ""}`}
+                      aria-disabled={selectedItems.length === 0}
+                      onClick={(e) => { if (selectedItems.length === 0) e.preventDefault(); }}
+                    >
+                      Login / Signup
+                    </NextLink>
+                    <NextLink
+                      href="/checkout?guest=true"
+                      className={`btn btn-primary w-100 py-3 fw-bold shadow-sm${selectedItems.length === 0 ? " disabled opacity-50 pe-none" : ""}`}
+                      style={{ background: "transparent", color: "var(--brand)", border: "2px solid var(--brand)", boxShadow: 'none' }}
+                      aria-disabled={selectedItems.length === 0}
+                      onClick={(e) => { if (selectedItems.length === 0) e.preventDefault(); }}
+                    >
+                      Continue as Guest
+                    </NextLink>
+                  </div>
+                )}
                 
                 <div className="mt-4 d-flex align-items-center justify-content-center gap-2 py-2 small fw-bold text-secondary text-uppercase tracking-wider" style={{ fontSize: "10px" }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-success"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>

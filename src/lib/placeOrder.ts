@@ -4,6 +4,7 @@ export type PlaceOrderResult = {
   success: boolean;
   orderId: string | null;
   displayId?: string | null;
+  accessToken?: string | null;
   error: string | null;
 };
 
@@ -20,14 +21,18 @@ export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: an
     const { data: { session } } = await supabase.auth.getSession();
     const user = session?.user;
 
-    if (!user) {
+    if (!user && !deliveryDetails) {
       return { success: false, orderId: null, error: "Please login to place order." };
     }
 
     let cartItems = customItems;
     if (!cartItems || cartItems.length === 0) {
-      const { data } = await supabase.from("cart").select("*").eq("user_id", user.id);
-      cartItems = data || [];
+      if (user) {
+        const { data } = await supabase.from("cart").select("*").eq("user_id", user.id);
+        cartItems = data || [];
+      } else {
+        return { success: false, orderId: null, error: "Cart is empty." };
+      }
     }
 
     if (!cartItems || cartItems.length === 0) {
@@ -36,15 +41,17 @@ export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: an
 
     const totalAmount = cartItems.reduce((sum, item) => sum + (Number(item.price) * Number(item.quantity)), 0);
     const displayId = `KC-${Date.now()}`;
-
+    const accessToken = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2) + Date.now().toString(36);
+    
     // 1. CREATE ORDER (Minimal fields if column missing)
     const orderPayload: any = {
-      user_id: user.id,
+      user_id: user?.id || null,
       total_amount: totalAmount,
       status: "placed",
       payment_method: "COD",
-      address: deliveryDetails ? `${deliveryDetails.address}, ${deliveryDetails.city} - ${deliveryDetails.pincode}` : "No Address Provided",
+      address: deliveryDetails ? `${deliveryDetails.address}, ${deliveryDetails.city}, ${deliveryDetails.state} - ${deliveryDetails.pincode}` : "No Address Provided",
       display_id: displayId,
+      access_token: accessToken,
     };
 
     // Try adding delivery_address JSON if you have it
@@ -54,10 +61,12 @@ export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: an
         phone: deliveryDetails.phoneNumber || "",
         address_line: deliveryDetails.address || "",
         city: deliveryDetails.city || "",
+        state: deliveryDetails.state || "",
         pincode: deliveryDetails.pincode || ""
       };
     }
 
+    console.log("📦 Creating order record in Supabase...");
     let { data: newOrder, error: insertError } = await supabase
       .from("orders")
       .insert(orderPayload)
@@ -94,13 +103,16 @@ export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: an
       image: item.image || ""
     }));
 
+    console.log("📦 Creating order items...");
     const { error: itemsError } = await supabase.from("order_items").insert(itemsPayload);
     if (itemsError) throw new Error(itemsError.message);
 
     // CLEAN UP
-    await supabase.from("cart").delete().eq("user_id", user.id);
+    if (user) {
+      await supabase.from("cart").delete().eq("user_id", user.id);
+    }
 
-    return { success: true, orderId: orderId, displayId, error: null };
+    return { success: true, orderId: orderId, displayId, accessToken, error: null };
   } catch (err: any) {
     console.error("Critical PlaceOrder Error:", err);
     return { success: false, orderId: null, error: err.message || "Failed to place order" };

@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 // ─── Types ─────────────────────────────────────────────────────────────────
-type OrderStatus = "placed" | "confirmed" | "shipped" | "delivered" | "cancelled";
+type OrderStatus = "placed" | "confirmed" | "shipped" | "delivered";
 
 type Order = {
   id: string;
@@ -17,13 +17,11 @@ type Order = {
   status: OrderStatus;
 };
 
-// ─── Status badge config ───────────────────────────────────────────────────
 const STATUS_CONFIG: Record<OrderStatus, { label: string; bg: string; text: string }> = {
   placed:    { label: "Placed",    bg: "#EDE8E0", text: "#7C6F5F" },
   confirmed: { label: "Confirmed", bg: "#E0ECFA", text: "#3B6CB5" },
   shipped:   { label: "Shipped",   bg: "#FDF0E1", text: "#B5651D" },
   delivered: { label: "Delivered", bg: "#E3F2E8", text: "#3D7A4F" },
-  cancelled: { label: "Cancelled", bg: "#F5E1E1", text: "#A33B3B" },
 };
 
 /** Format ISO date string to readable format like "20 Apr 2026" */

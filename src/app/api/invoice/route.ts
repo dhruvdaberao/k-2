@@ -12,6 +12,13 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const dParam = searchParams.get('d');
     const orderId = searchParams.get('orderId');
+    const token = searchParams.get('token');
+
+    if (!orderId || !token) {
+      if (!dParam) {
+        return new Response("Missing orderId or token", { status: 400 });
+      }
+    }
 
     let orderData: any = null;
 
@@ -53,7 +60,17 @@ export async function GET(req: Request) {
       }
 
       if (order) {
-        console.log('[Invoice API] Successfully found order:', order.id);
+        // SECURITY CHECK
+        const { data: { user } } = await supabase.auth.getUser();
+        const isOwner = user && user.id === order.user_id;
+        const hasValidToken = token && token === order.access_token;
+
+        if (!isOwner && !hasValidToken) {
+          console.warn("[Invoice API] Unauthorized access attempt for:", cleanId);
+          return new Response("Unauthorized. Please login or provide a valid access token.", { status: 403 });
+        }
+
+        console.log('[Invoice API] Successfully found and authorized order:', order.id);
         // ... mapping logic
         let items = [];
         try {
