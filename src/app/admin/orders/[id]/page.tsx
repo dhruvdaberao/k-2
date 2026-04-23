@@ -124,6 +124,10 @@ export default function OrderDetails() {
   };
 
   const executeStatusUpdate = async (newStatus: string) => {
+    if (!order) {
+      showToast("Order data not found.");
+      return;
+    }
 
     setUpdating(true);
 
