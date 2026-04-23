@@ -53,48 +53,56 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let fired = false;
-    const fetchOrders = async () => {
-      if (fired) return;
-      fired = true;
+    let active = true;
+    let timeoutId: any;
+
+    const loadData = async (userId: string) => {
       try {
-        // Try to get session info quickly
-        const { data: { session } } = await supabase.auth.getSession();
-        let userId = session?.user?.id;
-
-        if (!userId) {
-          const { data: { user } } = await supabase.auth.getUser();
-          userId = user?.id;
-        }
-
-        if (!userId) {
-          console.error("[Orders] No user found");
-          setOrders([]);
-          setLoading(false);
-          return;
-        }
-
         const { data, error } = await supabase
           .from("orders")
           .select("id, display_id, created_at, total_amount, status")
           .eq("user_id", userId)
           .order("created_at", { ascending: false });
 
-        if (error) {
-          console.error("[Orders] Fetch error:", error.message);
-          setOrders([]);
-        } else {
-          setOrders(data || []);
+        if (active) {
+          if (!error) setOrders(data || []);
+          setLoading(false);
         }
       } catch (err) {
-        console.error("[Orders] Unexpected error:", err);
-        setOrders([]);
-      } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     };
 
-    fetchOrders();
+    // 1. Initial attempt
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user?.id && active) {
+        loadData(session.user.id);
+      }
+    });
+
+    // 2. Auth listener (important for client-side navigation)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user?.id && active && loading) {
+        loadData(session.user.id);
+      } else if (!session && event === 'SIGNED_OUT' && active) {
+        setOrders([]);
+        setLoading(false);
+      }
+    });
+
+    // 3. Safety timeout (if no session found in 3s, stop showing skeleton)
+    timeoutId = setTimeout(() => {
+      if (active && loading) {
+        console.warn("[Orders] Loading timed out");
+        setLoading(false);
+      }
+    }, 3000);
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+      clearTimeout(timeoutId);
+    };
   }, [supabase]);
 
   // Refined loading state: show the basic page structure instead of a full-screen skeleton flash

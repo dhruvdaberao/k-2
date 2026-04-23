@@ -185,12 +185,24 @@ export default function ProfilePage() {
   const handleLogout = async () => {
     setShowLogoutModal(false);
     try {
+      // 1. Clear Supabase Session
       await supabase.auth.signOut();
+      
+      // 2. Wipe ALL local caches that might contain personal info
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem("checkout:details:v1");
+        localStorage.removeItem("customer_details");
+        localStorage.removeItem("checkout:order-confirmed:v1");
+        localStorage.removeItem("supabase.auth.token"); // Extra safety
+        
+        // 3. Force a hard redirect to clear React state and trigger cookie cleanup
+        window.location.href = "/login";
+      }
     } catch (err) {
-      console.warn("Supabase sign out lock error (ignoring):", err);
+      console.warn("Sign out error:", err);
+      // Even if it fails, try to kill the session locally
+      window.location.href = "/login";
     }
-    router.push("/login");
-    showToast("Logged out successfully.");
   };
 
 
