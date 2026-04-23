@@ -29,9 +29,12 @@ export default function OrderSuccessPage() {
   }, [orderId, router]);
 
   const handleDownloadInvoice = () => {
-    if (invoiceUrl) {
-      window.open(invoiceUrl, "_blank", "noopener,noreferrer");
+    if (!orderId) {
+      alert("Order ID missing");
+      return;
     }
+
+    window.open(`/api/invoice?orderId=${orderId}`, "_blank");
   };
 
   if (loading) {
@@ -79,7 +82,7 @@ export default function OrderSuccessPage() {
             <span style={{ color: '#ffffff' }}>View My Orders</span>
           </Link>
 
-          {invoiceUrl && (
+          {orderId && (
             <button
               onClick={handleDownloadInvoice}
               style={{ display: 'flex', height: 46, alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: 10, background: 'transparent', color: '#5a3e2b', fontWeight: 600, fontSize: 14, border: '1.5px solid #5a3e2b', cursor: 'pointer', transition: 'all 0.2s' }}

@@ -12,7 +12,7 @@ export async function GET(req: Request) {
     const orderId = searchParams.get('orderId');
 
     if (!orderId) {
-      return NextResponse.json({ error: 'Missing orderId parameter' }, { status: 400 });
+      return new Response("Missing orderId", { status: 400 });
     }
 
     // Initialize session-aware Supabase client
