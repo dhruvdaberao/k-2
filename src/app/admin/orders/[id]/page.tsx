@@ -226,70 +226,69 @@ export default function OrderDetails() {
 
             {/* RIGHT: ACTIONS */}
             <div className="w-full md:w-auto md:max-w-md flex flex-col gap-1">
-            {order.status === "placed" && (
-              <div className="space-y-3">
-                <div className="flex flex-col gap-1">
-                  <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest px-1">Tracking Info</label>
-                  <input 
-                    type="text" 
-                    placeholder="Paste tracking link..."
-                    value={trackingLink}
-                    onChange={(e) => setTrackingLink(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-[#5A3E2B] outline-none text-xs font-bold text-[#5A3E2B] transition-all"
-                  />
+              {order.status === "placed" && (
+                <div className="space-y-3">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest px-1">Tracking Info</label>
+                    <input 
+                      type="text" 
+                      placeholder="Paste tracking link..."
+                      value={trackingLink}
+                      onChange={(e) => setTrackingLink(e.target.value)}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-[#5A3E2B] outline-none text-xs font-bold text-[#5A3E2B] transition-all"
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => updateOrderStatus("shipped")}
+                      disabled={updating}
+                      className="flex-1 transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
+                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
+                    >
+                      {updating ? "Processing..." : "Ship Order"}
+                    </button>
+                    <button 
+                      onClick={() => updateOrderStatus("cancelled")}
+                      disabled={updating}
+                      className="flex-1 transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
+                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
+                    >
+                      {updating ? "Processing..." : "Cancel Order"}
+                    </button>
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <button 
-                    onClick={() => updateOrderStatus("shipped")}
-                    disabled={updating}
-                    className="flex-1 transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
-                    style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
-                  >
-                    {updating ? "Processing..." : "Ship Order"}
-                  </button>
-                  <button 
-                    onClick={() => updateOrderStatus("cancelled")}
-                    disabled={updating}
-                    className="flex-1 transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
-                    style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
-                  >
-                    {updating ? "Processing..." : "Cancel Order"}
-                  </button>
+              )}
+
+              {order.status === "shipped" && (
+                <button 
+                  onClick={() => updateOrderStatus("delivered")}
+                  disabled={updating}
+                  className="w-full transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
+                  style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
+                >
+                  {updating ? "Processing..." : "Mark Delivered"}
+                </button>
+              )}
+
+              {order.status === "delivered" && (
+                <div className="px-4 py-2 rounded-lg bg-green-50 text-green-700 text-[10px] font-black uppercase tracking-widest text-center border border-green-200 shadow-sm">
+                  Delivered
                 </div>
-              </div>
-            )}
+              )}
 
-            {order.status === "shipped" && (
-              <button 
-                onClick={() => updateOrderStatus("delivered")}
-                disabled={updating}
-                className="w-full transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
-                style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
-              >
-                {updating ? "Processing..." : "Mark Delivered"}
-              </button>
-            )}
+              {order.status === "cancelled" && (
+                <div className="px-4 py-2 rounded-lg bg-red-50 text-red-700 text-[10px] font-black uppercase tracking-widest text-center border border-red-200 shadow-sm">
+                  Cancelled
+                </div>
+              )}
 
-            {order.status === "delivered" && (
-              <div className="px-4 py-2 rounded-lg bg-green-50 text-green-700 text-[10px] font-black uppercase tracking-widest text-center border border-green-200 shadow-sm">
-                Delivered
-              </div>
-            )}
-
-            {order.status === "cancelled" && (
-              <div className="px-4 py-2 rounded-lg bg-red-50 text-red-700 text-[10px] font-black uppercase tracking-widest text-center border border-red-200 shadow-sm">
-                Cancelled
-              </div>
-            )}
-
-            {/* QUICK ADDRESS FOOTER (MOBILE ONLY TOGGLE-ABLE OR MINI) */}
-            <p className="text-[9px] text-gray-400 mt-2 text-center md:text-right">
-              Shipping to: <span className="font-bold text-gray-600">{address.city}</span>
-            </p>
+              {/* QUICK ADDRESS FOOTER */}
+              <p className="text-[9px] text-gray-400 mt-2 text-center md:text-right">
+                Shipping to: <span className="font-bold text-gray-600">{address.city}</span>
+              </p>
+            </div>
           </div>
-
         </div>
-
       </div>
     </main>
   );

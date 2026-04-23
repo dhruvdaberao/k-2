@@ -142,7 +142,6 @@ export default function ProfilePage() {
         address: details.address,
         city: details.city,
         pincode: details.pincode,
-        updated_at: new Date().toISOString(),
       }, { onConflict: 'id' });
 
       if (profileError) {
