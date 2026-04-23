@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-export async function POST(req) {
+export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { type, userEmail, orderId, items = [], total = 0 } = body;
