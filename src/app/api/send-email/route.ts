@@ -106,9 +106,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true, message: "Type not handled" });
     }
 
-    // Define contents for Customer
+    // Ensure invoiceUrl is absolute and uses production domain for emails
+    let absoluteInvoiceUrl = invoiceUrl;
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://keshvicrafts-2.vercel.app";
+    
+    if (absoluteInvoiceUrl && !absoluteInvoiceUrl.startsWith('http')) {
+      absoluteInvoiceUrl = `${siteUrl}${absoluteInvoiceUrl.startsWith('/') ? '' : '/'}${absoluteInvoiceUrl}`;
+    } else if (absoluteInvoiceUrl && absoluteInvoiceUrl.includes('localhost')) {
+      // Force production URL for emails even when testing locally
+      absoluteInvoiceUrl = absoluteInvoiceUrl.replace(/https?:\/\/localhost:\d+/, siteUrl);
+    }
+
+    // Update customerHtml with absolute URL
+    const customerHtml = htmlContent.replace(/href="[^"]*\/api\/invoice/g, `href="${absoluteInvoiceUrl}`);
     const customerSubject = subject;
-    const customerHtml = htmlContent;
 
     // Define contents for Owner (Neha)
     let ownerSubject = "";
@@ -136,6 +147,11 @@ export async function POST(req: Request) {
                 </ul>
               </div>
             </div>
+
+            ${absoluteInvoiceUrl ? `
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${absoluteInvoiceUrl}" style="background-color: #5A3E2B; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Download Invoice</a>
+            </div>` : ''}
 
             <p>Please log in to the admin dashboard to manage this order.</p>
           </div>
