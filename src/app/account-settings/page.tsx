@@ -127,7 +127,7 @@ export default function AccountSettingsPage() {
 
       <div className="mx-auto w-full max-w-md px-4">
         
-        <div className="flex items-center mb-10 gap-5">
+        <div className="flex items-center mt-6 mb-12 gap-5">
           <button 
             onClick={() => router.push('/profile')} 
             className="back-icon-btn"
@@ -136,7 +136,7 @@ export default function AccountSettingsPage() {
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
           </button>
           <h1 className="text-3xl font-bold m-0" style={{ color: "var(--brand)", letterSpacing: '-0.5px' }}>
-            Settings
+            Account Settings
           </h1>
         </div>
 
