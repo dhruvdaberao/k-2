@@ -98,7 +98,7 @@ export default function AccountSettingsPage() {
   if (!user) return null;
 
   return (
-    <main className="checkout-page checkout-container pb-20 pt-[120px] profile-page-styles" style={{ paddingTop: '120px' }}>
+    <main className="checkout-page checkout-container pb-20 pt-16 profile-page-styles">
       <style dangerouslySetInnerHTML={{__html: `
         .profile-page-styles input {
           border: 1px solid rgba(139, 94, 60, 0.4) !important;
@@ -107,21 +107,36 @@ export default function AccountSettingsPage() {
           border-color: var(--brand) !important;
           outline: none;
         }
+        .back-icon-btn {
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #F5EFE6;
+          border: 1px solid #E6DCCF;
+          border-radius: 50%;
+          color: #5A3E2B;
+          transition: all 0.2s ease;
+        }
+        .back-icon-btn:hover {
+          background: #E6DCCF;
+          transform: translateX(-2px);
+        }
       `}} />
 
-      <div className="mx-auto w-full max-w-md" style={{ marginTop: '40px' }}>
+      <div className="mx-auto w-full max-w-md px-4">
         
-        <div className="flex items-center mb-8 gap-4 px-2">
+        <div className="flex items-center mb-10 gap-5">
           <button 
             onClick={() => router.push('/profile')} 
-            className="text-stone-500 hover:text-[var(--brand)] transition-colors flex items-center"
-            style={{ border: 'none', background: 'transparent' }}
+            className="back-icon-btn"
+            aria-label="Go Back"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-            <span className="font-bold ml-1">Back</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
           </button>
-          <h1 className="text-2xl font-bold" style={{ color: "var(--brand)" }}>
-            Account Settings
+          <h1 className="text-3xl font-bold m-0" style={{ color: "var(--brand)", letterSpacing: '-0.5px' }}>
+            Settings
           </h1>
         </div>
 
