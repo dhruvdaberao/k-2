@@ -31,6 +31,7 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [modalContent, setModalContent] = useState<{ title: string; message: string } | null>(null);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const [hydrated, setHydrated] = useState(false);
 
@@ -106,7 +107,7 @@ export default function ProfilePage() {
   const saveDetails = async () => {
     // 1. Validation
     if (!details.fullName || !details.phoneNumber) {
-      showToast("Please fill Name and Phone Number");
+      showToast("Please fill all the details to save changes.");
       return;
     }
     
@@ -169,8 +170,11 @@ export default function ProfilePage() {
   };
 
   const handleLogout = async () => {
-    const confirmLogout = window.confirm("Are you sure you want to logout?");
-    if (!confirmLogout) return;
+    setShowLogoutConfirm(true);
+  };
+
+  const executeLogout = async () => {
+    setShowLogoutConfirm(false);
 
     try {
       // 1. Sign out from Supabase
@@ -180,6 +184,7 @@ export default function ProfilePage() {
       // 2. Clear local data
       localStorage.clear();
       sessionStorage.clear();
+      showToast("Logged out successfully.");
 
       // 3. Force UI Reset
       router.push("/");
@@ -243,7 +248,7 @@ export default function ProfilePage() {
           await syncLocalCartToDB(data.user.id);
         }
         
-        setModalContent({ title: "Login Successful", message: "Successfully logged in! Welcome back." });
+        showToast("Logged in successfully! Welcome back.");
       } else if (authMode === "forgot") {
         const { error } = await supabase.auth.resetPasswordForEmail(authEmail, {
           redirectTo: "https://keshvicrafts-2.vercel.app/reset-password"
@@ -459,6 +464,17 @@ export default function ProfilePage() {
         )}
       </section>
       {profileModalHTML}
+
+      <ConfirmModal
+        isOpen={showLogoutConfirm}
+        title="Confirm Logout"
+        message="Are you sure you want to log out of your account?"
+        confirmLabel="Log Out"
+        cancelLabel="Stay Logged In"
+        destructive
+        onConfirm={executeLogout}
+        onCancel={() => setShowLogoutConfirm(false)}
+      />
 
     </main>
 

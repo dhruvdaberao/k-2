@@ -153,7 +153,7 @@ export default function OrderDetails() {
       } : null);
 
       const emailMsg = result.emailSent ? " & email sent ✉️" : "";
-      showToast(`Order marked as ${newStatus}${emailMsg}`);
+      showToast(`Order status updated successfully${emailMsg}`);
 
       // Refetch to get full fresh data
       setTimeout(() => fetchOrder(), 800);

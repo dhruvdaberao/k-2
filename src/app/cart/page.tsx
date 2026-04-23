@@ -305,7 +305,10 @@ export default function CartPage() {
         cancelLabel="Keep"
         destructive
         onConfirm={() => {
-          if (removeTarget) removeFromCart(removeTarget.id);
+          if (removeTarget) {
+            removeFromCart(removeTarget.id);
+            showToast("Item removed from bag.");
+          }
           setRemoveTarget(null);
         }}
         onCancel={() => setRemoveTarget(null)}
@@ -321,6 +324,7 @@ export default function CartPage() {
         destructive
         onConfirm={() => {
           clearCart();
+          showToast("Cart cleared successfully.");
           setShowClearAll(false);
         }}
         onCancel={() => setShowClearAll(false)}
