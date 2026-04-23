@@ -34,7 +34,6 @@ const initialDetails: CheckoutCustomerDetails = {
   phoneNumber: "",
   address: "",
   city: "",
-  state: "",
   pincode: "",
 };
 
@@ -113,7 +112,6 @@ export default function CheckoutPage() {
           phoneNumber: profile.phone || "",
           address: profile.address || "",
           city: profile.city || "",
-          state: profile.state || "",
           pincode: profile.pincode || "",
         });
         return;
@@ -127,7 +125,6 @@ export default function CheckoutPage() {
           phoneNumber: saved.phoneNumber || saved.phone || "",
           address: saved.address || "",
           city: saved.city || "",
-          state: saved.state || "",
           pincode: saved.pincode || "",
         });
       } catch {
@@ -221,7 +218,7 @@ export default function CheckoutPage() {
   };
 
   const handleDetailsNext = () => {
-    if (!details.fullName || !details.email || !details.phoneNumber || !details.address || !details.city || !details.pincode || !details.state) {
+    if (!details.fullName || !details.email || !details.phoneNumber || !details.address || !details.city || !details.pincode) {
       showToast("Please complete all required details.");
       return;
     }
@@ -235,7 +232,6 @@ export default function CheckoutPage() {
         phone: details.phoneNumber,
         address: details.address,
         city: details.city,
-        state: details.state,
         pincode: details.pincode,
       })
     );
@@ -255,7 +251,7 @@ export default function CheckoutPage() {
 
   const handleGuestDetailsToggle = () => {
     if (!isGuestLocked) {
-      if (!details.fullName || !details.email || !details.phoneNumber || !details.address || !details.city || !details.state || !details.pincode) {
+      if (!details.fullName || !details.email || !details.phoneNumber || !details.address || !details.city || !details.pincode) {
         showToast("Please fill all the fields to continue");
         return;
       }
@@ -345,7 +341,6 @@ export default function CheckoutPage() {
           p: details.phoneNumber,
           a: details.address,
           c: details.city,
-          s: details.state,
           z: details.pincode,
         },
         i: enrichedItems.map((item) => ({
@@ -570,18 +565,6 @@ export default function CheckoutPage() {
                   />
                 </label>
 
-                <label className="checkout-field">
-                  <span>State</span>
-                  <input
-                    type="text"
-                    value={details.state}
-                    onChange={(e) => handleFieldChange("state", e.target.value)}
-                    placeholder="Maharashtra"
-                    disabled={isGuestLocked}
-                    className="w-full border p-2 rounded"
-                    style={isGuestLocked ? { opacity: 0.7 } : undefined}
-                  />
-                </label>
 
                 <label className="checkout-field">
                   <span>Pincode</span>
@@ -636,10 +619,6 @@ export default function CheckoutPage() {
                 <div className="summary-item">
                   <span className="summary-label">City</span>
                   <span className="summary-value">{details.city || "Not provided"}</span>
-                </div>
-                <div className="summary-item">
-                  <span className="summary-label">State</span>
-                  <span className="summary-value">{details.state || "Not provided"}</span>
                 </div>
                 <div className="summary-item">
                   <span className="summary-label">Pincode</span>

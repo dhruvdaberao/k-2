@@ -17,7 +17,6 @@ const initialDetails: CheckoutCustomerDetails = {
   phoneNumber: "",
   address: "",
   city: "",
-  state: "",
   pincode: "",
 };
 
@@ -74,7 +73,6 @@ export default function ProfilePage() {
           phoneNumber: data.phone || "",
           address: data.address || "",
           city: data.city || "",
-          state: data.state || "",
           pincode: data.pincode || "",
         });
       } else if (!data) {
@@ -95,7 +93,6 @@ export default function ProfilePage() {
         phoneNumber: profile.phone || "",
         address: profile.address || "",
         city: profile.city || "",
-        state: profile.state || "",
         pincode: profile.pincode || "",
       });
     }
@@ -142,7 +139,6 @@ export default function ProfilePage() {
         phone: details.phoneNumber,
         address: details.address,
         city: details.city,
-        state: details.state,
         pincode: details.pincode,
         updated_at: new Date().toISOString(),
       }, { onConflict: 'id' });
@@ -407,16 +403,6 @@ export default function ProfilePage() {
             />
           </label>
 
-          <label className="checkout-field">
-            <span>State</span>
-            <input
-              type="text"
-              value={details.state}
-              onChange={(e) => handleFieldChange("state", e.target.value)}
-              placeholder="Maharashtra"
-              readOnly={!isEditing}
-            />
-          </label>
 
           <label className="checkout-field">
             <span>Pincode</span>

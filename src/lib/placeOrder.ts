@@ -55,7 +55,7 @@ export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: an
       total_amount: totalAmount,
       status: "placed",
       payment_method: "COD",
-      address: deliveryDetails ? `${deliveryDetails.address}, ${deliveryDetails.city}, ${deliveryDetails.state} - ${deliveryDetails.pincode}` : "No Address Provided",
+      address: deliveryDetails ? `${deliveryDetails.address}, ${deliveryDetails.city} - ${deliveryDetails.pincode}` : "No Address Provided",
       display_id: displayId,
       access_token: accessToken,
     };
@@ -67,7 +67,6 @@ export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: an
         phone: deliveryDetails.phoneNumber || "",
         address_line: deliveryDetails.address || "",
         city: deliveryDetails.city || "",
-        state: deliveryDetails.state || "",
         pincode: deliveryDetails.pincode || "",
         email: email
       };

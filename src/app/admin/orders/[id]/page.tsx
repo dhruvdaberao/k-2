@@ -283,7 +283,7 @@ export default function OrderDetails() {
 
             {/* QUICK ADDRESS FOOTER (MOBILE ONLY TOGGLE-ABLE OR MINI) */}
             <p className="text-[9px] text-gray-400 mt-2 text-center md:text-right">
-              Shipping to: <span className="font-bold text-gray-600">{address.city}, {address.state}</span>
+              Shipping to: <span className="font-bold text-gray-600">{address.city}</span>
             </p>
           </div>
 

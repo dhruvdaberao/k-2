@@ -4,7 +4,6 @@ export type CheckoutCustomerDetails = {
   phoneNumber: string;
   address: string;
   city: string;
-  state: string;
   pincode: string;
 };
 
@@ -40,7 +39,7 @@ export function formatOwnerMessage(order: PlacedOrder): string {
     `Name: ${order.customer.fullName}`,
     `Email: ${order.customer.email}`,
     `Phone: ${order.customer.phoneNumber}`,
-    `Address: ${order.customer.address}, ${order.customer.city}, ${order.customer.state} - ${order.customer.pincode}`,
+    `Address: ${order.customer.address}, ${order.customer.city} - ${order.customer.pincode}`,
     "",
     "Items:",
     itemLines,
@@ -109,7 +108,6 @@ function buildReceiptLines(order: PlacedOrder): string[] {
     ...wrapLine(`Phone: ${order.customer.phoneNumber}`),
     ...wrapLine(`Address: ${order.customer.address}`),
     ...wrapLine(`City: ${order.customer.city}`),
-    ...wrapLine(`State: ${order.customer.state}`),
     ...wrapLine(`Pincode: ${order.customer.pincode}`),
     "",
     "Items",
