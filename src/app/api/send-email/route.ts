@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     }
 
     // Formatting items
-    const itemsHtml = items.map(item => `
+    const itemsHtml = items.map((item: any) => `
       <li>${item.name} (x${item.quantity}) - ₹${item.price}</li>
     `).join('');
 
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (error: any) {
     console.error('[Email API] Error:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
