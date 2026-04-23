@@ -368,7 +368,7 @@ export default function CheckoutPage() {
 
       console.log("[Checkout] Triggering order email...", emailPayload.userEmail);
 
-      fetch("/api/send-email", {
+      fetch("/api/mail", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(emailPayload)

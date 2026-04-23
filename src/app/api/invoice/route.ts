@@ -4,6 +4,8 @@ import autoTable from 'jspdf-autotable';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
   console.log('[Invoice API] Hit:', req.url);
   try {
