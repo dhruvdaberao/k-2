@@ -353,7 +353,7 @@ export default function CheckoutPage() {
       setTimeout(() => {
         clearCart();
         clearDirectCheckoutItem();
-      }, 2000);
+      }, 1500);
 
       // Fire-and-forget email (don't block navigation)
       fetch("/api/send-email", {
