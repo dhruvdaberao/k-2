@@ -143,9 +143,27 @@ export async function POST(req: Request) {
             &copy; 2024 Keshvi Crafts | Handmade with Love
           </div>
         </div>`;
+    } else if (newStatus === 'cancelled') {
+      subject = `Order Cancelled 🛑 | #${displayId}`;
+      htmlContent = `
+        <div style="font-family: Arial, sans-serif; color: #2D2D2D; max-width: 600px; margin: 0 auto; border: 1px solid #E6DCCF; border-radius: 12px; overflow: hidden;">
+          <div style="background-color: #C62828; color: white; padding: 24px; text-align: center;">
+            <h1 style="margin: 0; font-size: 20px;">Order Cancelled 🛑</h1>
+          </div>
+          <div style="padding: 24px;">
+            <p>Hello <strong>${customerName}</strong>,</p>
+            <p>Your order <strong>#${displayId}</strong> has been cancelled.</p>
+            <p>If this was a mistake or you have any questions, please contact us on Instagram or WhatsApp.</p>
+            <p>Thank you,</p>
+            <p><strong>Keshvi Crafts</strong></p>
+          </div>
+          <div style="background-color: #FDFBF7; padding: 16px; text-align: center; font-size: 12px; color: #6B6B6B; border-top: 1px solid #E6DCCF;">
+            &copy; 2024 Keshvi Crafts | Handmade with Love
+          </div>
+        </div>`;
     }
 
-    // Only send email for shipped/delivered
+    // Send email for shipped/delivered/cancelled
     if (subject && htmlContent && customerEmail) {
       try {
         // Define Contents for Owner (Neha)
@@ -180,6 +198,22 @@ export async function POST(req: Request) {
                 <p>Hello <strong>Neha</strong>,</p>
                 <p>Order <strong>#${displayId}</strong> for <strong>${customerName}</strong> has been marked as successfully delivered.</p>
                 <p>The customer has been notified and thanked.</p>
+              </div>
+              <div style="background-color: #FDFBF7; padding: 16px; text-align: center; font-size: 12px; color: #6B6B6B; border-top: 1px solid #E6DCCF;">
+                &copy; 2024 Keshvi Crafts | Business Notification
+              </div>
+            </div>`;
+        } else if (newStatus === 'cancelled') {
+          ownerSubject = `Order Cancelled 🛑 | #${displayId}`;
+          ownerHtml = `
+            <div style="font-family: Arial, sans-serif; color: #2D2D2D; max-width: 600px; margin: 0 auto; border: 1px solid #E6DCCF; border-radius: 12px; overflow: hidden;">
+              <div style="background-color: #C62828; color: white; padding: 24px; text-align: center;">
+                <h1 style="margin: 0; font-size: 20px;">Order Cancelled 🛑</h1>
+              </div>
+              <div style="padding: 24px;">
+                <p>Hello <strong>Neha</strong>,</p>
+                <p>Order <strong>#${displayId}</strong> for <strong>${customerName}</strong> has been marked as cancelled.</p>
+                <p>The customer has been notified.</p>
               </div>
               <div style="background-color: #FDFBF7; padding: 16px; text-align: center; font-size: 12px; color: #6B6B6B; border-top: 1px solid #E6DCCF;">
                 &copy; 2024 Keshvi Crafts | Business Notification
