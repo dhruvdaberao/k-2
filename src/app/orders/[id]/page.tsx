@@ -34,6 +34,9 @@ type OrderRow = {
   payment_status: string;
   address: string;
   delivery_address?: DeliveryAddress | null;
+  items?: any;
+  discount_amount?: number;
+  shipping_charge?: number;
 };
 
 type OrderItem = {
