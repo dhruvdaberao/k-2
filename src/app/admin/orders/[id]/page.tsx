@@ -101,11 +101,7 @@ export default function OrderDetails() {
   };
 
   if (loading) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-white/70 z-[9999]">
-        <div className="w-10 h-10 border-4 border-[#5A3E2B] border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
+    return <GlobalLoader message="Loading order details..." />;
   }
 
   const updateOrderStatus = async (newStatus: string) => {

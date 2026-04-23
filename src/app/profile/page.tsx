@@ -10,6 +10,7 @@ import type { CheckoutCustomerDetails } from "@/lib/checkout";
 import { useAuth } from "@/hooks/useAuth";
 import { syncLocalCartToDB } from "@/lib/cartSupabase";
 import { isAdmin } from "@/lib/isAdmin";
+import GlobalLoader from "@/components/ui/GlobalLoader";
 
 const initialDetails: CheckoutCustomerDetails = {
   fullName: "",
@@ -265,6 +266,10 @@ export default function ProfilePage() {
   };
 
   // Step 3-4: Loading Guards
+  if (loading || !hydrated) {
+    return <GlobalLoader message="Loading your profile..." />;
+  }
+
   if (!user && !loading) return null; // Let the redirect effect handle it
 
   const profileModalHTML = modalContent && (
