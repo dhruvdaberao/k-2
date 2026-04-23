@@ -129,6 +129,8 @@ export default function OrderDetails() {
       console.error("Update failed:", error);
       showToast("Failed to update status");
     } else {
+      // Optimistic local update
+      setOrder(prev => prev ? { ...prev, ...updatePayload } : null);
       showToast(`Order marked as ${newStatus}`);
       
       // Trigger Email (Fire and forget)
@@ -142,12 +144,16 @@ export default function OrderDetails() {
             type: emailType,
             email: order.email || (order as any).customer_email,
             orderId: order.display_id,
-            trackingLink: trackingLink
+            trackingLink: trackingLink,
+            customerName: (order as any).delivery_address?.full_name || "Customer",
+            total: order.total_amount,
+            items: order.order_items
           })
         }).catch(e => console.error("Email error:", e));
       }
 
-      fetchOrder();
+      // Small delay before refetch to allow DB consistency
+      setTimeout(() => fetchOrder(), 500);
     }
     setUpdating(false);
   };

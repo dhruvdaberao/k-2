@@ -7,7 +7,11 @@ export async function POST(req: Request) {
     const body = await req.json();
     console.log("📧 [Email API] Received request:", body);
 
-    const { type, email, orderId, trackingLink } = body;
+    const { type, email, userEmail, orderId, trackingLink, customerName, total, items, paymentMethod, invoiceUrl } = body;
+    
+    // Support both 'email' and 'userEmail'
+    const targetEmail = email || userEmail;
+    
     const apiKey = process.env.KeshviCraftsOrders;
     const businessEmail = process.env.BUSINESS_EMAIL;
 
@@ -16,14 +20,49 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Email configuration missing' }, { status: 500 });
     }
 
-    if (!email || !orderId) {
-      return NextResponse.json({ success: false, error: 'Email and orderId are required' }, { status: 400 });
+    if (!targetEmail || !orderId) {
+      return NextResponse.json({ success: false, error: 'Target email and orderId are required' }, { status: 400 });
     }
 
     let subject = "";
     let htmlContent = "";
 
-    if (type === "order_shipped") {
+    if (type === "order_placed") {
+      subject = `Order Confirmed! 🎉 | #${orderId}`;
+      htmlContent = `
+        <div style="font-family: Arial, sans-serif; color: #2D2D2D; max-width: 600px; margin: 0 auto; border: 1px solid #E6DCCF; border-radius: 12px; overflow: hidden;">
+          <div style="background-color: #5A3E2B; color: white; padding: 24px; text-align: center;">
+            <h1 style="margin: 0; font-size: 20px;">Thank You for Your Order!</h1>
+          </div>
+          <div style="padding: 24px;">
+            <p>Hello ${customerName || 'Customer'},</p>
+            <p>Your order <strong>#${orderId}</strong> has been successfully placed and is now being processed.</p>
+            
+            <div style="margin: 24px 0; padding: 20px; background-color: #FDFBF7; border-radius: 8px; border: 1px solid #E6DCCF;">
+              <h3 style="margin-top: 0; color: #5A3E2B;">Order Summary</h3>
+              <p style="margin: 4px 0;"><strong>Total Amount:</strong> ₹${total}</p>
+              <p style="margin: 4px 0;"><strong>Payment Method:</strong> ${paymentMethod}</p>
+              <div style="margin-top: 12px;">
+                <p style="margin-bottom: 4px; font-weight: bold;">Items:</p>
+                <ul style="margin: 0; padding-left: 20px;">
+                  ${items?.map((item: any) => `<li>${item.name} x${item.quantity}</li>`).join('')}
+                </ul>
+              </div>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${invoiceUrl}" style="background-color: #5A3E2B; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Download Invoice</a>
+            </div>
+
+            <p>We'll notify you as soon as your handmade goodies are shipped!</p>
+            <p>Warmly,<br/><strong>Keshvi Crafts</strong></p>
+          </div>
+          <div style="background-color: #FDFBF7; padding: 16px; text-align: center; font-size: 12px; color: #6B6B6B; border-top: 1px solid #E6DCCF;">
+            &copy; 2024 Keshvi Crafts | Handmade with Love
+          </div>
+        </div>
+      `;
+    } else if (type === "order_shipped") {
       subject = `Your Order Has Been Shipped 🚚 | #${orderId}`;
       htmlContent = `
         <div style="font-family: Arial, sans-serif; color: #2D2D2D; max-width: 600px; margin: 0 auto; border: 1px solid #E6DCCF; border-radius: 12px; overflow: hidden;">
@@ -64,8 +103,15 @@ export async function POST(req: Request) {
         </div>
       `;
     } else {
-      // Fallback for other types or basic proxying
-      return NextResponse.json({ success: true, message: "Type not handled in new API yet" });
+      return NextResponse.json({ success: true, message: "Type not handled" });
+    }
+
+    // Recipients list
+    const recipients = [{ email: targetEmail }];
+    
+    // Also notify owner if it's a new order
+    if (type === "order_placed") {
+      recipients.push({ email: businessEmail });
     }
 
     const response = await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -76,7 +122,7 @@ export async function POST(req: Request) {
       },
       body: JSON.stringify({
         sender: { email: businessEmail, name: 'Keshvi Crafts' },
-        to: [{ email: email }],
+        to: recipients,
         subject: subject,
         htmlContent: htmlContent,
       }),

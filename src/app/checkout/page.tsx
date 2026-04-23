@@ -367,7 +367,7 @@ export default function CheckoutPage() {
       // Fire-and-forget email
       const emailPayload = {
         type: "order_placed",
-        userEmail: details.email || user?.email || "",
+        email: details.email || user?.email || "",
         orderId: orderId,
         items: finalItems.map(item => ({ name: item.name, quantity: item.quantity, price: item.price })),
         total: total,
@@ -379,7 +379,7 @@ export default function CheckoutPage() {
         customerName: details.fullName || profile?.name || "Customer"
       };
 
-      console.log("📧 Sending order email...", emailPayload.userEmail);
+      console.log("📧 Sending order email...", emailPayload.email);
       fetch("/api/send-email", { // Use the new consistent API
         method: "POST",
         headers: { "Content-Type": "application/json" },
