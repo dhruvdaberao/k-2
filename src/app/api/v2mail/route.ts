@@ -126,8 +126,8 @@ export async function POST(req: Request) {
       </html>
     `;
 
-    console.log('>>> [Email API: Mail] Calling Brevo for:', userEmail);
-    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+    console.log('>>> [Email API: Mail] Calling Brevo for User:', userEmail);
+    const userRes = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
       headers: {
         'api-key': apiKey,
@@ -135,19 +135,33 @@ export async function POST(req: Request) {
       },
       body: JSON.stringify({
         sender: { email: businessEmail, name: 'Keshvi Crafts' },
-        to: [{ email: userEmail }, { email: businessEmail }],
+        to: [{ email: userEmail }],
         subject: `Order Confirmed: ${orderId} | Keshvi Crafts`,
         htmlContent: emailHtml,
       }),
     });
 
-    if (!response.ok) {
-      const errorMsg = await response.text();
-      console.error('[Email API: Mail] Brevo error:', errorMsg);
-      return NextResponse.json({ success: false, error: 'Brevo transmission failed' }, { status: 500 });
+    console.log('>>> [Email API: Mail] Calling Brevo for Business:', businessEmail);
+    const bizRes = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'api-key': apiKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sender: { email: businessEmail, name: 'Keshvi Crafts' },
+        to: [{ email: businessEmail }],
+        subject: `NEW ORDER RECEIVED: ${orderId}`,
+        htmlContent: emailHtml.replace('Order Confirmed!', 'Order Received!').replace('Your order has been placed successfully', 'A new order has been placed'),
+      }),
+    });
+
+    if (!userRes.ok || !bizRes.ok) {
+      console.error('[Email API: Mail] One or more Brevo calls failed');
+      return NextResponse.json({ success: false, error: 'Partial transmission failure' }, { status: 500 });
     }
 
-    console.log('>>> [Email API: Mail] Successfully sent! <<<');
+    console.log('>>> [Email API: Mail] Both emails sent successfully! <<<');
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error('[Email API: Mail] Critical Error:', error);

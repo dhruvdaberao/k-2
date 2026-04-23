@@ -225,12 +225,13 @@ export async function GET(req: Request) {
     doc.setTextColor(150);
     doc.text("For any queries, contact us on Instagram: @keshvi_crafts  |  WhatsApp: +91 7507996961", width / 2, footerY + 7, { align: "center" });
 
-    const pdfBuffer = doc.output('arraybuffer');
+    const pdfBuffer = Buffer.from(doc.output('arraybuffer'));
 
     return new Response(pdfBuffer, {
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="Invoice-KC-${orderData.o}.pdf"`
+        'Content-Disposition': `inline; filename="Invoice-KC-${orderData.o}.pdf"`,
+        'Content-Length': pdfBuffer.length.toString()
       }
     });
 
