@@ -58,11 +58,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 });
     }
 
-    const apiKey = process.env.BREVO_API_KEY;
+    const apiKey = process.env.KeshviCraftsOrders;
     const businessEmail = process.env.BUSINESS_EMAIL;
 
     if (!apiKey || !businessEmail) {
-      console.error('[Email API] Missing BREVO_API_KEY or BUSINESS_EMAIL in env');
+      console.error('[Email API] Missing KeshviCraftsOrders or BUSINESS_EMAIL in env');
       return NextResponse.json({ success: false }, { status: 500 });
     }
 
