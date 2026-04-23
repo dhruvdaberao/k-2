@@ -15,6 +15,7 @@ type OrderStatus = "placed" | "confirmed" | "shipped" | "delivered" | "cancelled
 
 type DeliveryAddress = {
   name?: string;
+  full_name?: string;
   phone?: string;
   address_line?: string;
   street?: string;
