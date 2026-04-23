@@ -32,18 +32,28 @@ export async function GET(req: Request) {
       console.log("[Invoice API] Fallback to DB fetch for:", orderId);
       const supabase = createRouteHandlerClient({ cookies });
       
-      const { data: order, error } = await supabase
+      // Cleanup orderId from any quotes or spaces
+      const cleanId = orderId.trim().replace(/['"]/g, '');
+
+      let { data: order, error } = await supabase
         .from('orders')
         .select('*')
-        .or(`display_id.eq."${orderId}",id.eq."${orderId}"`)
+        .or(`display_id.eq.${cleanId},id.eq.${cleanId}`)
         .maybeSingle();
 
       if (error) {
-        console.error('[Invoice API] Supabase fetch error:', error);
+        console.error('[Invoice API] Supabase fetch error (OR):', error);
       }
 
-      if (order && !error) {
-        console.log('[Invoice API] Found order in DB:', order.id);
+      // Final fallback: try separate equality checks if OR failed or returned nothing
+      if (!order) {
+        console.log("[Invoice API] OR query yielded nothing, trying exact display_id match...");
+        const { data: dMatch } = await supabase.from('orders').select('*').eq('display_id', cleanId).maybeSingle();
+        order = dMatch;
+      }
+
+      if (order) {
+        console.log('[Invoice API] Successfully found order:', order.id);
         // ... mapping logic
         let items = [];
         try {
