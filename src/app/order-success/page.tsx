@@ -19,8 +19,20 @@ export default function OrderSuccessPage() {
     }
 
     try {
-      const invoiceUrl = `${window.location.origin}/api/invoice?orderId=${orderId}`;
-      setInvoiceUrl(invoiceUrl);
+      // 1. Try to restore from local storage (stateless b64 URL)
+      const stored = localStorage.getItem(ORDER_CONFIRMATION_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.order_id === orderId && parsed.pdf_url) {
+          setInvoiceUrl(parsed.pdf_url);
+          setLoading(false);
+          return;
+        }
+      }
+
+      // 2. Fallback to a plain orderId reference if storage missing
+      const fallbackUrl = `${window.location.origin}/api/invoice?orderId=${orderId}`;
+      setInvoiceUrl(fallbackUrl);
     } catch (e) {
       console.error("Failed to load invoice url", e);
     } finally {
@@ -29,12 +41,12 @@ export default function OrderSuccessPage() {
   }, [orderId, router]);
 
   const handleDownloadInvoice = () => {
-    if (!orderId) {
-      alert("Order ID missing");
+    if (!invoiceUrl) {
+      alert("Invoice URL not ready");
       return;
     }
 
-    window.open(`/api/invoice?orderId=${orderId}`, "_blank");
+    window.open(invoiceUrl, "_blank");
   };
 
   if (loading) {

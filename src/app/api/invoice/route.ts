@@ -1,294 +1,235 @@
 import { NextResponse } from 'next/server';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
-import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { createClient } from '@supabase/supabase-js';
 
-/**
- * Draws a clean, professional ecommerce invoice
- */
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+);
+
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
+    const dParam = searchParams.get('d');
     const orderId = searchParams.get('orderId');
 
-    if (!orderId) {
-      return new Response("Missing orderId", { status: 400 });
-    }
+    let orderData: any = null;
 
-    // Initialize session-aware Supabase client
-    const supabase = createRouteHandlerClient({ cookies });
-
-    // Fetch order from DB — try display_id first, then id
-    // We use a single query with .or() for better performance and reliability
-    const { data: order, error: fetchError } = await supabase
-      .from('orders')
-      .select('*')
-      .or(`display_id.eq."${orderId}",id.eq."${orderId}"`)
-      .maybeSingle();
-
-    if (fetchError) {
-      console.error('[Invoice API] DB Fetch Error:', fetchError);
-      return NextResponse.json({ error: 'Database error', details: fetchError.message }, { status: 500 });
-    }
-
-    if (!order) {
-      console.error(`[Invoice API] Order not found for ID: ${orderId}`);
-      return NextResponse.json({ error: 'Order not found' }, { status: 404 });
-    }
-
-    // Initialize document
-    const pdfDoc = await PDFDocument.create();
-    const page = pdfDoc.addPage([595.28, 841.89]); // A4 format
-    const { width, height } = page.getSize();
-    
-    // Embed fonts
-    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-    const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-
-    // Standard Colors
-    const colorBrown = rgb(0.35, 0.24, 0.17); // #5a3e2b
-    const colorBlack = rgb(0.18, 0.16, 0.15); // #2f2a26
-    const colorGray = rgb(0.42, 0.45, 0.50); // #6b7280
-    const colorLightGray = rgb(0.9, 0.9, 0.9);
-    const colorRed = rgb(0.8, 0.1, 0.15);
-    const colorWhite = rgb(1, 1, 1);
-
-    // Baseline tracker
-    let currentY = height - 50;
-
-    // --- 1. HEADER (Logo / Brand / Order ID) ---
-    page.drawText('Keshvi Crafts', { x: 50, y: currentY, size: 28, font: boldFont, color: colorBrown });
-    
-    // Push invoice label right
-    page.drawText('INVOICE', { 
-      x: width - 150, 
-      y: currentY, 
-      size: 24, 
-      font: boldFont, 
-      color: colorBlack 
-    });
-
-    currentY -= 15;
-    page.drawText('Handmade with Love', { x: 50, y: currentY, size: 10, font, color: colorGray });
-    
-    // Order ID logic on right
-    page.drawText(`Order ID:`, { x: width - 150, y: currentY, size: 10, font: boldFont, color: colorGray });
-    page.drawText(order.display_id || order.id, { x: width - 100, y: currentY, size: 10, font: boldFont, color: colorBlack });
-
-    currentY -= 30;
-    
-    // --- 8. CANCELLED OUTLINE ---
-    if (order.status === 'cancelled') {
-        const d = order.updated_at ? new Date(order.updated_at) : new Date();
-        const cDate = d.toLocaleDateString('en-IN') + " " + d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-        
-        // Red Box
-        page.drawRectangle({
-            x: 50,
-            y: currentY - 20,
-            width: width - 100,
-            height: 30,
-            color: rgb(0.98, 0.85, 0.85),
-            borderColor: colorRed,
-            borderWidth: 1,
-        });
-        
-        page.drawText(`ORDER CANCELLED on ${cDate}`, {
-            x: 60,
-            y: currentY - 10,
-            size: 12,
-            font: boldFont,
-            color: colorRed,
-        });
-
-        currentY -= 40;
-    }
-
-    // Line separator
-    page.drawLine({ start: { x: 50, y: currentY }, end: { x: width - 50, y: currentY }, thickness: 1, color: colorLightGray });
-    currentY -= 25;
-
-    // --- 2. CUSTOMER DETAILS & 3. ORDER DETAILS ---
-    // Left Block: Bill To
-    page.drawText(`BILL TO:`, { x: 50, y: currentY, size: 10, font: boldFont, color: colorGray });
-    
-    // Right Block: Order Info
-    page.drawText(`ORDER DATE:`, { x: width / 2 + 50, y: currentY, size: 10, font: boldFont, color: colorGray });
-
-    currentY -= 15;
-    
-    // Extract Address and Parse — prefer delivery_address JSON, fallback to legacy address
-    let cName = "Customer";
-    let cEmail = "";
-    let cPhone = "";
-    let cAddressLines: string[] = [];
-
-    if (order.delivery_address && typeof order.delivery_address === 'object') {
-      // New structured delivery_address JSON
-      const da = order.delivery_address;
-      cName = da.full_name || "Customer";
-      cPhone = da.phone || "";
-      if (da.address_line) cAddressLines.push(da.address_line);
-      if (da.city || da.state) cAddressLines.push(`${da.city || ''}${da.state ? ', ' + da.state : ''}`);
-      if (da.pincode) cAddressLines.push(`Pincode: ${da.pincode}`);
-    } else if (order.address) {
-      if (typeof order.address === 'string') {
-        cAddressLines = order.address.split('\n');
-      } else if (order.address.name) {
-        cName = order.address.name;
-        cEmail = order.address.email || "";
-        cPhone = order.address.phone || "";
-        if (order.address.street) cAddressLines.push(order.address.street);
-        if (order.address.city) cAddressLines.push(`${order.address.city}, ${order.address.state || ''}`);
-        if (order.address.pincode) cAddressLines.push(`Pincode: ${order.address.pincode}`);
-      }
-    } else {
-      cAddressLines.push("No Address provided");
-    }
-
-    // Draw Left Name
-    page.drawText(cName.replace(/[^\x20-\x7E]/g, ''), { x: 50, y: currentY, size: 12, font: boldFont, color: colorBlack });
-    
-    // Draw Right Date
-    const formattedDate = new Date(order.created_at).toLocaleDateString('en-IN', {
-      day: 'numeric', month: 'short', year: 'numeric'
-    });
-    page.drawText(formattedDate, { x: width / 2 + 50, y: currentY, size: 11, font: boldFont, color: colorBlack });
-
-    currentY -= 15;
-    
-    let leftY = currentY;
-    if (cEmail) {
-        page.drawText(`Email: ${cEmail.replace(/[^\x20-\x7E]/g, '')}`, { x: 50, y: leftY, size: 10, font, color: colorBlack });
-        leftY -= 15;
-    }
-    if (cPhone) {
-        page.drawText(`Phone: ${cPhone.replace(/[^\x20-\x7E]/g, '')}`, { x: 50, y: leftY, size: 10, font, color: colorBlack });
-        leftY -= 15;
-    }
-    
-    for (const line of cAddressLines) {
-      const cleanLine = line.replace(/[^\x20-\x7E]/g, '');
-      if (cleanLine) {
-        page.drawText(cleanLine, { x: 50, y: leftY, size: 10, font, color: colorBlack });
-        leftY -= 15;
+    // Phase 1: Try to decode from 'd' parameter (Stateless)
+    if (dParam) {
+      try {
+        // Use Buffer for more robust base64 decoding in Node.js environment
+        const decoded = decodeURIComponent(Buffer.from(dParam, 'base64').toString('utf-8'));
+        orderData = JSON.parse(decoded);
+        console.log("[Invoice API] Using stateless data for:", orderData.o);
+      } catch (e) {
+        console.error("[Invoice API] Failed to parse 'd' param:", e);
       }
     }
 
-    // Draw Right Info
-    let rightY = currentY;
-    page.drawText(`PAYMENT METHOD:`, { x: width / 2 + 50, y: rightY, size: 10, font: boldFont, color: colorGray });
-    rightY -= 15;
-    page.drawText(String(order.payment_method || 'COD').toUpperCase(), { x: width / 2 + 50, y: rightY, size: 11, font: boldFont, color: colorBlack });
+    // Phase 2: Fallback to orderId (Stateless but requires DB fetch)
+    if (!orderData && orderId) {
+      console.log("[Invoice API] Fetching from DB for:", orderId);
+      const { data: order, error } = await supabase
+        .from('orders')
+        .select('*')
+        .or(`display_id.eq."${orderId}",id.eq."${orderId}"`)
+        .maybeSingle();
 
-    rightY -= 20;
-    page.drawText(`PAYMENT STATUS:`, { x: width / 2 + 50, y: rightY, size: 10, font: boldFont, color: colorGray });
-    rightY -= 15;
-    page.drawText(String(order.payment_status || 'Pending').toUpperCase(), { x: width / 2 + 50, y: rightY, size: 11, font: boldFont, color: colorBlack });
+      if (order && !error) {
+        // Map DB order to the format expected by our generator
+        let items = [];
+        try {
+          items = typeof order.items === 'string' ? JSON.parse(order.items) : (order.items || []);
+        } catch(e) {}
 
-    currentY = Math.min(leftY, rightY) - 30;
+        let addr: any = order.delivery_address || (typeof order.address === 'string' ? { address_line: order.address } : order.address) || {};
 
-    // --- 4. ITEMS TABLE ---
-    // Table Header
-    page.drawRectangle({
-        x: 50,
-        y: currentY - 15,
-        width: width - 100,
-        height: 25,
-        color: colorBrown,
-    });
-    
-    page.drawText(`PRODUCT DESCRIPTION`, { x: 60, y: currentY - 8, size: 9, font: boldFont, color: colorWhite });
-    page.drawText(`QTY`, { x: Math.round(width * 0.65), y: currentY - 8, size: 9, font: boldFont, color: colorWhite });
-    page.drawText(`PRICE`, { x: Math.round(width * 0.75), y: currentY - 8, size: 9, font: boldFont, color: colorWhite });
-    page.drawText(`TOTAL`, { x: Math.round(width * 0.88), y: currentY - 8, size: 9, font: boldFont, color: colorWhite });
-
-    currentY -= 35;
-
-    // Table Content
-    let subtotal = 0;
-    let itemsArray = order.items || [];
-    if (typeof order.items === 'string') {
-      try { itemsArray = JSON.parse(order.items); } catch(e){}
-    }
-    
-    for (const item of itemsArray) {
-      const cleanName = String(item.name || 'Item').replace(/[^\x20-\x7E]/g, '');
-      const itemName = cleanName.length > 50 ? cleanName.substring(0, 48) + '...' : cleanName;
-      const qty = Number(item.quantity) || 1;
-      const price = Number(item.price) || 0;
-      const amt = qty * price;
-      subtotal += amt;
-
-      page.drawText(itemName, { x: 60, y: currentY, size: 10, font, color: colorBlack });
-      page.drawText(`${qty}`, { x: Math.round(width * 0.65), y: currentY, size: 10, font, color: colorBlack });
-      page.drawText(`₹ ${price.toLocaleString('en-IN')}`, { x: Math.round(width * 0.75), y: currentY, size: 10, font, color: colorBlack });
-      page.drawText(`₹ ${amt.toLocaleString('en-IN')}`, { x: Math.round(width * 0.88), y: currentY, size: 10, font, color: colorBlack });
-      
-      currentY -= 20;
+        orderData = {
+          o: order.display_id || order.id,
+          c: order.created_at,
+          s: Number(order.total_amount || 0) + (Number(order.discount_amount || 0)) - (Number(order.shipping_charge || 0)),
+          d: Number(order.discount_amount || 0),
+          sh: Number(order.shipping_charge || 0),
+          sd: 0, 
+          t: Number(order.total_amount || 0),
+          pm: order.payment_method,
+          u: {
+            n: addr.full_name || addr.name || "Customer",
+            p: addr.phone || "",
+            a: addr.address_line || addr.street || "",
+            c: addr.city || "",
+            z: addr.pincode || ""
+          },
+          i: items.map((it: any) => ({
+            n: it.name,
+            p: it.price,
+            q: it.quantity,
+            m: it.image
+          }))
+        };
+      }
     }
 
-    currentY -= 5;
-    page.drawLine({ start: { x: 50, y: currentY }, end: { x: width - 50, y: currentY }, thickness: 1, color: colorLightGray });
-    currentY -= 25;
+    if (!orderData) {
+      return new Response("Invoice data not found. Please provide 'd' or 'orderId'.", { status: 400 });
+    }
 
-    // --- 5. SUMMARY ---
-    const finalTotal = order.total_amount || subtotal;
-    const shipping = finalTotal - subtotal;
-    
-    const summaryXLeft = Math.round(width * 0.65);
-    const summaryXRight = Math.round(width * 0.88);
+    // --- Generate PDF with jsPDF ---
+    const doc = new jsPDF();
+    const width = doc.internal.pageSize.getWidth();
+    const accentColor = [216, 195, 165]; // #D8C3A5
 
-    page.drawText(`Subtotal`, { x: summaryXLeft, y: currentY, size: 10, font, color: colorGray });
-    page.drawText(`₹ ${subtotal.toLocaleString('en-IN')}`, { x: summaryXRight, y: currentY, size: 10, font, color: colorBlack });
+    // 1. BRAND HEADER
+    doc.setFillColor(accentColor[0], accentColor[1], accentColor[2]);
+    doc.rect(0, 0, width, 15, 'F');
     
-    currentY -= 20;
-    page.drawText(`Shipping`, { x: summaryXLeft, y: currentY, size: 10, font, color: colorGray });
-    page.drawText(`₹ ${Math.max(shipping, 0).toLocaleString('en-IN')}`, { x: summaryXRight, y: currentY, size: 10, font, color: colorBlack });
-    
-    currentY -= 20;
-    
-    page.drawText(`TOTAL`, { x: summaryXLeft, y: currentY, size: 14, font: boldFont, color: colorBrown });
-    page.drawText(`₹ ${finalTotal.toLocaleString('en-IN')}`, { x: summaryXRight, y: currentY, size: 14, font: boldFont, color: colorBlack });
+    // Add Logo (Attempt to fetch from public/logo.png on the same host)
+    try {
+      const host = orderData.h || (typeof window !== 'undefined' ? window.location.origin : '');
+      const logoUrl = host ? `${host}/logo.png` : '';
+      if (logoUrl) {
+         // In server-side Next.js, we might need to read from filesystem or fetch
+         // Since we are in an API route, let's try reading the file from the local disk if possible
+         // Or just use the text-fallback if image fails
+      }
+    } catch {}
 
-    // --- 6. FOOTER ---
-    page.drawText(`Thank you for shopping with Keshvi Crafts!`, {
-      x: 50,
-      y: 65,
-      size: 11,
-      font: boldFont,
-      color: colorBrown,
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(24);
+    doc.setTextColor(90, 62, 43); // #5a3e2b
+    doc.text("Keshvi Crafts", 20, 35);
+    
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(100);
+    doc.text("Handmade with Love", 20, 42);
+
+    doc.setFontSize(20);
+    doc.setTextColor(47, 42, 38); // #2f2a26
+    doc.text("INVOICE", width - 20, 35, { align: "right" });
+
+    // 2. ORDER DETAILS
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(100);
+    doc.text(`INVOICE NO: ${orderData.o}`, width - 20, 45, { align: "right" });
+    
+    const dateStr = new Date(orderData.c).toLocaleDateString('en-IN', {
+      day: '2-digit', month: 'long', year: 'numeric'
+    });
+    doc.text(`DATE: ${dateStr}`, width - 20, 50, { align: "right" });
+    doc.text(`PAYMENT: ${(orderData.pm || 'COD').toUpperCase()}`, width - 20, 55, { align: "right" });
+
+    // 3. BILL TO & SHIP TO
+    doc.setDrawColor(230);
+    doc.line(20, 65, width - 20, 65);
+
+    doc.setFontSize(10);
+    doc.setTextColor(150);
+    doc.text("BILL TO:", 20, 75);
+    
+    doc.setTextColor(47, 42, 38);
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "bold");
+    doc.text(orderData.u?.n || "Customer", 20, 82);
+    
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.text(orderData.u?.p || "", 20, 87);
+    
+    const address = `${orderData.u?.a || ''}, ${orderData.u?.c || ''} - ${orderData.u?.z || ''}`;
+    const splitAddress = doc.splitTextToSize(address, 70);
+    doc.text(splitAddress, 20, 92);
+
+    // 4. ITEMS TABLE
+    const tableData = (orderData.i || []).map((it: any) => [
+      it.n || "Item",
+      it.q || 1,
+      `Rs. ${Number(it.p || 0).toLocaleString('en-IN')}`,
+      `Rs. ${(Number(it.q || 1) * Number(it.p || 0)).toLocaleString('en-IN')}`
+    ]);
+
+    autoTable(doc, {
+      startY: 110,
+      head: [['Product Description', 'Qty', 'Price', 'Total']],
+      body: tableData,
+      theme: 'grid',
+      headStyles: { 
+        fillColor: [90, 62, 43], // #5a3e2b
+        textColor: 255,
+        fontSize: 9,
+        fontStyle: 'bold',
+        halign: 'center'
+      },
+      columnStyles: {
+        0: { cellWidth: 'auto' },
+        1: { halign: 'center', cellWidth: 20 },
+        2: { halign: 'right', cellWidth: 30 },
+        3: { halign: 'right', cellWidth: 30 }
+      },
+      styles: { fontSize: 9, cellPadding: 5 }
     });
 
-    page.drawText(`For queries regarding order processing, refunds or any concerns:`, {
-      x: 50,
-      y: 50,
-      size: 9,
-      font,
-      color: colorGray,
-    });
+    // 5. SUMMARY
+    let finalY = (doc as any).lastAutoTable.finalY + 10;
     
-    page.drawText(`Instagram: @keshvi_crafts  |  WhatsApp: +91 7507996961`, {
-      x: 50,
-      y: 37,
-      size: 9,
-      font: boldFont,
-      color: colorBrown,
-    });
+    const summaryRightX = width - 20;
+    const summaryLeftX = width - 80;
 
-    // Save PDF layout
-    const pdfBytes = await pdfDoc.save();
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(100);
+    
+    doc.text("Subtotal:", summaryLeftX, finalY);
+    doc.text(`Rs. ${Number(orderData.s || 0).toLocaleString('en-IN')}`, summaryRightX, finalY, { align: "right" });
+    
+    finalY += 7;
+    doc.text("Shipping:", summaryLeftX, finalY);
+    doc.text(`Rs. ${Number(orderData.sh || 0).toLocaleString('en-IN')}`, summaryRightX, finalY, { align: "right" });
+    
+    if (orderData.d > 0) {
+      finalY += 7;
+      doc.setTextColor(194, 65, 12); // #C2410C
+      doc.text(`Discount (${orderData.dp || 0}%):`, summaryLeftX, finalY);
+      doc.text(`-Rs. ${Number(orderData.d || 0).toLocaleString('en-IN')}`, summaryRightX, finalY, { align: "right" });
+    }
 
-    // Create a precise standard application/pdf binary response
-    return new NextResponse(pdfBytes as any, {
-      status: 200,
+    finalY += 10;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.setTextColor(90, 62, 43);
+    doc.text("Grand Total:", summaryLeftX, finalY);
+    doc.text(`Rs. ${Number(orderData.t || 0).toLocaleString('en-IN')}`, summaryRightX, finalY, { align: "right" });
+
+    // 6. FOOTER
+    const footerY = doc.internal.pageSize.getHeight() - 30;
+    doc.setDrawColor(accentColor[0], accentColor[1], accentColor[2]);
+    doc.setLineWidth(0.5);
+    doc.line(20, footerY - 5, width - 20, footerY - 5);
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(90, 62, 43);
+    doc.text("Thank you for shopping with Keshvi Crafts!", width / 2, footerY, { align: "center" });
+    
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(150);
+    doc.text("For any queries, contact us on Instagram: @keshvi_crafts  |  WhatsApp: +91 7507996961", width / 2, footerY + 7, { align: "center" });
+
+    const pdfBuffer = doc.output('arraybuffer');
+
+    return new Response(pdfBuffer, {
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="Invoice-KC-${String(order.display_id || orderId).replace(/[^a-zA-Z0-9-]/g, "")}.pdf"`,
-      },
+        'Content-Disposition': `attachment; filename="Invoice-KC-${orderData.o}.pdf"`
+      }
     });
-  } catch (error: any) {
-    console.error('[Invoice API] Generation Error:', error);
-    return NextResponse.json({ error: 'Failed to generate invoice', details: error.message }, { status: 500 });
+
+  } catch (err: any) {
+    console.error("[Invoice API] Critical Error:", err);
+    return new Response("Error generating invoice: " + err.message, { status: 500 });
   }
 }
