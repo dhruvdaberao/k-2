@@ -53,12 +53,22 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let fired = false;
     const fetchOrders = async () => {
+      if (fired) return;
+      fired = true;
       try {
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        // Try to get session info quickly
+        const { data: { session } } = await supabase.auth.getSession();
+        let userId = session?.user?.id;
 
-        if (authError || !user) {
-          console.error("[Orders] Auth error or no user:", authError?.message);
+        if (!userId) {
+          const { data: { user } } = await supabase.auth.getUser();
+          userId = user?.id;
+        }
+
+        if (!userId) {
+          console.error("[Orders] No user found");
           setOrders([]);
           setLoading(false);
           return;
@@ -67,7 +77,7 @@ export default function OrdersPage() {
         const { data, error } = await supabase
           .from("orders")
           .select("id, display_id, created_at, total_amount, status")
-          .eq("user_id", user.id)
+          .eq("user_id", userId)
           .order("created_at", { ascending: false });
 
         if (error) {
@@ -85,7 +95,7 @@ export default function OrdersPage() {
     };
 
     fetchOrders();
-  }, []);
+  }, [supabase]);
 
   // Refined loading state: show the basic page structure instead of a full-screen skeleton flash
   const loadingView = (

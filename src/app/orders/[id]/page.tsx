@@ -423,15 +423,6 @@ export default function OrderDetailPage() {
 
         {/* ── Action Buttons ──────────────────────────── */}
         <div className="od-actions">
-          {status === "placed" && (
-            <button
-              className="od-btn od-btn--cancel"
-              onClick={handleCancelClick}
-              disabled={cancelling}
-            >
-              Cancel Order
-            </button>
-          )}
           <a
             href={whatsappLink}
             target="_blank"
@@ -445,26 +436,14 @@ export default function OrderDetailPage() {
             </svg>
             Need Help?
           </a>
-          {status !== "cancelled" ? (
-            <a
-              href={invoiceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="od-btn od-btn--download"
-            >
-              <span>Download Invoice</span>
-            </a>
-          ) : (
-            <a
-              href={invoiceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="od-btn od-btn--secondary"
-              style={{ opacity: 0.7 }}
-            >
-              <span>View Cancelled Invoice</span>
-            </a>
-          )}
+          <a
+            href={invoiceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="od-btn od-btn--download"
+          >
+            <span>Download Invoice</span>
+          </a>
         </div>
       </div>
 
