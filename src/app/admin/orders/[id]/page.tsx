@@ -7,6 +7,8 @@ import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
 import { showToast } from "@/components/Toast";
 import GlobalLoader from "@/components/ui/GlobalLoader";
+import PromptModal from "@/components/ui/PromptModal";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 
 type OrderItem = {
   id: string;
@@ -44,6 +46,7 @@ export default function OrderDetails() {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [trackingLink, setTrackingLink] = useState("");
+  const [showCancelPrompt, setShowCancelPrompt] = useState(false);
 
   // 1. Unified Auth & Data Fetching
   useEffect(() => {
@@ -113,12 +116,14 @@ export default function OrderDetails() {
     }
 
     if (newStatus === "cancelled") {
-      const userInput = window.prompt('Please type "cancel" to confirm cancellation:');
-      if (userInput?.toLowerCase() !== "cancel") {
-        if (userInput !== null) showToast("Cancellation aborted");
-        return;
-      }
+      setShowCancelPrompt(true);
+      return;
     }
+
+    executeStatusUpdate(newStatus);
+  };
+
+  const executeStatusUpdate = async (newStatus: string) => {
 
     setUpdating(true);
 
@@ -290,6 +295,25 @@ export default function OrderDetails() {
           </div>
         </div>
       </div>
+      <PromptModal
+        isOpen={showCancelPrompt}
+        title="Confirm Cancellation"
+        message='Please type "cancel" to confirm the cancellation of this order:'
+        placeholder='Type "cancel" here'
+        confirmLabel="Cancel Order"
+        cancelLabel="Back"
+        destructive
+        onConfirm={(val) => {
+          if (val.toLowerCase() === "cancel") {
+            setShowCancelPrompt(false);
+            executeStatusUpdate("cancelled");
+          } else {
+            showToast("Incorrect confirmation text.");
+          }
+        }}
+        onCancel={() => setShowCancelPrompt(false)}
+      />
+
     </main>
   );
 }
