@@ -127,7 +127,7 @@ export default function AccountSettingsPage() {
 
       <div className="mx-auto w-full max-w-md px-4">
         
-        <div className="flex items-center mt-6 mb-12 gap-5">
+        <div className="flex items-center mt-6 mb-16 gap-5">
           <button 
             onClick={() => router.push('/profile')} 
             className="back-icon-btn"
