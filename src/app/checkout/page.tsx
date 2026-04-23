@@ -352,24 +352,35 @@ export default function CheckoutPage() {
       }, 1000);
 
       // Fire-and-forget email (don't block navigation)
+      const emailPayload = {
+        type: "order_placed",
+        userEmail: details.email || user?.email || "",
+        orderId: orderId,
+        items: finalItems.map(item => ({ name: item.name, quantity: item.quantity, price: item.price })),
+        total: total,
+        subtotal: subtotal,
+        shipping: baseShipping + shippingDiscount,
+        discount: discountAmount,
+        paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online Payment',
+        invoiceUrl: dynamicPdfUrl,
+        customerName: details.fullName || profile?.name || "Customer"
+      };
+
+      console.log("[Checkout] Triggering order email...", emailPayload.userEmail);
+
       fetch("/api/send-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "order_placed",
-          userEmail: details.email,
-          orderId: orderId,
-          items: finalItems.map(item => ({ name: item.name, quantity: item.quantity, price: item.price })),
-          total: total,
-          subtotal: subtotal,
-          shipping: baseShipping + shippingDiscount,
-          discount: discountAmount,
-          paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online Payment',
-          invoiceUrl: dynamicPdfUrl,
-          customerName: details.fullName
-        })
+        body: JSON.stringify(emailPayload)
+      }).then(async res => {
+        if (!res.ok) {
+          const txt = await res.text();
+          console.error("[Checkout] Email API failed:", txt);
+        } else {
+          console.log("[Checkout] Email sent successfully!");
+        }
       }).catch(emailErr => {
-        console.error("Order Email Error (Non-blocking):", emailErr);
+        console.error("[Checkout] Email sending fatal error:", emailErr);
       });
     } catch (err) {
       console.error("ORDER ERROR:", err);

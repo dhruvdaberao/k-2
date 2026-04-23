@@ -97,21 +97,8 @@ export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: an
     const { error: itemsError } = await supabase.from("order_items").insert(itemsPayload);
     if (itemsError) throw new Error(itemsError.message);
 
-    // 3. CLEAN UP
+    // CLEAN UP
     await supabase.from("cart").delete().eq("user_id", user.id);
-
-    // 4. TRIGGER EMAIL (Don't await it to prevent blocking UI redirect)
-    fetch("/api/send-email", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        type: "order_placed",
-        userEmail: user.email,
-        orderId: displayId,
-        items: itemsPayload,
-        total: totalAmount
-      })
-    }).catch(e => console.error("Email trigger failed:", e));
 
     return { success: true, orderId: orderId, displayId, error: null };
   } catch (err: any) {
