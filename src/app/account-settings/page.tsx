@@ -127,7 +127,7 @@ export default function AccountSettingsPage() {
 
       <div className="mx-auto w-full max-w-md px-4">
         
-        <div className="flex items-center mt-6 mb-16 gap-5">
+        <div className="flex items-center mt-8 mb-20 gap-5 pb-8 border-b border-stone-100">
           <button 
             onClick={() => router.push('/profile')} 
             className="back-icon-btn"
@@ -140,7 +140,7 @@ export default function AccountSettingsPage() {
           </h1>
         </div>
 
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-10">
           {/* Email Update Card */}
           <section className="checkout-card p-6 shadow-sm">
             <div className="border-b pb-3 mb-5">
