@@ -186,58 +186,46 @@ export default function OrderDetails() {
         </div>
 
         {/* MAIN COMPACT CARD */}
-        <div className="bg-white rounded-xl shadow-sm border border-[#E6DCCF] p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+        <div className="bg-white rounded-xl shadow-sm border border-[#E6DCCF] overflow-hidden">
           
-          {/* LEFT: IMAGE */}
+          {/* TOP STATUS BANNER */}
           <div 
-            style={{ width: '60px', height: '60px', minWidth: '60px', minHeight: '60px' }}
-            className="rounded-md bg-[#FDFBF7] border border-[#E6DCCF] flex-shrink-0 overflow-hidden shadow-sm"
+            className="px-4 py-3 border-b flex items-center justify-center"
+            style={{ 
+              backgroundColor: statusColor.bg, 
+              borderColor: statusColor.text + '30'
+            }}
           >
-            {order.order_items?.[0]?.image ? (
-              <img 
-                src={order.order_items[0].image} 
-                alt={order.order_items[0].name} 
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-[#E6DCCF]">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-              </div>
-            )}
+            <h2 className="text-sm font-black uppercase tracking-widest m-0" style={{ color: statusColor.text }}>
+              Status : {order.status}
+            </h2>
           </div>
 
-          {/* CENTER: INFO & CHIPS */}
-          <div className="flex-grow flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-2">
+          <div className="p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+            {/* INFO SECTION */}
+            <div className="flex-grow flex-1 min-w-0">
               <div className="flex-1 min-w-0">
                 <h1 className="text-xs font-black text-[#5A3E2B] truncate">{order.display_id}</h1>
                 <p className="text-[10px] text-gray-500 font-medium truncate">{order.email}</p>
               </div>
-              <span 
-                className="shrink-0 inline-flex items-center px-1.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider whitespace-nowrap shadow-sm"
-                style={{ backgroundColor: statusColor.bg, color: statusColor.text }}
-              >
-                {order.status}
-              </span>
-            </div>
-            
-            <div className="flex items-center gap-2 text-[10px] text-gray-400 mt-1">
-              <span>{new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
-              <span className="font-bold text-[#5A3E2B]">₹{order.total_amount}</span>
+              
+              <div className="flex items-center gap-2 text-[10px] text-gray-400 mt-1">
+                <span>{new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
+                <span className="font-bold text-[#5A3E2B]">₹{order.total_amount}</span>
+              </div>
+
+              {/* ITEM CHIPS */}
+              <div className="flex flex-wrap gap-2 mt-3">
+                {order.order_items?.map((item) => (
+                  <div key={item.id} className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 border border-gray-200 text-[10px] font-bold text-gray-700">
+                    {item.name} <span className="ml-1 text-[#5A3E2B]">x{item.quantity}</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* ITEM CHIPS */}
-            <div className="flex flex-wrap gap-2 mt-3">
-              {order.order_items?.map((item) => (
-                <div key={item.id} className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 border border-gray-200 text-[10px] font-bold text-gray-700">
-                  {item.name} <span className="ml-1 text-[#5A3E2B]">x{item.quantity}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* RIGHT: ACTIONS */}
-          <div className="w-full md:w-auto md:max-w-md flex flex-col gap-1">
+            {/* RIGHT: ACTIONS */}
+            <div className="w-full md:w-auto md:max-w-md flex flex-col gap-1">
             {order.status === "placed" && (
               <div className="space-y-3">
                 <div className="flex flex-col gap-1">

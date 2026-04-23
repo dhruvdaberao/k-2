@@ -171,24 +171,25 @@ export default function AdminOrders() {
                 <div key={order.id} className="bg-white rounded-xl p-4 shadow-sm border border-[#E6DCCF] hover:border-[#5A3E2B]/30 transition-all space-y-3">
                   
                   {/* Top Row */}
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[14px] font-bold text-[#5A3E2B] tracking-tight truncate">
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <p className="text-[14px] font-bold text-[#5A3E2B] tracking-tight m-0">
                         {order.display_id || order.id.slice(0, 8)}
                       </p>
-                      <p className="text-[12px] text-gray-500 font-medium truncate" style={{ marginTop: '2px' }}>
-                        {order.email || "No email provided"}
-                      </p>
+                      <span 
+                        className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider whitespace-nowrap shadow-sm border"
+                        style={{ 
+                          backgroundColor: statusColor.bg, 
+                          color: statusColor.text,
+                          borderColor: statusColor.text + '40'
+                        }}
+                      >
+                        {order.status}
+                      </span>
                     </div>
-                    <span 
-                      className="shrink-0 inline-flex items-center px-2 py-1 rounded-full text-[10px] font-black uppercase tracking-wider whitespace-nowrap shadow-sm"
-                      style={{ 
-                        backgroundColor: statusColor.bg, 
-                        color: statusColor.text,
-                      }}
-                    >
-                      {order.status}
-                    </span>
+                    <p className="text-[12px] text-gray-500 font-medium truncate m-0">
+                      {order.email || "No email provided"}
+                    </p>
                   </div>
 
                   {/* Middle Row */}
