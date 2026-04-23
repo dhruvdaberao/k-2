@@ -165,15 +165,17 @@ export default function OrderDetailPage() {
     try {
       // Try updating by UUID id first
       const cancelledAt = new Date().toISOString();
+      
+      // Try with cancelled_at first; if column doesn't exist, retry without
       let updateResult = await supabase
         .from("orders")
         .update({ status: "cancelled", cancelled_at: cancelledAt })
         .eq("id", order.id)
         .select();
 
-      // If the update errors (e.g. cancelled_at column missing), retry without it
-      if (updateResult.error) {
-        console.warn("[OrderDetail] Cancel with cancelled_at failed, retrying without:", updateResult.error.message);
+      // If error mentions cancelled_at column, retry without it
+      if (updateResult.error && updateResult.error.message?.includes("cancelled_at")) {
+        console.warn("[OrderDetail] cancelled_at column not found, updating without it");
         updateResult = await supabase
           .from("orders")
           .update({ status: "cancelled" })
