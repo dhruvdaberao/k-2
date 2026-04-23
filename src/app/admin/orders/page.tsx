@@ -175,26 +175,24 @@ export default function AdminOrders() {
                 <div key={order.id} className="bg-white rounded-xl p-4 shadow-sm border border-[#E6DCCF] hover:border-[#5A3E2B]/30 transition-all space-y-3">
                   
                   {/* Top Row */}
-                  <div className="flex justify-between items-start gap-4">
-                    <div className="flex flex-col">
-                      <span className="text-[14px] font-bold text-[#5A3E2B] tracking-tight">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[14px] font-bold text-[#5A3E2B] tracking-tight truncate">
                         {order.display_id || order.id.slice(0, 8)}
-                      </span>
-                      <span className="text-[12px] text-gray-500 font-medium" style={{ marginTop: '2px' }}>
+                      </p>
+                      <p className="text-[12px] text-gray-500 font-medium truncate" style={{ marginTop: '2px' }}>
                         {order.email || "No email provided"}
-                      </span>
+                      </p>
                     </div>
-                    <div>
-                      <span 
-                        className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider whitespace-nowrap max-w-fit shadow-sm"
-                        style={{ 
-                          backgroundColor: statusColor.bg, 
-                          color: statusColor.text,
-                        }}
-                      >
-                        {order.status}
-                      </span>
-                    </div>
+                    <span 
+                      className="shrink-0 inline-flex items-center px-2 py-1 rounded-full text-[10px] font-black uppercase tracking-wider whitespace-nowrap shadow-sm"
+                      style={{ 
+                        backgroundColor: statusColor.bg, 
+                        color: statusColor.text,
+                      }}
+                    >
+                      {order.status}
+                    </span>
                   </div>
 
                   {/* Middle Row */}
@@ -209,7 +207,7 @@ export default function AdminOrders() {
                     </p>
                     <Link 
                       href={`/admin/orders/${order.id}`} 
-                      className="px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest bg-[#5A3E2B] text-white hover:brightness-110 active:scale-95 transition-all shadow-sm"
+                      className="bg-[#5a3e2b] text-white hover:bg-[#4a3223] transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm"
                       style={{ textDecoration: 'none' }}
                     >
                       View Order

@@ -137,7 +137,9 @@ export default function OrderDetails() {
       showToast(`Order marked as ${newStatus}`);
       
       // Trigger Email (Fire and forget)
-      const emailType = newStatus === "shipped" ? "order_shipped" : newStatus === "delivered" ? "order_delivered" : null;
+      // Unified types: 'shipped' | 'delivered'
+      const emailType = newStatus === "shipped" ? "shipped" : newStatus === "delivered" ? "delivered" : null;
+      
       if (emailType) {
         console.log(`📧 Sending ${emailType} email...`);
         fetch("/api/send-email", {
@@ -202,18 +204,21 @@ export default function OrderDetails() {
           </div>
 
           {/* CENTER: INFO & CHIPS */}
-          <div className="flex-grow space-y-0.5">
-            <div className="flex items-center gap-2">
-              <h1 className="text-xs font-black text-[#5A3E2B]">{order.display_id}</h1>
+          <div className="flex-grow flex-1 min-w-0">
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex-1 min-w-0">
+                <h1 className="text-xs font-black text-[#5A3E2B] truncate">{order.display_id}</h1>
+                <p className="text-[10px] text-gray-500 font-medium truncate">{order.email}</p>
+              </div>
               <span 
-                className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider whitespace-nowrap max-w-fit shadow-sm"
+                className="shrink-0 inline-flex items-center px-1.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider whitespace-nowrap shadow-sm"
                 style={{ backgroundColor: statusColor.bg, color: statusColor.text }}
               >
                 {order.status}
               </span>
             </div>
-            <p className="text-[10px] text-gray-500 font-medium">{order.email}</p>
-            <div className="flex items-center gap-2 text-[10px] text-gray-400">
+            
+            <div className="flex items-center gap-2 text-[10px] text-gray-400 mt-1">
               <span>{new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
               <span className="font-bold text-[#5A3E2B]">₹{order.total_amount}</span>
             </div>
@@ -246,18 +251,16 @@ export default function OrderDetails() {
                   <button 
                     onClick={() => updateOrderStatus("shipped")}
                     disabled={updating}
-                    style={{ backgroundColor: '#5A3E2B', color: '#FFFFFF', border: 'none' }}
-                    className="flex-1 px-4 py-2 rounded-lg text-sm font-bold hover:brightness-110 active:scale-95 transition-all disabled:opacity-50"
+                    className="flex-1 bg-[#5a3e2b] text-white hover:bg-[#4a3223] transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
                   >
-                    {updating ? "..." : "Ship"}
+                    {updating ? "Processing..." : "Ship Order"}
                   </button>
                   <button 
                     onClick={() => updateOrderStatus("cancelled")}
                     disabled={updating}
-                    style={{ backgroundColor: '#5A3E2B', color: '#FFFFFF', border: 'none' }}
-                    className="flex-1 px-4 py-2 rounded-lg text-sm font-bold hover:brightness-110 active:scale-95 transition-all disabled:opacity-50"
+                    className="flex-1 bg-[#5a3e2b] text-white hover:bg-[#4a3223] transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
                   >
-                    Cancel
+                    {updating ? "Processing..." : "Cancel Order"}
                   </button>
                 </div>
               </div>
@@ -267,21 +270,20 @@ export default function OrderDetails() {
               <button 
                 onClick={() => updateOrderStatus("delivered")}
                 disabled={updating}
-                style={{ backgroundColor: '#5A3E2B', color: '#FFFFFF', border: 'none' }}
-                className="w-full px-4 py-2 rounded-lg text-sm font-bold hover:brightness-110 active:scale-95 transition-all disabled:opacity-50"
+                className="w-full bg-[#5a3e2b] text-white hover:bg-[#4a3223] transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
               >
-                {updating ? "..." : "Mark Delivered"}
+                {updating ? "Processing..." : "Mark Delivered"}
               </button>
             )}
 
             {order.status === "delivered" && (
-              <div className="px-4 py-2 rounded-lg bg-green-50 text-green-700 text-xs font-black uppercase tracking-widest text-center border border-green-200">
+              <div className="px-4 py-2 rounded-lg bg-green-50 text-green-700 text-[10px] font-black uppercase tracking-widest text-center border border-green-200 shadow-sm">
                 Delivered
               </div>
             )}
 
             {order.status === "cancelled" && (
-              <div className="px-4 py-2 rounded-lg bg-red-50 text-red-700 text-xs font-black uppercase tracking-widest text-center border border-red-200">
+              <div className="px-4 py-2 rounded-lg bg-red-50 text-red-700 text-[10px] font-black uppercase tracking-widest text-center border border-red-200 shadow-sm">
                 Cancelled
               </div>
             )}

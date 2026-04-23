@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     let subject = "";
     let htmlContent = "";
 
-    if (type === "order_placed") {
+    if (type === "order_placed" || type === "placed") {
       subject = `Order Confirmed! 🎉 | #${orderId}`;
       htmlContent = `
         <div style="font-family: Arial, sans-serif; color: #2D2D2D; max-width: 600px; margin: 0 auto; border: 1px solid #E6DCCF; border-radius: 12px; overflow: hidden;">
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
           </div>
         </div>
       `;
-    } else if (type === "order_shipped") {
+    } else if (type === "order_shipped" || type === "shipped") {
       subject = `Your Order Has Been Shipped 🚚 | #${orderId}`;
       htmlContent = `
         <div style="font-family: Arial, sans-serif; color: #2D2D2D; max-width: 600px; margin: 0 auto; border: 1px solid #E6DCCF; border-radius: 12px; overflow: hidden;">
@@ -84,7 +84,7 @@ export async function POST(req: Request) {
           </div>
         </div>
       `;
-    } else if (type === "order_delivered") {
+    } else if (type === "order_delivered" || type === "delivered") {
       subject = `Your Order Has Been Delivered 🎉 | #${orderId}`;
       htmlContent = `
         <div style="font-family: Arial, sans-serif; color: #2D2D2D; max-width: 600px; margin: 0 auto; border: 1px solid #E6DCCF; border-radius: 12px; overflow: hidden;">
@@ -110,7 +110,8 @@ export async function POST(req: Request) {
     const recipients = [{ email: targetEmail }];
     
     // Always notify owner for important updates
-    if (["order_placed", "order_shipped", "order_delivered"].includes(type)) {
+    const notifyOwnerTypes = ["order_placed", "placed", "order_shipped", "shipped", "order_delivered", "delivered"];
+    if (notifyOwnerTypes.includes(type)) {
       recipients.push({ email: businessEmail });
     }
 
