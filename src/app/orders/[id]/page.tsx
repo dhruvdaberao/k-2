@@ -209,7 +209,7 @@ export default function OrderDetailPage() {
         // ── Trigger Cancellation Email (Non-Blocking) ──
         const { data: { user } } = await supabase.auth.getUser();
         if (user && user.email) {
-          fetch("/api/mail", {
+          fetch("/api/v2mail", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
