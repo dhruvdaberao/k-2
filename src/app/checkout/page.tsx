@@ -46,6 +46,8 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<CheckoutPaymentMethod>("cod");
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
+  const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
+  const [placedInvoiceUrl, setPlacedInvoiceUrl] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const [isDirectCheckout, setIsDirectCheckout] = useState(false);
 
@@ -343,17 +345,17 @@ export default function CheckoutPage() {
         })
       );
 
-      // Mark as completed to stop any "cart empty" redirect logic from firing
+      // Mark as completed to show the Success UI immediately on THIS page
+      setPlacedOrderId(orderId);
+      setPlacedInvoiceUrl(dynamicPdfUrl);
       setIsOrderPlaced(true);
+      setIsPlacingOrder(false);
 
-      // Navigate FIRST — before clearing cart to prevent empty cart flash
-      router.replace(`/order-success?orderId=${orderId}`);
-
-      // Delay cart clear so navigation completes before any state changes
+      // Delay cart clear so the UI has time to transition
       setTimeout(() => {
         clearCart();
         clearDirectCheckoutItem();
-      }, 1500);
+      }, 1000);
 
       // Fire-and-forget email (don't block navigation)
       fetch("/api/send-email", {
@@ -382,8 +384,8 @@ export default function CheckoutPage() {
     }
   };
 
-  // ── STEP 1: Full-page loader blocks EVERYTHING during order ──
-  if (isPlacingOrder || isOrderPlaced) {
+  // ── STEP 1: Full-page loader blocks EVERYTHING during order processing ──
+  if (isPlacingOrder) {
     return (
       <div className="h-screen flex items-center justify-center bg-[#FAF8F5]">
         <div className="text-center">
@@ -392,6 +394,68 @@ export default function CheckoutPage() {
           <p className="font-semibold text-[#5a3e2b]">Processing your order...</p>
         </div>
       </div>
+    );
+  }
+
+  // ── STEP 2: Success Screen Design (Image 2 Replication) ──
+  if (isOrderPlaced && placedOrderId) {
+    return (
+      <main style={{ minHeight: '90vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 16px', background: '#FAF8F5', fontFamily: "inherit" }}>
+        {/* Card Container */}
+        <div style={{ background: '#ffffff', maxWidth: 420, width: '100%', borderRadius: 24, padding: '48px 28px 40px', textAlign: 'center', boxShadow: '0 4px 20px rgba(90,62,43,0.06)', border: '1px solid #f0e6d2' }}>
+          
+          {/* Green circle with tick */}
+          <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#f0fdf4', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+            <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </div>
+          </div>
+
+          <h1 style={{ fontSize: 26, fontWeight: 800, color: '#2f2a26', margin: '0 0 8px', letterSpacing: '-0.5px' }}>
+            Order Confirmed
+          </h1>
+          <p style={{ fontSize: 15, color: '#666', margin: '0 0 32px', lineHeight: 1.5 }}>
+            Your order has been successfully placed
+          </p>
+
+          {/* Order ID box */}
+          <div style={{ background: '#fcfaf7', border: '1px solid #f0e6d2', borderRadius: 16, padding: '16px 20px', marginBottom: 32, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: 14, color: '#8c7e6a', fontWeight: 600 }}>Order ID</span>
+            <span style={{ fontSize: 14, fontWeight: 800, color: '#2f2a26', fontFamily: 'monospace' }}>{placedOrderId}</span>
+          </div>
+
+          {/* Buttons */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <button
+              onClick={() => router.push("/orders")}
+              style={{ display: 'flex', height: 52, alignItems: 'center', justifyContent: 'center', borderRadius: 12, background: '#5a3e2b', color: 'white', fontWeight: 700, fontSize: 15, border: 'none', cursor: 'pointer' }}
+            >
+              View My Orders
+            </button>
+
+            <button
+              onClick={() => window.open(placedInvoiceUrl || "/api/invoice?orderId=" + placedOrderId, "_blank")}
+              style={{ display: 'flex', height: 52, alignItems: 'center', justifyContent: 'center', gap: 10, borderRadius: 12, background: 'white', color: '#5a3e2b', fontWeight: 700, fontSize: 15, border: '1.5px solid #5a3e2b', cursor: 'pointer' }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Download Invoice
+            </button>
+          </div>
+        </div>
+
+        <button
+          onClick={() => router.push('/')}
+          style={{ marginTop: 24, background: 'none', border: 'none', color: '#8B7355', fontSize: 14, cursor: 'pointer', textDecoration: 'underline', fontWeight: 600 }}
+        >
+          Continue Shopping
+        </button>
+      </main>
     );
   }
 
