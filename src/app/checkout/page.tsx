@@ -289,13 +289,19 @@ export default function CheckoutPage() {
       setIsPlacingOrder(true);
 
       const {
-        data: { session }
-      } = await supabase.auth.getSession();
+        data: { user: authUser },
+        error: authError
+      } = await supabase.auth.getUser();
 
-      const authUser = session?.user;
+      if (authError && !isGuest) {
+        console.error("[Checkout] Auth check failed:", authError);
+        showToast("Session expired. Please login again.");
+        setIsPlacingOrder(false);
+        return;
+      }
 
       if (!authUser && !isGuest) {
-        showToast("Session not ready, retrying...");
+        showToast("Please login to place your order.");
         setIsPlacingOrder(false);
         return;
       }

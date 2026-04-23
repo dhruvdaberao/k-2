@@ -18,8 +18,12 @@ export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: an
   isOrderInFlight = true;
 
   try {
-    const { data: { session } } = await supabase.auth.getSession();
-    const user = session?.user;
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError && !deliveryDetails) {
+      console.error("[PlaceOrder] Auth validation failed:", authError);
+      return { success: false, orderId: null, error: "Authentication failed. Please login again." };
+    }
 
     if (!user && !deliveryDetails) {
       return { success: false, orderId: null, error: "Please login to place order." };
@@ -48,9 +52,9 @@ export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: an
 
     const accessToken = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2) + Date.now().toString(36);
     
-    // 1. CREATE ORDER (Minimal fields if column missing)
+    // 1. CREATE ORDER (Omit user_id if null to satisfy strict RLS)
     const orderPayload: any = {
-      user_id: user?.id || null,
+      ...(user?.id ? { user_id: user.id } : {}),
       email: email, // Root level email for admin search
       total_amount: totalAmount,
       status: "placed",
@@ -81,11 +85,13 @@ export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: an
 
     if (insertError) {
       console.error("[PlaceOrder] First Insert Failed:", insertError);
-      // Fallback: If 400 is due to new columns, try again with original minimal schema
-      if (insertError.message.includes("delivery_address") || insertError.code === "PGRST204" || insertError.message.includes("column")) {
+      // Fallback: If 400 is due to new columns or RLS, try again with original minimal schema
+      if (insertError.message.includes("delivery_address") || insertError.code === "PGRST204" || insertError.message.includes("column") || insertError.message.includes("policy")) {
         console.warn("[PlaceOrder] Attempting fallback insert without delivery_address...");
-        delete orderPayload.delivery_address;
-        const retry = await supabase.from("orders").insert(orderPayload).select("id").single();
+        const fallbackPayload = { ...orderPayload };
+        delete fallbackPayload.delivery_address;
+        
+        const retry = await supabase.from("orders").insert(fallbackPayload).select("id").single();
         if (retry.error) {
           console.error("[PlaceOrder] Fallback Insert Also Failed:", retry.error);
           throw new Error(retry.error.message);
