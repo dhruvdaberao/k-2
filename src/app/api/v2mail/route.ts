@@ -142,6 +142,12 @@ export async function POST(req: Request) {
     });
 
     console.log('>>> [Email API: Mail] Calling Brevo for Business:', businessEmail);
+    const businessHtml = emailHtml
+      .replace('Order Confirmed!', 'New Order Received!')
+      .replace(`Hi <strong>${customerName}</strong>,`, `Hello <strong>Neha</strong>,`)
+      .replace('Your order has been placed successfully', `A new order has been placed by <strong>${customerName}</strong> (${userEmail})`)
+      .replace('Thank you for choosing <strong>Keshvi Crafts</strong>!', 'You have a new incoming order that needs to be processed.');
+
     const bizRes = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
       headers: {
@@ -151,8 +157,8 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         sender: { email: businessEmail, name: 'Keshvi Crafts' },
         to: [{ email: businessEmail }],
-        subject: `NEW ORDER RECEIVED: ${orderId}`,
-        htmlContent: emailHtml.replace('Order Confirmed!', 'Order Received!').replace('Your order has been placed successfully', 'A new order has been placed'),
+        subject: `NEW ORDER: ${orderId} | ${customerName}`,
+        htmlContent: businessHtml,
       }),
     });
 
