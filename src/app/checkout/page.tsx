@@ -1,6 +1,7 @@
 "use client";
 
 import { supabase } from "@/lib/supabaseClient";
+import GlobalLoader from "@/components/ui/GlobalLoader";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import products from "@/data/products.json";
@@ -38,7 +39,7 @@ const initialDetails: CheckoutCustomerDetails = {
 };
 
 export default function CheckoutPage() {
-    const { user, profile, loading } = useAuth();
+  const { user, profile, loading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const isGuest = searchParams.get("guest") === "true";
@@ -117,7 +118,7 @@ export default function CheckoutPage() {
         });
         return;
       }
-      
+
       try {
         const saved = JSON.parse(localStorage.getItem(DETAILS_STORAGE_KEY) || localStorage.getItem(LEGACY_DETAILS_STORAGE_KEY) || "{}");
         setDetails({
@@ -269,7 +270,7 @@ export default function CheckoutPage() {
 
   const onPlaceOrder = async () => {
     if (isPlacingOrder) return;
-    
+
     console.log("🚀 Placing order started");
 
     if (finalItems.length === 0) {
@@ -310,7 +311,7 @@ export default function CheckoutPage() {
         quantity: item.quantity,
         image: item.image || ""
       }));
-      
+
       console.log("📦 Creating order in DB...");
       const result = await placeOrderInDB(mappedFinalItems, details);
       console.log("✅ Order result:", result);
@@ -323,7 +324,7 @@ export default function CheckoutPage() {
       }
 
       window.dispatchEvent(new CustomEvent("bag:changed"));
-      
+
       const orderId = result.displayId || result.orderId || generateLocalOrderId();
       const createdAt = new Date().toISOString();
 
@@ -395,11 +396,11 @@ export default function CheckoutPage() {
 
       // ── REDIRECT TO SUCCESS PAGE ──
       console.log("🏁 Redirecting to success page...");
-      
+
       // Clear cart before moving
       clearCart();
       clearDirectCheckoutItem();
-      
+
       const successUrl = `/order-success?orderId=${orderId}${result.accessToken ? `&token=${result.accessToken}` : ""}`;
       router.push(successUrl);
     } catch (err) {
@@ -411,15 +412,7 @@ export default function CheckoutPage() {
 
   // ── STEP 1: Full-page loader blocks EVERYTHING during order processing ──
   if (isPlacingOrder) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-[#FAF8F5]">
-        <div className="text-center">
-          <div style={{ width: 44, height: 44, border: '4px solid #e6ded4', borderTop: '4px solid #5a3e2b', borderRadius: '50%', animation: 'co-spin 0.8s linear infinite', margin: '0 auto' }} className="mb-4" />
-          <style>{`@keyframes co-spin { to { transform: rotate(360deg); } }`}</style>
-          <p className="font-semibold text-[#5a3e2b]">Processing your order...</p>
-        </div>
-      </div>
-    );
+    return <GlobalLoader message="Processing your order..." />;
   }
 
   // ── Success Screen is now handled by redirecting to /order-success ──
@@ -435,8 +428,8 @@ export default function CheckoutPage() {
       <main className="checkout-page checkout-container checkout-flow py-20 text-center">
         <div className="mb-6 opacity-30">
           <svg style={{ margin: '0 auto' }} xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/>
-            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.56-7.43H5.12"/>
+            <circle cx="8" cy="21" r="1" /><circle cx="19" cy="21" r="1" />
+            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.56-7.43H5.12" />
           </svg>
         </div>
         <h2 className="text-2xl font-serif font-bold text-[#2f2a26] mb-3">Your cart is empty</h2>
@@ -477,7 +470,7 @@ export default function CheckoutPage() {
               <div className={`checkout-stepper__dot ${isActive ? "is-active" : ""} ${isComplete ? "is-complete" : ""}`}>
                 {isComplete ? (
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="20 6 9 17 4 12"/>
+                    <polyline points="20 6 9 17 4 12" />
                   </svg>
                 ) : stepItem.number}
               </div>
@@ -606,14 +599,14 @@ export default function CheckoutPage() {
               </div>
 
               <div className="checkout-actions mt-10 flex flex-col gap-3">
-                <button 
-                  type="button" 
-                  className="btn-primary checkout-button w-full" 
+                <button
+                  type="button"
+                  className="btn-primary checkout-button w-full"
                   onClick={handleGuestDetailsToggle}
                 >
                   {isGuestLocked ? "Edit Details" : "Save & Continue to Payment"}
                 </button>
-                
+
                 {isGuestLocked && (
                   <button type="button" className="btn-primary checkout-button w-full" onClick={handleDetailsNext} style={{ background: 'transparent', color: 'var(--brand)', border: '2px solid var(--brand)' }}>
                     Proceed to Payment {"\u2192"}
@@ -655,9 +648,9 @@ export default function CheckoutPage() {
               </div>
 
               <div className="summary-edit-footer">
-                <button 
-                  type="button" 
-                  className="btn-secondary text-sm px-4 py-2" 
+                <button
+                  type="button"
+                  className="btn-secondary text-sm px-4 py-2"
                   onClick={() => router.push("/profile?edit=true")}
                   style={{ height: 'auto', borderRadius: '8px' }}
                 >
@@ -700,7 +693,7 @@ export default function CheckoutPage() {
                 <span className="checkout-payment-card__copy">UPI / Card</span>
                 {paymentMethod === "online" && (
                   <span className="text-[10px] font-bold text-red-600 mt-1 uppercase tracking-wider bg-red-50 px-2 py-0.5 rounded-full border border-red-100 flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
                     Currently Unavailable
                   </span>
                 )}
@@ -753,7 +746,7 @@ export default function CheckoutPage() {
                   <span>-₹{discountAmount}</span>
                 </div>
               )}
-              
+
               <div className="h-px bg-[#e5e7eb] mt-10 mb-6" />
 
               <div className="checkout-summary-panel__row">

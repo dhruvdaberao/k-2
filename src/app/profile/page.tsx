@@ -9,6 +9,7 @@ import ConfirmModal from "@/components/ui/ConfirmModal";
 import type { CheckoutCustomerDetails } from "@/lib/checkout";
 import { useAuth } from "@/hooks/useAuth";
 import { syncLocalCartToDB } from "@/lib/cartSupabase";
+import { isAdmin } from "@/lib/isAdmin";
 
 const initialDetails: CheckoutCustomerDetails = {
   fullName: "",
@@ -66,7 +67,7 @@ export default function ProfilePage() {
         .eq("id", user.id)
         .single();
 
-      if (data) {
+      if (data && !isEditing) {
         setDetails({
           fullName: data.name || "",
           email: user.email || "",
@@ -76,18 +77,18 @@ export default function ProfilePage() {
           state: data.state || "",
           pincode: data.pincode || "",
         });
-      } else {
+      } else if (!data) {
         // Fallback for missing profile
         setDetails(prev => ({ ...prev, email: user.email || "" }));
       }
     };
 
     loadProfile();
-  }, [user]);
+  }, [user, isEditing]);
 
   // Sync details when 'profile' from useAuth changes (optional but good for consistency)
   useEffect(() => {
-    if (profile && user) {
+    if (profile && user && !isEditing) {
       setDetails({
         fullName: profile.name || "",
         email: user.email || "",
@@ -98,25 +99,19 @@ export default function ProfilePage() {
         pincode: profile.pincode || "",
       });
     }
-  }, [profile, user]);
+  }, [profile, user, isEditing]);
 
   const handleFieldChange = (field: keyof CheckoutCustomerDetails, value: string) => {
     setDetails((current) => ({ ...current, [field]: value }));
   };
 
   const saveDetails = async () => {
-    if (!details.fullName || !details.email || !details.phoneNumber) {
-      showToast("Please fill all required fields");
+    // 1. Validation
+    if (!details.fullName || !details.phoneNumber) {
+      showToast("Please fill Name and Phone Number");
       return;
     }
     
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(details.email)) {
-      showToast("Enter valid email");
-      return;
-    }
-
-    // RegEx Validation Overrides
     const phoneRegex = /^[+]?[0-9\s\-]{10,15}$/;
     if (!phoneRegex.test(details.phoneNumber) || details.phoneNumber.replace(/[^0-9]/g,"").length < 10) {
       showToast("Please enter a valid phone number (10+ digits).");
@@ -126,63 +121,54 @@ export default function ProfilePage() {
     if (details.pincode) {
       const pinRegex = /^[0-9]{5,6}$/;
       if (!pinRegex.test(details.pincode)) {
-        showToast("Please enter a valid pincode.");
+        showToast("Please enter a valid 6-digit pincode.");
         return;
       }
     }
-    
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
 
-    if (details.email !== user.email && isEditing) {
-      showToast("Email updates are locked to Account Settings.");
+    if (!user) {
+      showToast("User session not found. Please log in again.");
+      return;
     }
 
     setIsSaving(true);
     
-    const { data: updateData, error: profileError } = await supabase.from('profiles').update({
-      name: details.fullName,
-      phone: details.phoneNumber,
-      address: details.address,
-      city: details.city,
-      state: details.state,
-      pincode: details.pincode,
-    }).eq('id', user.id).select();
-
-    if (profileError) {
-      console.error("Update Error:", profileError);
-      showToast(profileError.message || "Failed to save profile.");
-      setIsSaving(false);
-      return;
-    }
-    
-    // Explicit Fallback Loop per user checklist: "If update returns 0 rows: Insert instead (fallback)"
-    if (updateData && updateData.length === 0) {
-      console.warn("Update returned 0 rows. Attempting fallback insertion.");
-      const { error: insertFallbackError } = await supabase.from('profiles').insert([{
+    try {
+      console.log("Saving profile for user:", user.id);
+      
+      const { error: profileError } = await supabase.from('profiles').upsert({
         id: user.id,
-        email: user.email,
         name: details.fullName,
         phone: details.phoneNumber,
         address: details.address,
         city: details.city,
         state: details.state,
         pincode: details.pincode,
-      }]);
-      if (insertFallbackError) {
-        console.error("Fallback Insertion Error:", insertFallbackError);
-        showToast(insertFallbackError.message || "Failed to create missing profile.");
-        return;
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'id' });
+
+      if (profileError) {
+        throw profileError;
       }
-      console.log("Fallback Insertion Success.");
-    } else {
-      console.log("Update Success:", updateData);
+      
+      console.log("Profile saved successfully");
+      
+      setIsEditing(false);
+      setIsSaving(false);
+      setModalContent({ 
+        title: "Profile Saved", 
+        message: "Your profile details have been successfully updated." 
+      });
+      
+      if (refreshProfile) {
+        await refreshProfile();
+      }
+    } catch (err: any) {
+      console.error("Save Profile Error:", err);
+      showToast(err.message || "Failed to save profile. Please try again.");
+    } finally {
+      setIsSaving(false);
     }
-    
-    setIsEditing(false);
-    setIsSaving(false);
-    setModalContent({ title: "Profile Saved", message: "Your profile has been successfully updated." });
-    await refreshProfile();
   };
 
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -472,6 +458,16 @@ export default function ProfilePage() {
         >
           Account Settings
         </button>
+
+        {isAdmin(user) && (
+          <button 
+            onClick={() => router.push('/admin')} 
+            className="btn-primary py-3 px-8 shadow-sm rounded-lg font-medium transition-transform active:scale-95 mt-4 md:mt-0 w-full"
+            style={{ width: 'auto', minWidth: '220px', flex: '1 1 100%', maxWidth: '300px', background: 'var(--brand)', color: 'white' }}
+          >
+            Admin Dashboard
+          </button>
+        )}
       </section>
       {profileModalHTML}
 

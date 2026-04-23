@@ -91,6 +91,7 @@ export async function GET(req: Request) {
           u: {
             n: addr.full_name || addr.name || "Customer",
             p: addr.phone || "",
+            e: order.email || addr.email || "",
             a: addr.address_line || addr.street || "",
             c: addr.city || "",
             z: addr.pincode || ""
@@ -168,13 +169,19 @@ export async function GET(req: Request) {
     doc.setFont("helvetica", "bold");
     doc.text(orderData.u?.n || "Customer", 20, 82);
     
-    doc.setFont("helvetica", "normal");
     doc.setFontSize(9);
     doc.text(orderData.u?.p || "", 20, 87);
     
+    let currentY = 87;
+    if (orderData.u?.e) {
+      currentY += 5;
+      doc.text(orderData.u?.e, 20, currentY);
+    }
+    
     const address = `${orderData.u?.a || ''}, ${orderData.u?.c || ''} - ${orderData.u?.z || ''}`;
     const splitAddress = doc.splitTextToSize(address, 70);
-    doc.text(splitAddress, 20, 92);
+    currentY += 5;
+    doc.text(splitAddress, 20, currentY);
 
     // 4. ITEMS TABLE
     const tableData = (orderData.i || []).map((it: any) => [

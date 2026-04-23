@@ -41,11 +41,17 @@ export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: an
 
     const totalAmount = cartItems.reduce((sum, item) => sum + (Number(item.price) * Number(item.quantity)), 0);
     const displayId = `KC-${Date.now()}`;
+    const email = user?.email || deliveryDetails?.email;
+    if (!email) {
+      return { success: false, orderId: null, error: "Email is required to place order." };
+    }
+
     const accessToken = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2) + Date.now().toString(36);
     
     // 1. CREATE ORDER (Minimal fields if column missing)
     const orderPayload: any = {
       user_id: user?.id || null,
+      email: email, // Root level email for admin search
       total_amount: totalAmount,
       status: "placed",
       payment_method: "COD",
@@ -62,7 +68,8 @@ export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: an
         address_line: deliveryDetails.address || "",
         city: deliveryDetails.city || "",
         state: deliveryDetails.state || "",
-        pincode: deliveryDetails.pincode || ""
+        pincode: deliveryDetails.pincode || "",
+        email: email
       };
     }
 

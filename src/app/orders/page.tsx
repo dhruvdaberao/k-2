@@ -141,19 +141,10 @@ export default function OrdersPage() {
           /* ── Empty State (matches Wishlist empty state) ── */
           <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4 max-w-md mx-auto">
             <div className="mb-6 opacity-30">
-              <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 100 100" fill="none" stroke="#4A3219" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                {/* Top face */}
-                <path d="M50 10 L92 32 L50 54 L8 32 Z" />
-                {/* Left face */}
-                <path d="M8 32 L50 54 L50 88 L8 66 Z" />
-                {/* Right face */}
-                <path d="M92 32 L50 54 L50 88 L92 66 Z" />
-                {/* Tape/seam lines across top face */}
-                <line x1="61" y1="16" x2="19" y2="38" />
-                <line x1="75" y1="23" x2="33" y2="45" />
-                {/* Label lines on left face */}
-                <line x1="16" y1="56" x2="30" y2="48" />
-                <line x1="16" y1="62" x2="26" y2="56" />
+              <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <path d="M16 10a4 4 0 0 1-8 0"></path>
               </svg>
             </div>
             <h2 className="text-xl font-serif font-bold text-[#2f2a26] mb-2">No orders yet</h2>
