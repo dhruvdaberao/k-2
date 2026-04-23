@@ -117,13 +117,21 @@ export async function GET(req: Request) {
 
     currentY -= 15;
     
-    // Extract Address and Parse
+    // Extract Address and Parse — prefer delivery_address JSON, fallback to legacy address
     let cName = "Customer";
     let cEmail = "";
     let cPhone = "";
     let cAddressLines: string[] = [];
 
-    if (order.address) {
+    if (order.delivery_address && typeof order.delivery_address === 'object') {
+      // New structured delivery_address JSON
+      const da = order.delivery_address;
+      cName = da.full_name || "Customer";
+      cPhone = da.phone || "";
+      if (da.address_line) cAddressLines.push(da.address_line);
+      if (da.city || da.state) cAddressLines.push(`${da.city || ''}${da.state ? ', ' + da.state : ''}`);
+      if (da.pincode) cAddressLines.push(`Pincode: ${da.pincode}`);
+    } else if (order.address) {
       if (typeof order.address === 'string') {
         cAddressLines = order.address.split('\n');
       } else if (order.address.name) {

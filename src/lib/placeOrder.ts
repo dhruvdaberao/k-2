@@ -11,14 +11,7 @@ import { supabase } from "@/lib/supabaseClient";
 // Redirect & UI reset are handled by the calling component.
 
 
-/** Mock address used until the real address form is wired up */
-const MOCK_ADDRESS = {
-  street: "123 Artisan Lane",
-  city: "Jaipur",
-  state: "Rajasthan",
-  pincode: "302001",
-  country: "India",
-};
+/* Address is now passed dynamically from the checkout form via deliveryDetails */
 
 export type PlaceOrderResult = {
   success: boolean;
@@ -44,7 +37,7 @@ let isOrderInFlight = false;
  * 6. Deletes all cart items for the user (retries once on failure)
  * 7. Returns the created order's id
  */
-export async function handlePlaceOrder(customItems?: any[]): Promise<PlaceOrderResult> {
+export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: any): Promise<PlaceOrderResult> {
 
   // ── Duplicate-submission guard ─────────────────────────────────────
   if (isOrderInFlight) {
@@ -129,12 +122,24 @@ export async function handlePlaceOrder(customItems?: any[]): Promise<PlaceOrderR
     }
 
     // ── 4. Insert into `orders` table ──────────────────────────────────
-    const addressString = `${MOCK_ADDRESS.street}, ${MOCK_ADDRESS.city}, ${MOCK_ADDRESS.state} - ${MOCK_ADDRESS.pincode}, ${MOCK_ADDRESS.country}`;
-
     const now = new Date();
     const dateStr = now.toISOString().slice(0, 10).replace(/-/g, "");
     const randomCode = Math.floor(1000 + Math.random() * 9000).toString();
     const displayId = `KC-${dateStr}-${randomCode}`;
+
+    const delivery_address = deliveryDetails ? {
+      full_name: deliveryDetails.fullName || deliveryDetails.full_name || "",
+      phone: deliveryDetails.phoneNumber || deliveryDetails.phone || "",
+      address_line: deliveryDetails.address || deliveryDetails.address_line || "",
+      city: deliveryDetails.city || "",
+      state: deliveryDetails.state || "",
+      pincode: deliveryDetails.pincode || ""
+    } : null;
+
+    // Fallback string for legacy components that rely on the old text address field
+    const fallbackAddressString = deliveryDetails 
+      ? `${delivery_address?.address_line}, ${delivery_address?.city}, ${delivery_address?.state} - ${delivery_address?.pincode}`
+      : "No Address Provided";
 
     const { data: newOrder, error: insertError } = await supabase
       .from("orders")
@@ -144,7 +149,8 @@ export async function handlePlaceOrder(customItems?: any[]): Promise<PlaceOrderR
         status: "placed",
         payment_method: "COD",
         payment_status: "pending",
-        address: addressString,
+        address: fallbackAddressString,
+        delivery_address: delivery_address,
         display_id: displayId,
       })
       .select("id")

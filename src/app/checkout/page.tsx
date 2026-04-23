@@ -285,7 +285,7 @@ export default function CheckoutPage() {
         image: item.image || ""
       }));
       
-      const result = await placeOrderInDB(mappedFinalItems);
+      const result = await placeOrderInDB(mappedFinalItems, details);
       console.log("Order result:", result);
 
       if (!result.success) {

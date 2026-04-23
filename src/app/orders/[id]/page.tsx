@@ -13,6 +13,15 @@ import ConfirmModal from "@/components/ui/ConfirmModal";
 // ─── Types ─────────────────────────────────────────────────────────────────
 type OrderStatus = "placed" | "confirmed" | "shipped" | "delivered" | "cancelled";
 
+type DeliveryAddress = {
+  full_name?: string;
+  phone?: string;
+  address_line?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+};
+
 type OrderRow = {
   id: string;
   display_id?: string;
@@ -22,6 +31,7 @@ type OrderRow = {
   payment_method: string;
   payment_status: string;
   address: string;
+  delivery_address?: DeliveryAddress | null;
 };
 
 type OrderItem = {
@@ -313,10 +323,28 @@ export default function OrderDetailPage() {
         </div>
 
         {/* ── Delivery Address ────────────────────────── */}
-        {order.address && (
+        {(order.delivery_address || order.address) && (
           <div className="od-card">
             <h3 className="od-section-title">Delivery Address</h3>
-            <p className="od-address">{order.address}</p>
+            {order.delivery_address ? (
+              <div className="od-address">
+                {order.delivery_address.full_name && (
+                  <p style={{ fontWeight: 600, marginBottom: 2 }}>{order.delivery_address.full_name}</p>
+                )}
+                {order.delivery_address.address_line && (
+                  <p>{order.delivery_address.address_line}</p>
+                )}
+                <p>
+                  {[order.delivery_address.city, order.delivery_address.state].filter(Boolean).join(", ")}
+                  {order.delivery_address.pincode ? ` - ${order.delivery_address.pincode}` : ""}
+                </p>
+                {order.delivery_address.phone && (
+                  <p style={{ marginTop: 4 }}>Phone: {order.delivery_address.phone}</p>
+                )}
+              </div>
+            ) : (
+              <p className="od-address">{order.address}</p>
+            )}
           </div>
         )}
 
