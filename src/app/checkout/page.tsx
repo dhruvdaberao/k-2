@@ -2,7 +2,7 @@
 
 import { supabase } from "@/lib/supabaseClient";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import products from "@/data/products.json";
 import { useRouter } from "next/navigation";
 import { clearCart, loadCart as getAsyncCart } from "@/lib/bags";
