@@ -141,20 +141,42 @@ export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: an
       ? `${delivery_address?.address_line}, ${delivery_address?.city}, ${delivery_address?.state} - ${delivery_address?.pincode}`
       : "No Address Provided";
 
-    const { data: newOrder, error: insertError } = await supabase
+    // Try inserting with delivery_address column first, fallback without if column doesn't exist
+    const basePayload: any = {
+      user_id: user.id,
+      total_amount: totalAmount,
+      status: "placed",
+      payment_method: "COD",
+      payment_status: "pending",
+      address: fallbackAddressString,
+      display_id: displayId,
+    };
+
+    let newOrder: any = null;
+    let insertError: any = null;
+
+    // Attempt 1: with delivery_address (requires migration to have been run)
+    const attempt1 = await supabase
       .from("orders")
-      .insert({
-        user_id: user.id,
-        total_amount: totalAmount,
-        status: "placed",
-        payment_method: "COD",
-        payment_status: "pending",
-        address: fallbackAddressString,
-        delivery_address: delivery_address,
-        display_id: displayId,
-      })
+      .insert({ ...basePayload, delivery_address: delivery_address })
       .select("id")
       .single();
+
+    if (attempt1.error) {
+      console.warn("[PlaceOrder] Insert with delivery_address failed, retrying without:", attempt1.error.message);
+      // Attempt 2: without delivery_address (works on tables without the new column)
+      const attempt2 = await supabase
+        .from("orders")
+        .insert(basePayload)
+        .select("id")
+        .single();
+
+      newOrder = attempt2.data;
+      insertError = attempt2.error;
+    } else {
+      newOrder = attempt1.data;
+      insertError = null;
+    }
 
     if (insertError) {
       console.error("[PlaceOrder] Order insert error:", insertError.message);

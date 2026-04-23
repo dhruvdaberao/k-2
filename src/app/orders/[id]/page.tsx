@@ -171,6 +171,16 @@ export default function OrderDetailPage() {
         .eq("id", order.id)
         .select();
 
+      // If the update errors (e.g. cancelled_at column missing), retry without it
+      if (updateResult.error) {
+        console.warn("[OrderDetail] Cancel with cancelled_at failed, retrying without:", updateResult.error.message);
+        updateResult = await supabase
+          .from("orders")
+          .update({ status: "cancelled" })
+          .eq("id", order.id)
+          .select();
+      }
+
       console.log("[OrderDetail] Cancel update result (by id):", updateResult);
 
       // If no rows matched by UUID, try by display_id
@@ -178,7 +188,7 @@ export default function OrderDetailPage() {
         console.log("[OrderDetail] Fallback: trying cancel by display_id...");
         updateResult = await supabase
           .from("orders")
-          .update({ status: "cancelled", cancelled_at: cancelledAt })
+          .update({ status: "cancelled" })
           .eq("display_id", order.display_id || order.id)
           .select();
         console.log("[OrderDetail] Cancel update result (by display_id):", updateResult);
