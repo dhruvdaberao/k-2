@@ -45,13 +45,13 @@ export default function CheckoutPage() {
   const [details, setDetails] = useState<CheckoutCustomerDetails>(initialDetails);
   const [paymentMethod, setPaymentMethod] = useState<CheckoutPaymentMethod>("cod");
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
-  const [orderCompleted, setOrderCompleted] = useState(false);
+  const [isOrderPlaced, setIsOrderPlaced] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const [isDirectCheckout, setIsDirectCheckout] = useState(false);
 
   const refreshCart = useCallback(async () => {
     // Don't redirect during order placement or if order was just finished
-    if (isPlacingOrder || orderCompleted) {
+    if (isPlacingOrder || isOrderPlaced) {
       console.log("[Checkout] Skip refreshCart: Order in progress or completed");
       return;
     }
@@ -82,7 +82,7 @@ export default function CheckoutPage() {
 
     console.log("[Checkout] Refreshing cart data...");
     const currentCart = await getAsyncCart();
-    if (currentCart.length === 0) {
+    if (currentCart.length === 0 && !isOrderPlaced) {
       console.warn("[Checkout] Cart is empty, redirecting...");
       showToast("Your cart is empty.");
       router.replace("/cart");
@@ -90,7 +90,7 @@ export default function CheckoutPage() {
     }
     console.log("[Checkout] Items loaded:", currentCart);
     setItems(currentCart);
-  }, [isPlacingOrder, orderCompleted, router]);
+  }, [isPlacingOrder, isOrderPlaced, router]);
 
   // Merge carts locally for calculation and order hooks
   const finalItems = useMemo(() => {
@@ -344,7 +344,7 @@ export default function CheckoutPage() {
       );
 
       // Mark as completed to stop any "cart empty" redirect logic from firing
-      setOrderCompleted(true);
+      setIsOrderPlaced(true);
 
       // Navigate FIRST — before clearing cart to prevent empty cart flash
       router.replace(`/order-success?orderId=${orderId}`);
@@ -392,7 +392,9 @@ export default function CheckoutPage() {
     return <main className="checkout-page checkout-container checkout-flow py-10" />;
   }
 
-  if (finalItems.length === 0) {
+  // PREVENT CART REDIRECT LOGIC
+  // If the cart is effectively empty but an order is placed, do NOT redirect.
+  if (finalItems.length === 0 && !isOrderPlaced) {
     return (
       <main className="checkout-page checkout-container checkout-flow py-10 text-center">
         <h1 className="checkout-title">Checkout</h1>
