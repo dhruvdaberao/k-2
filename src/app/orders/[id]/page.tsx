@@ -26,6 +26,8 @@ type OrderRow = {
   id: string;
   display_id?: string;
   created_at: string;
+  updated_at?: string;
+  cancelled_at?: string;
   total_amount: number;
   status: OrderStatus;
   payment_method: string;
@@ -162,9 +164,10 @@ export default function OrderDetailPage() {
 
     try {
       // Try updating by UUID id first
+      const cancelledAt = new Date().toISOString();
       let updateResult = await supabase
         .from("orders")
-        .update({ status: "cancelled" })
+        .update({ status: "cancelled", cancelled_at: cancelledAt })
         .eq("id", order.id)
         .select();
 
@@ -175,7 +178,7 @@ export default function OrderDetailPage() {
         console.log("[OrderDetail] Fallback: trying cancel by display_id...");
         updateResult = await supabase
           .from("orders")
-          .update({ status: "cancelled" })
+          .update({ status: "cancelled", cancelled_at: cancelledAt })
           .eq("display_id", order.display_id || order.id)
           .select();
         console.log("[OrderDetail] Cancel update result (by display_id):", updateResult);
@@ -189,7 +192,7 @@ export default function OrderDetailPage() {
         showToast("Unable to cancel — please contact support.");
       } else {
         // Successfully cancelled — update local state 
-        setOrder({ ...order, status: "cancelled" });
+        setOrder({ ...order, status: "cancelled", cancelled_at: cancelledAt });
         showToast("Order cancelled successfully.");
         router.refresh();
 
@@ -305,6 +308,25 @@ export default function OrderDetailPage() {
           </div>
         </div>
 
+        {/* ── Cancelled Banner ──────────────────────────── */}
+        {status === "cancelled" && (
+          <div style={{ background: '#F5E1E1', border: '1px solid #E8B4B4', borderRadius: 14, padding: '14px 18px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 10 }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A33B3B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="15" y1="9" x2="9" y2="15" />
+              <line x1="9" y1="9" x2="15" y2="15" />
+            </svg>
+            <div>
+              <p style={{ margin: 0, fontWeight: 600, color: '#A33B3B', fontSize: 14 }}>Order Cancelled</p>
+              {order.cancelled_at && (
+                <p style={{ margin: 0, color: '#A33B3B', fontSize: 12, opacity: 0.8 }}>
+                  Cancelled on {formatDate(order.cancelled_at)}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* ── Payment Info ────────────────────────────── */}
         <div className="od-card">
           <h3 className="od-section-title">Payment</h3>
@@ -413,14 +435,26 @@ export default function OrderDetailPage() {
             </svg>
             Need Help?
           </a>
-          <a
-            href={invoiceUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="od-btn od-btn--download"
-          >
-            <span>Download Invoice</span>
-          </a>
+          {status !== "cancelled" ? (
+            <a
+              href={invoiceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="od-btn od-btn--download"
+            >
+              <span>Download Invoice</span>
+            </a>
+          ) : (
+            <a
+              href={invoiceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="od-btn od-btn--secondary"
+              style={{ opacity: 0.7 }}
+            >
+              <span>View Cancelled Invoice</span>
+            </a>
+          )}
         </div>
       </div>
 
