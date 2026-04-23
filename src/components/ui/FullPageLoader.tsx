@@ -6,7 +6,7 @@ export default function FullPageLoader() {
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: '#ffffff',
+        backgroundColor: '#FDFBF7',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
