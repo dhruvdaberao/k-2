@@ -106,36 +106,79 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true, message: "Type not handled" });
     }
 
-    // Recipients list
-    const recipients = [{ email: targetEmail }];
-    
-    // Always notify owner for important updates
-    const notifyOwnerTypes = ["order_placed", "placed", "order_shipped", "shipped", "order_delivered", "delivered"];
-    if (notifyOwnerTypes.includes(type)) {
-      recipients.push({ email: businessEmail });
+    // Define contents for Customer
+    const customerSubject = subject;
+    const customerHtml = htmlContent;
+
+    // Define contents for Owner (Neha)
+    let ownerSubject = "";
+    let ownerHtml = "";
+
+    if (type === "order_placed" || type === "placed") {
+      ownerSubject = `New Order Received! 🛍️ | #${orderId}`;
+      ownerHtml = `
+        <div style="font-family: Arial, sans-serif; color: #2D2D2D; max-width: 600px; margin: 0 auto; border: 1px solid #E6DCCF; border-radius: 12px; overflow: hidden;">
+          <div style="background-color: #5A3E2B; color: white; padding: 24px; text-align: center;">
+            <h1 style="margin: 0; font-size: 20px;">New Order Received! 🛍️</h1>
+          </div>
+          <div style="padding: 24px;">
+            <p>Hello <strong>Neha</strong>,</p>
+            <p>You have received a new order from <strong>${customerName || 'a customer'}</strong> (${targetEmail}).</p>
+            
+            <div style="margin: 24px 0; padding: 20px; background-color: #FDFBF7; border-radius: 8px; border: 1px solid #E6DCCF;">
+              <h3 style="margin-top: 0; color: #5A3E2B;">Order Details (#${orderId})</h3>
+              <p style="margin: 4px 0;"><strong>Total Amount:</strong> ₹${total}</p>
+              <p style="margin: 4px 0;"><strong>Payment Method:</strong> ${paymentMethod}</p>
+              <div style="margin-top: 12px;">
+                <p style="margin-bottom: 4px; font-weight: bold;">Items:</p>
+                <ul style="margin: 0; padding-left: 20px;">
+                  ${items?.map((item: any) => `<li>${item.name} x${item.quantity}</li>`).join('')}
+                </ul>
+              </div>
+            </div>
+
+            <p>Please log in to the admin dashboard to manage this order.</p>
+          </div>
+          <div style="background-color: #FDFBF7; padding: 16px; text-align: center; font-size: 12px; color: #6B6B6B; border-top: 1px solid #E6DCCF;">
+            &copy; 2024 Keshvi Crafts | Business Notification
+          </div>
+        </div>
+      `;
     }
 
-    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
-      method: 'POST',
-      headers: {
-        'api-key': apiKey,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        sender: { email: businessEmail, name: 'Keshvi Crafts' },
-        to: recipients,
-        subject: subject,
-        htmlContent: htmlContent,
-      }),
-    });
+    // Helper function to send email via Brevo
+    const sendBrevoEmail = async (toEmail: string, sub: string, html: string) => {
+      return fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          'api-key': apiKey,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sender: { email: businessEmail, name: 'Keshvi Crafts' },
+          to: [{ email: toEmail }],
+          subject: sub,
+          htmlContent: html,
+        }),
+      });
+    };
 
-    if (!response.ok) {
-      const errData = await response.json();
-      console.error("📧 [Email API] Brevo Error:", errData);
-      return NextResponse.json({ success: false, error: "Brevo call failed" }, { status: 500 });
+    // 1. Send to Customer
+    const customerRes = await sendBrevoEmail(targetEmail, customerSubject, customerHtml);
+    if (!customerRes.ok) {
+      console.error("📧 [Email API] Customer Email Failed:", await customerRes.json());
     }
 
-    return NextResponse.json({ success: true, message: "Email sent" });
+    // 2. Send to Owner (if notification type matches)
+    const notifyOwnerTypes = ["order_placed", "placed"];
+    if (notifyOwnerTypes.includes(type) && ownerHtml) {
+      const ownerRes = await sendBrevoEmail(businessEmail, ownerSubject, ownerHtml);
+      if (!ownerRes.ok) {
+        console.error("📧 [Email API] Owner Email Failed:", await ownerRes.json());
+      }
+    }
+
+    return NextResponse.json({ success: true, message: "Emails processed" });
   } catch (err: any) {
     console.error("📧 [Email API] Failed:", err);
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });

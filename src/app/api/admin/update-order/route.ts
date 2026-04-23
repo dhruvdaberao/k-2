@@ -145,33 +145,78 @@ export async function POST(req: Request) {
         </div>`;
     }
 
+    // Only send email for shipped/delivered
     if (subject && htmlContent && customerEmail) {
       try {
-        const recipients = [{ email: customerEmail }];
-        if (businessEmail !== customerEmail) {
-          recipients.push({ email: businessEmail });
+        // Define Contents for Owner (Neha)
+        let ownerSubject = "";
+        let ownerHtml = "";
+
+        if (newStatus === 'shipped') {
+          ownerSubject = `Order Successfully Shipped! 🚚 | #${displayId}`;
+          ownerHtml = `
+            <div style="font-family: Arial, sans-serif; color: #2D2D2D; max-width: 600px; margin: 0 auto; border: 1px solid #E6DCCF; border-radius: 12px; overflow: hidden;">
+              <div style="background-color: #5A3E2B; color: white; padding: 24px; text-align: center;">
+                <h1 style="margin: 0; font-size: 20px;">Order Shipped! 🚚</h1>
+              </div>
+              <div style="padding: 24px;">
+                <p>Hello <strong>Neha</strong>,</p>
+                <p>You have successfully marked order <strong>#${displayId}</strong> as shipped for <strong>${customerName}</strong>.</p>
+                ${trackingLink ? `<p><strong>Tracking Link:</strong> <a href="${trackingLink}">${trackingLink}</a></p>` : ''}
+                <p>The customer has been notified.</p>
+              </div>
+              <div style="background-color: #FDFBF7; padding: 16px; text-align: center; font-size: 12px; color: #6B6B6B; border-top: 1px solid #E6DCCF;">
+                &copy; 2024 Keshvi Crafts | Business Notification
+              </div>
+            </div>`;
+        } else if (newStatus === 'delivered') {
+          ownerSubject = `Order Successfully Delivered! 🎉 | #${displayId}`;
+          ownerHtml = `
+            <div style="font-family: Arial, sans-serif; color: #2D2D2D; max-width: 600px; margin: 0 auto; border: 1px solid #E6DCCF; border-radius: 12px; overflow: hidden;">
+              <div style="background-color: #5A3E2B; color: white; padding: 24px; text-align: center;">
+                <h1 style="margin: 0; font-size: 20px;">Order Delivered! 🎉</h1>
+              </div>
+              <div style="padding: 24px;">
+                <p>Hello <strong>Neha</strong>,</p>
+                <p>Order <strong>#${displayId}</strong> for <strong>${customerName}</strong> has been marked as successfully delivered.</p>
+                <p>The customer has been notified and thanked.</p>
+              </div>
+              <div style="background-color: #FDFBF7; padding: 16px; text-align: center; font-size: 12px; color: #6B6B6B; border-top: 1px solid #E6DCCF;">
+                &copy; 2024 Keshvi Crafts | Business Notification
+              </div>
+            </div>`;
         }
 
-        console.log(`📧 [Admin Update] Sending to: ${recipients.map(r => r.email).join(', ')}`);
+        // Helper to send via Brevo
+        const sendBrevoEmail = async (toEmail: string, sub: string, html: string) => {
+          return fetch('https://api.brevo.com/v3/smtp/email', {
+            method: 'POST',
+            headers: { 'api-key': apiKey, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              sender: { email: businessEmail, name: 'Keshvi Crafts' },
+              to: [{ email: toEmail }],
+              subject: sub,
+              htmlContent: html,
+            }),
+          });
+        };
 
-        const emailRes = await fetch('https://api.brevo.com/v3/smtp/email', {
-          method: 'POST',
-          headers: { 'api-key': apiKey, 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            sender: { email: businessEmail, name: 'Keshvi Crafts' },
-            to: recipients,
-            subject,
-            htmlContent,
-          }),
-        });
-
-        if (!emailRes.ok) {
-          const errText = await emailRes.text();
-          console.error('🔴 [Admin Update] Brevo error:', errText);
-          return NextResponse.json({ success: true, emailSent: false });
+        // 1. Send to Customer
+        console.log(`📧 [Admin Update] Sending Customer Email to: ${customerEmail}`);
+        const customerRes = await sendBrevoEmail(customerEmail, subject, htmlContent);
+        if (!customerRes.ok) {
+          console.error('🔴 [Admin Update] Customer Email failed:', await customerRes.text());
         }
 
-        console.log('✅ [Admin Update] Email sent!');
+        // 2. Send to Owner (Neha)
+        if (ownerHtml) {
+          console.log(`📧 [Admin Update] Sending Owner Email to: ${businessEmail}`);
+          const ownerRes = await sendBrevoEmail(businessEmail, ownerSubject, ownerHtml);
+          if (!ownerRes.ok) {
+            console.error('🔴 [Admin Update] Owner Email failed:', await ownerRes.text());
+          }
+        }
+
         return NextResponse.json({ success: true, emailSent: true });
       } catch (emailErr) {
         console.error('🔴 [Admin Update] Email error:', emailErr);
