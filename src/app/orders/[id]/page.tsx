@@ -8,7 +8,7 @@ import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { showToast } from "@/components/Toast";
-import ConfirmModal from "@/components/ui/ConfirmModal";
+import { generateDynamicPdfUrl } from "@/lib/orderClient";
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 type OrderStatus = "placed" | "confirmed" | "shipped" | "delivered" | "cancelled";
@@ -88,8 +88,37 @@ export default function OrderDetailPage() {
 
   useEffect(() => {
     if (!order) return;
-    const id = order.display_id || order.id || orderId;
-    setInvoiceUrl(`/api/invoice?orderId=${id}`);
+    
+    // Convert DB order object to stateless OrderData format for robust PDF generation
+    const items = typeof order.items === 'string' ? JSON.parse(order.items) : (order.items || []);
+    const addr = order.delivery_address || {};
+    
+    const statelessData: any = {
+      o: order.display_id || order.id || orderId,
+      c: order.created_at,
+      s: Number(order.total_amount || 0) + (Number(order.discount_amount || 0)) - (Number(order.shipping_charge || 0)),
+      d: Number(order.discount_amount || 0),
+      sh: Number(order.shipping_charge || 0),
+      sd: 0,
+      t: Number(order.total_amount || 0),
+      pm: order.payment_method === 'cod' ? 'Cash on Delivery' : 'Online Payment',
+      u: {
+        n: addr.full_name || addr.name || "Customer",
+        p: addr.phone || "",
+        a: addr.address_line || addr.street || "",
+        c: addr.city || "",
+        z: addr.pincode || ""
+      },
+      i: items.map((it: any) => ({
+        n: it.name || "Item",
+        p: it.price || 0,
+        q: it.quantity || 1,
+        m: it.image || ""
+      }))
+    };
+
+    const url = generateDynamicPdfUrl(statelessData);
+    setInvoiceUrl(url);
   }, [order, orderId]);
 
   useEffect(() => {
