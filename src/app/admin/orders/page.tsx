@@ -207,8 +207,8 @@ export default function AdminOrders() {
                     </p>
                     <Link 
                       href={`/admin/orders/${order.id}`} 
-                      className="bg-[#5a3e2b] text-white hover:bg-[#4a3223] transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm"
-                      style={{ textDecoration: 'none' }}
+                      className="transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm view-order-btn"
+                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', textDecoration: 'none', display: 'inline-block', border: 'none' }}
                     >
                       View Order
                     </Link>
@@ -220,7 +220,13 @@ export default function AdminOrders() {
           </div>
         )}
       </div>
-      <style>{`@keyframes co-spin { to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        @keyframes co-spin { to { transform: rotate(360deg); } }
+        .view-order-btn, .view-order-btn:hover, .view-order-btn:visited, .view-order-btn:active, .view-order-btn:focus {
+          color: #ffffff !important;
+          text-decoration: none !important;
+        }
+      `}</style>
     </main>
   );
 }

@@ -86,7 +86,17 @@ export default function OrderDetails() {
       showToast("Order not found");
     } else {
       setOrder(data);
-      if (data.tracking_link) setTrackingLink(data.tracking_link);
+      
+      // Handle tracking link from top-level or JSON fallback
+      let link = data.tracking_link;
+      if (!link && data.delivery_address) {
+        const addr = typeof data.delivery_address === 'string' 
+          ? JSON.parse(data.delivery_address) 
+          : data.delivery_address;
+        link = addr.tracking_link;
+      }
+      
+      if (link) setTrackingLink(link);
     }
   };
 
@@ -101,7 +111,7 @@ export default function OrderDetails() {
   const updateOrderStatus = async (newStatus: string) => {
     if (!order) return;
     
-    if (newStatus === "shipped" && !trackingLink) {
+    if (newStatus === "shipped" && !trackingLink.trim()) {
       showToast("Please enter a tracking link first");
       return;
     }
@@ -115,51 +125,48 @@ export default function OrderDetails() {
     }
 
     setUpdating(true);
-    const updatePayload: any = { 
-      status: newStatus,
-      updated_at: new Date().toISOString()
-    };
-    if (newStatus === "shipped") {
-      updatePayload.tracking_link = trackingLink;
-    }
 
-    const { error } = await supabase
-      .from("orders")
-      .update(updatePayload)
-      .eq("id", order.id);
+    try {
+      console.log(`🔄 Calling admin update API: ${order.id} -> ${newStatus}`);
 
-    if (error) {
-      console.error("Update failed:", error);
-      showToast("Failed to update status");
-    } else {
-      // Optimistic local update
-      setOrder(prev => prev ? { ...prev, ...updatePayload } : null);
-      showToast(`Order marked as ${newStatus}`);
-      
-      // Trigger Email (Fire and forget)
-      // Unified types: 'shipped' | 'delivered'
-      const emailType = newStatus === "shipped" ? "shipped" : newStatus === "delivered" ? "delivered" : null;
-      
-      if (emailType) {
-        console.log(`📧 Sending ${emailType} email...`);
-        fetch("/api/send-email", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            type: emailType,
-            email: order.email || (order as any).customer_email,
-            orderId: order.display_id,
-            trackingLink: trackingLink,
-            customerName: (order as any).delivery_address?.full_name || "Customer",
-            total: order.total_amount,
-            items: order.order_items
-          })
-        }).catch(e => console.error("Email error:", e));
+      const res = await fetch("/api/admin/update-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId: order.id,
+          newStatus,
+          trackingLink: trackingLink.trim(),
+          adminEmail: "keshvicrafts@gmail.com"
+        })
+      });
+
+      const result = await res.json();
+      console.log("✅ Admin update result:", result);
+
+      if (!result.success) {
+        showToast(result.error || "Failed to update status");
+        setUpdating(false);
+        return;
       }
 
-      // Small delay before refetch to allow DB consistency
-      setTimeout(() => fetchOrder(), 500);
+      // Success! Update local state immediately
+      setOrder(prev => prev ? { 
+        ...prev, 
+        status: newStatus,
+        ...(newStatus === "shipped" ? { tracking_link: trackingLink } : {})
+      } : null);
+
+      const emailMsg = result.emailSent ? " & email sent ✉️" : "";
+      showToast(`Order marked as ${newStatus}${emailMsg}`);
+
+      // Refetch to get full fresh data
+      setTimeout(() => fetchOrder(), 800);
+
+    } catch (err: any) {
+      console.error("❌ Status update error:", err);
+      showToast("Something went wrong. Please try again.");
     }
+
     setUpdating(false);
   };
 
@@ -251,14 +258,16 @@ export default function OrderDetails() {
                   <button 
                     onClick={() => updateOrderStatus("shipped")}
                     disabled={updating}
-                    className="flex-1 bg-[#5a3e2b] text-white hover:bg-[#4a3223] transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
+                    className="flex-1 transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
+                    style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
                   >
                     {updating ? "Processing..." : "Ship Order"}
                   </button>
                   <button 
                     onClick={() => updateOrderStatus("cancelled")}
                     disabled={updating}
-                    className="flex-1 bg-[#5a3e2b] text-white hover:bg-[#4a3223] transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
+                    className="flex-1 transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
+                    style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
                   >
                     {updating ? "Processing..." : "Cancel Order"}
                   </button>
@@ -270,7 +279,8 @@ export default function OrderDetails() {
               <button 
                 onClick={() => updateOrderStatus("delivered")}
                 disabled={updating}
-                className="w-full bg-[#5a3e2b] text-white hover:bg-[#4a3223] transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
+                className="w-full transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
+                style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
               >
                 {updating ? "Processing..." : "Mark Delivered"}
               </button>

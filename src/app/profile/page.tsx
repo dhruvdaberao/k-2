@@ -446,8 +446,8 @@ export default function ProfilePage() {
         {isAdmin(user) && (
           <button 
             onClick={() => router.push('/admin')} 
-            className="btn-primary py-3 px-8 shadow-sm rounded-lg font-medium transition-transform active:scale-95 mt-4 md:mt-0 w-full"
-            style={{ width: 'auto', minWidth: '220px', flex: '1 1 100%', maxWidth: '300px', background: 'var(--brand)', color: 'white' }}
+            className="btn-primary py-3 px-8 shadow-sm rounded-lg font-medium transition-transform active:scale-95"
+            style={{ width: 'auto', minWidth: '220px', flex: '1 1 auto', maxWidth: '300px', background: 'var(--brand)', color: 'white' }}
           >
             Admin Dashboard
           </button>
