@@ -73,6 +73,7 @@ export default function ProfilePage() {
           phoneNumber: data.phone || "",
           address: data.address || "",
           city: data.city || "",
+          state: data.state || "",
           pincode: data.pincode || "",
         });
       } else {
@@ -93,6 +94,7 @@ export default function ProfilePage() {
         phoneNumber: profile.phone || "",
         address: profile.address || "",
         city: profile.city || "",
+        state: profile.state || "",
         pincode: profile.pincode || "",
       });
     }
@@ -143,6 +145,7 @@ export default function ProfilePage() {
       phone: details.phoneNumber,
       address: details.address,
       city: details.city,
+      state: details.state,
       pincode: details.pincode,
     }).eq('id', user.id).select();
 
@@ -163,6 +166,7 @@ export default function ProfilePage() {
         phone: details.phoneNumber,
         address: details.address,
         city: details.city,
+        state: details.state,
         pincode: details.pincode,
       }]);
       if (insertFallbackError) {
@@ -413,6 +417,17 @@ export default function ProfilePage() {
               value={details.city}
               onChange={(e) => handleFieldChange("city", e.target.value)}
               placeholder="Bikini Bottom"
+              readOnly={!isEditing}
+            />
+          </label>
+
+          <label className="checkout-field">
+            <span>State</span>
+            <input
+              type="text"
+              value={details.state}
+              onChange={(e) => handleFieldChange("state", e.target.value)}
+              placeholder="Maharashtra"
               readOnly={!isEditing}
             />
           </label>
