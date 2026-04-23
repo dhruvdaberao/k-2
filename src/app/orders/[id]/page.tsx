@@ -14,9 +14,10 @@ import { generateDynamicPdfUrl } from "@/lib/orderClient";
 type OrderStatus = "placed" | "confirmed" | "shipped" | "delivered" | "cancelled";
 
 type DeliveryAddress = {
-  full_name?: string;
+  name?: string;
   phone?: string;
   address_line?: string;
+  street?: string;
   city?: string;
   state?: string;
   pincode?: string;
