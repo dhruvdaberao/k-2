@@ -41,6 +41,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const [items, setItems] = useState<CartItem[]>([]);
   const [addonItems, setAddonItems] = useState<CartItem[]>([]);
+  const hasInitialized = useRef(false);
   const [step, setStep] = useState<CheckoutStep>("details");
   const [details, setDetails] = useState<CheckoutCustomerDetails>(initialDetails);
   const [paymentMethod, setPaymentMethod] = useState<CheckoutPaymentMethod>("cod");
@@ -84,15 +85,11 @@ export default function CheckoutPage() {
 
     console.log("[Checkout] Refreshing cart data...");
     const currentCart = await getAsyncCart();
-    if (currentCart.length === 0 && !isOrderPlaced) {
-      console.warn("[Checkout] Cart is empty, redirecting...");
-      showToast("Your cart is empty.");
-      router.replace("/cart");
-      return;
-    }
+    // NEVER automatically redirect to cart page from checkout.
+    // We handle empty state locally in the render if needed.
     console.log("[Checkout] Items loaded:", currentCart);
     setItems(currentCart);
-  }, [isPlacingOrder, isOrderPlaced, router]);
+  }, [isPlacingOrder, isOrderPlaced]);
 
   // Merge carts locally for calculation and order hooks
   const finalItems = useMemo(() => {
@@ -101,8 +98,6 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     setHydrated(true);
-
-    let hasInitialized = false;
 
     const restoreDetails = () => {
       // ... same logic
@@ -133,8 +128,8 @@ export default function CheckoutPage() {
       }
     };
 
-    if (!hasInitialized) {
-      hasInitialized = true;
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
       restoreDetails();
       refreshCart();
     }
@@ -251,7 +246,6 @@ export default function CheckoutPage() {
     
     if (finalItems.length === 0) {
       showToast("Your cart is empty.");
-      router.replace("/cart");
       return;
     }
 
@@ -463,13 +457,21 @@ export default function CheckoutPage() {
     return <main className="checkout-page checkout-container checkout-flow py-10" />;
   }
 
-  // PREVENT CART REDIRECT LOGIC
-  // If the cart is effectively empty but an order is placed, do NOT redirect.
+  // PREVENT REDIRECTS: If cart is empty, show a friendly local UI instead of redirecting.
   if (finalItems.length === 0 && !isOrderPlaced) {
     return (
-      <main className="checkout-page checkout-container checkout-flow py-10 text-center">
-        <h1 className="checkout-title">Checkout</h1>
-        <p className="checkout-note">Redirecting to your cart...</p>
+      <main className="checkout-page checkout-container checkout-flow py-20 text-center">
+        <div className="mb-6 opacity-30">
+          <svg style={{ margin: '0 auto' }} xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/>
+            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.56-7.43H5.12"/>
+          </svg>
+        </div>
+        <h2 className="text-2xl font-serif font-bold text-[#2f2a26] mb-3">Your cart is empty</h2>
+        <p className="text-stone-500 mb-10 text-sm italic">You don't have any items to checkout.</p>
+        <button onClick={() => router.push('/collections')} className="btn btn-primary px-10 py-3 rounded-full font-bold shadow-sm">
+          Browse Collections
+        </button>
       </main>
     );
   }
