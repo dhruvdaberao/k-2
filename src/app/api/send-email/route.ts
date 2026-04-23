@@ -1,9 +1,19 @@
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
-  console.log('>>> EMAIL API HIT <<<');
+  console.log('>>> [Email API] Received request <<<');
   try {
-    const body = await req.json();
+    const rawBody = await req.text();
+    console.log('>>> [Email API] Raw Body:', rawBody);
+    
+    let body;
+    try {
+      body = JSON.parse(rawBody);
+    } catch (e) {
+      console.error('>>> [Email API] JSON Parse Error:', e);
+      return NextResponse.json({ success: false, error: 'Invalid JSON' }, { status: 400 });
+    }
+
     const { 
       userEmail, 
       orderId, 
@@ -18,16 +28,23 @@ export async function POST(req: Request) {
     const businessEmail = process.env.BUSINESS_EMAIL;
 
     if (!apiKey || !businessEmail) {
-      console.error('[Email API] Missing keys:', { hasKey: !!apiKey, hasEmail: !!businessEmail });
+      console.error('[Email API] Missing configuration keys');
       return NextResponse.json({ success: false, error: 'Email configuration missing' }, { status: 500 });
     }
 
-    // Formatting items list as HTML
-    const itemsHtml = items.map((item: any) => `
+    if (!userEmail) {
+      console.error('[Email API] Missing userEmail');
+      return NextResponse.json({ success: false, error: 'userEmail is required' }, { status: 400 });
+    }
+
+    // Defensive check for items
+    const safeItems = Array.isArray(items) ? items : [];
+
+    const itemsHtml = safeItems.map((item: any) => `
       <tr style="border-bottom: 1px solid #e6ded4;">
-        <td style="padding: 12px 0; color: #5a3e2b;">${item.name}</td>
-        <td style="padding: 12px 0; color: #5a3e2b; text-align: center;">${item.quantity}</td>
-        <td style="padding: 12px 0; color: #5a3e2b; text-align: right;">₹${item.price}</td>
+        <td style="padding: 12px 0; color: #5a3e2b;">${item.name || 'Unknown Item'}</td>
+        <td style="padding: 12px 0; color: #5a3e2b; text-align: center;">${item.quantity || 1}</td>
+        <td style="padding: 12px 0; color: #5a3e2b; text-align: right;">₹${item.price || 0}</td>
       </tr>
     `).join('');
 
@@ -66,7 +83,7 @@ export async function POST(req: Request) {
                   <th style="padding-bottom: 8px; text-align: right;">Price</th>
                 </tr>
               </thead>
-      <tbody>
+              <tbody>
                 ${itemsHtml}
                 <tr style="color: #8c7e6a; font-size: 14px;">
                   <td colspan="2" style="padding-top: 20px;">Subtotal</td>
@@ -107,6 +124,7 @@ export async function POST(req: Request) {
       </html>
     `;
 
+    console.log('>>> [Email API] Calling Brevo for:', userEmail);
     const response = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
       headers: {
@@ -122,14 +140,15 @@ export async function POST(req: Request) {
     });
 
     if (!response.ok) {
-      const error = await response.text();
-      console.error('[Email API] Brevo error:', error);
-      return NextResponse.json({ success: false, error: 'Brevo failed' }, { status: 500 });
+      const errorMsg = await response.text();
+      console.error('[Email API] Brevo error:', errorMsg);
+      return NextResponse.json({ success: false, error: 'Brevo transmission failed' }, { status: 500 });
     }
 
+    console.log('>>> [Email API] Successfully sent! <<<');
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    console.error('[Email API] Error:', error);
+    console.error('[Email API] Critical Error:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }

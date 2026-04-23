@@ -1,14 +1,11 @@
 import { NextResponse } from 'next/server';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-);
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 
 export async function GET(req: Request) {
+  console.log('[Invoice API] Hit:', req.url);
   try {
     const { searchParams } = new URL(req.url);
     const dParam = searchParams.get('d');
@@ -19,26 +16,33 @@ export async function GET(req: Request) {
     // Phase 1: Try to decode from 'd' parameter (Stateless)
     if (dParam) {
       try {
-        // Use Buffer for more robust base64 decoding in Node.js environment
+        console.log('[Invoice API] Attempting to decode d-param...');
         const decoded = decodeURIComponent(Buffer.from(dParam, 'base64').toString('utf-8'));
         orderData = JSON.parse(decoded);
-        console.log("[Invoice API] Using stateless data for:", orderData.o);
+        console.log("[Invoice API] Successfully parsed stateless data for:", orderData.o);
       } catch (e) {
         console.error("[Invoice API] Failed to parse 'd' param:", e);
       }
     }
 
-    // Phase 2: Fallback to orderId (Stateless but requires DB fetch)
+    // Phase 2: Fallback to orderId (Requires DB fetch)
     if (!orderData && orderId) {
-      console.log("[Invoice API] Fetching from DB for:", orderId);
+      console.log("[Invoice API] Fallback to DB fetch for:", orderId);
+      const supabase = createRouteHandlerClient({ cookies });
+      
       const { data: order, error } = await supabase
         .from('orders')
         .select('*')
         .or(`display_id.eq."${orderId}",id.eq."${orderId}"`)
         .maybeSingle();
 
+      if (error) {
+        console.error('[Invoice API] Supabase fetch error:', error);
+      }
+
       if (order && !error) {
-        // Map DB order to the format expected by our generator
+        console.log('[Invoice API] Found order in DB:', order.id);
+        // ... mapping logic
         let items = [];
         try {
           items = typeof order.items === 'string' ? JSON.parse(order.items) : (order.items || []);

@@ -88,11 +88,9 @@ export default function OrderDetailPage() {
 
   useEffect(() => {
     if (!order) return;
-
-    const orderId = order.display_id || order.id;
-    const invoiceUrl = `${window.location.origin}/api/invoice?orderId=${orderId}`;
-    setInvoiceUrl(invoiceUrl);
-  }, [order]);
+    const id = order.display_id || order.id || orderId;
+    setInvoiceUrl(`/api/invoice?orderId=${id}`);
+  }, [order, orderId]);
 
   useEffect(() => {
     const fetchOrder = async () => {
