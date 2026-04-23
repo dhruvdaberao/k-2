@@ -187,15 +187,17 @@ export default function CartPage() {
 
                     {/* Right: Price, Checkbox & Remove */}
                     <div className="cart-item-actions-right">
-                      <div className="cart-item-price-main font-serif">₹{it.price * it.quantity}</div>
-                      <div className="cart-item-bottom-actions">
+                      <div className="flex items-center gap-2">
                         <input
                           type="checkbox"
                           checked={selectedItems.includes(it.id)}
                           onChange={() => toggleItem(it.id)}
                           className="cart-checkbox"
                         />
-                        <button onClick={() => setRemoveTarget({ id: it.id, name: it.name })} className="btn-remove-pill">Remove</button>
+                        <div className="cart-item-price-main font-serif">₹{it.price * it.quantity}</div>
+                      </div>
+                      <div className="cart-item-bottom-actions">
+                        <button onClick={() => setRemoveTarget({ id: it.id, name: it.name })} className="cart-remove-btn">Remove</button>
                       </div>
                     </div>
                   </div>
