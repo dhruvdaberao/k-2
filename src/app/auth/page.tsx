@@ -6,9 +6,9 @@ export default function AuthChoicePage() {
   const router = useRouter();
 
   return (
-    <main className="checkout-page checkout-container pb-20 pt-[120px]" style={{ paddingTop: '120px', minHeight: '100vh' }}>
-      <div className="px-4 sm:px-6 md:px-0 max-w-md mx-auto w-full mt-10">
-        <div className="text-center mb-8">
+    <main className="checkout-page checkout-container pb-20 pt-[40px]" style={{ paddingTop: '40px', minHeight: '100vh' }}>
+      <div className="px-4 sm:px-6 md:px-0 max-w-md mx-auto w-full mt-4">
+        <div className="text-center mb-4">
           <img src="/uploads/hero/logo.png" alt="Logo" className="mx-auto mb-4" style={{ height: '110px', width: 'auto', mixBlendMode: 'multiply' }} />
           <h1 className="text-3xl font-bold" style={{ color: "var(--brand)" }}>
             Welcome
@@ -16,7 +16,7 @@ export default function AuthChoicePage() {
           <p className="text-stone-500 mt-2">To continue, please sign in or create a new account.</p>
         </div>
 
-        <div className="max-w-sm w-full mx-auto flex flex-col gap-6">
+        <div className="max-w-sm w-full mx-auto flex flex-col gap-4">
           <div className="flex flex-col gap-3">
             <p className="text-sm text-gray-500 text-center">
               Already have an account? Please login below
