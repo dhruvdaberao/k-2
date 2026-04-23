@@ -167,28 +167,26 @@ export default function ProfilePage() {
     }
   };
 
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
-
   const handleLogout = async () => {
-    setShowLogoutModal(false);
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (!confirmLogout) return;
+
     try {
-      // 1. Clear Supabase Session
-      await supabase.auth.signOut();
-      
-      // 2. Wipe ALL local caches that might contain personal info
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem("checkout:details:v1");
-        localStorage.removeItem("customer_details");
-        localStorage.removeItem("checkout:order-confirmed:v1");
-        localStorage.removeItem("supabase.auth.token"); // Extra safety
-        
-        // 3. Force a hard redirect to clear React state and trigger cookie cleanup
-        window.location.href = "/login";
-      }
+      // 1. Sign out from Supabase
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+
+      // 2. Clear local data
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // 3. Force UI Reset
+      router.push("/");
+      router.refresh();
     } catch (err) {
-      console.warn("Sign out error:", err);
-      // Even if it fails, try to kill the session locally
-      window.location.href = "/login";
+      console.error("Logout error:", err);
+      // Fail-safe redirect
+      window.location.href = "/";
     }
   };
 
@@ -336,7 +334,7 @@ export default function ProfilePage() {
               </button>
             )}
             <button 
-              onClick={() => setShowLogoutModal(true)} 
+              onClick={handleLogout} 
               className="px-4 py-2 rounded-lg text-sm font-medium transition-opacity hover:opacity-90"
               style={{ background: "#5a3e2b", color: "white", border: "none" }}
             >
@@ -457,16 +455,6 @@ export default function ProfilePage() {
       </section>
       {profileModalHTML}
 
-      <ConfirmModal
-        isOpen={showLogoutModal}
-        title="Log out?"
-        message="Are you sure you want to log out of your account?"
-        confirmLabel="Log Out"
-        cancelLabel="Cancel"
-        destructive
-        onConfirm={handleLogout}
-        onCancel={() => setShowLogoutModal(false)}
-      />
     </main>
 
   );

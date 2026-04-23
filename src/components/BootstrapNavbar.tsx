@@ -3,14 +3,34 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
 import CartBadge from "@/components/CartBadge";
 import WishlistBadge from "@/components/WishlistBadge";
-import { useAuth } from "@/hooks/useAuth";
 import "./Navbar.css";
 
 export default function BootstrapNavbar() {
   const pathname = usePathname();
-  const { user } = useAuth();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data?.user || null);
+    };
+
+    getUser();
+
+    // 🔥 LISTEN TO AUTH CHANGES
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_, session) => {
+        setUser(session?.user || null);
+      }
+    );
+
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
   const authLink = user ? "/profile" : "/auth";
 
   const isActive = (href: string): boolean =>
