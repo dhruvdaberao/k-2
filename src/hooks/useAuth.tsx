@@ -75,14 +75,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  if (loading && !session) {
-    return (
-      <div style={{ position: 'fixed', inset: 0, backgroundColor: '#FDFBF7', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999 }}>
-        <div style={{ width: 40, height: 40, border: '4px solid #e6ded4', borderTop: '4px solid #5a3e2b', borderRadius: '50%', animation: 'auth-spin 0.8s linear infinite' }} />
-        <style>{`@keyframes auth-spin { to { transform: rotate(360deg); } }`}</style>
-      </div>
-    );
-  }
+  // We will no longer show a full-screen blocker here to avoid jarring flashes on every page load.
+  // Consumers can use the 'loading' flag to show their own subtle spinners/placeholders.
 
   return (
     <AuthContext.Provider value={{ session, user, profile, loading, refreshProfile }}>

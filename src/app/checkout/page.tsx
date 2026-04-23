@@ -364,7 +364,13 @@ export default function CheckoutPage() {
           userEmail: details.email,
           orderId: orderId,
           items: finalItems.map(item => ({ name: item.name, quantity: item.quantity, price: item.price })),
-          total: total
+          total: total,
+          subtotal: subtotal,
+          shipping: baseShipping + shippingDiscount,
+          discount: discountAmount,
+          paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online Payment',
+          invoiceUrl: dynamicPdfUrl,
+          customerName: details.fullName
         })
       }).catch(emailErr => {
         console.error("Order Email Error (Non-blocking):", emailErr);
@@ -377,7 +383,7 @@ export default function CheckoutPage() {
   };
 
   // ── STEP 1: Full-page loader blocks EVERYTHING during order ──
-  if (isPlacingOrder) {
+  if (isPlacingOrder || isOrderPlaced) {
     return (
       <div className="h-screen flex items-center justify-center bg-[#FAF8F5]">
         <div className="text-center">

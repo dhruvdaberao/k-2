@@ -87,49 +87,22 @@ export default function OrdersPage() {
     fetchOrders();
   }, []);
 
-  if (loading) {
-    return (
-      <main className="orders-page relative">
-        <style dangerouslySetInnerHTML={{ __html: ordersCSS }} />
-        {/* Top Back Icon */}
-        <div className="absolute top-4 left-4 sm:top-8 sm:left-8">
-          <button 
-            onClick={() => router.push('/')}
-            className="flex items-center text-[#6b7280] hover:text-[#2f2a26] transition-colors"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
-              <line x1="19" y1="12" x2="5" y2="12"></line>
-              <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-            Home
-          </button>
-        </div>
-        <div className="orders-container pt-10">
-          <header className="orders-header">
-            <div className="h-8 w-40 bg-stone-200 animate-pulse rounded-md mb-2"></div>
-            <div className="h-4 w-60 bg-stone-200 animate-pulse rounded-md"></div>
-          </header>
-          
-          <div className="orders-list">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="order-card animate-pulse opacity-60">
-                <div className="order-card__body">
-                  <div className="order-card__info gap-2">
-                     <div className="h-4 w-20 bg-stone-200 rounded"></div>
-                     <div className="h-3 w-24 bg-stone-200 rounded mt-1"></div>
-                     <div className="h-6 w-16 bg-stone-200 rounded mt-2"></div>
-                  </div>
-                  <div className="order-card__actions gap-2">
-                     <div className="h-6 w-20 bg-stone-200 rounded-full"></div>
-                  </div>
-                </div>
-              </div>
-            ))}
+  // Refined loading state: show the basic page structure instead of a full-screen skeleton flash
+  const loadingView = (
+    <div className="orders-list">
+      {[1, 2, 3].map(i => (
+        <div key={i} className="order-card animate-pulse opacity-40">
+          <div className="order-card__body">
+            <div className="order-card__info gap-2">
+               <div className="h-4 w-24 bg-stone-200 rounded" />
+               <div className="h-3 w-32 bg-stone-200 rounded mt-2" />
+            </div>
+            <div className="h-6 w-20 bg-stone-200 rounded-lg" />
           </div>
         </div>
-      </main>
-    );
-  }
+      ))}
+    </div>
+  );
 
   return (
     <main className="orders-page">
@@ -146,7 +119,9 @@ export default function OrdersPage() {
           </p>
         </header>
 
-        {orders.length === 0 ? (
+        {loading ? (
+          loadingView
+        ) : orders.length === 0 ? (
           /* ── Empty State (matches Wishlist empty state) ── */
           <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4 max-w-md mx-auto">
             <div className="mb-6 opacity-30">
