@@ -109,8 +109,8 @@ export async function POST(req: Request) {
     // Recipients list
     const recipients = [{ email: targetEmail }];
     
-    // Also notify owner if it's a new order
-    if (type === "order_placed") {
+    // Always notify owner for important updates
+    if (["order_placed", "order_shipped", "order_delivered"].includes(type)) {
       recipients.push({ email: businessEmail });
     }
 

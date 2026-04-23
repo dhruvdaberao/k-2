@@ -1,21 +1,41 @@
 "use client";
 
-import { useAuth } from "@/hooks/useAuth";
-import { isAdmin } from "@/lib/isAdmin";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function AdminReviewsPlaceholder() {
-  const { user, loading } = useAuth();
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!loading && !isAdmin(user)) {
-      router.replace("/");
-    }
-  }, [user, loading, router]);
+    const init = async () => {
+      try {
+        const { data: authData } = await supabase.auth.getUser();
+        if (!authData?.user || authData.user.email !== "keshvicrafts@gmail.com") {
+          router.push("/");
+          return;
+        }
+      } catch (err) {
+        console.error("Admin Auth Error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (loading || !isAdmin(user)) return null;
+    init();
+
+    const timeout = setTimeout(() => setLoading(false), 5000);
+    return () => clearTimeout(timeout);
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="w-10 h-10 border-4 border-[#5A3E2B] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#FDFBF7] py-20 px-4">

@@ -40,48 +40,41 @@ export default function OrderDetails() {
   const orderId = params.id as string;
   const router = useRouter();
 
-  const [user, setUser] = useState<any>(null);
-  const [authLoading, setAuthLoading] = useState(true);
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [trackingLink, setTrackingLink] = useState("");
 
+  // 1. Unified Auth & Data Fetching
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data?.user || null);
-      setAuthLoading(false);
+    if (!orderId) return;
+
+    const init = async () => {
+      try {
+        // Auth check
+        const { data: authData } = await supabase.auth.getUser();
+        if (!authData?.user || authData.user.email !== "keshvicrafts@gmail.com") {
+          router.push("/");
+          return;
+        }
+
+        // Fetch Order Details
+        await fetchOrder();
+      } catch (err) {
+        console.error("Order Detail Load Error:", err);
+      } finally {
+        setLoading(false);
+      }
     };
-    getUser();
-  }, []);
 
-  useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null);
-    });
-    return () => listener.subscription.unsubscribe();
-  }, []);
+    init();
 
-  useEffect(() => {
-    if (!authLoading && !isAdmin(user)) {
-      router.replace("/");
-    }
-  }, [user, authLoading, router]);
-
-  useEffect(() => {
-    if (authLoading) return;
-    
-    if (!user || !isAdmin(user) || !orderId) {
-      setLoading(false);
-      return;
-    }
-
-    fetchOrder();
-  }, [user, orderId, authLoading]);
+    // Fail-safe timeout
+    const timeout = setTimeout(() => setLoading(false), 5000);
+    return () => clearTimeout(timeout);
+  }, [orderId, router]);
 
   const fetchOrder = async () => {
-    setLoading(true);
     const { data, error } = await supabase
       .from("orders")
       .select("*, order_items(*)")
@@ -95,8 +88,15 @@ export default function OrderDetails() {
       setOrder(data);
       if (data.tracking_link) setTrackingLink(data.tracking_link);
     }
-    setLoading(false);
   };
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-white/70 z-[9999]">
+        <div className="w-10 h-10 border-4 border-[#5A3E2B] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   const updateOrderStatus = async (newStatus: string) => {
     if (!order) return;
@@ -115,7 +115,10 @@ export default function OrderDetails() {
     }
 
     setUpdating(true);
-    const updatePayload: any = { status: newStatus };
+    const updatePayload: any = { 
+      status: newStatus,
+      updated_at: new Date().toISOString()
+    };
     if (newStatus === "shipped") {
       updatePayload.tracking_link = trackingLink;
     }
@@ -158,11 +161,7 @@ export default function OrderDetails() {
     setUpdating(false);
   };
 
-  if (authLoading || loading) {
-    return <GlobalLoader message="Loading order details..." />;
-  }
-
-  if (!isAdmin(user) || !order) {
+  if (!order) {
     return null;
   }
 
@@ -207,7 +206,7 @@ export default function OrderDetails() {
             <div className="flex items-center gap-2">
               <h1 className="text-xs font-black text-[#5A3E2B]">{order.display_id}</h1>
               <span 
-                className="px-1.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider shadow-sm"
+                className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider whitespace-nowrap max-w-fit shadow-sm"
                 style={{ backgroundColor: statusColor.bg, color: statusColor.text }}
               >
                 {order.status}

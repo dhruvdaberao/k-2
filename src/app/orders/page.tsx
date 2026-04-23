@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 // ─── Types ─────────────────────────────────────────────────────────────────
-type OrderStatus = "placed" | "confirmed" | "shipped" | "delivered";
+type OrderStatus = "placed" | "confirmed" | "shipped" | "delivered" | "cancelled";
 
 type Order = {
   id: string;
@@ -18,10 +18,11 @@ type Order = {
 };
 
 const STATUS_CONFIG: Record<OrderStatus, { label: string; bg: string; text: string }> = {
-  placed:    { label: "Placed",    bg: "#EDE8E0", text: "#7C6F5F" },
+  placed:    { label: "Placed",    bg: "#FFF4CC", text: "#B58B00" },
   confirmed: { label: "Confirmed", bg: "#E0ECFA", text: "#3B6CB5" },
-  shipped:   { label: "Shipped",   bg: "#FDF0E1", text: "#B5651D" },
-  delivered: { label: "Delivered", bg: "#E3F2E8", text: "#3D7A4F" },
+  shipped:   { label: "Shipped",   bg: "#E3F2FD", text: "#1565C0" },
+  delivered: { label: "Delivered", bg: "#E8F5E9", text: "#2E7D32" },
+  cancelled: { label: "Cancelled", bg: "#FDECEA", text: "#C62828" },
 };
 
 /** Format ISO date string to readable format like "20 Apr 2026" */
@@ -51,57 +52,34 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let active = true;
-    let timeoutId: any;
-
-    const loadData = async (userId: string) => {
+    const init = async () => {
       try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user) {
+          setLoading(false);
+          return;
+        }
+
         const { data, error } = await supabase
           .from("orders")
           .select("id, display_id, created_at, total_amount, status")
-          .eq("user_id", userId)
+          .eq("user_id", session.user.id)
           .order("created_at", { ascending: false });
 
-        if (active) {
-          if (!error) setOrders(data || []);
-          setLoading(false);
-        }
+        if (!error) setOrders(data || []);
       } catch (err) {
-        if (active) setLoading(false);
+        console.error("Load orders error:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
-    // 1. Initial attempt
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user?.id && active) {
-        loadData(session.user.id);
-      }
-    });
-
-    // 2. Auth listener (important for client-side navigation)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session?.user?.id && active && loading) {
-        loadData(session.user.id);
-      } else if (!session && event === 'SIGNED_OUT' && active) {
-        setOrders([]);
-        setLoading(false);
-      }
-    });
-
-    // 3. Safety timeout (if no session found in 3s, stop showing skeleton)
-    timeoutId = setTimeout(() => {
-      if (active && loading) {
-        console.warn("[Orders] Loading timed out");
-        setLoading(false);
-      }
-    }, 3000);
-
-    return () => {
-      active = false;
-      subscription.unsubscribe();
-      clearTimeout(timeoutId);
-    };
-  }, [supabase]);
+    init();
+    
+    // Safety timeout
+    const timeout = setTimeout(() => setLoading(false), 5000);
+    return () => clearTimeout(timeout);
+  }, []);
 
   // Refined loading state: show the basic page structure instead of a full-screen skeleton flash
   const loadingView = (

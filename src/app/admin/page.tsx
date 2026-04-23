@@ -7,45 +7,38 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 
 export default function AdminDashboard() {
-  const [user, setUser] = useState<any>(null);
-  const [authLoading, setAuthLoading] = useState(true);
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
+  // 1. Unified Auth Check
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data?.user || null);
-      setAuthLoading(false);
+    const init = async () => {
+      try {
+        const { data: authData } = await supabase.auth.getUser();
+        if (!authData?.user || authData.user.email !== "keshvicrafts@gmail.com") {
+          router.push("/");
+          return;
+        }
+      } catch (err) {
+        console.error("Admin Auth Error:", err);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    getUser();
-  }, []);
+    init();
 
-  useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null);
-    });
+    // Fail-safe timeout
+    const timeout = setTimeout(() => setLoading(false), 5000);
+    return () => clearTimeout(timeout);
+  }, [router]);
 
-    return () => listener.subscription.unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (!authLoading && !isAdmin(user)) {
-      router.replace("/");
-    }
-  }, [user, authLoading, router]);
-
-  if (authLoading) {
+  if (loading) {
     return (
-      <main className="min-h-screen bg-[#FDFBF7] py-20 px-4 flex items-center justify-center">
-        <div style={{ width: 44, height: 44, border: '4px solid #e6ded4', borderTop: '4px solid #5a3e2b', borderRadius: '50%', animation: 'co-spin 0.8s linear infinite' }} />
-        <style>{`@keyframes co-spin { to { transform: rotate(360deg); } }`}</style>
-      </main>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="w-10 h-10 border-4 border-[#5A3E2B] border-t-transparent rounded-full animate-spin"></div>
+      </div>
     );
-  }
-
-  if (!isAdmin(user)) {
-    return null;
   }
 
   return (

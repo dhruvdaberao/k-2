@@ -26,65 +26,51 @@ const STATUS_COLORS: Record<string, { bg: string, text: string }> = {
 };
 
 export default function AdminOrders() {
-  const [user, setUser] = useState<any>(null);
-  const [authLoading, setAuthLoading] = useState(true);
   const router = useRouter();
-
   const [orders, setOrders] = useState<Order[]>([]);
-  const [ordersLoading, setOrdersLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("placed");
   const [search, setSearch] = useState("");
 
+  // 1. Unified Auth & Data Fetching
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data?.user || null);
-      setAuthLoading(false);
-    };
-    getUser();
-  }, []);
+    const init = async () => {
+      try {
+        // Auth check
+        const { data: authData } = await supabase.auth.getUser();
+        if (!authData?.user || authData.user.email !== "keshvicrafts@gmail.com") {
+          router.push("/");
+          return;
+        }
 
-  useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null);
-    });
-    return () => listener.subscription.unsubscribe();
-  }, []);
+        // Fetch data immediately
+        const { data: ordersData, error } = await supabase
+          .from("orders")
+          .select("id, display_id, email, status, total_amount, created_at")
+          .order("created_at", { ascending: false });
 
-  useEffect(() => {
-    if (!authLoading && !isAdmin(user)) {
-      router.replace("/");
-    }
-  }, [user, authLoading, router]);
-
-  useEffect(() => {
-    if (!user || !isAdmin(user)) return;
-
-    const fetchOrders = async () => {
-      setOrdersLoading(true);
-      const { data, error } = await supabase
-        .from("orders")
-        .select("id, display_id, email, status, total_amount, created_at")
-        .order("created_at", { ascending: false });
-        
-      if (!error && data) {
-        setOrders(data);
-      } else {
-        console.error("Error fetching orders:", error);
+        if (error) throw error;
+        setOrders(ordersData || []);
+      } catch (err) {
+        console.error("Admin Load Error:", err);
+      } finally {
+        setLoading(false);
       }
-      setOrdersLoading(false);
     };
 
-    fetchOrders();
-  }, [user]);
+    init();
 
+    // Fail-safe timeout
+    const timeout = setTimeout(() => setLoading(false), 5000);
+    return () => clearTimeout(timeout);
+  }, [router]);
 
-  if (authLoading || ordersLoading) {
-    return <GlobalLoader message="Loading orders..." />;
-  }
-
-  if (!isAdmin(user)) {
-    return null;
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-white/70 z-[9999]">
+        <div className="w-10 h-10 border-4 border-[#5A3E2B] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
   }
 
   const filteredOrders = orders.filter((order) => {
@@ -186,29 +172,24 @@ export default function AdminOrders() {
             {filteredOrders.map((order) => {
               const statusColor = getStatusColor(order.status);
               return (
-                <div key={order.id} className="bg-white rounded-2xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.05)] border border-transparent hover:border-[#E6DCCF] transition-colors flex flex-col gap-3">
+                <div key={order.id} className="bg-white rounded-xl p-4 shadow-sm border border-[#E6DCCF] hover:border-[#5A3E2B]/30 transition-all space-y-3">
                   
                   {/* Top Row */}
                   <div className="flex justify-between items-start gap-4">
                     <div className="flex flex-col">
-                      <span className="text-[16px] font-semibold text-[#2D2D2D]">
+                      <span className="text-[14px] font-bold text-[#5A3E2B] tracking-tight">
                         {order.display_id || order.id.slice(0, 8)}
                       </span>
-                      <span className="text-[13px] text-[#6B6B6B]" style={{ marginTop: '4px' }}>
+                      <span className="text-[12px] text-gray-500 font-medium" style={{ marginTop: '2px' }}>
                         {order.email || "No email provided"}
                       </span>
                     </div>
                     <div>
                       <span 
-                        className="capitalize tracking-wide whitespace-nowrap"
+                        className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider whitespace-nowrap max-w-fit shadow-sm"
                         style={{ 
                           backgroundColor: statusColor.bg, 
                           color: statusColor.text,
-                          padding: '4px 10px',
-                          borderRadius: '999px',
-                          fontSize: '12px',
-                          fontWeight: 500,
-                          display: 'inline-block'
                         }}
                       >
                         {order.status}
@@ -217,29 +198,21 @@ export default function AdminOrders() {
                   </div>
 
                   {/* Middle Row */}
-                  <div className="text-[13px] text-[#6B6B6B]">
+                  <div className="text-[11px] text-gray-400 font-bold uppercase tracking-widest">
                     {formatDate(order.created_at)}
                   </div>
 
                   {/* Bottom Row */}
-                  <div className="flex justify-between items-center gap-4 pt-1">
-                    <p className="text-[18px] font-semibold text-[#2D2D2D]">
+                  <div className="flex justify-between items-center gap-4 pt-1 border-t border-gray-50 mt-2">
+                    <p className="text-[16px] font-black text-[#5A3E2B]">
                       ₹{order.total_amount}
                     </p>
                     <Link 
                       href={`/admin/orders/${order.id}`} 
-                      style={{
-                        backgroundColor: '#5A3E2B',
-                        padding: '8px 16px',
-                        borderRadius: '8px',
-                        fontSize: '13px',
-                        fontWeight: 600,
-                        textDecoration: 'none',
-                        display: 'inline-block'
-                      }}
-                      className="hover:opacity-90 transition-opacity text-center whitespace-nowrap shadow-sm"
+                      className="px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest bg-[#5A3E2B] text-white hover:brightness-110 active:scale-95 transition-all shadow-sm"
+                      style={{ textDecoration: 'none' }}
                     >
-                      <span style={{ color: '#FFFFFF' }}>View Order</span>
+                      View Order
                     </Link>
                   </div>
 
