@@ -2,7 +2,7 @@
 
 import { supabase } from "@/lib/supabaseClient";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { showToast } from "@/components/Toast";
 import ConfirmModal from "@/components/ui/ConfirmModal";
@@ -23,7 +23,7 @@ const initialDetails: CheckoutCustomerDetails = {
   country: "",
 };
 
-export default function ProfilePage() {
+function ProfileContent() {
     const router = useRouter();
   const searchParams = useSearchParams();
   const { session, user, profile, loading, refreshProfile } = useAuth();

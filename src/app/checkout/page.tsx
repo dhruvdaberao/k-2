@@ -3,7 +3,7 @@
 import { supabase } from "@/lib/supabaseClient";
 import GlobalLoader from "@/components/ui/GlobalLoader";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from "react";
 import products from "@/data/products.json";
 import { useRouter, useSearchParams } from "next/navigation";
 import { clearCart, loadCart as getAsyncCart } from "@/lib/bags";
@@ -39,30 +39,30 @@ const initialDetails: CheckoutCustomerDetails = {
   country: "",
 };
 
+
+
 function CheckoutContent() {
   const { user, profile, loading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const isGuest = searchParams.get("guest") === "true";
+  
   const [items, setItems] = useState<CartItem[]>([]);
   const [addonItems, setAddonItems] = useState<CartItem[]>([]);
   const hasInitialized = useRef(false);
+  
   const [step, setStep] = useState<CheckoutStep>(1);
   const [details, setDetails] = useState<CheckoutCustomerDetails>(initialDetails);
   const [paymentMethod, setPaymentMethod] = useState<CheckoutPaymentMethod>("cod");
+  
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
-  const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
-  const [placedInvoiceUrl, setPlacedInvoiceUrl] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const [isDirectCheckout, setIsDirectCheckout] = useState(false);
   const [isGuestLocked, setIsGuestLocked] = useState(false);
 
   const refreshCart = useCallback(async () => {
-    if (isPlacingOrder || isOrderPlaced) {
-      console.log("[Checkout] Skip refreshCart: Order in progress or completed");
-      return;
-    }
+    if (isPlacingOrder || isOrderPlaced) return;
 
     const isBuyNow = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("buyNow") === "true";
 
@@ -88,67 +88,52 @@ function CheckoutContent() {
     setItems(currentCart);
   }, [isPlacingOrder, isOrderPlaced]);
 
-          phoneNumber: profile.phone || "",
-          address: profile.address || "",
-          city: profile.city || "",
-          pincode: profile.pincode || "",
-          state: profile.state || "",
-          country: profile.country || "",
-        });
-        return;
-      }
+  useEffect(() => {
+    if (hasInitialized.current) return;
+    hasInitialized.current = true;
+    
+    setHydrated(true);
+    refreshCart();
 
+    const restoreDetails = () => {
       try {
-        const saved = JSON.parse(localStorage.getItem(DETAILS_STORAGE_KEY) || localStorage.getItem(LEGACY_DETAILS_STORAGE_KEY) || "{}");
-        setDetails({
-          fullName: saved.fullName || saved.name || "",
-          email: saved.email || saved.name || "",
-          phoneNumber: saved.phoneNumber || saved.phone || "",
-          address: saved.address || "",
-          city: saved.city || "",
-          pincode: saved.pincode || "",
-          state: saved.state || "",
-          country: saved.country || "",
-        });
-      } catch {
-        setDetails(initialDetails);
+        const stored = localStorage.getItem(DETAILS_STORAGE_KEY) || localStorage.getItem(LEGACY_DETAILS_STORAGE_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          setDetails(prev => ({ ...prev, ...parsed }));
+        }
+      } catch (e) {
+        console.error("Failed to restore details", e);
       }
     };
-
-    if (!hasInitialized.current) {
-      hasInitialized.current = true;
-      restoreDetails();
-      refreshCart();
-    }
+    restoreDetails();
 
     window.addEventListener("bag:changed", refreshCart);
     window.addEventListener("storage", refreshCart);
-
     return () => {
       window.removeEventListener("bag:changed", refreshCart);
       window.removeEventListener("storage", refreshCart);
     };
-  }, [router, step, profile, user, refreshCart]);
+  }, [refreshCart]);
 
   useEffect(() => {
-    console.log("🚀 Current Checkout Step:", step);
-  }, [step]);
+    if (user && profile && !isGuestLocked) {
+      setDetails(prev => ({
+        ...prev,
+        fullName: profile.name || prev.fullName,
+        email: user.email || prev.email,
+        phoneNumber: profile.phone || prev.phoneNumber,
+        address: profile.address || prev.address,
+        city: profile.city || prev.city,
+        pincode: profile.pincode || prev.pincode,
+        state: profile.state || prev.state,
+        country: profile.country || prev.country
+      }));
+    }
+  }, [user, profile, isGuestLocked]);
 
-  const handleAddonAdded = (product: Product) => {
-    const addonItem: CartItem = {
-      id: product.id || product.slug || "",
-      name: product.title,
-      price: product.price,
-      quantity: 1,
-      image: (product as any).image || (product as any).img || (product as any).image_url || product.images?.[0] || "/placeholder.png"
-    };
-    setAddonItems(prev => {
-      if (prev.some(it => it.id === addonItem.id)) return prev;
-      return [...prev, addonItem];
-    });
-    showToast(`Added ${product.title}`);
-  };
-
+  const finalItems = useMemo(() => [...items, ...addonItems], [items, addonItems]);
+  
   const enrichedItems = useMemo(() => {
     return finalItems.map((item) => {
       const product = resolveProduct(item);
@@ -161,38 +146,25 @@ function CheckoutContent() {
     });
   }, [finalItems]);
 
-  const subtotal = enrichedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subtotal = useMemo(() => enrichedItems.reduce((sum, item) => sum + item.price * item.quantity, 0), [enrichedItems]);
 
-  // Discount logic (synced with cart)
-  const discountableSubtotal = enrichedItems.reduce((s, it) => {
+  const discountableSubtotal = useMemo(() => enrichedItems.reduce((s, it) => {
     if (it.product?.type === "custom-order") return s;
     return s + it.price * it.quantity;
-  }, 0);
+  }, 0), [enrichedItems]);
 
-  let discountPercent = 0;
-  if (discountableSubtotal >= 1800) discountPercent = 20;
-  else if (discountableSubtotal >= 1250) discountPercent = 10;
+  const discountPercent = useMemo(() => {
+    if (discountableSubtotal >= 1800) return 20;
+    if (discountableSubtotal >= 1250) return 10;
+    return 0;
+  }, [discountableSubtotal]);
 
   const discountAmount = Math.round((discountableSubtotal * discountPercent) / 100);
 
-  // Shipping logic (synced with cart)
   const baseShipping = 40;
   const isFreeShipping = subtotal >= 650;
   const shippingDiscount = isFreeShipping ? -baseShipping : 0;
-  const shippingCharge = isFreeShipping ? 0 : baseShipping;
-
   const total = subtotal + baseShipping + shippingDiscount - discountAmount;
-
-  const orderItems = useMemo(
-    () =>
-      enrichedItems.map((item) => ({
-        name: item.name,
-        quantity: item.quantity,
-        price: item.price,
-        lineTotal: item.price * item.quantity,
-      })),
-    [enrichedItems]
-  );
 
   const onlinePaymentLinks = enrichedItems.filter((item) => item.checkoutUrl);
 
@@ -247,6 +219,21 @@ function CheckoutContent() {
     } else {
       setIsGuestLocked(false);
     }
+  };
+
+  const handleAddonAdded = (product: Product) => {
+    const addonItem: CartItem = {
+      id: product.id || product.slug || "",
+      name: product.title,
+      price: product.price,
+      quantity: 1,
+      image: (product as any).image || (product as any).img || (product as any).image_url || product.images?.[0] || "/placeholder.png"
+    };
+    setAddonItems(prev => {
+      if (prev.some(it => it.id === addonItem.id)) return prev;
+      return [...prev, addonItem];
+    });
+    showToast(`Added ${product.title}`);
   };
 
   const onPlaceOrder = async () => {
@@ -826,4 +813,12 @@ function resolveProduct(item: CartItem): Product | undefined {
 
 function formatCurrency(amount: number) {
   return amount === 0 ? "Free" : `\u20B9${amount}`;
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<GlobalLoader />}>
+      <CheckoutContent />
+    </Suspense>
+  );
 }
