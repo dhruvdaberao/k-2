@@ -292,9 +292,14 @@ export default function OrderDetails() {
               )}
 
               {/* QUICK ADDRESS FOOTER */}
-              <p className="text-[9px] text-gray-400 mt-2 text-center md:text-right">
-                Shipping to: <span className="font-bold text-gray-600">{address.city}</span>
-              </p>
+              <div className="mt-4 p-3 bg-stone-50 rounded-lg border border-stone-100">
+                <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-1">Full Delivery Address</label>
+                <p className="text-[11px] text-[#5A3E2B] font-bold leading-relaxed">
+                  {address.address_line || address.address || "No address"}<br/>
+                  {[address.city, address.state, address.country].filter(Boolean).join(", ")} {address.pincode ? `- ${address.pincode}` : ""}
+                </p>
+                {address.phone && <p className="text-[10px] text-gray-500 mt-1">Phone: {address.phone}</p>}
+              </div>
             </div>
           </div>
         </div>

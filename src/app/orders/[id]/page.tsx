@@ -22,6 +22,7 @@ type DeliveryAddress = {
   street?: string;
   city?: string;
   state?: string;
+  country?: string;
   pincode?: string;
 };
 
@@ -110,7 +111,9 @@ export default function OrderDetailPage() {
         p: addr.phone || "",
         a: addr.address_line || addr.street || "",
         c: addr.city || "",
-        z: addr.pincode || ""
+        z: addr.pincode || "",
+        st: addr.state || "",
+        co: addr.country || ""
       },
       i: items.map((it: any) => ({
         n: it.name || "Item",
@@ -297,7 +300,7 @@ export default function OrderDetailPage() {
                   <p>{order.delivery_address.address_line}</p>
                 )}
                 <p>
-                  {[order.delivery_address.city, order.delivery_address.state].filter(Boolean).join(", ")}
+                  {[order.delivery_address.city, order.delivery_address.state, order.delivery_address.country].filter(Boolean).join(", ")}
                   {order.delivery_address.pincode ? ` - ${order.delivery_address.pincode}` : ""}
                 </p>
                 {order.delivery_address.phone && (

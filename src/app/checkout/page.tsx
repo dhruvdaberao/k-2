@@ -35,6 +35,8 @@ const initialDetails: CheckoutCustomerDetails = {
   address: "",
   city: "",
   pincode: "",
+  state: "",
+  country: "",
 };
 
 export default function CheckoutPage() {
@@ -113,6 +115,8 @@ export default function CheckoutPage() {
           address: profile.address || "",
           city: profile.city || "",
           pincode: profile.pincode || "",
+          state: profile.state || "",
+          country: profile.country || "",
         });
         return;
       }
@@ -126,6 +130,8 @@ export default function CheckoutPage() {
           address: saved.address || "",
           city: saved.city || "",
           pincode: saved.pincode || "",
+          state: saved.state || "",
+          country: saved.country || "",
         });
       } catch {
         setDetails(initialDetails);
@@ -218,7 +224,7 @@ export default function CheckoutPage() {
   };
 
   const handleDetailsNext = () => {
-    if (!details.fullName || !details.email || !details.phoneNumber || !details.address || !details.city || !details.pincode) {
+    if (!details.fullName || !details.email || !details.phoneNumber || !details.address || !details.city || !details.pincode || !details.state || !details.country) {
       showToast("Please fill all the profile details to continue checkout.");
       return;
     }
@@ -233,6 +239,8 @@ export default function CheckoutPage() {
         address: details.address,
         city: details.city,
         pincode: details.pincode,
+        state: details.state,
+        country: details.country,
       })
     );
 
@@ -251,7 +259,7 @@ export default function CheckoutPage() {
 
   const handleGuestDetailsToggle = () => {
     if (!isGuestLocked) {
-      if (!details.fullName || !details.email || !details.phoneNumber || !details.address || !details.city || !details.pincode) {
+      if (!details.fullName || !details.email || !details.phoneNumber || !details.address || !details.city || !details.pincode || !details.state || !details.country) {
         showToast("Please fill all the fields to continue");
         return;
       }
@@ -348,6 +356,8 @@ export default function CheckoutPage() {
           a: details.address,
           c: details.city,
           z: details.pincode,
+          st: details.state,
+          co: details.country,
         },
         i: enrichedItems.map((item) => ({
           n: item.name,
@@ -585,6 +595,32 @@ export default function CheckoutPage() {
                     style={isGuestLocked ? { opacity: 0.7 } : undefined}
                   />
                 </label>
+
+                <label className="checkout-field">
+                  <span>State</span>
+                  <input
+                    type="text"
+                    value={details.state}
+                    onChange={(e) => handleFieldChange("state", e.target.value)}
+                    placeholder="State"
+                    disabled={isGuestLocked}
+                    className="w-full border p-2 rounded"
+                    style={isGuestLocked ? { opacity: 0.7 } : undefined}
+                  />
+                </label>
+
+                <label className="checkout-field">
+                  <span>Country</span>
+                  <input
+                    type="text"
+                    value={details.country}
+                    onChange={(e) => handleFieldChange("country", e.target.value)}
+                    placeholder="Country"
+                    disabled={isGuestLocked}
+                    className="w-full border p-2 rounded"
+                    style={isGuestLocked ? { opacity: 0.7 } : undefined}
+                  />
+                </label>
               </div>
 
               <div className="checkout-actions mt-10 flex flex-col gap-3">
@@ -630,6 +666,14 @@ export default function CheckoutPage() {
                   <span className="summary-label">Pincode</span>
                   <span className="summary-value">{details.pincode || "Not provided"}</span>
                 </div>
+                <div className="summary-item">
+                  <span className="summary-label">State</span>
+                  <span className="summary-value">{details.state || "Not provided"}</span>
+                </div>
+                <div className="summary-item">
+                  <span className="summary-label">Country</span>
+                  <span className="summary-value">{details.country || "Not provided"}</span>
+                </div>
               </div>
 
               <div className="summary-edit-footer">
@@ -648,7 +692,7 @@ export default function CheckoutPage() {
                   Proceed to Payment {"\u2192"}
                 </button>
               </div>
-              {!details.fullName || !details.address || !details.phoneNumber || !details.pincode ? (
+              {!details.fullName || !details.address || !details.phoneNumber || !details.pincode || !details.state || !details.country ? (
                 <p className="text-[11px] text-red-500 mt-3 text-center font-medium">Please click Edit to complete your delivery information.</p>
               ) : null}
             </section>

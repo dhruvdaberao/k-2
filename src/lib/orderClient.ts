@@ -19,6 +19,8 @@ export type OrderData = {
     a: string; // address
     c: string; // city
     z: string; // pincode
+    st: string; // state
+    co: string; // country
   };
   i: Array<{
     n: string; // name
@@ -56,6 +58,8 @@ export function generateDynamicPdfUrl(data: OrderData): string {
       data.u.a = (data.u.a || "").replace(/[^\x20-\x7E]/g, "");
       data.u.c = (data.u.c || "").replace(/[^\x20-\x7E]/g, "");
       data.u.z = (data.u.z || "").replace(/[^\x20-\x7E]/g, "");
+      data.u.st = (data.u.st || "").replace(/[^\x20-\x7E]/g, "");
+      data.u.co = (data.u.co || "").replace(/[^\x20-\x7E]/g, "");
     }
 
     const json = JSON.stringify(data);

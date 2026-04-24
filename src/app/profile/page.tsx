@@ -19,6 +19,8 @@ const initialDetails: CheckoutCustomerDetails = {
   address: "",
   city: "",
   pincode: "",
+  state: "",
+  country: "",
 };
 
 export default function ProfilePage() {
@@ -76,6 +78,8 @@ export default function ProfilePage() {
           address: data.address || "",
           city: data.city || "",
           pincode: data.pincode || "",
+          state: data.state || "",
+          country: data.country || "",
         });
       } else if (!data) {
         // Fallback for missing profile
@@ -96,6 +100,8 @@ export default function ProfilePage() {
         address: profile.address || "",
         city: profile.city || "",
         pincode: profile.pincode || "",
+        state: profile.state || "",
+        country: profile.country || "",
       });
     }
   }, [profile, user, isEditing]);
@@ -142,6 +148,8 @@ export default function ProfilePage() {
         address: details.address,
         city: details.city,
         pincode: details.pincode,
+        state: details.state,
+        country: details.country,
       }, { onConflict: 'id' });
 
       if (profileError) {
@@ -419,6 +427,28 @@ export default function ProfilePage() {
               value={details.pincode}
               onChange={(e) => handleFieldChange("pincode", e.target.value)}
               placeholder="123456"
+              readOnly={!isEditing}
+            />
+          </label>
+
+          <label className="checkout-field">
+            <span>State</span>
+            <input
+              type="text"
+              value={details.state}
+              onChange={(e) => handleFieldChange("state", e.target.value)}
+              placeholder="State"
+              readOnly={!isEditing}
+            />
+          </label>
+
+          <label className="checkout-field">
+            <span>Country</span>
+            <input
+              type="text"
+              value={details.country}
+              onChange={(e) => handleFieldChange("country", e.target.value)}
+              placeholder="Country"
               readOnly={!isEditing}
             />
           </label>
