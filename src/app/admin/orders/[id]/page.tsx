@@ -54,9 +54,11 @@ export default function OrderDetails() {
 
     const init = async () => {
       try {
+        console.log("🚀 [ADMIN-ORDER] Init for:", orderId);
         // Auth check
         const { data: authData } = await supabase.auth.getUser();
         if (!authData?.user || authData.user.email !== "keshvicrafts@gmail.com") {
+          console.warn("⚠️ [ADMIN-ORDER] Unauthorized access");
           router.push("/");
           return;
         }
@@ -64,16 +66,20 @@ export default function OrderDetails() {
         // Fetch Order Details
         await fetchOrder();
       } catch (err) {
-        console.error("Order Detail Load Error:", err);
+        console.error("🔥 [ADMIN-ORDER] Crash:", err);
       } finally {
-        setLoading(false);
+        setLoading(false); // ✅ ALWAYS RUN
       }
     };
 
     init();
 
-    // Fail-safe timeout
-    const timeout = setTimeout(() => setLoading(false), 5000);
+    // 🛡️ Fail-safe timeout (Guarantee UI exit)
+    const timeout = setTimeout(() => {
+      console.warn("🛡️ [ADMIN-ORDER] Safety timeout triggered");
+      setLoading(false);
+    }, 5000);
+
     return () => clearTimeout(timeout);
   }, [orderId, router]);
 

@@ -52,10 +52,16 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // 🔥 Next.js Refresh Fix (Ensures fresh data on navigation)
+    router.refresh();
+
     const init = async () => {
       try {
+        console.log("🚀 [ORDERS] Init Triggered");
         const { data: { session } } = await supabase.auth.getSession();
+        
         if (!session?.user) {
+          console.warn("⚠️ [ORDERS] No session found");
           setLoading(false);
           return;
         }
@@ -66,20 +72,28 @@ export default function OrdersPage() {
           .eq("user_id", session.user.id)
           .order("created_at", { ascending: false });
 
-        if (!error) setOrders(data || []);
+        if (error) {
+          console.error("❌ [ORDERS] Fetch error:", error);
+        }
+        
+        setOrders(data || []);
       } catch (err) {
-        console.error("Load orders error:", err);
+        console.error("🔥 [ORDERS] Crash:", err);
       } finally {
-        setLoading(false);
+        setLoading(false); // ✅ GUARANTEE UI EXIT
       }
     };
 
     init();
     
-    // Safety timeout
-    const timeout = setTimeout(() => setLoading(false), 5000);
+    // 🛡️ Safety timeout (Guarantee UI exit after 5s)
+    const timeout = setTimeout(() => {
+      console.warn("🛡️ [ORDERS] Safety timeout triggered");
+      setLoading(false);
+    }, 5000);
+
     return () => clearTimeout(timeout);
-  }, []);
+  }, [router]);
 
   // Refined loading state: show the basic page structure instead of a full-screen skeleton flash
   const loadingView = (

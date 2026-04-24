@@ -43,17 +43,38 @@ export default function MyReviewsPage() {
 
   // Auth Check
   useEffect(() => {
+    // 1. Next.js Refresh Fix
+    router.refresh();
+
     const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
+      try {
+        console.log("🚀 [MY-REVIEWS] Init Triggered");
+        const { data: { user } } = await supabase.auth.getUser()
+        
+        if (!user) {
+          console.warn("⚠️ [MY-REVIEWS] No user found");
+          setLoading(false)
+          return
+        }
+
+        setUser(user)
+        await fetchUserReviews(user.id)
+      } catch (err) {
+        console.error("🔥 [MY-REVIEWS] Crash:", err)
         setLoading(false)
-        return
       }
-      setUser(user)
-      fetchUserReviews(user.id)
     }
+
     checkUser()
-  }, [])
+
+    // 2. Safety timeout
+    const safety = setTimeout(() => {
+      console.warn("🛡️ [MY-REVIEWS] Safety timeout triggered");
+      setLoading(false);
+    }, 5000);
+
+    return () => clearTimeout(safety);
+  }, [router])
 
   const fetchUserReviews = async (userId: string) => {
     try {

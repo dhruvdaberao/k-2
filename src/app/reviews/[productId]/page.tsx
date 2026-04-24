@@ -26,6 +26,41 @@ const StarIcon = ({ filled, size = 16 }: { filled: boolean; size?: number }) => 
   </svg>
 )
 
+const SkeletonCard = () => (
+  <div 
+    style={{ 
+      padding: '24px', 
+      backgroundColor: '#f5f0ea', 
+      borderRadius: '24px', 
+      border: '1px solid #e8e2da', 
+      marginBottom: '16px',
+      opacity: 0.7
+    }}
+    className="animate-pulse"
+  >
+    <div style={{ display: 'flex', gap: '5px', marginBottom: '16px' }}>
+      {[1, 2, 3, 4, 5].map((i) => (
+        <div key={i} style={{ width: '16px', height: '16px', backgroundColor: '#e0d6cc', borderRadius: '50%' }} />
+      ))}
+    </div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div style={{ height: '12px', backgroundColor: '#e0d6cc', borderRadius: '6px', width: '80%' }} />
+      <div style={{ height: '12px', backgroundColor: '#e0d6cc', borderRadius: '6px', width: '50%' }} />
+    </div>
+  </div>
+);
+
+const EmptyReviews = () => (
+  <div className="flex flex-col items-center justify-center py-16 text-center">
+    <h3 className="text-[#5a3e2b] font-bold text-xl mb-2">
+      No reviews yet
+    </h3>
+    <p className="text-gray-400 text-sm max-w-[280px] mx-auto leading-relaxed">
+      Be the first to share your experience with this handcrafted product!
+    </p>
+  </div>
+);
+
 export default function ReviewPage() {
   const params = useParams()
   const productId = params?.productId as string
@@ -63,6 +98,42 @@ export default function ReviewPage() {
   const [deleteConfirm, setDeleteConfirm] = useState<{ show: boolean; id: string | null }>({ show: false, id: null })
   const [duplicateModal, setDuplicateModal] = useState<{ show: boolean; existingReview: any }>({ show: false, existingReview: null })
   const [ineligibleModal, setIneligibleModal] = useState(false)
+  const [ratingBreakdown, setRatingBreakdown] = useState<any>(null)
+  const [sortBy, setSortBy] = useState("latest")
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+
+  const getRatingBreakdown = async (pId: string) => {
+    const { data, error } = await supabase
+      .from("reviews")
+      .select("rating")
+      .eq("product_id", pId);
+
+    if (error || !data) return null;
+
+    const counts: Record<number, number> = {
+      5: 0,
+      4: 0,
+      3: 0,
+      2: 0,
+      1: 0,
+    };
+
+    data.forEach((r) => {
+      if (counts[r.rating] !== undefined) {
+        counts[r.rating] += 1;
+      }
+    });
+
+    return {
+      counts,
+      total: data.length,
+    };
+  };
+
+  const loadBreakdown = useCallback(async (pId: string) => {
+    const result = await getRatingBreakdown(pId);
+    setRatingBreakdown(result);
+  }, []);
 
   const loadReviewsData = useCallback(async (pId: string) => {
     if (!pId) {
@@ -70,6 +141,7 @@ export default function ReviewPage() {
       return;
     }
     console.log("🔍 [DEBUG] LOAD REVIEWS START for:", pId);
+    setLoading(true);
     
     try {
       // 1. Fetch Reviews
@@ -120,6 +192,9 @@ export default function ReviewPage() {
       // 4. Update rating stats
       const result = await getProductRating(pId);
       setRatingData(result);
+      
+      // 5. Load Breakdown
+      await loadBreakdown(pId);
 
     } catch (err) {
       console.error("🔥 [CRITICAL] loadReviewsData crashed:", err);
@@ -129,23 +204,55 @@ export default function ReviewPage() {
   }, []);
 
   useEffect(() => {
-    if (!productId) return;
-    
-    const slug = decodeURIComponent(productId);
-    const p = (products as any[]).find(x => x.slug === slug || x.id === slug);
-    
-    if (p) {
-      const productData = {
-        id: p.id || p.slug, 
-        name: p.title,
-        image: p.images?.[0] || "/placeholder.png",
+    // 1. Next.js Refresh Fix (Clears stale navigation state)
+    router.refresh();
+
+    const init = async () => {
+      try {
+        console.log("🚀 [INIT] ReviewPage start");
+        
+        if (!productId) {
+          console.warn("⚠️ [INIT] No productId found");
+          setLoading(false);
+          return;
+        }
+
+        const slug = decodeURIComponent(productId);
+        const p = (products as any[]).find(x => x.slug === slug || x.id === slug);
+        
+        if (p) {
+          const productData = {
+            id: p.id || p.slug, 
+            name: p.title,
+            image: p.images?.[0] || "/placeholder.png",
+          };
+          setProduct(productData);
+          
+          // Parallel load for efficiency
+          await Promise.all([
+            loadReviewsData(productData.id),
+            loadBreakdown(productData.id)
+          ]);
+        } else {
+          console.error("❌ [INIT] Product not found for slug:", slug);
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error("🔥 [INIT] Crash:", err);
+      } finally {
+        setLoading(false);
       }
-      setProduct(productData);
-      loadReviewsData(productData.id);
-    } else {
+    };
+
+    init();
+
+    // 2. Fail-safe Timeout (Guarantee UI exit)
+    const safety = setTimeout(() => {
       setLoading(false);
-    }
-  }, [productId, loadReviewsData]);
+    }, 5000);
+
+    return () => clearTimeout(safety);
+  }, [productId, loadReviewsData, loadBreakdown, router]);
 
   const handleOpenReview = async () => {
     try {
@@ -263,6 +370,18 @@ export default function ReviewPage() {
           review: reviewText,
         },
       ]);
+      
+      // OPTIMISTIC UPDATE: Add to UI immediately
+      const tempReview = {
+        id: 'temp-' + Date.now(),
+        product_id: pId,
+        user_id: user.id,
+        rating: rating,
+        review: reviewText,
+        created_at: new Date().toISOString(),
+        author_name: user.user_metadata?.name || user.email?.split('@')[0] || "You"
+      };
+      setReviews(prev => [tempReview, ...prev]);
 
       if (error) {
         console.error("Review save error:", error);
@@ -276,6 +395,8 @@ export default function ReviewPage() {
       setDuplicateModal({ show: false, existingReview: null });
       showToast("Review posted successfully");
       await loadReviewsData(pId);
+      await loadBreakdown(pId);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       router.refresh();
 
     } catch (err) {
@@ -323,6 +444,7 @@ export default function ReviewPage() {
       if (product?.id) {
         const result = await getProductRating(product.id);
         setRatingData(result);
+        await loadBreakdown(product.id);
       }
       router.refresh();
     } catch (err: any) {
@@ -437,16 +559,174 @@ export default function ReviewPage() {
           <div style={{ height: '1px', flex: 1, backgroundColor: '#eee' }}></div>
         </div>
 
+        {/* RATING BREAKDOWN */}
+        {ratingBreakdown && ratingBreakdown.total > 0 && (
+          <div 
+            className="mx-4 mb-6" 
+            style={{ 
+              backgroundColor: '#f8f4ef', 
+              padding: '24px', 
+              borderRadius: '28px', 
+              border: '1px solid #f1ebe6',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.02)'
+            }}
+          >
+            <h3 style={{ color: '#5a3e2b', fontWeight: 800, marginBottom: '16px', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              Rating Breakdown
+            </h3>
+            {[5, 4, 3, 2, 1].map((star) => {
+              const count = ratingBreakdown.counts[star];
+              const percent = ratingBreakdown.total > 0 ? (count / ratingBreakdown.total) * 100 : 0;
+
+              return (
+                <div key={star} style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                  <span style={{ fontSize: '14px', fontWeight: 800, color: '#5a3e2b', width: '40px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    {star} <StarIcon filled={true} size={14} />
+                  </span>
+                  <div style={{ flex: 1, height: '10px', backgroundColor: 'white', borderRadius: '999px', overflow: 'hidden' }}>
+                    <div
+                      style={{ 
+                        height: '100%', 
+                        backgroundColor: '#5a3e2b', 
+                        width: `${percent}%`, 
+                        borderRadius: '999px',
+                        transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)' 
+                      }}
+                    />
+                  </div>
+                  <span style={{ fontSize: '13px', fontWeight: 800, color: '#888', width: '30px', textAlign: 'right' }}>
+                    {count}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* CUSTOM SORT DROPDOWN */}
+        {reviews.length > 0 && (
+          <div className="flex justify-end px-4 mb-8">
+            <div style={{ position: 'relative', width: '180px' }}>
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  backgroundColor: '#f8f4ef',
+                  border: '2px solid #e8e2da',
+                  borderRadius: '16px',
+                  padding: '12px 18px',
+                  fontSize: '14px',
+                  fontWeight: 800,
+                  color: '#5a3e2b',
+                  cursor: 'pointer',
+                  outline: 'none',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 4px 12px rgba(90, 62, 43, 0.05)',
+                }}
+              >
+                <span>
+                  {sortBy === 'latest' ? 'Latest First' : sortBy === 'high' ? 'Highest Rating' : 'Lowest Rating'}
+                </span>
+                <div style={{ transform: isDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease', display: 'flex' }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="m6 9 6 6 6-6"/>
+                  </svg>
+                </div>
+              </button>
+
+              {isDropdownOpen && (
+                <>
+                  <div 
+                    onClick={() => setIsDropdownOpen(false)} 
+                    style={{ position: 'fixed', inset: 0, zIndex: 998 }} 
+                  />
+                  <div style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 8px)',
+                    left: 0,
+                    right: 0,
+                    backgroundColor: 'white',
+                    borderRadius: '16px',
+                    border: '2px solid #e8e2da',
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+                    zIndex: 999,
+                    overflow: 'hidden',
+                    animation: 'dropdownIn 0.2s ease-out'
+                  }}>
+                    {[
+                      { val: 'latest', label: 'Latest First' },
+                      { val: 'high', label: 'Highest Rating' },
+                      { val: 'low', label: 'Lowest Rating' }
+                    ].map((opt) => (
+                      <div
+                        key={opt.val}
+                        onClick={() => {
+                          setSortBy(opt.val);
+                          setIsDropdownOpen(false);
+                        }}
+                        style={{
+                          padding: '14px 20px',
+                          fontSize: '14px',
+                          fontWeight: sortBy === opt.val ? 800 : 600,
+                          color: '#5a3e2b',
+                          cursor: 'pointer',
+                          backgroundColor: sortBy === opt.val ? '#f8f4ef' : 'transparent',
+                          transition: 'all 0.2s ease',
+                          borderBottom: opt.val !== 'low' ? '1px solid #f5f0eb' : 'none'
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f8f4ef')}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = sortBy === opt.val ? '#f8f4ef' : 'transparent')}
+                      >
+                        {opt.label}
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
+        <style jsx>{`
+          @keyframes dropdownIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+        `}</style>
+
         {/* REVIEW LIST */}
         <div className="px-4 space-y-4 pb-12" style={{ padding: '0 16px' }}>
-          {reviews.length === 0 ? (
-            <div className="text-center py-10 text-gray-400 italic">Be the first to review this product!</div>
+          {loading ? (
+            <div className="space-y-4">
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+            </div>
+          ) : reviews.length === 0 ? (
+            <EmptyReviews />
           ) : (
-            reviews.map((r) => (
-              <div
-                key={r.id}
-                style={{ padding: '24px', backgroundColor: '#f1ede8', borderRadius: '24px', border: '1px solid #e8e2da', marginBottom: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.04)' }}
-              >
+            [...reviews]
+              .sort((a, b) => {
+                if (sortBy === "latest") {
+                  return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+                }
+                if (sortBy === "high") {
+                  return b.rating - a.rating;
+                }
+                if (sortBy === "low") {
+                  return a.rating - b.rating;
+                }
+                return 0;
+              })
+              .map((r) => (
+                <div
+                  key={r.id}
+                  className="transition-all duration-300 hover:translate-y-[-2px]"
+                  style={{ padding: '24px', backgroundColor: '#f1ede8', borderRadius: '24px', border: '1px solid #e8e2da', marginBottom: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.04)' }}
+                >
                 <div className="flex justify-between items-start">
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', gap: '5px', marginBottom: '12px' }}>
