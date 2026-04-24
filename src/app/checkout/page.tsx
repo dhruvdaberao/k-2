@@ -221,7 +221,7 @@ function CheckoutContent() {
     }
   };
 
-  const handleAddonAdded = (product: Product) => {
+  function handleAddonAdded(product: Product) {
     const addonItem: CartItem = {
       id: product.id || product.slug || "",
       name: product.title,
@@ -234,7 +234,7 @@ function CheckoutContent() {
       return [...prev, addonItem];
     });
     showToast(`Added ${product.title}`);
-  };
+  }
 
   const onPlaceOrder = async () => {
     if (isPlacingOrder) return;
