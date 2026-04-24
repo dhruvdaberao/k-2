@@ -2,13 +2,14 @@
 
 import ImageWithFallback from "@/components/ImageWithFallback";
 import Link from "next/link";
-import { useState, MouseEvent } from "react";
+import { useState, MouseEvent, useEffect } from "react";
 import type { Product } from "@/types";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { useWishlist } from "@/hooks/useWishlist";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
+import { getProductRating } from "@/lib/ratingUtils";
 import "./ProductCardV2.css";
 
 
@@ -17,6 +18,16 @@ export default function ProductCardV2({ p }: { p: Product }) {
     const { cartItems, addToCart, updateQuantity, removeFromCart } = useCart();
     const { toggleWishlist, isWishlisted } = useWishlist();
     const router = useRouter();
+
+    const [ratingData, setRatingData] = useState<{ avg: string | null; count: number }>({ avg: null, count: 0 });
+
+    useEffect(() => {
+        async function loadRating() {
+            const result = await getProductRating(p.id || p.slug);
+            setRatingData(result);
+        }
+        loadRating();
+    }, [p.id, p.slug]);
 
     const cartItem = cartItems.find((it) => it.id === (p.id || p.slug));
     const qtyInCart = cartItem ? cartItem.quantity : 0;
@@ -146,8 +157,23 @@ export default function ProductCardV2({ p }: { p: Product }) {
 
                 <div className="mt-auto flex flex-col justify-end">
 
-                    <div className="flex items-baseline gap-2 mb-2">
-                        <span className="text-base md:text-lg flex-grow font-bold text-neutral-900">{priceDisplay}</span>
+                    <div className="flex items-center justify-between mb-2">
+                        <span className="text-base md:text-lg font-bold text-neutral-900">{priceDisplay}</span>
+                        <div 
+                            className="flex items-center gap-1 text-sm text-[#5a3e2b] whitespace-nowrap cursor-pointer hover:opacity-80 transition-all active:scale-95"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                router.push(`/reviews/${p.id || p.slug}`);
+                            }}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
+                            {ratingData.count > 0 && (
+                                <span className="font-bold text-base">{ratingData.avg}</span>
+                            )}
+                        </div>
                     </div>
 
                     {isCustomOrder ? (

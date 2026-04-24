@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Gallery from "@/components/Gallery";
 import BuyBar from "@/components/BuyBar";
 import VariantSelector from "@/components/VariantSelector";
@@ -8,9 +8,10 @@ import ProductCard from "@/components/ProductCardV2";
 import Link from "next/link";
 import type { Product, ProductVariant } from "@/types";
 import { trackEvent } from "@/lib/analytics";
-import { useEffect } from "react";
 import SeoContentSection from "@/components/SeoContentSection";
 import { useWishlist } from "@/hooks/useWishlist";
+import { useRouter } from "next/navigation";
+import { getProductRating } from "@/lib/ratingUtils";
 
 export default function ProductPageClient({
   product,
@@ -19,14 +20,33 @@ export default function ProductPageClient({
   product: Product;
   relatedProducts: Product[];
 }) {
+  const router = useRouter();
   const { toggleWishlist, isWishlisted } = useWishlist();
+  const [isHearted, setIsHearted] = useState(false);
+  
+  // Real Review State
+  const [ratingData, setRatingData] = useState<{ avg: string | null; count: number }>({ avg: null, count: 0 });
+
+  const loadRating = useCallback(async () => {
+    const result = await getProductRating(product.id || product.slug);
+    setRatingData(result);
+  }, [product.id, product.slug]);
+
+  useEffect(() => {
+    setIsHearted(isWishlisted(product.id || product.slug));
+    loadRating();
+    console.log("🚀 [PDP] Component Loaded - Fetching Real Ratings");
+  }, [product.id, product.slug, isWishlisted, loadRating]);
+
+
   const [isPopping, setIsPopping] = useState(false);
-  const isHearted = isWishlisted(product.id || product.slug);
 
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
     product.variants && product.variants.length > 0 ? product.variants[0] : null
   );
 
+  // Review State (Deprecated in favor of separate page)
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
 
   const onShareClick = async (e: React.MouseEvent) => {
       e.preventDefault();
@@ -130,34 +150,70 @@ export default function ProductPageClient({
         </div>
         <div className="product-page-details">
           {/* Badge */}
-          <div className="flex flex-wrap gap-2 mb-3">
-            {Array.isArray(product.badges) && product.badges.length > 0 ? (
-              product.badges.map((b: string) => (
-                <span key={b} className="product-badge" style={{
+          <div className="flex items-center justify-between gap-2 mb-3 mt-2">
+            <div className="flex flex-wrap gap-2">
+              {Array.isArray(product.badges) && product.badges.length > 0 ? (
+                product.badges.map((b: string) => (
+                  <span key={b} className="product-badge" style={{
+                    display: "inline-block",
+                    padding: "0.3rem 0.8rem",
+                    background: b === "Bestseller" ? "#2C1810" : "#BCA37F",
+                    color: "#fff",
+                    borderRadius: "6px",
+                    fontSize: "0.85rem",
+                    fontWeight: 600,
+                  }}>
+                    {b}
+                  </span>
+                ))
+              ) : product.badge ? (
+                <span className="product-badge" style={{
                   display: "inline-block",
                   padding: "0.3rem 0.8rem",
-                  background: b === "Bestseller" ? "#2C1810" : "#BCA37F",
+                  background: product.badge === "Bestseller" ? "#2C1810" : "#BCA37F",
                   color: "#fff",
                   borderRadius: "6px",
                   fontSize: "0.85rem",
                   fontWeight: 600,
                 }}>
-                  {b}
+                  {product.badge}
                 </span>
-              ))
-            ) : product.badge ? (
-              <span className="product-badge" style={{
-                display: "inline-block",
-                padding: "0.3rem 0.8rem",
-                background: product.badge === "Bestseller" ? "#2C1810" : "#BCA37F",
-                color: "#fff",
-                borderRadius: "6px",
-                fontSize: "0.85rem",
-                fontWeight: 600,
-              }}>
-                {product.badge}
-              </span>
-            ) : null}
+              ) : (
+                <span className="product-badge" style={{
+                  display: "inline-block",
+                  padding: "0.3rem 0.8rem",
+                  background: "#e8d8c3",
+                  color: "#5a3e2b",
+                  borderRadius: "6px",
+                  fontSize: "0.85rem",
+                  fontWeight: 600,
+                }}>
+                  Handmade
+                </span>
+              )}
+            </div>
+
+            <div
+              style={{ pointerEvents: "auto" }}
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                router.push(`/reviews/${product.id || product.slug}`);
+              }}
+            >
+              <div className="flex items-center gap-2 text-sm text-[#5a3e2b]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+                {ratingData.count === 0 ? (
+                  <span className="font-medium">No reviews yet</span>
+                ) : (
+                  <span className="font-bold text-lg">
+                    {ratingData.avg} <span className="text-gray-400 font-normal text-sm">({ratingData.count})</span>
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
 
           <h1 style={{ marginTop: 0, fontSize: "2rem", lineHeight: 1.3, marginBottom: "1rem" }}>{product.title}</h1>
@@ -301,6 +357,18 @@ export default function ProductPageClient({
             <span className="meta">
               {product.type === "custom-order" ? "Secure payment via UPI/Bank Transfer" : "Secure payments via Razorpay"}
             </span>
+          </div>
+
+          {/* Read Reviews CTA */}
+          <div className="flex justify-center mt-6">
+            <button 
+              id="reviews-anchor"
+              onClick={() => router.push(`/reviews/${product.id || product.slug}`)}
+              className="px-8 py-3 text-white rounded-full text-sm font-medium hover:opacity-90 transition-opacity border-0 cursor-pointer"
+              style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
+            >
+              {ratingData.count === 0 ? "Be the first to review →" : "Read all reviews →"}
+            </button>
           </div>
 
           {/* Product Details */}

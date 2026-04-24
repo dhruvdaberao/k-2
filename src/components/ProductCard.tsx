@@ -10,6 +10,7 @@ import { useWishlist } from "@/hooks/useWishlist";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
+import { getProductRating } from "@/lib/ratingUtils";
 
 export default function ProductCard({ p }: { p: Product }) {
   const { user } = useAuth();
@@ -18,6 +19,15 @@ export default function ProductCard({ p }: { p: Product }) {
   const router = useRouter();
 
   const [isPopping, setIsPopping] = useState(false);
+  const [ratingData, setRatingData] = useState<{ avg: string | null; count: number }>({ avg: null, count: 0 });
+
+  useEffect(() => {
+    async function loadRating() {
+      const result = await getProductRating(p.id || p.slug);
+      setRatingData(result);
+    }
+    loadRating();
+  }, [p.id, p.slug]);
 
   const isHearted = isWishlisted(p.id || p.slug);
 
@@ -162,8 +172,23 @@ export default function ProductCard({ p }: { p: Product }) {
 
         <div className="mt-auto">
 
-          <div className="flex items-baseline gap-2 mb-3">
+          <div className="flex items-center justify-between mb-3">
             <span className="text-lg font-bold text-neutral-900">{priceDisplay}</span>
+            <div 
+              className="flex items-center gap-1 text-sm text-[#5a3e2b] whitespace-nowrap cursor-pointer hover:opacity-80 transition-all active:scale-95"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                router.push(`/reviews/${p.id || p.slug}`);
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+              {ratingData.count > 0 && (
+                <span className="font-bold text-base">{ratingData.avg}</span>
+              )}
+            </div>
           </div>
 
           {cartItem && !isCustomOrder ? (
