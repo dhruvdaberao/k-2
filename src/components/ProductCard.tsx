@@ -175,18 +175,27 @@ export default function ProductCard({ p }: { p: Product }) {
           <div className="flex items-center justify-between mb-3">
             <span className="text-lg font-bold text-neutral-900">{priceDisplay}</span>
             <div 
-              className="flex items-center gap-1 text-sm text-[#5a3e2b] whitespace-nowrap cursor-pointer hover:opacity-80 transition-all active:scale-95"
+              className="flex items-center gap-1 cursor-pointer hover:opacity-80 transition-all active:scale-95"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 router.push(`/reviews/${p.id || p.slug}`);
               }}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-              </svg>
-              {ratingData.count > 0 && (
-                <span className="font-bold text-base">{ratingData.avg}</span>
+              {ratingData.count === 0 ? (
+                <div className="flex items-center gap-1 text-xs text-gray-400 font-medium whitespace-nowrap">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#aaa" stroke="#aaa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
+                  No reviews
+                </div>
+              ) : (
+                <div className="flex items-center gap-1 text-[#5a3e2b] whitespace-nowrap">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
+                  <span className="font-bold text-base">{ratingData.avg}</span>
+                </div>
               )}
             </div>
           </div>
