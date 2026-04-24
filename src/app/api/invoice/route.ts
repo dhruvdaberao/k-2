@@ -179,9 +179,14 @@ export async function GET(req: Request) {
     }
     
     const address = `${orderData.u?.a || ''}, ${orderData.u?.c || ''} - ${orderData.u?.z || ''}`;
-    const splitAddress = doc.splitTextToSize(address, 70);
+    const splitAddress = doc.splitTextToSize(address, 85); // Increased width slightly for better flow
     currentY += 5;
     doc.text(splitAddress, 20, currentY);
+    
+    // Dynamically calculate the next starting position based on address length
+    // Each line in splitAddress is approx 5 units high
+    const addressBottomY = currentY + (splitAddress.length * 5);
+    const tableStartY = Math.max(addressBottomY + 15, 105);
 
     // 4. ITEMS TABLE
     const tableData = (orderData.i || []).map((it: any) => [
@@ -192,7 +197,7 @@ export async function GET(req: Request) {
     ]);
 
     autoTable(doc, {
-      startY: 110,
+      startY: tableStartY,
       head: [['Product Description', 'Qty', 'Price', 'Total']],
       body: tableData,
       theme: 'grid',

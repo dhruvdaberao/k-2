@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import productsData from "@/data/products.json"
 import { isAdmin } from "@/lib/isAdmin"
+import { showToast } from "@/components/Toast"
 
 // Reusable Curved Star Component
 const StarIcon = ({ filled, size = 16 }: { filled: boolean; size?: number }) => (
@@ -123,18 +124,19 @@ export default function AdminManageReviewsPage() {
 
       if (error) {
         console.error("❌ Delete error:", error);
-        alert("Failed to delete review. Check RLS policies.");
+        showToast("Failed to delete review");
         setReviews(previousReviews);
         return;
       }
 
       if (!data || data.length === 0) {
-        alert("Deletion failed! Please ensure you have RLS delete permissions for the 'reviews' table.");
+        showToast("Deletion failed! Check RLS permissions.");
         setReviews(previousReviews);
         return;
       }
 
       console.log("✅ Deleted successfully.");
+      showToast("Review deleted successfully");
       router.refresh();
     } catch (err: any) {
       console.error("🔥 Crash:", err);
@@ -233,7 +235,9 @@ export default function AdminManageReviewsPage() {
                   </div>
                   <p className="text-xs text-[#5a3e2b] opacity-70 font-semibold italic">– {review.reviewer_name}</p>
                 </div>
-                <p className="mt-4 text-[15px] text-[#333] leading-relaxed">"{review.review}"</p>
+                {review.review && (
+                  <p className="mt-4 text-[15px] text-[#333] leading-relaxed">"{review.review}"</p>
+                )}
                 <div className="mt-4 flex justify-between items-center">
                   <div className="flex gap-1">
                     {Array.from({ length: 5 }).map((_, i) => (

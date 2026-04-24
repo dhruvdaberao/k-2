@@ -113,7 +113,7 @@ export default function ProfilePage() {
   const saveDetails = async () => {
     // 1. Validation
     if (!details.fullName || !details.phoneNumber) {
-      showToast("Please fill all the details to save changes.");
+      showToast("Please fill all the details from the profile to continue");
       return;
     }
     
@@ -157,6 +157,7 @@ export default function ProfilePage() {
       }
       
       console.log("Profile saved successfully");
+      showToast("Profile updated successfully");
       
       setIsEditing(false);
       setIsSaving(false);
@@ -191,7 +192,7 @@ export default function ProfilePage() {
       // 2. Clear local data
       localStorage.clear();
       sessionStorage.clear();
-      showToast("Logged out successfully.");
+      showToast("Logged out successfully");
 
       // 3. Force UI Reset
       router.push("/");

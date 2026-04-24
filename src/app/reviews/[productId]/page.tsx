@@ -6,6 +6,7 @@ import products from "@/data/products.json"
 import Image from "next/image"
 import { supabase } from "@/lib/supabaseClient"
 import { getProductRating } from "@/lib/ratingUtils"
+import { showToast } from "@/components/Toast"
 
 // Reusable Curved Star Component
 const StarIcon = ({ filled, size = 16 }: { filled: boolean; size?: number }) => (
@@ -58,11 +59,16 @@ export default function ReviewPage() {
   const [showAuthPopup, setShowAuthPopup] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Custom Delete Modal State
+  // Custom Modal States
   const [deleteConfirm, setDeleteConfirm] = useState<{ show: boolean; id: string | null }>({ show: false, id: null })
+  const [duplicateModal, setDuplicateModal] = useState<{ show: boolean; existingReview: any }>({ show: false, existingReview: null })
+  const [ineligibleModal, setIneligibleModal] = useState(false)
 
   const loadReviewsData = useCallback(async (pId: string) => {
-    if (!pId) return;
+    if (!pId) {
+      setLoading(false);
+      return;
+    }
     console.log("🔍 [DEBUG] LOAD REVIEWS START for:", pId);
     
     try {
@@ -141,46 +147,140 @@ export default function ReviewPage() {
     }
   }, [productId, loadReviewsData]);
 
-  const handleSubmitReview = async () => {
+  const handleOpenReview = async () => {
     try {
-      setIsSubmitting(true);
-      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      const { data: { user } } = await supabase.auth.getUser();
 
-      if (!currentUser) {
+      if (!user) {
         setShowAuthPopup(true);
-        return;
-      }
-
-      if (rating === 0) {
-        alert("Please select a rating");
         return;
       }
 
       const pId = product?.id || productId;
 
-      const { error: insertError } = await supabase.from("reviews").insert([
+      // 🔍 1. Check for duplicate review
+      const { data: existing } = await supabase
+        .from("reviews")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("product_id", pId)
+        .maybeSingle();
+
+      if (existing) {
+        setDuplicateModal({ show: true, existingReview: existing });
+        return;
+      }
+
+      // 🔒 2. Check delivered orders
+      const { data: orderChecks, error: orderError } = await supabase
+        .from("order_items")
+        .select("order_id, orders!inner(id, status, user_id)")
+        .eq("product_id", pId)
+        .eq("orders.user_id", user.id)
+        .eq("orders.status", "delivered");
+
+      if (orderError) {
+        console.error("Order check error:", orderError);
+        showToast("Error checking order eligibility");
+        return;
+      }
+
+      if (!orderChecks || orderChecks.length === 0) {
+        setIneligibleModal(true);
+        return;
+      }
+
+      // ✅ allowed → open modal
+      setIsReviewOpen(true);
+
+    } catch (err) {
+      console.error("Open Review Error:", err);
+      showToast("Something went wrong");
+    }
+  };
+
+  const handleSubmitReview = async () => {
+    try {
+      setIsSubmitting(true);
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        showToast("Please login first");
+        return;
+      }
+
+      if (rating === 0) {
+        showToast("Please select a rating");
+        return;
+      }
+
+      const pId = product?.id || productId;
+
+      // 🔍 Check for duplicate review
+      const { data: existing } = await supabase
+        .from("reviews")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("product_id", pId)
+        .limit(1);
+
+      if (existing && existing.length > 0) {
+        showToast("You have already reviewed this product");
+        return;
+      }
+
+      // 🔒 Check delivered order
+      // We check order_items and join with orders to verify status and ownership
+      const { data: orderChecks, error: orderError } = await supabase
+        .from("order_items")
+        .select("order_id, orders!inner(id, status, user_id)")
+        .eq("product_id", pId)
+        .eq("orders.user_id", user.id)
+        .eq("orders.status", "delivered");
+
+      if (orderError) {
+        console.error("Order check error:", orderError);
+        showToast("Error verifying purchase status");
+        return;
+      }
+
+      if (!orderChecks || orderChecks.length === 0) {
+        showToast("You can only review delivered items");
+        return;
+      }
+
+      // ✅ Insert review
+      console.log("🆕 [INSERT] New Review");
+      const { error } = await supabase.from("reviews").insert([
         {
           product_id: pId,
-          user_id: currentUser.id,
+          user_id: user.id,
+          order_id: orderChecks[0].order_id,
           rating: rating,
-          review: reviewText || "",
+          review: reviewText,
         },
       ]);
 
-      if (insertError) {
-        console.error("❌ INSERT FAILED:", insertError);
-        alert("Post Failed: " + insertError.message);
+      if (error) {
+        console.error("Review save error:", error);
+        showToast(error.message);
         return;
       }
 
       setReviewText("");
       setRating(0);
       setIsReviewOpen(false);
+      setDuplicateModal({ show: false, existingReview: null });
+      showToast("Review posted successfully");
       await loadReviewsData(pId);
       router.refresh();
 
     } catch (err) {
-      console.error("🔥 SUBMIT CRASH:", err);
+      console.error("Submit Review Crash:", err);
+      showToast("Something went wrong");
     } finally {
       setIsSubmitting(false);
     }
@@ -206,19 +306,20 @@ export default function ReviewPage() {
 
       if (error) {
         console.error("❌ [DELETE] DB Error:", error);
-        alert("DB DELETE FAILED: " + error.message);
+        showToast("DB DELETE FAILED");
         setReviews(previousReviews);
         return;
       }
 
       if (!data || data.length === 0) {
         console.error("❌ [DELETE] Forbidden. Data is empty.");
-        alert("DELETION FAILED!\n\nYou don't have permission to delete this review in the database.\n\nPLEASE RUN THIS IN SUPABASE SQL EDITOR:\n\nCREATE POLICY \"Users can delete their own reviews\" ON reviews FOR DELETE USING (auth.uid() = user_id);");
+        showToast("Deletion failed! Check permissions.");
         setReviews(previousReviews);
         return;
       }
 
       console.log("✅ [DELETE] Success.");
+      showToast("Review deleted successfully");
       if (product?.id) {
         const result = await getProductRating(product.id);
         setRatingData(result);
@@ -308,13 +409,7 @@ export default function ReviewPage() {
         {/* ADD REVIEW BUTTON */}
         <div className="px-4 mt-6">
           <button
-            onClick={() => {
-              if (!user) {
-                setShowAuthPopup(true)
-              } else {
-                setIsReviewOpen(true)
-              }
-            }}
+            onClick={handleOpenReview}
             style={{ 
               width: '100%', 
               backgroundColor: '#5a3e2b', 
@@ -359,9 +454,11 @@ export default function ReviewPage() {
                         <StarIcon key={j} filled={j < r.rating} size={16} />
                       ))}
                     </div>
-                    <p style={{ margin: 0, fontSize: '15px', color: '#333', lineHeight: 1.7, fontWeight: 500 }}>
-                      "{r.review}"
-                    </p>
+                    {r.review && (
+                      <p style={{ margin: 0, fontSize: '15px', color: '#333', lineHeight: 1.7, fontWeight: 500 }}>
+                        "{r.review}"
+                      </p>
+                    )}
                   </div>
 
                   <div className="text-right flex flex-col items-end" style={{ marginLeft: '16px' }}>
@@ -474,6 +571,71 @@ export default function ReviewPage() {
                 style={{ flex: 2, backgroundColor: '#5a3e2b', color: 'white', border: 'none', padding: '14px', borderRadius: '999px', cursor: 'pointer', fontWeight: 800, opacity: rating && !isSubmitting ? 1 : 0.5, boxShadow: rating ? '0 8px 20px rgba(90, 62, 43, 0.3)' : 'none', fontSize: '15px' }}
               >
                 {isSubmitting ? "Posting..." : "Post Review"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* INELIGIBLE MODAL */}
+      {ineligibleModal && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', zIndex: 10000 }}>
+          <div style={{ backgroundColor: 'white', width: '100%', maxWidth: '360px', padding: '32px', borderRadius: '28px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)', textAlign: 'center' }}>
+            <div style={{ backgroundColor: '#fff5f5', width: '64px', height: '64px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e53e3e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            
+            <h2 style={{ fontWeight: 800, fontSize: '22px', marginBottom: '12px', color: '#2d2d2d' }}>
+              Order Required
+            </h2>
+            <p style={{ fontSize: '15px', color: '#666', marginBottom: '28px', lineHeight: 1.5 }}>
+              You can only review products that have been purchased and successfully delivered to you. 
+            </p>
+            
+            <button
+              onClick={() => setIneligibleModal(false)}
+              style={{ width: '100%', backgroundColor: '#5a3e2b', color: 'white', padding: '14px', borderRadius: '16px', border: 'none', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 12px rgba(90, 62, 43, 0.2)' }}
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* DUPLICATE REVIEW MODAL / EDIT SUGGESTION */}
+      {duplicateModal.show && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', zIndex: 10000 }}>
+          <div style={{ backgroundColor: 'white', width: '100%', maxWidth: '360px', padding: '32px', borderRadius: '28px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)', textAlign: 'center' }}>
+            <div style={{ backgroundColor: '#f8f4ef', width: '64px', height: '64px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+            </div>
+            
+            <h2 style={{ fontWeight: 800, fontSize: '22px', marginBottom: '12px', color: '#2d2d2d' }}>
+              Already Reviewed
+            </h2>
+            <p style={{ fontSize: '15px', color: '#666', marginBottom: '28px', lineHeight: 1.5 }}>
+              You have already shared your thoughts on this item. Would you like to edit your existing review from your reviews page?
+            </p>
+            
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button
+                onClick={() => setDuplicateModal({ show: false, existingReview: null })}
+                style={{ flex: 1, backgroundColor: '#f5f5f5', color: '#666', padding: '12px', borderRadius: '16px', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}
+              >
+                No, Thanks
+              </button>
+              <button
+                onClick={() => router.push("/my-reviews")}
+                style={{ flex: 1, backgroundColor: '#5a3e2b', color: 'white', padding: '12px', borderRadius: '16px', border: 'none', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 12px rgba(90, 62, 43, 0.2)' }}
+              >
+                My Reviews
               </button>
             </div>
           </div>

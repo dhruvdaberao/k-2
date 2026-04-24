@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import { useState, useEffect, useCallback } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import productsData from "@/data/products.json"
+import { showToast } from "@/components/Toast"
 
 // Reusable Curved Star Component
 const StarIcon = ({ filled, size = 16, onClick }: { filled: boolean; size?: number; onClick?: () => void }) => (
@@ -94,13 +95,31 @@ export default function MyReviewsPage() {
     try {
       setDeleteConfirm({ show: false, id: null });
       const previousReviews = [...reviews];
+      
+      // Optimistic update
       setReviews(prev => prev.filter(r => r.id !== reviewId));
-      const { error } = await supabase.from("reviews").delete().eq("id", reviewId);
+      
+      const { data, error } = await supabase
+        .from("reviews")
+        .delete()
+        .eq("id", reviewId)
+        .select();
+
       if (error) {
-        alert("Deletion failed! Ensure you have RLS delete permissions.");
+        console.error("Delete error:", error);
+        showToast("Deletion failed!");
         setReviews(previousReviews);
+      } else if (!data || data.length === 0) {
+        console.warn("No rows deleted. Likely RLS issue.");
+        showToast("Deletion failed! Please check permissions.");
+        setReviews(previousReviews);
+      } else {
+        showToast("Review deleted successfully");
       }
-    } catch (err) { console.error(err); }
+    } catch (err) { 
+      console.error("Crash during delete:", err);
+      showToast("Something went wrong");
+    }
   };
 
   const handleEditOpen = (review: any) => {
@@ -126,13 +145,13 @@ export default function MyReviewsPage() {
 
       if (error) {
         console.error("❌ Update error:", error);
-        alert("Update failed: " + error.message);
+        showToast("Update failed: " + error.message);
         return;
       }
 
       if (!data || data.length === 0) {
         console.error("❌ No rows updated. Likely RLS issue.");
-        alert("Update failed! Your database blocked the change. Please ensure you have run the RLS 'UPDATE' policy script in Supabase.");
+        showToast("Update failed! Please check your permissions.");
         return;
       }
 
@@ -144,6 +163,7 @@ export default function MyReviewsPage() {
       ));
       
       console.log("✅ Update successful");
+      showToast("Review edited successfully");
       setEditModal({ show: false, review: null });
     } catch (err) {
       console.error("🔥 Crash during update:", err);
@@ -217,7 +237,9 @@ export default function MyReviewsPage() {
                 </div>
               </div>
 
-              <p className="mt-4 text-[15px] text-[#333] leading-relaxed">"{review.review}"</p>
+              {review.review && (
+                <p className="mt-4 text-[15px] text-[#333] leading-relaxed">"{review.review}"</p>
+              )}
 
               <div className="mt-4 flex justify-between items-center">
                 <div className="flex gap-1">

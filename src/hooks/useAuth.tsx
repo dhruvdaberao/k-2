@@ -1,6 +1,7 @@
 "use client";
 
 import { supabase } from "@/lib/supabaseClient";
+import { showToast } from "@/components/Toast";
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { Session, User } from "@supabase/supabase-js";
@@ -41,12 +42,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user?.id) fetchProfile(session.user.id);
-      setLoading(false);
-    });
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        if (session?.user?.id) fetchProfile(session.user.id);
+      })
+      .catch(err => {
+        console.error("Auth Session Error:", err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
 
     // Listen for auth changes natively
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -54,9 +61,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(session?.user ?? null);
       
       if (event === 'SIGNED_IN' && session?.user?.id) {
+        showToast("Logged in successfully");
         setLoading(true); // Show loading briefly while profile syncs
         fetchProfile(session.user.id).finally(() => setLoading(false));
       } else if (event === 'SIGNED_OUT') {
+        showToast("Logged out successfully");
         setUser(null);
         setProfile(null);
         setSession(null);
@@ -67,7 +76,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     });
 
-    const timeout = setTimeout(() => setLoading(false), 5000);
+    const timeout = setTimeout(() => {
+      console.log("🕒 [AUTH] Safety timeout triggered");
+      setLoading(false);
+    }, 1500);
 
     return () => {
       subscription.unsubscribe();

@@ -1637,10 +1637,10 @@ summary::-webkit-details-marker {
 /* ====== Toast/Snackbar ====== */
 .toast-container {
   position: fixed;
-  bottom: var(--spacing-xl);
+  bottom: 2rem;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1000;
+  z-index: 99999;
   width: calc(100% - 32px);
   max-width: 400px;
   pointer-events: none;
@@ -3232,7 +3232,7 @@ svg[stroke="red"] {
   bottom: 2rem;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 10000;
+  z-index: 99999;
   pointer-events: none;
   width: 100%;
   max-width: 400px;

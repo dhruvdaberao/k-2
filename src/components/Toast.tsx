@@ -16,6 +16,7 @@ let toastListeners: Array<(toast: ToastMessage | null) => void> = [];
 let currentToast: ToastMessage | null = null;
 
 export function showToast(message: string, action?: { label: string; onClick: () => void }) {
+  console.log("🔔 [TOAST] Showing:", message);
   const id = Math.random().toString(36).substring(7);
   currentToast = { id, message, action };
   toastListeners.forEach((listener) => listener(currentToast));

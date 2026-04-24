@@ -30,9 +30,8 @@ export default function SupabaseProvider({
     };
   }, []);
 
-  if (!authReady) {
-    return <FullPageLoader />;
-  }
-
+  // We no longer block the entire app with a FullPageLoader.
+  // This prevents 'constant loading' issues if Supabase takes time to respond.
+  // Auth state is handled gracefully in useAuth() hook.
   return <>{children}</>;
 }

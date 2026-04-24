@@ -225,7 +225,7 @@ export default function CheckoutPage() {
 
   const handleDetailsNext = () => {
     if (!details.fullName || !details.email || !details.phoneNumber || !details.address || !details.city || !details.pincode || !details.state || !details.country) {
-      showToast("Please fill all the profile details to continue checkout.");
+      showToast("Please fill all the details from the profile to continue");
       return;
     }
 
