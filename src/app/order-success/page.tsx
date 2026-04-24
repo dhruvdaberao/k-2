@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ORDER_CONFIRMATION_STORAGE_KEY } from "@/lib/orderClient";
 
-export default function OrderSuccessPage() {
+function OrderSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams?.get("orderId");
@@ -39,7 +39,7 @@ export default function OrderSuccessPage() {
     } finally {
       setLoading(false);
     }
-  }, [orderId, router]);
+  }, [orderId, router, searchParams]);
 
   const handleDownloadInvoice = () => {
     if (!invoiceUrl) {

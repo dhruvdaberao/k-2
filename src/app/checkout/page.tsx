@@ -39,7 +39,7 @@ const initialDetails: CheckoutCustomerDetails = {
   country: "",
 };
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const { user, profile, loading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -59,20 +59,16 @@ export default function CheckoutPage() {
   const [isGuestLocked, setIsGuestLocked] = useState(false);
 
   const refreshCart = useCallback(async () => {
-    // Don't redirect during order placement or if order was just finished
     if (isPlacingOrder || isOrderPlaced) {
       console.log("[Checkout] Skip refreshCart: Order in progress or completed");
       return;
     }
 
-    // Local explicit search param read to side-step app suspense bounds safely
     const isBuyNow = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("buyNow") === "true";
 
-    // Check for direct checkout item first explicitly
     if (isBuyNow) {
       const directItem = getDirectCheckoutItem();
       if (directItem) {
-        console.log("[Checkout] Using direct checkout item:", directItem);
         setIsDirectCheckout(true);
         setItems([{
           id: directItem.product_id,
@@ -84,33 +80,14 @@ export default function CheckoutPage() {
         return;
       }
     } else {
-      // Clear direct checkout item so it doesn't pollute later
       clearDirectCheckoutItem();
       setIsDirectCheckout(false);
     }
 
-    console.log("[Checkout] Refreshing cart data...");
     const currentCart = await getAsyncCart();
-    // NEVER automatically redirect to cart page from checkout.
-    // We handle empty state locally in the render if needed.
-    console.log("[Checkout] Items loaded:", currentCart);
     setItems(currentCart);
   }, [isPlacingOrder, isOrderPlaced]);
 
-  // Merge carts locally for calculation and order hooks
-  const finalItems = useMemo(() => {
-    return [...items, ...addonItems];
-  }, [items, addonItems]);
-
-  useEffect(() => {
-    setHydrated(true);
-
-    const restoreDetails = () => {
-      // ... same logic
-      if (profile && !isGuest) {
-        setDetails({
-          fullName: profile.name || "",
-          email: user?.email || "",
           phoneNumber: profile.phone || "",
           address: profile.address || "",
           city: profile.city || "",

@@ -338,175 +338,44 @@ export default function ProfilePage() {
           <h2 className="text-xl font-bold" style={{ color: "var(--text)", margin: 0 }}>Personal Information</h2>
           <div className="flex gap-3 items-center flex-wrap">
             {!isEditing ? (
-              <button onClick={() => setIsEditing(true)} className="btn-edit text-sm">
-                Edit
-              </button>
+              <button onClick={() => setIsEditing(true)} className="btn-edit text-sm">Edit</button>
             ) : (
-              <button 
-                onClick={saveDetails} 
-                disabled={isSaving}
-                className="btn-edit text-sm" 
-                style={{ background: isSaving ? "#c9b99a" : "var(--brand)", color: "white", pointerEvents: isSaving ? 'none' : 'auto' }}
-              >
+              <button onClick={saveDetails} disabled={isSaving} className="btn-edit text-sm" style={{ background: isSaving ? "#c9b99a" : "var(--brand)", color: "white" }}>
                 {isSaving ? "Saving..." : "Save Changes"}
               </button>
             )}
-            <button 
-              onClick={handleLogout} 
-              className="px-4 py-2 rounded-lg text-sm font-medium transition-opacity hover:opacity-90"
-              style={{ background: "#5a3e2b", color: "white", border: "none" }}
-            >
-              Log Out
-            </button>
+            <button onClick={handleLogout} className="px-4 py-2 rounded-lg text-sm font-medium transition-opacity hover:opacity-90" style={{ background: "#5a3e2b", color: "white", border: "none" }}>Log Out</button>
           </div>
         </div>
 
-        <div className="checkout-form-grid" style={{ opacity: isEditing ? 1 : 0.8 }} onClick={(e) => { if (!isEditing) { e.preventDefault(); showToast("Click Edit to update your details"); } }}>
-          <label className="checkout-field">
-            <span>Full Name</span>
-            <input
-              type="text"
-              value={details.fullName}
-              onChange={(e) => handleFieldChange("fullName", e.target.value)}
-              placeholder="Your Name"
-              readOnly={!isEditing}
-            />
-          </label>
-
-          <label className="checkout-field" onClick={() => { if(isEditing) showToast("Mail can only be edited from Account Settings.") }}>
-            <span>Email Address</span>
-            <input
-              type="email"
-              value={details.email}
-              readOnly={true}
-              style={{ cursor: isEditing ? 'not-allowed' : 'default', opacity: 0.7 }}
-            />
-          </label>
-
-          <label className="checkout-field">
-            <span>Phone Number</span>
-            <input
-              type="tel"
-              value={details.phoneNumber}
-              onChange={(e) => handleFieldChange("phoneNumber", e.target.value)}
-              placeholder="+91 1234567890"
-              readOnly={!isEditing}
-            />
-          </label>
-          
-          {/* Spacer */}
-          <div className="hidden md:block"></div>
-
-          <label className="checkout-field checkout-field--full">
-            <span>Delivery Address</span>
-            <textarea
-              rows={3}
-              value={details.address}
-              onChange={(e) => handleFieldChange("address", e.target.value)}
-              placeholder="House, street, landmark"
-              readOnly={!isEditing}
-            />
-          </label>
-
-          <label className="checkout-field">
-            <span>City</span>
-            <input
-              type="text"
-              value={details.city}
-              onChange={(e) => handleFieldChange("city", e.target.value)}
-              placeholder="Bikini Bottom"
-              readOnly={!isEditing}
-            />
-          </label>
-
-
-          <label className="checkout-field">
-            <span>Pincode</span>
-            <input
-              type="text"
-              inputMode="numeric"
-              value={details.pincode}
-              onChange={(e) => handleFieldChange("pincode", e.target.value)}
-              placeholder="123456"
-              readOnly={!isEditing}
-            />
-          </label>
-
-          <label className="checkout-field">
-            <span>State</span>
-            <input
-              type="text"
-              value={details.state}
-              onChange={(e) => handleFieldChange("state", e.target.value)}
-              placeholder="State"
-              readOnly={!isEditing}
-            />
-          </label>
-
-          <label className="checkout-field">
-            <span>Country</span>
-            <input
-              type="text"
-              value={details.country}
-              onChange={(e) => handleFieldChange("country", e.target.value)}
-              placeholder="Country"
-              readOnly={!isEditing}
-            />
-          </label>
+        <div className="checkout-form-grid" style={{ opacity: isEditing ? 1 : 0.8 }}>
+          <label className="checkout-field"><span>Full Name</span><input type="text" value={details.fullName} onChange={(e) => handleFieldChange("fullName", e.target.value)} readOnly={!isEditing} /></label>
+          <label className="checkout-field"><span>Email Address</span><input type="email" value={details.email} readOnly={true} style={{ opacity: 0.7 }} /></label>
+          <label className="checkout-field"><span>Phone Number</span><input type="tel" value={details.phoneNumber} onChange={(e) => handleFieldChange("phoneNumber", e.target.value)} readOnly={!isEditing} /></label>
+          <label className="checkout-field checkout-field--full"><span>Delivery Address</span><textarea rows={3} value={details.address} onChange={(e) => handleFieldChange("address", e.target.value)} readOnly={!isEditing} /></label>
+          <label className="checkout-field"><span>City</span><input type="text" value={details.city} onChange={(e) => handleFieldChange("city", e.target.value)} readOnly={!isEditing} /></label>
+          <label className="checkout-field"><span>Pincode</span><input type="text" value={details.pincode} onChange={(e) => handleFieldChange("pincode", e.target.value)} readOnly={!isEditing} /></label>
+          <label className="checkout-field"><span>State</span><input type="text" value={details.state} onChange={(e) => handleFieldChange("state", e.target.value)} readOnly={!isEditing} /></label>
+          <label className="checkout-field"><span>Country</span><input type="text" value={details.country} onChange={(e) => handleFieldChange("country", e.target.value)} readOnly={!isEditing} /></label>
         </div>
       </section>
 
-      {/* Action Buttons */}
-      {/* Action Buttons */}
       <section className="mx-auto flex flex-wrap justify-center gap-4 mt-8 px-4 md:px-0" style={{ maxWidth: '900px' }}>
-        <button 
-          onClick={() => router.push("/orders")} 
-          className="btn-primary py-3 px-8 shadow-sm rounded-lg font-medium transition-transform active:scale-95"
-          style={{ width: 'auto', minWidth: '220px', flex: '1 1 auto', maxWidth: '300px' }}
-        >
-          Your Orders
-        </button>
-
-        <button 
-          onClick={() => router.push("/my-reviews")} 
-          className="btn-primary py-3 px-8 shadow-sm rounded-lg font-medium transition-transform active:scale-95"
-          style={{ width: 'auto', minWidth: '220px', flex: '1 1 auto', maxWidth: '300px' }}
-        >
-          Your Reviews
-        </button>
-        
-        <button 
-          onClick={() => router.push('/account-settings')} 
-          className="btn-primary py-3 px-8 shadow-sm rounded-lg font-medium transition-transform active:scale-95"
-          style={{ width: 'auto', minWidth: '220px', flex: '1 1 auto', maxWidth: '300px', background: 'var(--bg-main)', color: 'var(--brand)', border: '1px solid var(--brand)' }}
-        >
-          Account Settings
-        </button>
-
-        {isAdmin(user) && (
-          <button 
-            onClick={() => router.push('/admin')} 
-            className="btn-primary py-3 px-8 shadow-sm rounded-lg font-medium transition-transform active:scale-95"
-            style={{ width: 'auto', minWidth: '220px', flex: '1 1 auto', maxWidth: '300px', background: 'var(--brand)', color: 'white' }}
-          >
-            Admin Dashboard
-          </button>
-        )}
+        <button onClick={() => router.push("/orders")} className="btn-primary py-3 px-8 shadow-sm rounded-lg">Your Orders</button>
+        <button onClick={() => router.push("/my-reviews")} className="btn-primary py-3 px-8 shadow-sm rounded-lg">Your Reviews</button>
+        <button onClick={() => router.push('/account-settings')} className="btn-primary py-3 px-8 shadow-sm rounded-lg" style={{ background: 'var(--bg-main)', color: 'var(--brand)', border: '1px solid var(--brand)' }}>Account Settings</button>
+        {isAdmin(user) && (<button onClick={() => router.push('/admin')} className="btn-primary py-3 px-8 shadow-sm rounded-lg" style={{ background: 'var(--brand)', color: 'white' }}>Admin Dashboard</button>)}
       </section>
       {profileModalHTML}
-
-      <ConfirmModal
-        isOpen={showLogoutConfirm}
-        title="Confirm Logout"
-        message="Are you sure you want to log out of your account?"
-        confirmLabel="Log Out"
-        cancelLabel="Stay Logged In"
-        destructive
-        onConfirm={executeLogout}
-        onCancel={() => setShowLogoutConfirm(false)}
-      />
-
+      <ConfirmModal isOpen={showLogoutConfirm} title="Confirm Logout" message="Are you sure you want to log out?" confirmLabel="Log Out" onConfirm={executeLogout} onCancel={() => setShowLogoutConfirm(false)} />
     </main>
+  );
+}
 
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={<GlobalLoader />}>
+      <ProfileContent />
+    </Suspense>
   );
 }
