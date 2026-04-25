@@ -3,7 +3,7 @@ import "./utilities.css";
 import Script from "next/script";
 import BootstrapNavbar from "@/components/BootstrapNavbar";
 import Footer from "@/components/Footer";
-import { ToastProvider } from "@/hooks/useToast";
+import GlobalToast from "@/components/ui/GlobalToast";
 import JsonLd from "@/components/JsonLd";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
@@ -65,20 +65,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AnalyticsTracker />
         <ServiceWorkerRegister />
         <SupabaseProvider>
-          <ToastProvider>
-            <AuthProvider>
-              <CartProvider>
-                <WishlistProvider>
-                  <BootstrapNavbar />
-
-                  {/* Remove .container here so hero can be full width */}
-                  {children}
-
-                  <Footer />
-                </WishlistProvider>
-              </CartProvider>
-            </AuthProvider>
-          </ToastProvider>
+          <AuthProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <BootstrapNavbar />
+                <GlobalToast />
+                {children}
+                <Footer />
+              </WishlistProvider>
+            </CartProvider>
+          </AuthProvider>
         </SupabaseProvider>
 
         {/* Bootstrap JS */}

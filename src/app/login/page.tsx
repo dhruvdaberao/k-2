@@ -17,6 +17,8 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
 
   const { user } = useAuth();
 
@@ -28,17 +30,21 @@ export default function LoginPage() {
 
   const handleAuthAction = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!authEmail) {
-      showToast("Email is required");
+    setErrorMsg("");
+    setSuccessMsg("");
+
+    if (!authEmail || (authMode !== "forgot" && !authPassword)) {
+      const msg = "Please fill all fields";
+      setErrorMsg(msg);
+      showToast(msg);
       return;
     }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(authEmail)) {
-      showToast("Enter valid email");
-      return;
-    }
-    if (authMode !== "forgot" && !authPassword) {
-      showToast("Password is required");
+      const msg = "Enter valid email";
+      setErrorMsg(msg);
+      showToast(msg);
       return;
     }
 
@@ -46,18 +52,43 @@ export default function LoginPage() {
 
     try {
       if (authMode === "signup") {
-        if (!authPassword || authPassword.length < 6) throw new Error("Password must be at least 6 characters");
-        if (authPassword !== authConfirmPassword) throw new Error("Passwords do not match");
+        if (!authPassword || authPassword.length < 6) {
+          const msg = "Password too weak (min 6 characters)";
+          setErrorMsg(msg);
+          showToast(msg);
+          setAuthLoading(false);
+          return;
+        }
+        if (authPassword !== authConfirmPassword) {
+          const msg = "Passwords do not match";
+          setErrorMsg(msg);
+          showToast(msg);
+          setAuthLoading(false);
+          return;
+        }
 
         const { data, error } = await supabase.auth.signUp({
           email: authEmail,
           password: authPassword,
         });
 
-        if (error) throw error;
+        if (error) {
+          let message = error.message;
+          if (message.includes("already registered")) {
+            message = "Account already exists";
+          }
+          setErrorMsg(message);
+          showToast(message);
+          setAuthLoading(false);
+          return;
+        }
 
         if (data?.user?.identities && data.user.identities.length === 0) {
-          throw new Error("This email address is already registered. Please login.");
+          const msg = "This email address is already registered. Please login.";
+          setErrorMsg(msg);
+          showToast(msg);
+          setAuthLoading(false);
+          return;
         }
 
         if (data?.user?.id) {
@@ -75,22 +106,27 @@ export default function LoginPage() {
           }
         }
       } else if (authMode === "login") {
-        if (!authPassword) throw new Error("Please enter a password");
-
         const { data, error } = await supabase.auth.signInWithPassword({
           email: authEmail,
           password: authPassword,
         });
 
         if (error) {
+          let message = "Login failed";
           if (error.message.includes("Invalid login credentials")) {
-            throw new Error("Invalid email or password");
+            message = "Invalid email or password";
           } else if (error.message.includes("Email not confirmed")) {
-            throw new Error("Please verify your email first");
+            message = "Please verify your email first";
           } else {
-            throw error;
+            message = error.message;
           }
+          setErrorMsg(message);
+          showToast(message);
+          setAuthLoading(false);
+          return;
         }
+
+        showToast("Logged in successfully");
 
         if (data.user?.id) {
           await syncLocalCartToDB(data.user.id);
@@ -103,14 +139,17 @@ export default function LoginPage() {
         }, 2000);
       } else if (authMode === "forgot") {
         const { error } = await supabase.auth.resetPasswordForEmail(authEmail, {
-          redirectTo: "https://keshvicrafts-2.vercel.app/reset-password"
+          redirectTo: `${window.location.origin}/account-settings?reset=true`
         });
         if (error) throw error;
-        showToast("Check your email for reset link.");
-        setAuthMode("login");
+        setSuccessMsg("Reset link sent your mail successfully");
+        showToast("✅ Reset link shared to your mail successfully");
+        // Page stays here as requested
       }
     } catch (err: any) {
-      showToast(err.message || "Login failed. Please try again.");
+      const msg = err.message || "An unexpected error occurred. Please try again.";
+      setErrorMsg(msg);
+      showToast(msg);
     } finally {
       setAuthLoading(false);
     }
@@ -164,7 +203,10 @@ export default function LoginPage() {
                 <input
                   type="email"
                   value={authEmail}
-                  onChange={(e) => setAuthEmail(e.target.value)}
+                  onChange={(e) => {
+                    setAuthEmail(e.target.value);
+                    setErrorMsg("");
+                  }}
                   placeholder="name@example.com"
                   required
                   className="w-full border p-2 rounded"
@@ -178,7 +220,10 @@ export default function LoginPage() {
                     <input
                       type={showPassword ? "text" : "password"}
                       value={authPassword}
-                      onChange={(e) => setAuthPassword(e.target.value)}
+                      onChange={(e) => {
+                        setAuthPassword(e.target.value);
+                        setErrorMsg("");
+                      }}
                       placeholder="••••••••"
                       required
                       className="w-full border p-2 rounded"
@@ -201,12 +246,33 @@ export default function LoginPage() {
                   <input
                     type={showPassword ? "text" : "password"}
                     value={authConfirmPassword}
-                    onChange={(e) => setAuthConfirmPassword(e.target.value)}
+                    onChange={(e) => {
+                      setAuthConfirmPassword(e.target.value);
+                      setErrorMsg("");
+                    }}
                     placeholder="••••••••"
                     className="w-full border p-2 rounded"
                     required
                   />
                 </label>
+              )}
+
+              {errorMsg && (
+                <div style={{ color: "#dc2626", fontSize: "13px", marginTop: "4px", textAlign: "center", fontWeight: "600", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }} className="animate-in fade-in slide-in-from-top-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                  {errorMsg}
+                </div>
+              )}
+
+              {successMsg && (
+                <div style={{ color: "#059669", backgroundColor: "#ecfdf5", border: "1px solid #10b981", borderRadius: "12px", padding: "12px", fontSize: "14px", marginTop: "16px", textAlign: "center", fontWeight: "600", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }} className="animate-in fade-in slide-in-from-top-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                  {successMsg}
+                </div>
               )}
 
               <button type="submit" className="btn-primary w-full py-3 mt-2" disabled={authLoading}>

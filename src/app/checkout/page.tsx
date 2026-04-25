@@ -10,7 +10,7 @@ import { clearCart, loadCart as getAsyncCart } from "@/lib/bags";
 import { type CartItem } from "@/lib/bags";
 import { calculateShipping } from "@/lib/shipping";
 import CheckoutAddons from "@/components/CheckoutAddons";
-import { useToast } from "@/hooks/useToast";
+import { showToast } from "@/components/Toast";
 import {
   CheckoutCustomerDetails,
   CheckoutPaymentMethod,
@@ -43,7 +43,6 @@ const initialDetails: CheckoutCustomerDetails = {
 
 function CheckoutContent() {
   const { user, profile, loading } = useAuth();
-  const { showToast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
   const isGuest = searchParams.get("guest") === "true";
@@ -61,6 +60,7 @@ function CheckoutContent() {
   const [hydrated, setHydrated] = useState(false);
   const [isDirectCheckout, setIsDirectCheckout] = useState(false);
   const [isGuestLocked, setIsGuestLocked] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
 
   const refreshCart = useCallback(async () => {
     if (isPlacingOrder || isOrderPlaced) return;
@@ -173,22 +173,25 @@ function CheckoutContent() {
     setDetails((current) => ({ ...current, [field]: value }));
   };
 
-  const validateProfile = (details: CheckoutCustomerDetails) => {
-    if (!details.fullName) return "Full Name is missing";
-    if (!details.email) return "Email is missing";
-    if (!details.phoneNumber) return "Phone Number is missing";
-    if (!details.address) return "Address is missing";
-    if (!details.city) return "City is missing";
-    if (!details.pincode) return "Pincode is missing";
-    if (!details.state) return "State is missing";
-    if (!details.country) return "Country is missing";
+  const getMissingField = (profile: CheckoutCustomerDetails) => {
+    if (!profile?.fullName) return "Full Name";
+    if (!profile?.email) return "Email";
+    if (!profile?.phoneNumber) return "Phone Number";
+    if (!profile?.address) return "Address";
+    if (!profile?.city) return "City";
+    if (!profile?.pincode) return "Pincode";
+    if (!profile?.state) return "State";
+    if (!profile?.country) return "Country";
     return null;
   };
 
   const handleDetailsNext = () => {
-    const error = validateProfile(details);
-    if (error) {
-      showToast(`⚠️ Please complete your profile to continue. Missing: ${error.replace(" is missing", "")}`);
+    setCheckoutError("");
+    const missing = getMissingField(details);
+    if (missing) {
+      const msg = `Please fill ${missing} to continue. You have not provided your ${missing.toLowerCase()}.`;
+      setCheckoutError(msg);
+      showToast(msg);
       return;
     }
 
@@ -222,9 +225,9 @@ function CheckoutContent() {
 
   const handleGuestDetailsToggle = () => {
     if (!isGuestLocked) {
-      const error = validateProfile(details);
-      if (error) {
-        showToast(`⚠️ Please complete your profile to continue. Missing: ${error.replace(" is missing", "")}`);
+      const missing = getMissingField(details);
+      if (missing) {
+        showToast(`Please fill ${missing} to continue`);
         return;
       }
       setIsGuestLocked(true);
@@ -666,8 +669,21 @@ function CheckoutContent() {
                 </button>
               </div>
 
+              {checkoutError && (
+                <div style={{ color: "#dc2626", fontSize: "14px", marginBottom: "16px", textAlign: "center", fontWeight: "600", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }} className="animate-in fade-in slide-in-from-top-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                  {checkoutError}
+                </div>
+              )}
+
               <div className="checkout-actions mt-10">
-                <button type="button" className="btn-primary checkout-button w-full" onClick={handleDetailsNext}>
+                <button 
+                  type="button" 
+                  className={`btn-primary checkout-button w-full ${getMissingField(details) ? "opacity-60" : ""}`} 
+                  onClick={handleDetailsNext}
+                >
                   Proceed to Payment {"\u2192"}
                 </button>
               </div>

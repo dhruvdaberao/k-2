@@ -3,12 +3,13 @@
 import { supabase } from "@/lib/supabaseClient";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { showToast } from "@/components/Toast";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function AccountSettingsPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
   const { session, user, loading } = useAuth();
   
   const [hydrated, setHydrated] = useState(false);
@@ -24,7 +25,21 @@ export default function AccountSettingsPage() {
 
   useEffect(() => {
     setHydrated(true);
-  }, []);
+    
+    // Handle password reset redirection
+    if (searchParams.get("reset") === "true") {
+      showToast("🔐 Please set your new password below.");
+      // Small delay to ensure rendering is complete before scrolling
+      setTimeout(() => {
+        const pwdSection = document.getElementById("password-section");
+        if (pwdSection) {
+          pwdSection.scrollIntoView({ behavior: "smooth" });
+          pwdSection.style.boxShadow = "0 0 20px rgba(139, 94, 60, 0.2)";
+          setTimeout(() => pwdSection.style.boxShadow = "", 3000);
+        }
+      }, 500);
+    }
+  }, [searchParams]);
 
   const handleUpdateEmail = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -184,7 +199,7 @@ export default function AccountSettingsPage() {
           </section>
 
           {/* Password Update Card */}
-          <section className="checkout-card p-6 shadow-sm">
+          <section id="password-section" className="checkout-card p-6 shadow-sm transition-all duration-500">
             <div className="border-b pb-3 mb-5">
               <h2 className="text-lg font-bold" style={{ color: "var(--text)" }}>Security & Password</h2>
               <p className="text-stone-500 text-sm mt-1">Ensure your account remains securely locked.</p>
