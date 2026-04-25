@@ -2,12 +2,12 @@
 
 import { supabase } from "@/lib/supabaseClient";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { showToast } from "@/components/Toast";
 import { useAuth } from "@/hooks/useAuth";
 
-export default function AccountSettingsPage() {
+function AccountSettingsContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
   const { session, user, loading } = useAuth();
@@ -299,5 +299,12 @@ export default function AccountSettingsPage() {
       )}
 
     </main>
+  );
+}
+export default function AccountSettingsPage() {
+  return (
+    <Suspense fallback={<main className="checkout-page py-20 text-center text-stone-500" />}>
+      <AccountSettingsContent />
+    </Suspense>
   );
 }
