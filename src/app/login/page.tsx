@@ -66,6 +66,7 @@ export default function LoginPage() {
             setAuthMode("login");
           } else {
             await syncLocalCartToDB(data.user.id);
+            showToast("Account created successfully");
             setSuccessModal(true);
             setTimeout(() => {
               setSuccessModal(false);

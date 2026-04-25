@@ -10,7 +10,7 @@ import { clearCart, loadCart as getAsyncCart } from "@/lib/bags";
 import { type CartItem } from "@/lib/bags";
 import { calculateShipping } from "@/lib/shipping";
 import CheckoutAddons from "@/components/CheckoutAddons";
-import { showToast } from "@/components/Toast";
+import { useToast } from "@/hooks/useToast";
 import {
   CheckoutCustomerDetails,
   CheckoutPaymentMethod,
@@ -43,6 +43,7 @@ const initialDetails: CheckoutCustomerDetails = {
 
 function CheckoutContent() {
   const { user, profile, loading } = useAuth();
+  const { showToast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
   const isGuest = searchParams.get("guest") === "true";
@@ -120,14 +121,14 @@ function CheckoutContent() {
     if (user && profile && !isGuestLocked) {
       setDetails(prev => ({
         ...prev,
-        fullName: profile.name || prev.fullName,
-        email: user.email || prev.email,
-        phoneNumber: profile.phone || prev.phoneNumber,
-        address: profile.address || prev.address,
-        city: profile.city || prev.city,
-        pincode: profile.pincode || prev.pincode,
-        state: profile.state || prev.state,
-        country: profile.country || prev.country
+        fullName: profile.name ?? prev.fullName,
+        email: user.email ?? prev.email,
+        phoneNumber: profile.phone ?? prev.phoneNumber,
+        address: profile.address ?? prev.address,
+        city: profile.city ?? prev.city,
+        pincode: profile.pincode ?? prev.pincode,
+        state: profile.state ?? prev.state,
+        country: profile.country ?? prev.country
       }));
     }
   }, [user, profile, isGuestLocked]);
@@ -172,9 +173,22 @@ function CheckoutContent() {
     setDetails((current) => ({ ...current, [field]: value }));
   };
 
+  const validateProfile = (details: CheckoutCustomerDetails) => {
+    if (!details.fullName) return "Full Name is missing";
+    if (!details.email) return "Email is missing";
+    if (!details.phoneNumber) return "Phone Number is missing";
+    if (!details.address) return "Address is missing";
+    if (!details.city) return "City is missing";
+    if (!details.pincode) return "Pincode is missing";
+    if (!details.state) return "State is missing";
+    if (!details.country) return "Country is missing";
+    return null;
+  };
+
   const handleDetailsNext = () => {
-    if (!details.fullName || !details.email || !details.phoneNumber || !details.address || !details.city || !details.pincode || !details.state || !details.country) {
-      showToast("Please fill all the details from the profile to continue");
+    const error = validateProfile(details);
+    if (error) {
+      showToast(`⚠️ Please complete your profile to continue. Missing: ${error.replace(" is missing", "")}`);
       return;
     }
 
@@ -208,8 +222,9 @@ function CheckoutContent() {
 
   const handleGuestDetailsToggle = () => {
     if (!isGuestLocked) {
-      if (!details.fullName || !details.email || !details.phoneNumber || !details.address || !details.city || !details.pincode || !details.state || !details.country) {
-        showToast("Please fill all the fields to continue");
+      const error = validateProfile(details);
+      if (error) {
+        showToast(`⚠️ Please complete your profile to continue. Missing: ${error.replace(" is missing", "")}`);
         return;
       }
       setIsGuestLocked(true);

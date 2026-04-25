@@ -11,6 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
 import { getProductRating } from "@/lib/ratingUtils";
+import { showToast } from "@/components/Toast";
 
 export default function ProductCard({ p }: { p: Product }) {
   const { user } = useAuth();
@@ -50,9 +51,13 @@ export default function ProductCard({ p }: { p: Product }) {
 
     if (isCustomOrder) {
       // Enquire action
-      const message = encodeURIComponent(`Hi! I'm interested in ${p.title}`);
-      const url = p.cta?.url || `https://ig.me/m/keshvi_crafts`;
+      const messageText = `Hi Keshvi Crafts! I would like to enquire about this product: ${p.title} (https://keshvicrafts.in/products/${p.slug})`;
+      navigator.clipboard.writeText(messageText).catch(() => {});
+
+      const url = p.cta?.url || `https://www.instagram.com/direct/t/17844051177388084/`;
       window.open(url, "_blank", "noopener,noreferrer");
+      
+      showToast(`Enquiry message copied! Just paste it in the DM 📋`);
       trackEvent({
         action: "click_instagram_enquiry",
         category: "Card",

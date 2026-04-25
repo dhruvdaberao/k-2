@@ -35,7 +35,7 @@ export default function ContactPage() {
                         Need a quick reply or help with a custom order? Chat with us directly on Instagram.
                     </p>
                     <a
-                        href="https://ig.me/m/keshvi_crafts"
+                        href="https://www.instagram.com/direct/t/17844051177388084/"
                         target="_blank"
                         rel="noreferrer"
                         className="btn-outline w-full justify-center text-sm"

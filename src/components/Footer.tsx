@@ -63,7 +63,7 @@ export default function Footer() {
             <ul className="footer-links" style={{ padding: 0, display: "flex", flexDirection: "column", alignItems: "center" }}>
               <li><Link href="/contact">Contact Page</Link></li>
               <li>
-                <a href="https://ig.me/m/keshvi_crafts" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.instagram.com/direct/t/17844051177388084/" target="_blank" rel="noopener noreferrer">
                   Instagram Support
                 </a>
               </li>

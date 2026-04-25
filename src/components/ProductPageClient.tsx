@@ -12,6 +12,7 @@ import SeoContentSection from "@/components/SeoContentSection";
 import { useWishlist } from "@/hooks/useWishlist";
 import { useRouter } from "next/navigation";
 import { getProductRating } from "@/lib/ratingUtils";
+import { showToast } from "@/components/Toast";
 
 export default function ProductPageClient({
   product,
@@ -70,9 +71,7 @@ export default function ProductPageClient({
               });
           } else {
               await navigator.clipboard.writeText(window.location.href);
-              if ((window as any).showToast) {
-                  (window as any).showToast("Link copied to clipboard! 📋");
-              }
+              showToast("Link copied to clipboard! 📋");
           }
       } catch (err) {
           console.error("Error sharing:", err);
@@ -283,27 +282,19 @@ export default function ProductPageClient({
               <div className="flex flex-col gap-3">
                 <button
                   onClick={() => {
-                    const messageText = `Hi! Is "${product.title}" available? I'd love to place an order 🌸`;
-                    // Copy message to clipboard so user can paste instantly
+                    const messageText = `Hi Keshvi Crafts! I would like to enquire about this product: ${product.title} (${window.location.href})`;
                     navigator.clipboard.writeText(messageText).catch(() => {});
 
-                    // Instagram DM deep link — mobile opens app, desktop opens web DM
-                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-                    const url = isMobile
-                      ? `https://ig.me/m/keshvi_crafts`
-                      : `https://www.instagram.com/direct/new/?username=keshvi_crafts`;
+                    const url = `https://www.instagram.com/direct/t/17844051177388084/`;
                     window.open(url, "_blank", "noopener,noreferrer");
 
-                    // Toast: tell user message is ready to paste
-                    if (typeof window !== "undefined" && (window as any).showToast) {
-                      (window as any).showToast(`Message copied! Just paste it in the DM 📋`);
-                    }
+                    showToast(`Enquiry message copied! Just paste it in the DM 📋`);
                     trackEvent({
                       action: "click_instagram_enquiry",
                       category: "Ecommerce",
                       label: product.title,
                       location: "pdp_primary",
-                      slug: product.slug
+                      slug: (product.id || product.slug)
                     });
                   }}
                   className="btn-primary w-full text-lg"

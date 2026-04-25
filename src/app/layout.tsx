@@ -3,7 +3,7 @@ import "./utilities.css";
 import Script from "next/script";
 import BootstrapNavbar from "@/components/BootstrapNavbar";
 import Footer from "@/components/Footer";
-import Toast from "@/components/Toast";
+import { ToastProvider } from "@/hooks/useToast";
 import JsonLd from "@/components/JsonLd";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
@@ -65,20 +65,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AnalyticsTracker />
         <ServiceWorkerRegister />
         <SupabaseProvider>
-          <AuthProvider>
-            <CartProvider>
-              <WishlistProvider>
-                <BootstrapNavbar />
+          <ToastProvider>
+            <AuthProvider>
+              <CartProvider>
+                <WishlistProvider>
+                  <BootstrapNavbar />
 
-                {/* Remove .container here so hero can be full width */}
-                {children}
+                  {/* Remove .container here so hero can be full width */}
+                  {children}
 
-                <Footer />
-
-                <Toast />
-              </WishlistProvider>
-            </CartProvider>
-          </AuthProvider>
+                  <Footer />
+                </WishlistProvider>
+              </CartProvider>
+            </AuthProvider>
+          </ToastProvider>
         </SupabaseProvider>
 
         {/* Bootstrap JS */}
@@ -114,7 +114,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               "closes": "18:00"
             },
             "sameAs": [
-              "https://instagram.com/keshvi_craft"
+              "https://instagram.com/keshvi_crafts"
             ]
           }}
         />

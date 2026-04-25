@@ -10,6 +10,7 @@ import { useWishlist } from "@/hooks/useWishlist";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
 import { getProductRating } from "@/lib/ratingUtils";
+import { showToast } from "@/components/Toast";
 import "./ProductCardV2.css";
 
 
@@ -55,14 +56,15 @@ export default function ProductCardV2({ p }: { p: Product }) {
 
         if (isCustomOrder) {
             // Enquire action
-            const message = encodeURIComponent(`Hi! I'm interested in ${p.title}`);
-            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-            const defaultUrl = isMobile
-                ? "https://ig.me/m/keshvi_crafts"
-                : "https://www.instagram.com/direct/new/?username=keshvi_crafts";
+            const messageText = `Hi Keshvi Crafts! I would like to enquire about this product: ${p.title} (https://keshvicrafts.in/products/${p.id || p.slug})`;
+            navigator.clipboard.writeText(messageText).catch(() => {});
+
+            const defaultUrl = "https://www.instagram.com/direct/t/17844051177388084/";
 
             const url = p.cta?.url || defaultUrl;
             window.open(url, "_blank", "noopener,noreferrer");
+
+            showToast(`Enquiry message copied! Just paste it in the DM 📋`);
             trackEvent({
                 action: "click_instagram_enquiry",
                 category: "Card",

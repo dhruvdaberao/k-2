@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { ORDER_CONFIRMATION_STORAGE_KEY } from "@/lib/orderClient";
+import { showToast } from "@/components/Toast";
 
 type ConfirmationData = {
   order_id: string;
@@ -43,13 +44,13 @@ export default function OrderConfirmedPage() {
     });
   }, [data]);
 
-  const instagramLink = `https://ig.me/m/keshvi_crafts`;
+  const instagramLink = `https://www.instagram.com/direct/t/17844051177388084/`;
 
   const handleSupportClick = async (e: React.MouseEvent) => {
     const helpMsg = `Hi, I need help with order ${data?.order_id || "N/A"}.`;
     try {
       await navigator.clipboard.writeText(helpMsg);
-      if ((window as any).showToast) (window as any).showToast("Help message copied! Please paste it in Instagram.");
+      showToast("Help message copied! Please paste it in Instagram.");
     } catch (err) {
       console.error("Failed to copy help msg", err);
     }

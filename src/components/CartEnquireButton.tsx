@@ -24,9 +24,7 @@ export default function CartEnquireButton({
 
         // Fix for Desktop Firefox Redirect Loop
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        const url = isMobile
-            ? "https://ig.me/m/keshvi_crafts"
-            : "https://www.instagram.com/direct/new/?username=keshvi_crafts";
+        const url = "https://www.instagram.com/direct/t/17844051177388084/";
 
         window.open(url, "_blank", "noreferrer");
         showToast("Cart details copied! Paste in Instagram DM.");
