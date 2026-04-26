@@ -101,6 +101,7 @@ export default function ReviewPage() {
   const [ratingBreakdown, setRatingBreakdown] = useState<any>(null)
   const [sortBy, setSortBy] = useState("latest")
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const getReviewsCacheKey = useCallback((pId: string) => `reviews_${pId}`, [])
 
   const getRatingBreakdown = async (pId: string) => {
     const { data, error } = await supabase
@@ -142,6 +143,19 @@ export default function ReviewPage() {
     }
     console.log("🔍 [DEBUG] LOAD REVIEWS START for:", pId);
     setLoading(true);
+    const cacheKey = getReviewsCacheKey(pId);
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed)) {
+          setReviews(parsed);
+          setLoading(false);
+        }
+      } catch (err) {
+        console.warn("[REVIEWS] Failed to read cache:", err);
+      }
+    }
     
     try {
       // 1. Fetch Reviews
@@ -188,6 +202,7 @@ export default function ReviewPage() {
       }));
 
       setReviews(enrichedReviews);
+      localStorage.setItem(cacheKey, JSON.stringify(enrichedReviews));
       
       // 4. Update rating stats
       const result = await getProductRating(pId);
@@ -201,7 +216,7 @@ export default function ReviewPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [getReviewsCacheKey, loadBreakdown]);
 
   useEffect(() => {
     // 1. Next.js Refresh Fix (Clears stale navigation state)
@@ -228,11 +243,7 @@ export default function ReviewPage() {
           };
           setProduct(productData);
           
-          // Parallel load for efficiency
-          await Promise.all([
-            loadReviewsData(productData.id),
-            loadBreakdown(productData.id)
-          ]);
+          await loadReviewsData(productData.id);
         } else {
           console.error("❌ [INIT] Product not found for slug:", slug);
           setLoading(false);

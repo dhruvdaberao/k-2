@@ -61,19 +61,41 @@ function ProfileContent() {
 
   // Step 4: Robust Profile Loading
   useEffect(() => {
+    const cachedProfile = localStorage.getItem("profile");
+    if (cachedProfile && !isEditing) {
+      try {
+        const parsed = JSON.parse(cachedProfile);
+        setDetails((prev) => ({
+          ...prev,
+          fullName: parsed.name || prev.fullName,
+          email: parsed.email || prev.email,
+          phoneNumber: parsed.phone || prev.phoneNumber,
+          address: parsed.address || prev.address,
+          city: parsed.city || prev.city,
+          pincode: parsed.pincode || prev.pincode,
+          state: parsed.state || prev.state,
+          country: parsed.country || prev.country,
+        }));
+      } catch (err) {
+        console.warn("Profile cache parse error:", err);
+      }
+    }
+
     if (!user) return;
 
     const loadProfile = async () => {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (!authUser) return;
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
-        .eq("id", user.id)
+        .eq("id", authUser.id)
         .single();
 
       if (data && !isEditing) {
         setDetails({
           fullName: data.name || "",
-          email: user.email || "",
+          email: authUser.email || "",
           phoneNumber: data.phone || "",
           address: data.address || "",
           city: data.city || "",
@@ -81,9 +103,13 @@ function ProfileContent() {
           state: data.state || "",
           country: data.country || "",
         });
+        localStorage.setItem("profile", JSON.stringify({
+          ...data,
+          email: authUser.email || "",
+        }));
       } else if (!data) {
         // Fallback for missing profile
-        setDetails(prev => ({ ...prev, email: user.email || "" }));
+        setDetails(prev => ({ ...prev, email: authUser.email || "" }));
       }
     };
 

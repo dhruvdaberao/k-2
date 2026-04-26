@@ -16,6 +16,7 @@ export type CartItem = ItemSnapshot & {
 type Collections = Record<string, ItemSnapshot[]>;
 
 const CART_KEY = "cart";
+const CART_CACHE_KEY = "cart_cache";
 const WISHLIST_KEY = "wishlist";
 const COLLECTIONS_KEY = "collections:v1";
 
@@ -74,13 +75,18 @@ export function getCart(): CartItem[] {
 
 export async function loadCart(passedUser?: any): Promise<CartItem[]> {
   console.log("[Cart] loadCart triggered");
+  const cached = read<CartItem[]>(CART_CACHE_KEY, []);
+  if (cached.length > 0) {
+    write(CART_KEY, cached);
+  }
   const { data: sessionData } = await supabase.auth.getSession();
   const actualUser = passedUser || sessionData?.session?.user;
 
   // GUEST MODE
   if (!actualUser) {
-    const local = read<CartItem[]>(CART_KEY, []);
+    const local = read<CartItem[]>(CART_KEY, cached);
     console.log("[Cart] Guest session, local items:", local.length);
+    write(CART_CACHE_KEY, local);
     return local;
   }
 
@@ -102,6 +108,7 @@ export async function loadCart(passedUser?: any): Promise<CartItem[]> {
   
   // Keep local storage mirrored for quick access (no-sync)
   write(CART_KEY, items);
+  write(CART_CACHE_KEY, items);
   notify();
   return items;
 }
@@ -238,38 +245,36 @@ export async function clearCart(passedUser?: any): Promise<void> {
  */
 export async function syncLocalCartToDB(userId: string): Promise<void> {
   console.log("[Cart] Syncing Guest items to DB for:", userId);
-  const localCart = read<CartItem[]>(CART_KEY, []);
-  if (localCart.length === 0) return;
+  const guestCart = read<CartItem[]>(CART_KEY, []);
+  if (guestCart.length === 0) return;
 
-  for (const item of localCart) {
-    // Check if user already has this prod in DB
-    const { data: existing } = await supabase
-      .from("cart")
-      .select("*")
-      .eq("user_id", userId)
-      .eq("product_id", item.id)
-      .maybeSingle();
+  const { data: existing } = await supabase
+    .from("cart")
+    .select("*")
+    .eq("user_id", userId);
 
-    if (existing) {
-      // Merge quantity
-      await supabase
-        .from("cart")
-        .update({ quantity: existing.quantity + item.quantity })
-        .eq("id", existing.id);
-    } else {
-      // Insert new
-      await supabase.from("cart").insert({
-        user_id: userId,
-        product_id: item.id,
-        name: item.name,
-        price: item.price,
-        image: item.image,
-        quantity: item.quantity
-      });
-    }
-  }
+  const map = new Map<string, number>();
 
-  // Once synced, clear local
+  existing?.forEach((item: any) => {
+    map.set(item.product_id, item.quantity);
+  });
+
+  guestCart.forEach((item) => {
+    const prev = map.get(item.id) || 0;
+    map.set(item.id, Math.max(prev, item.quantity));
+  });
+
+  const finalItems = Array.from(map.entries()).map(([product_id, quantity]) => ({
+    user_id: userId,
+    product_id,
+    quantity,
+  }));
+
+  await supabase.from("cart").upsert(finalItems, {
+    onConflict: "user_id,product_id",
+  });
+
+  localStorage.removeItem("guest_cart");
   localStorage.removeItem(CART_KEY);
   console.log("[Cart] Sync complete, local cleared.");
   await loadCart({ id: userId });
