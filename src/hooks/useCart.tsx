@@ -35,6 +35,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const loadingRef = useRef(false);
   const userRef = useRef(user);
   const hasMergedRef = useRef(false);
+  const hasMergedSessionKeyRef = useRef<string | null>(null);
   const lastLoadedUserIdRef = useRef<string | null>(null);
   
   // Keep userRef in sync without triggering re-renders
@@ -134,13 +135,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("[CartHook] Auth event:", event);
       if (event === "SIGNED_IN" && session?.user?.id) {
+        const userId = session.user.id;
+        const mergeKey = `cart_merged:${userId}`;
+        if (hasMergedSessionKeyRef.current !== mergeKey) {
+          hasMergedSessionKeyRef.current = mergeKey;
+          hasMergedRef.current = sessionStorage.getItem(mergeKey) === "true";
+        }
         if (!hasMergedRef.current) {
           hasMergedRef.current = true;
-          await syncLocalCartToDB(session.user.id);
+          await syncLocalCartToDB(userId);
+          sessionStorage.setItem(mergeKey, "true");
         }
         await loadCart();
       } else if (event === "SIGNED_OUT") {
         hasMergedRef.current = false;
+        hasMergedSessionKeyRef.current = null;
         setCartItems([]);
       }
     });
@@ -155,6 +164,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!user?.id) {
       hasMergedRef.current = false;
+      hasMergedSessionKeyRef.current = null;
     }
     if (lastLoadedUserIdRef.current === (user?.id ?? null)) {
       return;

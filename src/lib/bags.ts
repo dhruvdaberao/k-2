@@ -248,6 +248,9 @@ export async function syncLocalCartToDB(userId: string): Promise<void> {
   const guestCart = read<CartItem[]>(CART_KEY, []);
   if (guestCart.length === 0) return;
 
+  console.log("Merging cart once");
+  console.log("Guest cart:", guestCart);
+
   const { data: existing } = await supabase
     .from("cart")
     .select("*")
@@ -255,13 +258,17 @@ export async function syncLocalCartToDB(userId: string): Promise<void> {
 
   const map = new Map<string, number>();
 
+  // DB items
   existing?.forEach((item: any) => {
     map.set(item.product_id, item.quantity);
   });
 
-  guestCart.forEach((item) => {
-    const prev = map.get(item.id) || 0;
-    map.set(item.id, Math.max(prev, item.quantity));
+  // Guest items
+  guestCart.forEach((item: any) => {
+    const productId = String(item.product_id || item.id);
+    const prev = map.get(productId) || 0;
+    // IMPORTANT: do NOT add blindly
+    map.set(productId, Math.max(prev, item.quantity));
   });
 
   const finalItems = Array.from(map.entries()).map(([product_id, quantity]) => ({
