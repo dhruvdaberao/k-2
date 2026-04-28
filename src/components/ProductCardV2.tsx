@@ -195,46 +195,51 @@ export default function ProductCardV2({ p }: { p: Product }) {
                         >
                             {getButtonLabel()}
                         </button>
-                    ) : qtyInCart > 0 ? (
-                        <div className="qty-pill-brand w-full">
-                            <button
-                                aria-label="Decrease quantity"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    if (qtyInCart > 1) {
-                                        updateQuantity((p.id || p.slug), qtyInCart - 1);
-                                    } else {
-                                        removeFromCart((p.id || p.slug));
-                                    }
-                                }}
-                            >
-                                &minus;
-                            </button>
-                            <span aria-live="polite">
-                                {qtyInCart}
-                            </span>
-                            <button
-                                aria-label="Increase quantity"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    updateQuantity((p.id || p.slug), qtyInCart + 1);
-                                }}
-                            >
-                                +
-                            </button>
-                        </div>
                     ) : (
-                        <button
-                            type="button"
-                            onClick={handleAction}
-                            disabled={!inStock}
-                            className="w-full btn-primary btn-sm-mobile"
-                        >
-                            {getButtonLabel()}
-                        </button>
+                        <div className={`interactive-qty-pill w-full ${qtyInCart > 0 ? 'has-qty' : ''}`}>
+                            <button 
+                                type="button"
+                                className="add-to-cart-overlay"
+                                onClick={handleAction}
+                                disabled={!inStock}
+                            >
+                                {getButtonLabel()}
+                            </button>
+                            
+                            <div className="qty-controls">
+                                <button
+                                    type="button"
+                                    aria-label="Decrease quantity"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        if (qtyInCart > 1) {
+                                            updateQuantity((p.id || p.slug), qtyInCart - 1);
+                                        } else {
+                                            removeFromCart((p.id || p.slug));
+                                        }
+                                    }}
+                                >
+                                    &minus;
+                                </button>
+                                <span key={qtyInCart} aria-live="polite">
+                                    {qtyInCart}
+                                </span>
+                                <button
+                                    type="button"
+                                    aria-label="Increase quantity"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        updateQuantity((p.id || p.slug), qtyInCart + 1);
+                                    }}
+                                >
+                                    +
+                                </button>
+                            </div>
+                        </div>
                     )}
+
                 </div>
             </div>
         </article>

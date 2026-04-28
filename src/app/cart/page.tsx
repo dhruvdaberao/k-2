@@ -147,7 +147,7 @@ export default function CartPage() {
             </NextLink>
           </div>
         ) : (
-          <div className="row g-4 items-start" style={{ pointerEvents: isUpdating ? 'none' : 'auto', opacity: isUpdating ? 0.8 : 1 }}>
+          <div className="row g-4 items-start" style={{ pointerEvents: isUpdating ? 'none' : 'auto' }}>
             {/* Main List (Left) */}
             <div className="col-12 col-lg-7">
               <PriceProgressBar subtotal={subtotal} />
@@ -182,7 +182,7 @@ export default function CartPage() {
                             await handleQuantityUpdate(it.id, it.quantity - 1);
                           }
                         }}>&minus;</button>
-                        <span>{it.quantity}</span>
+                        <span key={it.quantity}>{it.quantity}</span>
                         <button onClick={() => handleQuantityUpdate(it.id, it.quantity + 1)}>+</button>
                       </div>
                     </div>

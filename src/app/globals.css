@@ -269,10 +269,15 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .btn-primary:not(:disabled):hover, .btn-luxe:not(:disabled):hover {
-  background: #3B2814;
-  border-color: #3B2814;
-  box-shadow: 0 6px 16px rgba(74, 50, 25, 0.25);
-  transform: translateY(-2px);
+  background: #3B2814 !important;
+  border-color: #3B2814 !important;
+  box-shadow: 0 6px 16px rgba(74, 50, 25, 0.25) !important;
+  transform: translateY(-3px) scale(1.02) !important;
+}
+
+.btn-primary:not(:disabled):active, .btn-luxe:not(:disabled):active {
+  transform: translateY(0) scale(0.96) !important;
+  box-shadow: 0 2px 4px rgba(74, 50, 25, 0.15) !important;
 }
 
 .btn-primary:disabled, .btn-luxe:disabled {
@@ -290,9 +295,13 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .btn-secondary:not(:disabled):hover, .btn-outline:not(:disabled):hover {
-  background: rgba(74, 50, 25, 0.05);
-  border-color: #3B2814;
-  transform: translateY(-1px);
+  background: rgba(74, 50, 25, 0.08) !important;
+  border-color: #3B2814 !important;
+  transform: translateY(-3px) scale(1.02) !important;
+}
+
+.btn-secondary:not(:disabled):active, .btn-outline:not(:disabled):active {
+  transform: translateY(0) scale(0.96) !important;
 }
 
 .btn-secondary:disabled, .btn-outline:disabled {
@@ -1272,6 +1281,17 @@ summary::-webkit-details-marker {
   justify-content: center !important;
   font-size: 16px !important;
   cursor: pointer !important;
+  border-radius: 50% !important; /* Circular hover to avoid squares */
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.qty-pill-brand-mini button:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  transform: scale(1.15);
+}
+
+.qty-pill-brand-mini button:active {
+  transform: scale(0.9);
 }
 
 .qty-pill-brand-mini span {
@@ -1279,6 +1299,16 @@ summary::-webkit-details-marker {
   font-weight: 700 !important;
   min-width: 14px;
   text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  animation: qtyPulseMini 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes qtyPulseMini {
+  0% { transform: scale(0.8); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
 }
 
 .cart-item-actions-right {
@@ -2605,9 +2635,7 @@ body {
   font-weight: 500;
   color: var(--muted);
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 90px;
+  /* fully visible without truncation */
 }
 
 .checkout-stepper__label.is-active {
@@ -3037,7 +3065,7 @@ body {
 
   .checkout-stepper__label {
     font-size: 0.72rem;
-    max-width: 70px;
+    /* fully visible without truncation */
   }
 
   .checkout-stepper__line {
