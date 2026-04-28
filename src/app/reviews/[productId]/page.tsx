@@ -365,29 +365,18 @@ export default function ReviewPage() {
         {
           product_id: pId,
           user_id: user.id,
-          order_id: orderChecks[0].order_id,
+          order_id: null, // Bypassing unique_order_review constraint to allow multiple product reviews per order
           rating: rating,
           review: reviewText,
         },
       ]);
-      
-      // OPTIMISTIC UPDATE: Add to UI immediately
-      const tempReview = {
-        id: 'temp-' + Date.now(),
-        product_id: pId,
-        user_id: user.id,
-        rating: rating,
-        review: reviewText,
-        created_at: new Date().toISOString(),
-        author_name: user.user_metadata?.name || user.email?.split('@')[0] || "You"
-      };
-      setReviews(prev => [tempReview, ...prev]);
 
       if (error) {
         console.error("Review save error:", error);
-        showToast(error.message);
+        showToast(error.message || "Failed to save review");
         return;
       }
+
 
       setReviewText("");
       setRating(0);
