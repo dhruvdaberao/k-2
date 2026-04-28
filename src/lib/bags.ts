@@ -101,7 +101,9 @@ export async function loadCart(passedUser?: any): Promise<CartItem[]> {
   console.log("[Cart] DB items loaded:", items.length);
   
   // Keep local storage mirrored for quick access (no-sync)
-  write(CART_KEY, items);
+  // We no longer mirror DB cart items to localStorage for logged-in users 
+  // to prevent the sync logic from doubling quantities upon re-login.
+
   notify();
   return items;
 }
