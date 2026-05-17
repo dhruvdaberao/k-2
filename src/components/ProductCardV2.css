@@ -13,7 +13,7 @@
   position: relative;
 }
 
-.plp-card:hover {
+.plp-card:not(:has(.interactive-qty-pill:hover, .btn-sm-mobile:hover)):hover {
   transform: translateY(-6px);
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.06), 0 4px 8px rgba(0, 0, 0, 0.03) !important;
   border-color: rgba(229, 231, 235, 0.9) !important;
@@ -33,7 +33,7 @@
   transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-.plp-card:hover img.object-cover {
+.plp-card:not(:has(.interactive-qty-pill:hover, .btn-sm-mobile:hover)):hover img.object-cover {
   transform: scale(1.06) !important;
 }
 
@@ -155,7 +155,7 @@
 
   .btn-sm-mobile {
     padding: 0.5rem 0.5rem !important;
-    font-size: 13px !important;
+    font-size: 15px !important;
     height: 42px !important;
     min-height: 42px !important;
     border-radius: 10px !important;
@@ -323,7 +323,7 @@
   }
   
   .add-to-cart-overlay {
-    font-size: 13px;
+    font-size: 15px;
     text-transform: none;
     letter-spacing: normal;
     border-radius: 10px;
