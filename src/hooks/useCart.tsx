@@ -32,7 +32,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   
   const { user } = useAuth();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const loadingRef = useRef(false);
+  const reqIdRef = useRef(0);
   const userRef = useRef(user);
   
   // Keep userRef in sync without triggering re-renders
@@ -41,17 +41,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   const loadCart = useCallback(async (currentUser?: any) => {
-    // Prevent concurrent loads
-    if (loadingRef.current) return;
-    loadingRef.current = true;
+    const reqId = ++reqIdRef.current;
     try {
       const targetUser = currentUser !== undefined ? currentUser : userRef.current;
       const items = await loadCartLib(targetUser);
-      setCartItems(items);
+      
+      // Prevent race conditions: only the latest request gets to update state
+      if (reqId === reqIdRef.current) {
+        setCartItems(items);
+      }
     } catch (err) {
       console.error("[CartHook] loadCart error:", err);
-    } finally {
-      loadingRef.current = false;
     }
   }, []); // Stable reference — no dependencies
 

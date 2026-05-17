@@ -2,7 +2,7 @@
 
 import { supabase } from "@/lib/supabaseClient";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { showToast } from "@/components/Toast";
 import ConfirmModal from "@/components/ui/ConfirmModal";
@@ -44,6 +44,15 @@ function ProfileContent() {
   const [authConfirmPassword, setAuthConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
+
+  const addressRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (addressRef.current) {
+      addressRef.current.style.height = "auto";
+      addressRef.current.style.height = addressRef.current.scrollHeight + "px";
+    }
+  }, [details.address]);
 
   useEffect(() => {
     setHydrated(true);
@@ -333,7 +342,7 @@ function ProfileContent() {
         <h1 className="checkout-title m-0 text-3xl md:text-5xl text-center" style={{ lineHeight: '1.2' }}>Your Profile</h1>
       </div>
 
-      <section className="checkout-card bg-[#f3ede6] rounded-2xl shadow-sm border border-[#e6ded4]" style={{ maxWidth: '900px', margin: '0 auto' }}>
+      <section className="checkout-card bg-[#f3ede6] rounded-2xl shadow-sm border border-[#e6ded4] mx-4 md:mx-auto" style={{ maxWidth: '900px', width: 'calc(100% - 2rem)' }}>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b pb-4 px-2">
           <h2 className="text-xl font-bold" style={{ color: "var(--text)", margin: 0 }}>Personal Information</h2>
           <div className="flex gap-3 items-center flex-wrap">
@@ -352,7 +361,7 @@ function ProfileContent() {
           <label className="checkout-field"><span>Full Name</span><input type="text" value={details.fullName} onChange={(e) => handleFieldChange("fullName", e.target.value)} readOnly={!isEditing} /></label>
           <label className="checkout-field"><span>Email Address</span><input type="email" value={details.email} readOnly={true} style={{ opacity: 0.7 }} /></label>
           <label className="checkout-field"><span>Phone Number</span><input type="tel" value={details.phoneNumber} onChange={(e) => handleFieldChange("phoneNumber", e.target.value)} readOnly={!isEditing} /></label>
-          <label className="checkout-field checkout-field--full"><span>Delivery Address</span><textarea rows={3} value={details.address} onChange={(e) => handleFieldChange("address", e.target.value)} readOnly={!isEditing} /></label>
+          <label className="checkout-field checkout-field--full"><span>Delivery Address</span><textarea ref={addressRef} rows={3} value={details.address} onChange={(e) => handleFieldChange("address", e.target.value)} readOnly={!isEditing} style={{ overflow: 'hidden', resize: 'none' }} /></label>
           <label className="checkout-field"><span>City</span><input type="text" value={details.city} onChange={(e) => handleFieldChange("city", e.target.value)} readOnly={!isEditing} /></label>
           <label className="checkout-field"><span>Pincode</span><input type="text" value={details.pincode} onChange={(e) => handleFieldChange("pincode", e.target.value)} readOnly={!isEditing} /></label>
           <label className="checkout-field"><span>State</span><input type="text" value={details.state} onChange={(e) => handleFieldChange("state", e.target.value)} readOnly={!isEditing} /></label>
