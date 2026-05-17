@@ -7,7 +7,7 @@ export default function AuthChoicePage() {
 
   return (
     <main className="checkout-page checkout-container pb-20 pt-[40px]" style={{ paddingTop: '40px', minHeight: '100vh' }}>
-      <div className="px-4 sm:px-6 md:px-0 max-w-md mx-auto w-full mt-4">
+      <div className="px-4 sm:px-6 md:px-0 mx-auto w-full mt-4" style={{ maxWidth: '460px' }}>
         <div className="text-center mb-4">
           <img src="/uploads/hero/logo.png" alt="Logo" className="mx-auto mb-4" style={{ height: '110px', width: 'auto', mixBlendMode: 'multiply' }} />
           <h1 className="text-3xl font-bold" style={{ color: "var(--brand)" }}>

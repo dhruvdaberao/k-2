@@ -40,12 +40,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     userRef.current = user;
   }, [user]);
 
-  const loadCart = useCallback(async () => {
+  const loadCart = useCallback(async (currentUser?: any) => {
     // Prevent concurrent loads
     if (loadingRef.current) return;
     loadingRef.current = true;
     try {
-      const items = await loadCartLib(userRef.current);
+      const targetUser = currentUser !== undefined ? currentUser : userRef.current;
+      const items = await loadCartLib(targetUser);
       setCartItems(items);
     } catch (err) {
       console.error("[CartHook] loadCart error:", err);
@@ -102,7 +103,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   // Reload cart when user changes (login/logout)
   useEffect(() => {
-    loadCart();
+    loadCart(user);
   }, [user, loadCart]);
 
   const value = useMemo(() => ({

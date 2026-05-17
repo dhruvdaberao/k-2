@@ -147,8 +147,19 @@ export default function SignupPage() {
         </div>
       )}
 
-      <main className="checkout-page checkout-container pb-20 pt-[120px]" style={{ paddingTop: '120px' }}>
-        <div className="px-4 sm:px-6 md:px-0 max-w-md mx-auto w-full mt-10">
+      <main className="checkout-page checkout-container pb-20 pt-[120px] login-page-styles" style={{ paddingTop: '120px' }}>
+        <style dangerouslySetInnerHTML={{__html: `
+          .login-page-styles input {
+            border: 1px solid rgba(139, 94, 60, 0.4) !important;
+            transition: border-color 0.2s ease;
+          }
+          .login-page-styles input:focus {
+            border-color: var(--brand) !important;
+            outline: none;
+            box-shadow: 0 0 0 1px var(--brand);
+          }
+        `}} />
+        <div className="px-4 sm:px-6 md:px-0 mx-auto w-full mt-10" style={{ maxWidth: '460px' }}>
           <div className="text-center mb-8">
             <img src="/uploads/hero/logo.png" alt="Logo" className="mx-auto mb-4" style={{ height: '110px', width: 'auto', mixBlendMode: 'multiply' }} />
             <h1 className="text-2xl font-bold" style={{ color: "var(--brand)" }}>

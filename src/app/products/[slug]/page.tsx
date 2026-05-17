@@ -1,5 +1,6 @@
 import products from "@/data/products.json";
 import ProductPageClient from "@/components/ProductPageClient";
+import { getProductRating } from "@/lib/ratingUtils";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Product } from "@/types";
@@ -47,7 +48,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default function ProductPage({ params }: { params: { slug: string } }) {
+export default async function ProductPage({ params }: { params: { slug: string } }) {
   const slug = decodeURIComponent(params.slug);
   const p: P | undefined = (products as P[]).find((x) => x.slug === slug);
   if (!p) notFound();
@@ -56,6 +57,9 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   const relatedProducts = (products as Product[])
     .filter((prod) => prod.category === p.category && prod.slug !== p.slug && (prod.status ?? "live") !== "hidden")
     .slice(0, 4);
+
+  // Pre-fetch rating on the server
+  const rating = await getProductRating(p.id || p.slug);
 
   const inStock = (typeof p.stock === "number" ? p.stock > 0 : true) || p.type === "custom-order";
   const jsonLdData = {
@@ -113,7 +117,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
         ← Back to all products
       </Link>
 
-      <ProductPageClient product={p} relatedProducts={relatedProducts} />
+      <ProductPageClient product={p} relatedProducts={relatedProducts} initialRating={rating} />
     </main>
   );
 }

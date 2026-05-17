@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import ImageWithFallback from "./ImageWithFallback";
 
 export default function Gallery({
   images = [],
@@ -15,7 +16,14 @@ export default function Gallery({
   return (
     <div className="pdp-gallery">
       <div className="pdp-gallery__stage">
-        <img src={list[active]} alt={alt} className="pdp-gallery__image product-image" />
+        <ImageWithFallback 
+          src={list[active]} 
+          alt={alt} 
+          className="pdp-gallery__image product-image" 
+          fill
+          sizes="(max-width: 900px) 100vw, 50vw"
+          priority
+        />
         {heartButton}
       </div>
       {list.length > 1 && (
@@ -27,7 +35,14 @@ export default function Gallery({
               className={`pdp-gallery__thumb ${i === active ? "is-active" : ""}`}
               aria-label={`Show image ${i + 1}`}
             >
-              <img src={src} alt={`${alt} thumbnail ${i + 1}`} className="pdp-gallery__thumb-image" />
+              <ImageWithFallback 
+                src={src} 
+                alt={`${alt} thumbnail ${i + 1}`} 
+                className="pdp-gallery__thumb-image" 
+                width={80}
+                height={80}
+                style={{ objectFit: 'cover' }}
+              />
             </button>
           ))}
         </div>

@@ -11,33 +11,27 @@ import { trackEvent } from "@/lib/analytics";
 import SeoContentSection from "@/components/SeoContentSection";
 import { useWishlist } from "@/hooks/useWishlist";
 import { useRouter } from "next/navigation";
-import { getProductRating } from "@/lib/ratingUtils";
 import { showToast } from "@/components/Toast";
 
 export default function ProductPageClient({
   product,
-  relatedProducts
+  relatedProducts,
+  initialRating
 }: {
   product: Product;
   relatedProducts: Product[];
+  initialRating: { avg: string | null; count: number };
 }) {
   const router = useRouter();
   const { toggleWishlist, isWishlisted } = useWishlist();
   const [isHearted, setIsHearted] = useState(false);
   
   // Real Review State
-  const [ratingData, setRatingData] = useState<{ avg: string | null; count: number }>({ avg: null, count: 0 });
-
-  const loadRating = useCallback(async () => {
-    const result = await getProductRating(product.id || product.slug);
-    setRatingData(result);
-  }, [product.id, product.slug]);
+  const [ratingData, setRatingData] = useState<{ avg: string | null; count: number }>(initialRating);
 
   useEffect(() => {
     setIsHearted(isWishlisted(product.id || product.slug));
-    loadRating();
-    console.log("🚀 [PDP] Component Loaded - Fetching Real Ratings");
-  }, [product.id, product.slug, isWishlisted, loadRating]);
+  }, [product.id, product.slug, isWishlisted]);
 
 
   const [isPopping, setIsPopping] = useState(false);

@@ -143,7 +143,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Prevents image from being cut off on the sides */
+  object-fit: cover; /* Fill the whole container without white spaces */
   object-position: center;
   background-color: var(--surface); /* Fallback background for transparent images */
   border-radius: 16px;

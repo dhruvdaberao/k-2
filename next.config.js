@@ -13,6 +13,17 @@ const nextConfig = {
     const stamp = Date.now().toString(36);
     return commit ? `${commit}-${stamp}` : `build-${stamp}`;
   },
+
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'jclphocedhteegocjawx.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/public/**',
+      },
+    ],
+  },
 };
 
 module.exports = nextConfig;
