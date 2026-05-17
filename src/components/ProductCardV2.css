@@ -266,8 +266,8 @@
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  font-size: 18px !important;
-  font-weight: 600 !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
   cursor: pointer !important;
   border-radius: 50% !important; /* Circular background to avoid faint squares */
   transition: all 0.2s ease !important;
@@ -283,8 +283,8 @@
 }
 
 .qty-controls span {
-  font-weight: bold !important;
-  font-size: 16px !important;
+  font-weight: 700 !important;
+  font-size: 17px !important;
   color: white !important;
   display: flex;
   align-items: center;
@@ -319,11 +319,13 @@
   .qty-controls button {
     width: 36px !important;
     height: 36px !important;
-    font-size: 18px !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
   }
   
   .qty-controls span {
-    font-size: 15px !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
   }
 }
 
