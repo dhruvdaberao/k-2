@@ -72,11 +72,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Listen for auth changes natively
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+      if (session) {
+        setSession(session);
+        setUser(session.user);
+      }
       
       if (event === 'SIGNED_IN' && session?.user?.id) {
-        setLoading(true); // Show loading briefly while profile syncs
+        // Do not set loading to true here. It causes the app to flash a loading screen
+        // or get stuck when switching tabs and Supabase fires a background session refresh.
         fetchProfile(session.user.id).finally(() => setLoading(false));
       } else if (event === 'SIGNED_OUT') {
         setUser(null);
