@@ -63,9 +63,8 @@
   left: 0 !important;
 }
 
-/* --- Force uniform content height --- */
-.plp-card .flex.flex-col.flex-grow {
-  flex: 1;
+/* --- Content Container --- */
+.plp-card .card-content {
   display: flex !important;
   flex-direction: column !important;
   min-height: 0; /* Webkit fix */
@@ -122,7 +121,7 @@
     flex-direction: column !important;
   }
 
-  .plp-card .flex.flex-col.flex-grow {
+  .plp-card .card-content {
     padding: 8px !important; /* Even more compact padding */
     gap: 4px !important; /* Reduced gap */
   }
