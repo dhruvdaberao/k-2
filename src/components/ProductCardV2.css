@@ -9,6 +9,7 @@
   /* Force uniform card sizing */
   display: flex;
   flex-direction: column;
+  height: 100%;
   position: relative;
 }
 
@@ -62,8 +63,9 @@
   left: 0 !important;
 }
 
-/* --- Content Container --- */
-.plp-card .card-content {
+/* --- Force uniform content height --- */
+.plp-card .flex.flex-col.flex-grow {
+  flex: 1;
   display: flex !important;
   flex-direction: column !important;
   min-height: 0; /* Webkit fix */
@@ -115,11 +117,12 @@
 @media (max-width: 767px) {
   .plp-card {
     border-radius: 10px !important;
+    height: 100% !important;
     display: flex !important;
     flex-direction: column !important;
   }
 
-  .plp-card .card-content {
+  .plp-card .flex.flex-col.flex-grow {
     padding: 8px !important; /* Even more compact padding */
     gap: 4px !important; /* Reduced gap */
   }

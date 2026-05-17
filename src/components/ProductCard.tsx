@@ -168,14 +168,14 @@ export default function ProductCard({ p }: { p: Product }) {
       </div>
 
       {/* CONTENT */}
-      <div className="flex flex-col p-4">
-        <h3 className="text-base font-medium text-neutral-900 leading-snug mb-2 line-clamp-1">
+      <div className="flex flex-col flex-grow p-4">
+        <h3 className="text-base font-medium text-neutral-900 leading-snug mb-2 line-clamp-2 min-h-[2.5em]">
           <Link href={`/products/${encoded}`} onClick={handleCardClick} className="product-title-link">
             {p.title}
           </Link>
         </h3>
 
-        <div className="mt-2 flex flex-col">
+        <div className="mt-auto">
 
           <div className="flex items-center justify-between mb-3">
             <span className="text-lg font-bold text-neutral-900">{priceDisplay}</span>
