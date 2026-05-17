@@ -74,8 +74,7 @@ export function getCart(): CartItem[] {
 
 export async function loadCart(passedUser?: any): Promise<CartItem[]> {
   console.log("[Cart] loadCart triggered");
-  const { data: sessionData } = await supabase.auth.getSession();
-  const actualUser = passedUser || sessionData?.session?.user;
+  let actualUser = passedUser; if (passedUser === undefined) { try { const { data: sessionData } = await supabase.auth.getSession(); actualUser = sessionData?.session?.user || null; } catch(e) { actualUser = null; } }
 
   // GUEST MODE
   if (!actualUser) {
@@ -104,15 +103,13 @@ export async function loadCart(passedUser?: any): Promise<CartItem[]> {
   // We no longer mirror DB cart items to localStorage for logged-in users 
   // to prevent the sync logic from doubling quantities upon re-login.
 
-  notify();
   return items;
 }
 
 export async function handleAddToCart(product: any, passedUser?: any): Promise<void> {
   const item = snap(product);
   console.log("[Cart] addToCart intent:", item.id);
-  const { data: sessionData } = await supabase.auth.getSession();
-  const user = passedUser || sessionData?.session?.user;
+  let user = passedUser; if (passedUser === undefined) { try { const { data: sessionData } = await supabase.auth.getSession(); user = sessionData?.session?.user || null; } catch(e) { user = null; } }
 
   // -------- GUEST --------
   if (!user) {
@@ -172,8 +169,7 @@ export const addToCart = handleAddToCart;
 
 export async function updateQty(productId: string, quantity: number, passedUser?: any): Promise<void> {
   console.log(`[Cart] updateQty: ${productId} -> ${quantity}`);
-  const { data: sessionData } = await supabase.auth.getSession();
-  const user = passedUser || sessionData?.session?.user;
+  let user = passedUser; if (passedUser === undefined) { try { const { data: sessionData } = await supabase.auth.getSession(); user = sessionData?.session?.user || null; } catch(e) { user = null; } }
 
   // -------- GUEST
   if (!user) {
@@ -215,8 +211,7 @@ export async function removeFromCart(productId: string, passedUser?: any): Promi
 
 export async function clearCart(passedUser?: any): Promise<void> {
   console.log("[Cart] clearCart intent");
-  const { data: sessionData } = await supabase.auth.getSession();
-  const user = passedUser || sessionData?.session?.user;
+  let user = passedUser; if (passedUser === undefined) { try { const { data: sessionData } = await supabase.auth.getSession(); user = sessionData?.session?.user || null; } catch(e) { user = null; } }
 
   if (!user) {
     write(CART_KEY, []);
@@ -308,7 +303,6 @@ export async function loadWishlist(passedUser?: any): Promise<ItemSnapshot[]> {
 
   // Sync local mirror
   write(WISHLIST_KEY, items);
-  notify();
   return items;
 }
 
@@ -476,3 +470,4 @@ export function clearAllLocalData() {
   notify();
   console.log("[Bags] All local storage data cleared.");
 }
+
