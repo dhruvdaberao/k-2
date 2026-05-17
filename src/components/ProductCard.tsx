@@ -169,7 +169,7 @@ export default function ProductCard({ p }: { p: Product }) {
 
       {/* CONTENT */}
       <div className="flex flex-col p-4">
-        <h3 className="text-base font-medium text-neutral-900 leading-snug mb-2 line-clamp-2 min-h-[2.5em]">
+        <h3 className="text-base font-medium text-neutral-900 leading-snug mb-2 truncate">
           <Link href={`/products/${encoded}`} onClick={handleCardClick} className="product-title-link">
             {p.title}
           </Link>

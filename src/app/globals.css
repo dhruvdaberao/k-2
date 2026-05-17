@@ -353,7 +353,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem 1rem;
   justify-items: center;
-  align-items: stretch;
+  align-items: start;
 }
 
 
@@ -1627,14 +1627,14 @@ summary::-webkit-details-marker {
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
   padding: 12px 0;
-  align-items: stretch;
+  align-items: start;
 }
 
 @media (min-width: 768px) {
   .plp-grid-mobile {
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
-    align-items: stretch;
+    align-items: start;
   }
 }
 
