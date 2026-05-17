@@ -333,7 +333,7 @@ function ProfileContent() {
         <h1 className="checkout-title m-0 text-3xl md:text-5xl text-center" style={{ lineHeight: '1.2' }}>Your Profile</h1>
       </div>
 
-      <section className="checkout-card mx-3 md:mx-auto max-w-xl w-auto md:w-full bg-[#f3ede6] rounded-2xl shadow-sm border border-[#e6ded4]">
+      <section className="checkout-card mx-3 md:mx-auto bg-[#f3ede6] rounded-2xl shadow-sm border border-[#e6ded4]" style={{ maxWidth: '900px', width: '100%', margin: '0 auto' }}>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b pb-4 px-2">
           <h2 className="text-xl font-bold" style={{ color: "var(--text)", margin: 0 }}>Personal Information</h2>
           <div className="flex gap-3 items-center flex-wrap">

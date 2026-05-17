@@ -188,7 +188,7 @@ export default function LoginPage() {
       )}
 
       <main className="checkout-page checkout-container pb-20 pt-[120px]" style={{ paddingTop: '120px' }}>
-        <div className="px-4 sm:px-6 md:px-0 max-w-md mx-auto w-full mt-10">
+        <div className="px-4 sm:px-6 md:px-0 mx-auto mt-10" style={{ maxWidth: '450px', width: '100%', margin: '0 auto' }}>
           <div className="text-center mb-8">
             <img src="/uploads/hero/logo.png" alt="Logo" className="mx-auto mb-4" style={{ height: '110px', width: 'auto', mixBlendMode: 'multiply' }} />
             <h1 className="text-2xl font-bold" style={{ color: "var(--brand)" }}>
