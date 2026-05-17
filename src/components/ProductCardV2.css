@@ -13,7 +13,7 @@
   position: relative;
 }
 
-.plp-card:not(:has(.interactive-qty-pill:hover, .btn-sm-mobile:hover)):hover {
+.plp-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.06), 0 4px 8px rgba(0, 0, 0, 0.03) !important;
   border-color: rgba(229, 231, 235, 0.9) !important;
@@ -33,7 +33,7 @@
   transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-.plp-card:not(:has(.interactive-qty-pill:hover, .btn-sm-mobile:hover)):hover img.object-cover {
+.plp-card:hover img.object-cover {
   transform: scale(1.06) !important;
 }
 
@@ -154,14 +154,14 @@
   }
 
   .btn-sm-mobile {
-    padding: 0.5rem 0.5rem !important;
-    font-size: 15px !important;
-    height: 42px !important;
-    min-height: 42px !important;
-    border-radius: 10px !important;
+    padding: 0.35rem 0.5rem !important;
+    font-size: 11px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    border-radius: 6px !important;
     font-weight: 700 !important;
-    text-transform: none !important;
-    letter-spacing: normal !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.3px !important;
   }
 
   .inline-counter-container.compact {
@@ -224,11 +224,6 @@
   background: #3B2814;
 }
 
-.add-to-cart-overlay:active {
-  transform: scale(0.95);
-  transition: transform 0.1s;
-}
-
 .add-to-cart-overlay:disabled {
   background: #E5E5E5;
   color: #A3A3A3;
@@ -239,16 +234,6 @@
   opacity: 0;
   transform: scale(0.9);
   pointer-events: none;
-}
-
-.interactive-qty-pill.has-qty {
-  animation: pillPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-@keyframes pillPop {
-  0% { transform: scale(1); }
-  40% { transform: scale(1.06); }
-  100% { transform: scale(1); }
 }
 
 /* Quantity Controls */
@@ -317,26 +302,26 @@
 /* Mobile Adjustments */
 @media (max-width: 767px) {
   .interactive-qty-pill {
-    height: 42px;
-    min-height: 42px;
-    border-radius: 10px;
+    height: 32px;
+    min-height: 32px;
+    border-radius: 6px;
   }
   
   .add-to-cart-overlay {
-    font-size: 15px;
-    text-transform: none;
-    letter-spacing: normal;
-    border-radius: 10px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border-radius: 6px;
   }
   
   .qty-controls button {
-    width: 32px !important;
-    height: 32px !important;
-    font-size: 16px !important;
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 14px !important;
   }
   
   .qty-controls span {
-    font-size: 15px !important;
+    font-size: 13px !important;
   }
 }
 
