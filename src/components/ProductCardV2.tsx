@@ -151,7 +151,7 @@ export default function ProductCardV2({ p }: { p: Product }) {
 
             {/* CONTENT */}
             <div className="card-content flex flex-col p-3 md:p-4">
-                <h3 className="text-sm md:text-base font-medium text-neutral-900 leading-snug mb-1 truncate">
+                <h3 className="text-sm md:text-base font-medium text-neutral-900 leading-snug mb-1 line-clamp-1">
                     <Link href={`/products/${encoded}`} onClick={handleCardClick} className="product-title-link">
                         {p.title}
                     </Link>
