@@ -918,7 +918,7 @@ summary::-webkit-details-marker {
 
 .footer-copyright {
   font-size: 0.9rem;
-  color: rgba(250, 249, 247, 0.8);
+  color: var(--muted);
   margin: 0;
 }
 
