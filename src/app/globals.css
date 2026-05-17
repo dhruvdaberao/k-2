@@ -918,7 +918,7 @@ summary::-webkit-details-marker {
 
 .footer-copyright {
   font-size: 0.9rem;
-  color: var(--muted);
+  color: rgba(47, 42, 38, 0.8);
   margin: 0;
 }
 
@@ -3164,7 +3164,7 @@ body .btn-outline {
   body .btn-sm-mobile,
   body .btn-primary.btn-sm-mobile,
   body .inline-counter-container {
-    border-radius: 6px !important; /* Smaller radius for smaller height ensures non-pill look */
+    border-radius: 10px !important;
   }
 }
 
