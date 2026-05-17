@@ -76,11 +76,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(session?.user ?? null);
       
       if (event === 'SIGNED_IN' && session?.user?.id) {
-        showToast("Logged in successfully");
         setLoading(true); // Show loading briefly while profile syncs
         fetchProfile(session.user.id).finally(() => setLoading(false));
       } else if (event === 'SIGNED_OUT') {
-        showToast("Logged out successfully");
         setUser(null);
         setProfile(null);
         setSession(null);
