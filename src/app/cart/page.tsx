@@ -14,23 +14,13 @@ import NextImage from "next/image";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function CartPage() {
-  const { cartItems, loadCart, removeFromCart, updateQuantity, clearCart } = useCart();
+  const { cartItems, loadCart, removeFromCart, updateQuantity, clearCart, loading } = useCart();
   const { user } = useAuth();
-  const [loading, setLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   // Modal state for confirmations
   const [removeTarget, setRemoveTarget] = useState<{ id: string; name: string } | null>(null);
   const [showClearAll, setShowClearAll] = useState(false);
-
-  useEffect(() => {
-    const init = async () => {
-      await loadCart();
-      setLoading(false);
-    };
-
-    init();
-  }, [loadCart]);
 
   // Select all items whenever cart changes
   useEffect(() => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
+import { createContext, useContext, useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { 
   ItemSnapshot, 
   loadWishlist as loadWishlistLib, 
@@ -26,6 +26,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const isInitialLoad = useRef(true);
 
   const filterValidIds = useCallback((ids: string[]) => {
     const validIds = ids.filter(id => {
@@ -37,13 +38,18 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
 
   const loadWishlist = useCallback(async () => {
     try {
-      setLoading(true);
+      if (isInitialLoad.current) {
+        setLoading(true);
+      }
       const items = await loadWishlistLib(user);
       setWishlist(filterValidIds(items.map(i => String(i.id))));
     } catch (err) {
       console.error("WISHLIST LOAD ERROR:", err);
     } finally {
-      setLoading(false);
+      if (isInitialLoad.current) {
+        setLoading(false);
+        isInitialLoad.current = false;
+      }
     }
   }, [user]);
 

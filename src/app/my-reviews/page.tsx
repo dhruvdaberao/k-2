@@ -262,7 +262,7 @@ export default function MyReviewsPage() {
                 <p className="mt-4 text-[15px] text-[#333] leading-relaxed">"{review.review}"</p>
               )}
 
-              <div className="mt-4 flex justify-between items-center">
+              <div className="mt-4 flex flex-wrap justify-between items-center gap-4">
                 <div className="flex gap-1">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <StarIcon key={i} filled={i < review.rating} size={18} />

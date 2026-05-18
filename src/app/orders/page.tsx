@@ -44,32 +44,37 @@ function shortenId(id: string): string {
 }
 
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
+import { useRef } from "react";
 
 // ─── Component ─────────────────────────────────────────────────────────────
 export default function OrdersPage() {
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const isInitialLoad = useRef(true);
 
   useEffect(() => {
-    // 🔥 Next.js Refresh Fix (Ensures fresh data on navigation)
-    router.refresh();
+    if (authLoading) return;
 
     const init = async () => {
       try {
-        console.log("🚀 [ORDERS] Init Triggered");
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (!session?.user) {
+        if (!user) {
           console.warn("⚠️ [ORDERS] No session found");
-          setLoading(false);
+          if (isInitialLoad.current) {
+            setLoading(false);
+            isInitialLoad.current = false;
+          }
           return;
         }
+
+        if (isInitialLoad.current) setLoading(true);
 
         const { data, error } = await supabase
           .from("orders")
           .select("id, display_id, created_at, total_amount, status")
-          .eq("user_id", session.user.id)
+          .eq("user_id", user.id)
           .order("created_at", { ascending: false });
 
         if (error) {
@@ -80,20 +85,15 @@ export default function OrdersPage() {
       } catch (err) {
         console.error("🔥 [ORDERS] Crash:", err);
       } finally {
-        setLoading(false); // ✅ GUARANTEE UI EXIT
+        if (isInitialLoad.current) {
+          setLoading(false);
+          isInitialLoad.current = false;
+        }
       }
     };
 
     init();
-    
-    // 🛡️ Safety timeout (Guarantee UI exit after 5s)
-    const timeout = setTimeout(() => {
-      console.warn("🛡️ [ORDERS] Safety timeout triggered");
-      setLoading(false);
-    }, 5000);
-
-    return () => clearTimeout(timeout);
-  }, [router]);
+  }, [user, authLoading]);
 
   // Refined loading state: show the basic page structure instead of a full-screen skeleton flash
   const loadingView = (
@@ -118,9 +118,21 @@ export default function OrdersPage() {
 
       <div className="orders-container">
         {/* ── Page Header ─────────────────────────────── */}
-        <header className="orders-header">
-          <h1 className="orders-title">Your Orders</h1>
-          <p className="orders-subtitle">
+        <header className="orders-header flex flex-col items-center relative">
+          <div className="flex items-center justify-between w-full relative mb-2">
+            <button
+              onClick={() => router.push("/profile")}
+              style={{ background: 'none', border: 'none', padding: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#5a3e2b', zIndex: 10, marginLeft: '-8px' }}
+              aria-label="Go Back"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </button>
+            <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#1a1a1a', margin: 0, position: 'absolute', left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap' }}>
+              Your Orders
+            </h1>
+            <div style={{ width: '40px' }}></div>
+          </div>
+          <p className="orders-subtitle text-center mt-1 w-full" style={{ color: '#6b7280' }}>
             {orders.length > 0
               ? `${orders.length} order${orders.length > 1 ? "s" : ""} placed`
               : "Track and manage your orders"}

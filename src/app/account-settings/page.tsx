@@ -122,40 +122,25 @@ function AccountSettingsContent() {
           border-color: var(--brand) !important;
           outline: none;
         }
-        .back-icon-btn {
-          width: 40px;
-          height: 40px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #F5EFE6;
-          border: 1px solid #E6DCCF;
-          border-radius: 50%;
-          color: #5A3E2B;
-          transition: all 0.2s ease;
-        }
-        .back-icon-btn:hover {
-          background: #E6DCCF;
-          transform: translateX(-2px);
-        }
       `}} />
 
       <div className="mx-auto w-full max-w-md px-4">
         
-        <div className="flex items-center mt-8 mb-20 gap-5 pb-8 border-b border-stone-100">
-          <button 
-            onClick={() => router.push('/profile')} 
-            className="back-icon-btn"
+        <div className="flex items-center justify-between relative mt-8 mb-6">
+          <button
+            onClick={() => router.push("/profile")}
+            style={{ background: 'none', border: 'none', padding: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#5a3e2b', zIndex: 10, marginLeft: '-8px' }}
             aria-label="Go Back"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
           </button>
-          <h1 className="text-3xl font-bold m-0" style={{ color: "var(--brand)", letterSpacing: '-0.5px' }}>
+          <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#1a1a1a', margin: 0, position: 'absolute', left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap' }}>
             Account Settings
           </h1>
+          <div style={{ width: '40px' }}></div>
         </div>
 
-        <div className="flex flex-col gap-10">
+        <div className="flex flex-col" style={{ gap: '1.5rem' }}>
           {/* Email Update Card */}
           <section className="checkout-card p-6 shadow-sm">
             <div className="border-b pb-3 mb-5">

@@ -13,6 +13,7 @@ import {
   syncLocalCartToDB,
   clearAllLocalData,
   clearCart as clearCartLib,
+  snap,
 } from "@/lib/bags";
 import { useAuth } from "./useAuth";
 
@@ -24,6 +25,7 @@ type CartContextType = {
   removeFromCart: (productId: string) => Promise<void>;
   updateQuantity: (productId: string, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;
+  loading: boolean;
 };
 
 const CartContext = createContext<CartContextType | null>(null);
@@ -32,6 +34,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   
   const { user } = useAuth();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const isInitialLoad = useRef(true);
   const reqIdRef = useRef(0);
   const userRef = useRef(user);
   
@@ -43,6 +47,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const loadCart = useCallback(async (currentUser?: any) => {
     const reqId = ++reqIdRef.current;
     try {
+      if (isInitialLoad.current) setLoading(true);
       const targetUser = currentUser !== undefined ? currentUser : userRef.current;
       const items = await loadCartLib(targetUser);
       
@@ -52,27 +57,55 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (err) {
       console.error("[CartHook] loadCart error:", err);
+    } finally {
+      if (isInitialLoad.current) {
+        setLoading(false);
+        isInitialLoad.current = false;
+      }
     }
   }, []); // Stable reference — no dependencies
 
   const addToCart = useCallback(async (product: any) => {
-    await addToCartLib(product, userRef.current);
-    await loadCart();
+    const item = snap(product);
+    setCartItems(prev => {
+      const existing = prev.find(i => i.id === item.id);
+      if (existing) {
+        return prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i);
+      }
+      return [...prev, { ...item, quantity: 1 }];
+    });
+    try {
+      await addToCartLib(product, userRef.current);
+    } finally {
+      await loadCart();
+    }
   }, [loadCart]);
 
   const removeFromCart = useCallback(async (productId: string) => {
-    await removeFromCartLib(productId, userRef.current);
-    await loadCart();
+    setCartItems(prev => prev.filter(i => i.id !== productId));
+    try {
+      await removeFromCartLib(productId, userRef.current);
+    } finally {
+      await loadCart();
+    }
   }, [loadCart]);
 
   const updateQuantity = useCallback(async (productId: string, quantity: number) => {
-    await updateQty(productId, quantity, userRef.current);
-    await loadCart();
+    setCartItems(prev => prev.map(i => i.id === productId ? { ...i, quantity } : i));
+    try {
+      await updateQty(productId, quantity, userRef.current);
+    } finally {
+      await loadCart();
+    }
   }, [loadCart]);
 
   const clearCart = useCallback(async () => {
-    await clearCartLib(userRef.current);
-    await loadCart();
+    setCartItems([]);
+    try {
+      await clearCartLib(userRef.current);
+    } finally {
+      await loadCart();
+    }
   }, [loadCart]);
 
   // Initial load + auth state listener (runs once)
@@ -114,7 +147,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     removeFromCart,
     updateQuantity,
     clearCart,
-  }), [cartItems, addToCart, loadCart, removeFromCart, updateQuantity, clearCart]);
+    loading,
+  }), [cartItems, addToCart, loadCart, removeFromCart, updateQuantity, clearCart, loading]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

@@ -238,6 +238,10 @@ export async function syncLocalCartToDB(userId: string): Promise<void> {
   const localCart = read<CartItem[]>(CART_KEY, []);
   if (localCart.length === 0) return;
 
+  // IMMEDIATELY clear local storage to prevent race conditions where multiple 
+  // SIGNED_IN events could cause the same local items to be merged multiple times.
+  localStorage.removeItem(CART_KEY);
+
   for (const item of localCart) {
     // Check if user already has this prod in DB
     const { data: existing } = await supabase
@@ -266,9 +270,7 @@ export async function syncLocalCartToDB(userId: string): Promise<void> {
     }
   }
 
-  // Once synced, clear local
-  localStorage.removeItem(CART_KEY);
-  console.log("[Cart] Sync complete, local cleared.");
+  console.log("[Cart] Sync complete.");
   await loadCart({ id: userId });
 }
 
@@ -366,6 +368,10 @@ export async function syncLocalWishlistToDB(userId: string): Promise<void> {
     return;
   }
 
+  // IMMEDIATELY clear local storage to prevent race conditions where multiple 
+  // SIGNED_IN events could cause the same local items to be merged multiple times.
+  localStorage.removeItem(WISHLIST_KEY);
+
   try {
     for (const item of local) {
       const { data: existing, error: checkError } = await supabase
@@ -392,10 +398,7 @@ export async function syncLocalWishlistToDB(userId: string): Promise<void> {
       }
     }
 
-    // Success: Clear local
-    write(WISHLIST_KEY, []);
-    localStorage.removeItem(WISHLIST_KEY);
-    console.log("[Wishlist] Sync complete. Local storage cleared.");
+    console.log("[Wishlist] Sync complete.");
   } catch (syncErr) {
     console.error("WISHLIST SYNC CRITICAL FAILURE:", syncErr);
   }

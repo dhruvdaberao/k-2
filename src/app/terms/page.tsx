@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import BackButton from '@/components/BackButton';
 
 export const metadata: Metadata = {
   title: 'Terms of Service - Keshvi Crafts',
@@ -7,8 +8,11 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <main className="container py-12 max-w-3xl mx-auto prose">
-      <h1 className="font-serif text-3xl font-bold mb-6">Terms of Service</h1>
+    <main className="container py-12 px-4 max-w-3xl mx-auto prose" style={{ paddingTop: '120px' }}>
+      <div className="flex items-center gap-3 mb-6">
+        <BackButton />
+        <h1 className="font-serif text-3xl font-bold m-0">Terms of Service</h1>
+      </div>
       <p className="text-stone-500 mb-8 italic">Last updated: {new Date().toLocaleDateString()}</p>
 
       <p className="mb-8">
