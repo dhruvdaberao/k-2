@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <main className="container py-12 px-4 max-w-3xl mx-auto prose" style={{ paddingTop: '120px' }}>
+    <main className="container py-12 px-4 max-w-3xl mx-auto prose" style={{ paddingTop: '80px' }}>
       <div className="flex items-center gap-3 mb-6">
         <BackButton />
         <h1 className="font-serif text-3xl font-bold m-0">Terms of Service</h1>
