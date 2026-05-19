@@ -24,18 +24,11 @@ const WishlistContext = createContext<WishlistContextType | null>(null);
 
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
-  // Hydrate instantly from localStorage cache — never show empty wishlist while loading
-  const [wishlist, setWishlist] = useState<string[]>(() => {
-    if (typeof window === "undefined") return [];
-    const cached = getWishlist();
-    const ids = cached.map(i => String(i.id)).filter(id => id && id !== "undefined");
-    return Array.from(new Set(ids.filter(id => products.some(p => p.id === id || p.slug === id))));
-  });
-  const [loading, setLoading] = useState(() => {
-    if (typeof window === "undefined") return true;
-    return getWishlist().length === 0; // Only show loading if cache is empty
-  });
+  // Start with empty state to match server render (avoids hydration mismatch)
+  const [wishlist, setWishlist] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
   const isInitialLoad = useRef(true);
+  const hadCacheAtInit = useRef(false);
 
   const filterValidIds = useCallback((ids: string[]) => {
     const validIds = ids.filter(id => {
@@ -45,9 +38,23 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     return Array.from(new Set(validIds));
   }, []);
 
+  // Hydrate from localStorage cache immediately after mount (before Supabase)
+  useEffect(() => {
+    const cached = getWishlist();
+    if (cached.length > 0) {
+      const ids = cached.map(i => String(i.id)).filter(id => id && id !== "undefined");
+      const valid = Array.from(new Set(ids.filter(id => products.some(p => p.id === id || p.slug === id))));
+      if (valid.length > 0) {
+        setWishlist(valid);
+        setLoading(false);
+        hadCacheAtInit.current = true;
+      }
+    }
+  }, []); // Runs once on mount
+
   const loadWishlist = useCallback(async () => {
     try {
-      if (isInitialLoad.current && wishlist.length === 0) {
+      if (isInitialLoad.current && !hadCacheAtInit.current) {
         setLoading(true);
       }
       const items = await loadWishlistLib(user);

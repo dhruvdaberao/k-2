@@ -34,17 +34,11 @@ const CartContext = createContext<CartContextType | null>(null);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   
   const { user } = useAuth();
-  // Hydrate instantly from localStorage cache — never show empty cart while loading
-  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
-    if (typeof window === "undefined") return [];
-    return getCart();
-  });
-  const [loading, setLoading] = useState(() => {
-    if (typeof window === "undefined") return true;
-    return getCart().length === 0; // Only show loading if cache is empty
-  });
+  // Start with empty state to match server render (avoids hydration mismatch)
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const isInitialLoad = useRef(true);
-  const hadCacheAtInit = useRef(typeof window !== "undefined" && getCart().length > 0);
+  const hadCacheAtInit = useRef(false);
   const reqIdRef = useRef(0);
   const userRef = useRef(user);
   
@@ -52,6 +46,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     userRef.current = user;
   }, [user]);
+
+  // Hydrate from localStorage cache immediately after mount (before Supabase)
+  useEffect(() => {
+    const cached = getCart();
+    if (cached.length > 0) {
+      setCartItems(cached);
+      setLoading(false);
+      hadCacheAtInit.current = true;
+    }
+  }, []); // Runs once on mount
 
   const loadCart = useCallback(async (currentUser?: any) => {
     const reqId = ++reqIdRef.current;
