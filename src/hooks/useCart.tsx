@@ -3,7 +3,7 @@
 import { supabase } from "@/lib/supabaseClient";
 import { getCart } from "@/lib/bags";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import {
   CartItem,
@@ -47,15 +47,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     userRef.current = user;
   }, [user]);
 
-  // Hydrate from localStorage cache immediately after mount (before Supabase)
-  useEffect(() => {
+  // Hydrate from localStorage cache BEFORE browser paint (useLayoutEffect)
+  // This ensures the user never sees empty cart — cached data appears on first frame
+  useLayoutEffect(() => {
     const cached = getCart();
     if (cached.length > 0) {
       setCartItems(cached);
       setLoading(false);
       hadCacheAtInit.current = true;
     }
-  }, []); // Runs once on mount
+  }, []); // Runs once on mount, before paint
 
   const loadCart = useCallback(async (currentUser?: any) => {
     const reqId = ++reqIdRef.current;

@@ -5,7 +5,6 @@ import { useState, useEffect, useCallback } from "react"
 import products from "@/data/products.json"
 import Image from "next/image"
 import { supabase } from "@/lib/supabaseClient"
-import { getProductRating } from "@/lib/ratingUtils"
 import { invalidateRatingCache } from "@/lib/ratingCache"
 import { showToast } from "@/components/Toast"
 
@@ -104,49 +103,58 @@ export default function ReviewPage() {
   const [sortBy, setSortBy] = useState("latest")
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
-  const getRatingBreakdown = async (pId: string) => {
-    const { data, error } = await supabase
-      .from("reviews")
-      .select("rating")
-      .eq("product_id", pId);
 
-    if (error || !data) return null;
 
-    const counts: Record<number, number> = {
-      5: 0,
-      4: 0,
-      3: 0,
-      2: 0,
-      1: 0,
-    };
+  // === REVIEW DATA CACHE (localStorage) ===
+  const REVIEW_CACHE_KEY = `kc:reviews:${productId}`;
+  const REVIEW_CACHE_TTL = 10 * 60 * 1000; // 10 minutes
 
-    data.forEach((r) => {
-      if (counts[r.rating] !== undefined) {
-        counts[r.rating] += 1;
-      }
-    });
+  const getCachedReviews = useCallback(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const raw = localStorage.getItem(REVIEW_CACHE_KEY);
+      if (!raw) return null;
+      const { data, ts } = JSON.parse(raw);
+      if (Date.now() - ts > REVIEW_CACHE_TTL) return null;
+      return data as { reviews: any[]; ratingData: any; breakdown: any };
+    } catch { return null; }
+  }, [REVIEW_CACHE_KEY]);
 
-    return {
-      counts,
-      total: data.length,
-    };
+  const setCachedReviews = useCallback((reviews: any[], rd: any, bd: any) => {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.setItem(REVIEW_CACHE_KEY, JSON.stringify({
+        data: { reviews, ratingData: rd, breakdown: bd },
+        ts: Date.now()
+      }));
+    } catch { /* ignore */ }
+  }, [REVIEW_CACHE_KEY]);
+
+  // Compute rating data locally from reviews (no extra Supabase call needed!)
+  const computeRatingFromReviews = (reviewData: any[]) => {
+    if (!reviewData || reviewData.length === 0) return { avg: null, count: 0 };
+    const sum = reviewData.reduce((a: number, r: any) => a + r.rating, 0);
+    return { avg: (sum / reviewData.length).toFixed(1), count: reviewData.length };
   };
 
-  const loadBreakdown = useCallback(async (pId: string) => {
-    const result = await getRatingBreakdown(pId);
-    setRatingBreakdown(result);
-  }, []);
+  // Compute breakdown locally from reviews (no extra Supabase call needed!)
+  const computeBreakdownFromReviews = (reviewData: any[]) => {
+    if (!reviewData || reviewData.length === 0) return null;
+    const counts: Record<number, number> = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+    reviewData.forEach((r: any) => {
+      if (counts[r.rating] !== undefined) counts[r.rating] += 1;
+    });
+    return { counts, total: reviewData.length };
+  };
 
   const loadReviewsData = useCallback(async (pId: string) => {
     if (!pId) {
       setLoading(false);
       return;
     }
-    console.log("🔍 [DEBUG] LOAD REVIEWS START for:", pId);
-    setLoading(true);
     
     try {
-      // 1. Fetch Reviews
+      // 1. Fetch Reviews + Profiles in parallel (2 queries instead of 4!)
       const { data: reviewData, error: reviewError } = await supabase
         .from("reviews")
         .select("*")
@@ -154,59 +162,61 @@ export default function ReviewPage() {
         .order("created_at", { ascending: false });
 
       if (reviewError) {
-        console.error("❌ [REVIEWS] FETCH ERROR:", reviewError);
+        console.error("[REVIEWS] FETCH ERROR:", reviewError);
         setReviews([]);
+        setRatingData({ avg: null, count: 0 });
+        setReviewsLoaded(true);
+        setLoading(false);
         return;
       }
 
       if (!reviewData || reviewData.length === 0) {
         setReviews([]);
         setRatingData({ avg: null, count: 0 });
+        setRatingBreakdown(null);
+        setReviewsLoaded(true);
+        setLoading(false);
+        setCachedReviews([], { avg: null, count: 0 }, null);
         return;
       }
 
-      // 2. Fetch Profiles safely
+      // 2. Fetch Profiles
       const userIds = Array.from(new Set(reviewData.map(r => r.user_id)));
-      
-      // FIXED: The column in your DB is 'name', not 'full_name'
-      const { data: profileData, error: profileError } = await supabase
+      const { data: profileData } = await supabase
         .from("profiles")
         .select("id, name") 
         .in("id", userIds);
-
-      if (profileError) {
-        console.error("❌ [PROFILES] FETCH ERROR:", profileError);
-      }
 
       const profileMap = (profileData || []).reduce((acc: any, p: any) => {
         acc[p.id] = p.name;
         return acc;
       }, {});
 
-      // 3. Map names
       const enrichedReviews = reviewData.map(r => ({
         ...r,
         author_name: profileMap[r.user_id] || "Verified Customer"
       }));
 
+      // 3. Compute rating & breakdown LOCALLY (no extra Supabase calls!)
+      const rd = computeRatingFromReviews(reviewData);
+      const bd = computeBreakdownFromReviews(reviewData);
+
       setReviews(enrichedReviews);
-      
-      // 4. Update rating stats
-      const result = await getProductRating(pId);
-      setRatingData(result);
-      
-      // 5. Load Breakdown
-      await loadBreakdown(pId);
+      setRatingData(rd);
+      setRatingBreakdown(bd);
+
+      // 4. Cache for next visit
+      setCachedReviews(enrichedReviews, rd, bd);
 
     } catch (err) {
-      console.error("🔥 [CRITICAL] loadReviewsData crashed:", err);
+      console.error("[CRITICAL] loadReviewsData crashed:", err);
     } finally {
-      setReviewsLoaded(true); // Mark as loaded regardless of success/failure
+      setReviewsLoaded(true);
       setLoading(false);
     }
-  }, []);
+  }, [setCachedReviews]);
 
-  // Resolve product from local JSON IMMEDIATELY (synchronous, no Supabase needed)
+  // INIT: Show cached data INSTANTLY, then refresh from Supabase in background
   useEffect(() => {
     if (!productId) {
       setLoading(false);
@@ -216,23 +226,31 @@ export default function ReviewPage() {
     const slug = decodeURIComponent(productId);
     const p = (products as any[]).find(x => x.slug === slug || x.id === slug);
     
-    if (p) {
-      const productData = {
-        id: p.id || p.slug, 
-        name: p.title,
-        image: p.images?.[0] || "/placeholder.png",
-      };
-      setProduct(productData);
-      
-      // Load reviews from Supabase in parallel (non-blocking)
-      Promise.all([
-        loadReviewsData(productData.id),
-        loadBreakdown(productData.id)
-      ]).finally(() => setLoading(false));
-    } else {
+    if (!p) {
+      setLoading(false);
+      return;
+    }
+
+    const productData = {
+      id: p.id || p.slug, 
+      name: p.title,
+      image: p.images?.[0] || "/placeholder.png",
+    };
+    setProduct(productData);
+
+    // Try showing cached data INSTANTLY (before any network call)
+    const cached = getCachedReviews();
+    if (cached) {
+      setReviews(cached.reviews);
+      setRatingData(cached.ratingData);
+      setRatingBreakdown(cached.breakdown);
+      setReviewsLoaded(true);
       setLoading(false);
     }
-  }, [productId, loadReviewsData, loadBreakdown]);
+
+    // Always refresh from Supabase in background (even if cache hit)
+    loadReviewsData(productData.id);
+  }, [productId, loadReviewsData, getCachedReviews]);
 
   const handleOpenReview = async () => {
     try {
@@ -365,7 +383,6 @@ export default function ReviewPage() {
       showToast("Review posted successfully");
       invalidateRatingCache();
       await loadReviewsData(pId);
-      await loadBreakdown(pId);
       window.scrollTo({ top: 0, behavior: 'smooth' });
       router.refresh();
 
@@ -413,9 +430,7 @@ export default function ReviewPage() {
       showToast("Review deleted successfully");
       invalidateRatingCache();
       if (product?.id) {
-        const result = await getProductRating(product.id);
-        setRatingData(result);
-        await loadBreakdown(product.id);
+        await loadReviewsData(product.id);
       }
       router.refresh();
     } catch (err: any) {

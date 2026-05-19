@@ -4,23 +4,23 @@ import { supabase } from "./supabaseClient";
 
 type RatingEntry = { avg: string | null; count: number };
 
-// In-memory cache — survives client-side navigation, cleared on full reload
+// In-memory cache — survives client-side navigation
 let ratingCache: Map<string, RatingEntry> = new Map();
 let fetchPromise: Promise<void> | null = null;
 let cacheReady = false;
 
-// Session storage key for persistence across soft navigations
+// Use localStorage (persists across app restarts) instead of sessionStorage
 const CACHE_KEY = "kc:ratings";
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 
-function hydrateFromSession() {
+function hydrateFromStorage() {
   if (typeof window === "undefined") return;
   try {
-    const raw = sessionStorage.getItem(CACHE_KEY);
+    const raw = localStorage.getItem(CACHE_KEY);
     if (!raw) return;
     const { data, ts } = JSON.parse(raw);
     if (Date.now() - ts > CACHE_TTL) {
-      sessionStorage.removeItem(CACHE_KEY);
+      localStorage.removeItem(CACHE_KEY);
       return;
     }
     const entries: [string, RatingEntry][] = data;
@@ -31,10 +31,10 @@ function hydrateFromSession() {
   }
 }
 
-function persistToSession() {
+function persistToStorage() {
   if (typeof window === "undefined") return;
   try {
-    sessionStorage.setItem(
+    localStorage.setItem(
       CACHE_KEY,
       JSON.stringify({ data: Array.from(ratingCache.entries()), ts: Date.now() })
     );
@@ -45,7 +45,6 @@ function persistToSession() {
 
 /**
  * Fetches ALL ratings from the reviews table in a single query and caches them.
- * This replaces N individual getProductRating() calls with 1 batch query.
  */
 async function fetchAllRatings(): Promise<void> {
   try {
@@ -58,7 +57,6 @@ async function fetchAllRatings(): Promise<void> {
       return;
     }
 
-    // Aggregate ratings per product
     const aggregated = new Map<string, { sum: number; count: number }>();
 
     for (const row of data || []) {
@@ -69,7 +67,6 @@ async function fetchAllRatings(): Promise<void> {
       aggregated.set(pid, entry);
     }
 
-    // Convert to RatingEntry format
     for (const [pid, { sum, count }] of aggregated) {
       ratingCache.set(pid, {
         avg: (sum / count).toFixed(1),
@@ -78,7 +75,7 @@ async function fetchAllRatings(): Promise<void> {
     }
 
     cacheReady = true;
-    persistToSession();
+    persistToStorage();
   } catch (err) {
     console.error("[RatingCache] Unexpected error:", err);
   }
@@ -91,8 +88,8 @@ async function fetchAllRatings(): Promise<void> {
 export async function ensureRatingsLoaded(): Promise<void> {
   if (cacheReady) return;
 
-  // Try session storage first
-  hydrateFromSession();
+  // Try localStorage first (persists across app restarts!)
+  hydrateFromStorage();
   if (cacheReady) return;
 
   // Deduplicate concurrent calls
@@ -106,24 +103,27 @@ export async function ensureRatingsLoaded(): Promise<void> {
 }
 
 /**
- * Get a single product's rating from the cache.
- * Returns { avg: null, count: -1 } if cache is not ready yet (loading state).
+ * SYNCHRONOUS: Get a single product's rating from cache.
+ * Returns { avg: null, count: -1 } if cache is not ready (loading).
  * Returns { avg: null, count: 0 } if product has no reviews.
  */
 export function getCachedRating(productId: string): RatingEntry {
+  // Try hydrating from localStorage synchronously on first call
+  if (!cacheReady) {
+    hydrateFromStorage();
+  }
   if (!cacheReady) return { avg: null, count: -1 }; // -1 = loading
   return ratingCache.get(productId) || { avg: null, count: 0 };
 }
 
 /**
  * Invalidate cache — call after submitting/deleting a review.
- * Next getCachedRating call will trigger a fresh fetch.
  */
 export function invalidateRatingCache() {
   ratingCache.clear();
   cacheReady = false;
   fetchPromise = null;
   if (typeof window !== "undefined") {
-    sessionStorage.removeItem(CACHE_KEY);
+    localStorage.removeItem(CACHE_KEY);
   }
 }

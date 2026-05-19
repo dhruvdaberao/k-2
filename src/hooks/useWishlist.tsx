@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, useCallback, useMemo, useRef } from "react";
+import { createContext, useContext, useEffect, useLayoutEffect, useState, useCallback, useMemo, useRef } from "react";
 import { 
   ItemSnapshot, 
   loadWishlist as loadWishlistLib, 
@@ -38,8 +38,9 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     return Array.from(new Set(validIds));
   }, []);
 
-  // Hydrate from localStorage cache immediately after mount (before Supabase)
-  useEffect(() => {
+  // Hydrate from localStorage cache BEFORE browser paint (useLayoutEffect)
+  // This ensures the user never sees empty wishlist — cached data appears on first frame
+  useLayoutEffect(() => {
     const cached = getWishlist();
     if (cached.length > 0) {
       const ids = cached.map(i => String(i.id)).filter(id => id && id !== "undefined");
@@ -50,7 +51,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
         hadCacheAtInit.current = true;
       }
     }
-  }, []); // Runs once on mount
+  }, []); // Runs once on mount, before paint
 
   const loadWishlist = useCallback(async () => {
     try {
