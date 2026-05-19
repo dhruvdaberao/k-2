@@ -72,6 +72,7 @@ export default function ReviewPage() {
   const [reviews, setReviews] = useState<any[]>([])
   const [ratingData, setRatingData] = useState<{ avg: string | null; count: number }>({ avg: null, count: 0 })
   const [loading, setLoading] = useState(true)
+  const [reviewsLoaded, setReviewsLoaded] = useState(false) // Only true after DB query completes
 
   // Auth Effect
   useEffect(() => {
@@ -200,6 +201,7 @@ export default function ReviewPage() {
     } catch (err) {
       console.error("🔥 [CRITICAL] loadReviewsData crashed:", err);
     } finally {
+      setReviewsLoaded(true); // Mark as loaded regardless of success/failure
       setLoading(false);
     }
   }, []);
@@ -230,10 +232,6 @@ export default function ReviewPage() {
     } else {
       setLoading(false);
     }
-
-    // Safety timeout
-    const safety = setTimeout(() => setLoading(false), 3000);
-    return () => clearTimeout(safety);
   }, [productId, loadReviewsData, loadBreakdown]);
 
   const handleOpenReview = async () => {
@@ -494,7 +492,12 @@ export default function ReviewPage() {
               {product.name}
             </p>
             <div className="flex items-center gap-1.5" style={{ display: 'flex', alignItems: 'center' }}>
-              {ratingData.count === 0 ? (
+              {!reviewsLoaded ? (
+                <div className="flex items-center gap-2">
+                  <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: '#e0d6cc' }} className="animate-pulse" />
+                  <div style={{ width: '60px', height: '16px', borderRadius: '4px', backgroundColor: '#e0d6cc' }} className="animate-pulse" />
+                </div>
+              ) : ratingData.count === 0 ? (
                 <span className="text-sm text-gray-400">No reviews yet</span>
               ) : (
                 <>
@@ -548,7 +551,18 @@ export default function ReviewPage() {
         </div>
 
         {/* RATING BREAKDOWN */}
-        {ratingBreakdown && ratingBreakdown.total > 0 && (
+        {!reviewsLoaded ? (
+          <div className="mx-4 mb-6 animate-pulse" style={{ backgroundColor: '#f8f4ef', padding: '24px', borderRadius: '28px', border: '1px solid #f1ebe6' }}>
+            <div style={{ width: '120px', height: '12px', backgroundColor: '#e0d6cc', borderRadius: '4px', marginBottom: '16px' }} />
+            {[5, 4, 3, 2, 1].map((star) => (
+              <div key={star} style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                <div style={{ width: '40px', height: '14px', backgroundColor: '#e0d6cc', borderRadius: '4px' }} />
+                <div style={{ flex: 1, height: '10px', backgroundColor: 'white', borderRadius: '999px' }} />
+                <div style={{ width: '30px', height: '14px', backgroundColor: '#e0d6cc', borderRadius: '4px' }} />
+              </div>
+            ))}
+          </div>
+        ) : ratingBreakdown && ratingBreakdown.total > 0 && (
           <div 
             className="mx-4 mb-6" 
             style={{ 
@@ -687,7 +701,7 @@ export default function ReviewPage() {
 
         {/* REVIEW LIST */}
         <div className="px-4 space-y-4 pb-12" style={{ padding: '0 16px' }}>
-          {loading ? (
+          {(loading || !reviewsLoaded) ? (
             <div className="space-y-4">
               <SkeletonCard />
               <SkeletonCard />
