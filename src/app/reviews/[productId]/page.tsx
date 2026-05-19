@@ -6,6 +6,7 @@ import products from "@/data/products.json"
 import Image from "next/image"
 import { supabase } from "@/lib/supabaseClient"
 import { getProductRating } from "@/lib/ratingUtils"
+import { invalidateRatingCache } from "@/lib/ratingCache"
 import { showToast } from "@/components/Toast"
 
 // Reusable Curved Star Component
@@ -203,56 +204,37 @@ export default function ReviewPage() {
     }
   }, []);
 
+  // Resolve product from local JSON IMMEDIATELY (synchronous, no Supabase needed)
   useEffect(() => {
-    // 1. Next.js Refresh Fix (Clears stale navigation state)
-    router.refresh();
-
-    const init = async () => {
-      try {
-        console.log("🚀 [INIT] ReviewPage start");
-        
-        if (!productId) {
-          console.warn("⚠️ [INIT] No productId found");
-          setLoading(false);
-          return;
-        }
-
-        const slug = decodeURIComponent(productId);
-        const p = (products as any[]).find(x => x.slug === slug || x.id === slug);
-        
-        if (p) {
-          const productData = {
-            id: p.id || p.slug, 
-            name: p.title,
-            image: p.images?.[0] || "/placeholder.png",
-          };
-          setProduct(productData);
-          
-          // Parallel load for efficiency
-          await Promise.all([
-            loadReviewsData(productData.id),
-            loadBreakdown(productData.id)
-          ]);
-        } else {
-          console.error("❌ [INIT] Product not found for slug:", slug);
-          setLoading(false);
-        }
-      } catch (err) {
-        console.error("🔥 [INIT] Crash:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    init();
-
-    // 2. Fail-safe Timeout (Guarantee UI exit)
-    const safety = setTimeout(() => {
+    if (!productId) {
       setLoading(false);
-    }, 5000);
+      return;
+    }
 
+    const slug = decodeURIComponent(productId);
+    const p = (products as any[]).find(x => x.slug === slug || x.id === slug);
+    
+    if (p) {
+      const productData = {
+        id: p.id || p.slug, 
+        name: p.title,
+        image: p.images?.[0] || "/placeholder.png",
+      };
+      setProduct(productData);
+      
+      // Load reviews from Supabase in parallel (non-blocking)
+      Promise.all([
+        loadReviewsData(productData.id),
+        loadBreakdown(productData.id)
+      ]).finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+
+    // Safety timeout
+    const safety = setTimeout(() => setLoading(false), 3000);
     return () => clearTimeout(safety);
-  }, [productId, loadReviewsData, loadBreakdown, router]);
+  }, [productId, loadReviewsData, loadBreakdown]);
 
   const handleOpenReview = async () => {
     try {
@@ -383,6 +365,7 @@ export default function ReviewPage() {
       setIsReviewOpen(false);
       setDuplicateModal({ show: false, existingReview: null });
       showToast("Review posted successfully");
+      invalidateRatingCache();
       await loadReviewsData(pId);
       await loadBreakdown(pId);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -430,6 +413,7 @@ export default function ReviewPage() {
 
       console.log("✅ [DELETE] Success.");
       showToast("Review deleted successfully");
+      invalidateRatingCache();
       if (product?.id) {
         const result = await getProductRating(product.id);
         setRatingData(result);
@@ -441,10 +425,25 @@ export default function ReviewPage() {
     }
   };
 
-  if (loading) {
+  if (loading && !product) {
     return (
-      <div className="flex items-center justify-center h-[100vh] bg-white">
-        <div className="w-10 h-10 border-4 border-[#5a3e2b] border-t-transparent rounded-full animate-spin"></div>
+      <div className="min-h-screen bg-white" style={{ fontFamily: 'sans-serif' }}>
+        <div className="bg-white px-4 flex items-center justify-between" style={{ display: 'flex', position: 'relative', paddingTop: '60px', paddingBottom: '16px' }}>
+          <div style={{ width: '40px' }}></div>
+          <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#1a1a1a', margin: 0, position: 'absolute', left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap' }}>Product Reviews</h1>
+          <div style={{ width: '40px' }}></div>
+        </div>
+        <div style={{ maxWidth: '600px', margin: '0 auto', padding: '0 16px' }}>
+          <div className="mx-4 p-4 rounded-2xl animate-pulse" style={{ backgroundColor: '#f8f4ef', borderRadius: '24px', marginBottom: '24px' }}>
+            <div className="h-5 w-2/3 bg-[#e0d6cc] rounded mb-2"></div>
+            <div className="h-4 w-1/3 bg-[#e0d6cc] rounded"></div>
+          </div>
+          <div className="space-y-4 px-4">
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+          </div>
+        </div>
       </div>
     );
   }

@@ -71,7 +71,7 @@ export default function MyReviewsPage() {
     const safety = setTimeout(() => {
       console.warn("🛡️ [MY-REVIEWS] Safety timeout triggered");
       setLoading(false);
-    }, 5000);
+    }, 3000);
 
     return () => clearTimeout(safety);
   }, [router])
@@ -200,8 +200,33 @@ export default function MyReviewsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-[100vh] bg-white">
-        <div className="w-10 h-10 border-4 border-[#5a3e2b] border-t-transparent rounded-full animate-spin"></div>
+      <div className="min-h-screen bg-white pb-20" style={{ fontFamily: 'sans-serif' }}>
+        <div className="bg-white px-4 flex items-center justify-between" style={{ display: 'flex', position: 'relative', paddingTop: '60px', paddingBottom: '16px' }}>
+          <div style={{ width: '40px' }}></div>
+          <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#1a1a1a', margin: 0, position: 'absolute', left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap' }}>My Reviews</h1>
+          <div style={{ width: '40px' }}></div>
+        </div>
+        <div style={{ maxWidth: '600px', margin: '0 auto', padding: '0 16px' }}>
+          <p className="text-center text-sm text-gray-500 mt-2 mb-8">Manage and view all your product reviews</p>
+          <div className="space-y-4">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="bg-[#f8f4ef] rounded-2xl p-5 shadow-sm border border-[#f1ebe6] animate-pulse">
+                <div className="flex items-center gap-4">
+                  <div style={{ width: '60px', height: '60px', borderRadius: '12px', backgroundColor: '#e0d6cc' }} />
+                  <div className="flex-1">
+                    <div className="h-4 w-3/4 bg-[#e0d6cc] rounded mb-2"></div>
+                    <div className="h-3 w-1/3 bg-[#e0d6cc] rounded"></div>
+                  </div>
+                </div>
+                <div className="mt-4 flex gap-1">
+                  {[1,2,3,4,5].map(j => (
+                    <div key={j} style={{ width: '18px', height: '18px', backgroundColor: '#e0d6cc', borderRadius: '50%' }} />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     )
   }

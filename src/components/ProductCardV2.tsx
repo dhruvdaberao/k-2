@@ -9,7 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useWishlist } from "@/hooks/useWishlist";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
-import { getProductRating } from "@/lib/ratingUtils";
+import { ensureRatingsLoaded, getCachedRating } from "@/lib/ratingCache";
 import { showToast } from "@/components/Toast";
 import "./ProductCardV2.css";
 
@@ -20,14 +20,14 @@ export default function ProductCardV2({ p }: { p: Product }) {
     const { toggleWishlist, isWishlisted } = useWishlist();
     const router = useRouter();
 
-    const [ratingData, setRatingData] = useState<{ avg: string | null; count: number }>({ avg: null, count: 0 });
+    const [ratingData, setRatingData] = useState<{ avg: string | null; count: number }>(() => getCachedRating(p.id || p.slug));
 
     useEffect(() => {
-        async function loadRating() {
-            const result = await getProductRating(p.id || p.slug);
-            setRatingData(result);
-        }
-        loadRating();
+        let cancelled = false;
+        ensureRatingsLoaded().then(() => {
+            if (!cancelled) setRatingData(getCachedRating(p.id || p.slug));
+        });
+        return () => { cancelled = true; };
     }, [p.id, p.slug]);
 
     const cartItem = cartItems.find((it) => it.id === (p.id || p.slug));
@@ -169,7 +169,14 @@ export default function ProductCardV2({ p }: { p: Product }) {
                                 router.push(`/reviews/${p.id || p.slug}`);
                             }}
                         >
-                            {ratingData.count === 0 ? (
+                        {ratingData.count === -1 ? (
+                            /* Loading — show subtle placeholder, not "No reviews" */
+                            <div className="flex items-center gap-1 text-xs text-gray-300 font-medium whitespace-nowrap">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#ddd" stroke="#ddd" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                </svg>
+                            </div>
+                        ) : ratingData.count === 0 ? (
                                 <div className="flex items-center gap-1 text-xs text-gray-400 font-medium whitespace-nowrap">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#aaa" stroke="#aaa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>

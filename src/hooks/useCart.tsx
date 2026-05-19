@@ -1,6 +1,7 @@
 "use client";
 
 import { supabase } from "@/lib/supabaseClient";
+import { getCart } from "@/lib/bags";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
@@ -33,9 +34,17 @@ const CartContext = createContext<CartContextType | null>(null);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   
   const { user } = useAuth();
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Hydrate instantly from localStorage cache — never show empty cart while loading
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    if (typeof window === "undefined") return [];
+    return getCart();
+  });
+  const [loading, setLoading] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return getCart().length === 0; // Only show loading if cache is empty
+  });
   const isInitialLoad = useRef(true);
+  const hadCacheAtInit = useRef(typeof window !== "undefined" && getCart().length > 0);
   const reqIdRef = useRef(0);
   const userRef = useRef(user);
   
@@ -47,7 +56,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const loadCart = useCallback(async (currentUser?: any) => {
     const reqId = ++reqIdRef.current;
     try {
-      if (isInitialLoad.current) setLoading(true);
+      if (isInitialLoad.current && !hadCacheAtInit.current) setLoading(true);
       const targetUser = currentUser !== undefined ? currentUser : userRef.current;
       const items = await loadCartLib(targetUser);
       

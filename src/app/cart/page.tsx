@@ -74,7 +74,8 @@ export default function CartPage() {
     }
   };
 
-  if (loading) {
+  // Only show full skeleton if we truly have NO data (no cache)
+  if (loading && cartItems.length === 0) {
     return (
       <main className="cart-page py-4 py-md-5 px-3 bg-[#FAF7F2] min-h-screen">
         <div className="container" style={{ maxWidth: '900px' }}>

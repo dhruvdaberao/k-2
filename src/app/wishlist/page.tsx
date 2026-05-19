@@ -12,11 +12,21 @@ import products from "@/data/products.json";
 export default function WishlistPage() {
   const { wishlist: items, loading } = useWishlist();
 
-  if (loading) {
+  if (loading && items.length === 0) {
     return (
-      <div className="container py-8 flex flex-col items-center justify-center min-h-[40vh]">
-        <h1 className="text-2xl font-serif font-bold text-[#2f2a26]">Wishlist</h1>
-        <p className="mt-4 text-stone-500 italic">Finding your saved pieces...</p>
+      <div className="container py-8">
+        <h1 className="text-3xl font-serif font-bold text-[#2f2a26] mb-8">Wishlist</h1>
+        <div className="plp-grid-mobile">
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-sm animate-pulse">
+              <div className="w-full aspect-square bg-stone-200" />
+              <div className="p-3">
+                <div className="h-4 w-3/4 bg-stone-200 rounded mb-2"></div>
+                <div className="h-5 w-1/3 bg-stone-200 rounded"></div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
