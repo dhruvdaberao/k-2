@@ -54,7 +54,7 @@ export default function ProductCard({ p }: { p: Product }) {
       const messageText = `Hi Keshvi Crafts! I would like to enquire about this product: ${p.title} (https://keshvicrafts.in/products/${p.slug})`;
       navigator.clipboard.writeText(messageText).catch(() => {});
 
-      const url = p.cta?.url || `https://www.instagram.com/direct/t/17844051177388084/`;
+      const url = p.cta?.url || `https://ig.me/m/keshvi_crafts`;
       window.open(url, "_blank", "noopener,noreferrer");
       
       showToast(`Enquiry message copied! Just paste it in the DM 📋`);

@@ -29,12 +29,12 @@ export const validateProduct = (product: any): Product | null => {
             product.cta = {
                 type: "instagram-enquiry",
                 label: "Enquire on Instagram",
-                url: "https://www.instagram.com/direct/t/17844051177388084/", // Fallback
+                url: "https://ig.me/m/keshvi_crafts", // Fallback
                 prefillMessage: `Hi! I'm interested in ${product.title}`
             };
         } else if (!product.cta.url) {
             console.warn(`Custom order product ${product.slug} CTA missing URL. partial patch...`);
-            product.cta.url = "https://www.instagram.com/direct/t/17844051177388084/";
+            product.cta.url = "https://ig.me/m/keshvi_crafts";
         }
     }
 

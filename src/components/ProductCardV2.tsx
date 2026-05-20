@@ -59,7 +59,7 @@ export default function ProductCardV2({ p }: { p: Product }) {
             const messageText = `Hi Keshvi Crafts! I would like to enquire about this product: ${p.title} (https://keshvicrafts.in/products/${p.id || p.slug})`;
             navigator.clipboard.writeText(messageText).catch(() => {});
 
-            const defaultUrl = "https://www.instagram.com/direct/t/17844051177388084/";
+            const defaultUrl = "https://ig.me/m/keshvi_crafts";
 
             const url = p.cta?.url || defaultUrl;
             window.open(url, "_blank", "noopener,noreferrer");

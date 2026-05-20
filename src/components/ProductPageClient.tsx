@@ -279,7 +279,7 @@ export default function ProductPageClient({
                     const messageText = `Hi Keshvi Crafts! I would like to enquire about this product: ${product.title} (${window.location.href})`;
                     navigator.clipboard.writeText(messageText).catch(() => {});
 
-                    const url = `https://www.instagram.com/direct/t/17844051177388084/`;
+                    const url = `https://ig.me/m/keshvi_crafts`;
                     window.open(url, "_blank", "noopener,noreferrer");
 
                     showToast(`Enquiry message copied! Just paste it in the DM 📋`);
