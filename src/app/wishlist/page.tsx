@@ -15,7 +15,7 @@ export default function WishlistPage() {
   if (loading && items.length === 0) {
     return (
       <div className="container py-8">
-        <h1 className="text-3xl font-serif font-bold text-[#2f2a26] mb-8">Wishlist</h1>
+        <h1 className="text-3xl font-serif font-bold text-[#2f2a26] mb-8 text-center">Wishlist</h1>
         <div className="plp-grid-mobile">
           {[1, 2, 3, 4].map(i => (
             <div key={i} className="bg-white rounded-2xl overflow-hidden border border-stone-100 shadow-sm animate-pulse">
@@ -36,7 +36,7 @@ export default function WishlistPage() {
 
   return (
     <div className="container py-8">
-      <h1 className="text-3xl font-serif font-bold text-[#2f2a26] mb-8">Wishlist</h1>
+      <h1 className="text-3xl font-serif font-bold text-[#2f2a26] mb-8 text-center">Wishlist</h1>
 
       {wishlistProducts.length === 0 ? (
         <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4 max-w-md mx-auto">

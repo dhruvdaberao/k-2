@@ -108,8 +108,8 @@ export default function CartPage() {
   return (
     <main className="cart-page py-4 py-md-5 px-3 bg-[#FAF7F2] min-h-screen">
       <div className="container">
-        {/* Header - left-aligned matching Wishlist */}
-        <header className="mb-8 pt-2">
+        {/* Header - centered matching Collections */}
+        <header className="mb-8 pt-2 text-center">
           <h1 className="text-3xl font-serif font-bold text-[#2f2a26]">Cart</h1>
         </header>
 

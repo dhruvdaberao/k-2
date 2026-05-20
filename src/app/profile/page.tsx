@@ -338,11 +338,11 @@ function ProfileContent() {
           color: white;
         }
       `}} />
-      <div className="checkout-header flex flex-col items-center justify-center gap-4" style={{ marginTop: '40px' }}>
-        <h1 className="checkout-title m-0 text-3xl md:text-5xl text-center" style={{ lineHeight: '1.2' }}>Your Profile</h1>
-      </div>
+      <header className="mb-8 text-center" style={{ marginTop: '40px' }}>
+        <h1 className="text-3xl font-serif font-bold text-[#2f2a26]">Your Profile</h1>
+      </header>
 
-      <section className="checkout-card bg-[#f3ede6] rounded-2xl shadow-sm border border-[#e6ded4] mx-4 md:mx-auto" style={{ maxWidth: '900px', width: 'calc(100% - 2rem)' }}>
+      <section className="checkout-card bg-[#f3ede6] rounded-2xl shadow-sm border border-[#e6ded4] mx-auto w-[92%] md:w-full" style={{ maxWidth: '900px' }}>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b pb-4 px-2">
           <h2 className="text-xl font-bold" style={{ color: "var(--text)", margin: 0 }}>Personal Information</h2>
           <div className="flex gap-3 items-center flex-wrap">
