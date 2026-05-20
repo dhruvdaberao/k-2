@@ -127,3 +127,10 @@ export function invalidateRatingCache() {
     localStorage.removeItem(CACHE_KEY);
   }
 }
+
+export function injectInitialRatings(ratingsMap: Record<string, RatingEntry>) {
+  for (const [key, val] of Object.entries(ratingsMap)) {
+    ratingCache.set(key, val);
+  }
+  cacheReady = true;
+}

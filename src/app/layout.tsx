@@ -12,6 +12,8 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { CartProvider } from "@/hooks/useCart";
 import { WishlistProvider } from "@/hooks/useWishlist";
 import SupabaseProvider from "@/components/SupabaseProvider";
+import RatingHydrator from "@/components/RatingHydrator";
+import { supabase } from "@/lib/supabaseClient";
 
 export const metadata = {
   metadataBase: new URL("https://keshvicrafts.in"),
@@ -35,7 +37,30 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // Pre-fetch all ratings on the server to prevent gray star flashes
+  let initialRatings: Record<string, { avg: string | null; count: number }> = {};
+  try {
+    const { data: reviews } = await supabase.from('reviews').select('product_id, rating');
+    if (reviews && reviews.length > 0) {
+      const aggregated: Record<string, { sum: number; count: number }> = {};
+      for (const r of reviews) {
+        const pid = r.product_id;
+        if (!aggregated[pid]) aggregated[pid] = { sum: 0, count: 0 };
+        aggregated[pid].sum += r.rating;
+        aggregated[pid].count += 1;
+      }
+      for (const pid in aggregated) {
+        initialRatings[pid] = {
+          avg: (aggregated[pid].sum / aggregated[pid].count).toFixed(1),
+          count: aggregated[pid].count
+        };
+      }
+    }
+  } catch (err) {
+    console.error("Failed to prefetch ratings", err);
+  }
+
   return (
     <html lang="en">
       <head>
@@ -64,6 +89,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <GoogleTagManager gtmId="GTM-MFVDFHT3" />
         <AnalyticsTracker />
         <ServiceWorkerRegister />
+        <RatingHydrator initialRatings={initialRatings} />
         <SupabaseProvider>
           <AuthProvider>
             <CartProvider>
