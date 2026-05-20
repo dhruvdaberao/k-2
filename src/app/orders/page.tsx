@@ -69,7 +69,16 @@ export default function OrdersPage() {
           return;
         }
 
-        if (isInitialLoad.current) setLoading(true);
+        const cacheKey = `orders_cache_${user.id}`;
+        if (isInitialLoad.current) {
+          const cached = localStorage.getItem(cacheKey);
+          if (cached) {
+            setOrders(JSON.parse(cached));
+            setLoading(false); // Instantly show cached orders
+          } else {
+            setLoading(true);
+          }
+        }
 
         const { data, error } = await supabase
           .from("orders")
@@ -79,9 +88,10 @@ export default function OrdersPage() {
 
         if (error) {
           console.error("❌ [ORDERS] Fetch error:", error);
+        } else if (data) {
+          setOrders(data);
+          localStorage.setItem(cacheKey, JSON.stringify(data));
         }
-        
-        setOrders(data || []);
       } catch (err) {
         console.error("🔥 [ORDERS] Crash:", err);
       } finally {

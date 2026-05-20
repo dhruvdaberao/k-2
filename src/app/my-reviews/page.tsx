@@ -1,10 +1,11 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useRef } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import productsData from "@/data/products.json"
 import { showToast } from "@/components/Toast"
+import { useAuth } from "@/hooks/useAuth"
 
 // Reusable Curved Star Component
 const StarIcon = ({ filled, size = 16, onClick }: { filled: boolean; size?: number; onClick?: () => void }) => (
@@ -27,10 +28,11 @@ const StarIcon = ({ filled, size = 16, onClick }: { filled: boolean; size?: numb
 
 export default function MyReviewsPage() {
   const router = useRouter()
-  const [user, setUser] = useState<any>(null)
+  const { user, loading: authLoading } = useAuth()
   const [reviews, setReviews] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
+  const isInitialLoad = useRef(true)
 
   // Custom Delete Modal State
   const [deleteConfirm, setDeleteConfirm] = useState<{ show: boolean; id: string | null }>({ show: false, id: null })
@@ -41,74 +43,68 @@ export default function MyReviewsPage() {
   const [tempReview, setTempReview] = useState("")
   const [isUpdating, setIsUpdating] = useState(false)
 
-  // Auth Check
+  // Fetch reviews when user is resolved
   useEffect(() => {
-    // 1. Next.js Refresh Fix
-    router.refresh();
+    if (authLoading) return;
 
-    const checkUser = async () => {
+    if (!user) {
+      if (isInitialLoad.current) {
+        setLoading(false);
+        isInitialLoad.current = false;
+      }
+      return;
+    }
+
+    const fetchUserReviews = async (userId: string) => {
       try {
-        console.log("🚀 [MY-REVIEWS] Init Triggered");
-        const { data: { user } } = await supabase.auth.getUser()
-        
-        if (!user) {
-          console.warn("⚠️ [MY-REVIEWS] No user found");
-          setLoading(false)
-          return
+        const cacheKey = `reviews_cache_${userId}`;
+        if (isInitialLoad.current) {
+          const cached = localStorage.getItem(cacheKey);
+          if (cached) {
+            setReviews(JSON.parse(cached));
+            setLoading(false);
+          } else {
+            setLoading(true);
+          }
         }
 
-        setUser(user)
-        await fetchUserReviews(user.id)
+        const { data, error } = await supabase
+          .from("reviews")
+          .select(`
+            id,
+            rating,
+            review,
+            created_at,
+            product_id
+          `)
+          .eq("user_id", userId)
+          .order("created_at", { ascending: false })
+
+        if (error) throw error
+
+        const enriched = (data || []).map(r => {
+          const p = (productsData as any[]).find(x => x.id === r.product_id || x.slug === r.product_id)
+          return {
+            ...r,
+            product_name: p?.title || "Unknown Product",
+            product_image: p?.images?.[0] || "/placeholder.png"
+          }
+        })
+
+        setReviews(enriched)
+        localStorage.setItem(cacheKey, JSON.stringify(enriched))
       } catch (err) {
-        console.error("🔥 [MY-REVIEWS] Crash:", err)
-        setLoading(false)
+        console.error("Fetch reviews error:", err)
+      } finally {
+        if (isInitialLoad.current) {
+          setLoading(false)
+          isInitialLoad.current = false
+        }
       }
     }
 
-    checkUser()
-
-    // 2. Safety timeout
-    const safety = setTimeout(() => {
-      console.warn("🛡️ [MY-REVIEWS] Safety timeout triggered");
-      setLoading(false);
-    }, 3000);
-
-    return () => clearTimeout(safety);
-  }, [router])
-
-  const fetchUserReviews = async (userId: string) => {
-    try {
-      setLoading(true)
-      const { data, error } = await supabase
-        .from("reviews")
-        .select(`
-          id,
-          rating,
-          review,
-          created_at,
-          product_id
-        `)
-        .eq("user_id", userId)
-        .order("created_at", { ascending: false })
-
-      if (error) throw error
-
-      const enriched = (data || []).map(r => {
-        const p = (productsData as any[]).find(x => x.id === r.product_id || x.slug === r.product_id)
-        return {
-          ...r,
-          product_name: p?.title || "Unknown Product",
-          product_image: p?.images?.[0] || "/placeholder.png"
-        }
-      })
-
-      setReviews(enriched)
-    } catch (err) {
-      console.error("Fetch reviews error:", err)
-    } finally {
-      setLoading(false)
-    }
-  }
+    fetchUserReviews(user.id);
+  }, [user, authLoading])
 
   const handleDeleteReview = async () => {
     const reviewId = deleteConfirm.id;
