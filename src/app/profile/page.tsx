@@ -342,7 +342,7 @@ function ProfileContent() {
         <h1 className="text-3xl font-serif font-bold text-[#2f2a26]">Your Profile</h1>
       </header>
 
-      <section className="checkout-card bg-[#f3ede6] rounded-2xl shadow-sm border border-[#e6ded4] mx-auto w-[92%] md:w-full" style={{ maxWidth: '900px' }}>
+      <section className="checkout-card bg-[#f3ede6] rounded-2xl shadow-sm border border-[#e6ded4]" style={{ maxWidth: '900px', width: '92%', margin: '0 auto' }}>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b pb-4 px-2">
           <h2 className="text-xl font-bold" style={{ color: "var(--text)", margin: 0 }}>Personal Information</h2>
           <div className="flex gap-3 items-center flex-wrap">
