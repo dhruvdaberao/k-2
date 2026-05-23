@@ -779,18 +779,22 @@ function CheckoutContent() {
 
                 <div className="flex flex-wrap items-center gap-3 pl-9 mt-1">
                   {[
-                    { id: "upi", src: "/payments/upi.png", alt: "UPI" },
-                    { id: "card", src: "/payments/card.png", alt: "Cards" },
-                    { id: "wallet", src: "/payments/wallet.png", alt: "Wallets" },
-                    { id: "netbanking", src: "/payments/online-banking.png", alt: "Net Banking" }
+                    { id: "upi", src: "/payments/upi-new.svg", alt: "UPI" },
+                    { id: "card", src: "/payments/card-icon.svg", alt: "Cards" },
+                    { id: "wallet", src: "/payments/wallet-icon.svg", alt: "Wallets" },
+                    { id: "netbanking", src: "/payments/bank-icon.svg", alt: "Net Banking" }
                   ].map((method) => (
                     <div key={method.id} className="transition-transform hover:scale-105 flex items-center justify-center">
-                      <Image
+                      <img
                         src={method.src}
                         alt={method.alt}
-                        width={method.id === "upi" ? 56 : 40}
-                        height={40}
-                        className={`object-contain drop-shadow-sm ${method.id === "upi" ? "w-[56px] h-10" : "w-10 h-10"}`}
+                        style={{
+                          width: method.id === "upi" ? "56px" : "32px",
+                          height: method.id === "upi" ? "24px" : "32px",
+                          objectFit: "contain",
+                          opacity: 0.8
+                        }}
+                        className="drop-shadow-sm"
                       />
                     </div>
                   ))}
