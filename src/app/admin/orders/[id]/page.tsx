@@ -84,28 +84,33 @@ export default function OrderDetails() {
   }, [orderId, router]);
 
   const fetchOrder = async () => {
-    const { data, error } = await supabase
-      .from("orders")
-      .select("*, order_items(*)")
-      .eq("id", orderId)
-      .single();
+    try {
+      const res = await fetch(`/api/get-order?orderId=${orderId}`, {
+        cache: "no-store"
+      });
+      const data = await res.json();
 
-    if (error) {
-      console.error("Error fetching order:", error);
-      showToast("Order not found");
-    } else {
-      setOrder(data);
-      
-      // Handle tracking link from top-level or JSON fallback
-      let link = data.tracking_link;
-      if (!link && data.delivery_address) {
-        const addr = typeof data.delivery_address === 'string' 
-          ? JSON.parse(data.delivery_address) 
-          : data.delivery_address;
-        link = addr.tracking_link;
+      if (!res.ok) {
+        console.error("Error fetching order:", data.error);
+        showToast("Order not found");
+        return;
       }
       
-      if (link) setTrackingLink(link);
+      setOrder(data);
+      
+        // Handle tracking link from top-level or JSON fallback
+        let link = data.tracking_link;
+        if (!link && data.delivery_address) {
+          const addr = typeof data.delivery_address === 'string' 
+            ? JSON.parse(data.delivery_address) 
+            : data.delivery_address;
+          link = addr.tracking_link;
+        }
+        
+        if (link) setTrackingLink(link);
+    } catch (err) {
+      console.error("Error in fetchOrder:", err);
+      showToast("Error loading order");
     }
   };
 
