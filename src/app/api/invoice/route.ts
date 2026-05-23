@@ -141,7 +141,7 @@ export async function GET(req: Request) {
       const logoPath = path.join(process.cwd(), 'public', 'logo.png');
       const logoBuffer = fs.readFileSync(logoPath);
       const logoBase64 = logoBuffer.toString('base64');
-      doc.addImage(`data:image/png;base64,${logoBase64}`, 'PNG', 18, 22, 42, 20);
+      doc.addImage(`data:image/png;base64,${logoBase64}`, 'PNG', 18, 20, 35, 35);
     } catch (e) {
       // Fallback to text if logo not found
       doc.setFont('helvetica', 'bold');
