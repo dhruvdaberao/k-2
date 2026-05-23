@@ -133,8 +133,6 @@ export async function GET(req: Request) {
     const accentColor = [216, 195, 165]; // #D8C3A5
 
     // 1. BRAND HEADER
-    doc.setFillColor(accentColor[0], accentColor[1], accentColor[2]);
-    doc.rect(0, 0, width, 15, 'F');
 
     // Embed actual logo from disk
     try {
@@ -235,9 +233,9 @@ export async function GET(req: Request) {
     let finalY = (doc as any).lastAutoTable.finalY + 10;
     const pageHeight = doc.internal.pageSize.getHeight();
     
-    // Check if there's enough space for the summary and payment section (approx 60 units needed)
-    // -40 is the footer area limit
-    if (finalY + 60 > pageHeight - 40) {
+    // Check if there's enough space for the summary and payment section (approx 75 units needed)
+    // -30 is the footer area limit
+    if (finalY + 75 > pageHeight - 30) {
       doc.addPage();
       finalY = 20; // Reset Y position on new page
     }
