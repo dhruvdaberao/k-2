@@ -51,7 +51,7 @@ export default function PrivacyPage() {
 
       <h3>7. Payment Processing</h3>
       <p>
-        Payments are processed via a secure third-party gateway (Razorpay/UPI). We do not store or have access to your credit/debit card information.
+        Payments are processed via a secure third-party gateway (PayU/UPI). We do not store or have access to your credit/debit card information.
       </p>
 
       <div className="mt-12 pt-8 border-t border-stone-200 text-sm">

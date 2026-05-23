@@ -347,7 +347,7 @@ export default function ProductPageClient({
             textAlign: "center"
           }}>
             <span className="meta">
-              {product.type === "custom-order" ? "Secure payment via UPI/Bank Transfer" : "Secure payments via Razorpay"}
+              {product.type === "custom-order" ? "Secure payment via UPI/Bank Transfer" : "Secure payments via PayU"}
             </span>
           </div>
 
