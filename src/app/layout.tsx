@@ -11,7 +11,7 @@ import { GoogleTagManager } from '@next/third-parties/google';
 import { AuthProvider } from "@/hooks/useAuth";
 import { CartProvider } from "@/hooks/useCart";
 import { WishlistProvider } from "@/hooks/useWishlist";
-import SupabaseProvider from "@/components/SupabaseProvider";
+
 import RatingHydrator from "@/components/RatingHydrator";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -90,18 +90,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <AnalyticsTracker />
         <ServiceWorkerRegister />
         <RatingHydrator initialRatings={initialRatings} />
-        <SupabaseProvider>
-          <AuthProvider>
-            <CartProvider>
-              <WishlistProvider>
-                <BootstrapNavbar />
-                <GlobalToast />
-                {children}
-                <Footer />
-              </WishlistProvider>
-            </CartProvider>
-          </AuthProvider>
-        </SupabaseProvider>
+        <AuthProvider>
+          <CartProvider>
+            <WishlistProvider>
+              <BootstrapNavbar />
+              <GlobalToast />
+              {children}
+              <Footer />
+            </WishlistProvider>
+          </CartProvider>
+        </AuthProvider>
 
         {/* Bootstrap JS */}
         <Script
