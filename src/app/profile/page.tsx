@@ -193,24 +193,27 @@ function ProfileContent() {
   const executeLogout = async () => {
     setShowLogoutConfirm(false);
 
+    // Show instant visual feedback so user knows something is happening
+    showToast("Logging out...");
+
     try {
-      // 1. Sign out from Supabase
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-
-      // 2. Clear local data
-      localStorage.clear();
-      sessionStorage.clear();
-      showToast("Logged out successfully");
-
-      // 3. Force UI Reset
-      router.push("/");
-      router.refresh();
+      // 1. Sign out from Supabase (with timeout so it never hangs)
+      const signOutPromise = supabase.auth.signOut();
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Timeout")), 3000)
+      );
+      await Promise.race([signOutPromise, timeoutPromise]);
     } catch (err) {
-      console.error("Logout error:", err);
-      // Fail-safe redirect
-      window.location.href = "/";
+      // Even if signOut fails or times out, we still log out locally
+      console.warn("Logout signOut error (proceeding anyway):", err);
     }
+
+    // 2. Aggressively clear ALL local data
+    try { localStorage.clear(); } catch {}
+    try { sessionStorage.clear(); } catch {}
+
+    // 3. Hard redirect — never use router.push for logout as it can silently fail
+    window.location.href = "/";
   };
 
 
