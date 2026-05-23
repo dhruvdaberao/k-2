@@ -43,14 +43,15 @@ export default function AdminOrders() {
           return;
         }
 
-        // Fetch data immediately
-        const { data: ordersData, error } = await supabase
-          .from("orders")
-          .select("id, display_id, email, status, total_amount, created_at")
-          .order("created_at", { ascending: false });
+        // Fetch ALL orders via secure service-role API (bypasses RLS)
+        const res = await fetch('/api/admin/orders');
+        const result = await res.json();
 
-        if (error) throw error;
-        setOrders(ordersData || []);
+        if (!result.success) {
+          console.error("Admin Orders API Error:", result.error);
+        } else {
+          setOrders(result.orders || []);
+        }
       } catch (err) {
         console.error("Admin Load Error:", err);
       } finally {
