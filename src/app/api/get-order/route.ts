@@ -1,4 +1,5 @@
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -15,8 +16,6 @@ export async function GET(request: Request) {
 
   const authToken = request.headers.get("Authorization")?.replace("Bearer ", "");
   
-  const { createClient } = require('@supabase/supabase-js');
-  
   // Create an auth client if token exists
   const supabaseAuth = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -31,11 +30,16 @@ export async function GET(request: Request) {
 
   try {
     // 1. Fetch the order (bypassing RLS)
-    const { data: order, error } = await supabaseAdmin
-      .from("orders")
-      .select("*, order_items(*)")
-      .or(`id.eq.${orderId},display_id.eq.${orderId}`)
-      .maybeSingle();
+    const isUuid = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(orderId);
+    let query = supabaseAdmin.from("orders").select("*, order_items(*)");
+    
+    if (isUuid) {
+      query = query.eq("id", orderId);
+    } else {
+      query = query.eq("display_id", orderId);
+    }
+
+    const { data: order, error } = await query.maybeSingle();
 
     if (error) throw error;
     if (!order) {
