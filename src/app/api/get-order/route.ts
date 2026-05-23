@@ -13,10 +13,16 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Order ID is required" }, { status: 400 });
   }
 
-  const supabaseAuth = createRouteHandlerClient({ cookies });
+  const authToken = request.headers.get("Authorization")?.replace("Bearer ", "");
   
-  // Use service role to bypass RLS for fetching
   const { createClient } = require('@supabase/supabase-js');
+  
+  // Create an auth client if token exists
+  const supabaseAuth = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    authToken ? { global: { headers: { Authorization: `Bearer ${authToken}` } } } : {}
+  );
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,

@@ -5,14 +5,23 @@ import { cookies } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    // 1. Verify the requester is the admin
-    const supabaseAuth = createRouteHandlerClient({ cookies });
+    const token = request.headers.get("Authorization")?.replace("Bearer ", "");
+    if (!token) {
+      return NextResponse.json({ success: false, error: 'Unauthorized - No Token' }, { status: 401 });
+    }
+
+    const supabaseAuth = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      { global: { headers: { Authorization: `Bearer ${token}` } } }
+    );
+    
     const { data: { user } } = await supabaseAuth.auth.getUser();
 
     if (!user || user.email !== 'keshvicrafts@gmail.com') {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ success: false, error: 'Unauthorized - Not Admin' }, { status: 401 });
     }
 
     // 2. Use service role to bypass RLS and fetch ALL orders

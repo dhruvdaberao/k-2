@@ -69,6 +69,8 @@ export default function OrdersPage() {
           return;
         }
 
+        const token = sessionData?.session?.access_token;
+
         const cacheKey = `orders_cache_${user.id}`;
         if (isInitialLoad.current) {
           const cached = localStorage.getItem(cacheKey);
@@ -80,7 +82,11 @@ export default function OrdersPage() {
           }
         }
 
-        const res = await fetch("/api/user/orders");
+        const res = await fetch("/api/user/orders", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
         const result = await res.json();
 
         if (!result.success) {

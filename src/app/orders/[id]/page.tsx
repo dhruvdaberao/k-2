@@ -133,7 +133,12 @@ export default function OrderDetailPage() {
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get("token") || "";
 
-        const res = await fetch(`/api/get-order?orderId=${orderId}&token=${token}`);
+        const { data: sessionData } = await supabase.auth.getSession();
+        const authToken = sessionData?.session?.access_token;
+
+        const res = await fetch(`/api/get-order?orderId=${orderId}&token=${token}`, {
+          headers: authToken ? { Authorization: `Bearer ${authToken}` } : undefined
+        });
         const result = await res.json();
 
         if (!res.ok) {

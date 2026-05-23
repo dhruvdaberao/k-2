@@ -37,14 +37,21 @@ export default function AdminOrders() {
     const init = async () => {
       try {
         // Auth check
-        const { data: authData } = await supabase.auth.getUser();
-        if (!authData?.user || authData.user.email !== "keshvicrafts@gmail.com") {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const user = sessionData?.session?.user;
+        const token = sessionData?.session?.access_token;
+
+        if (!user || user.email !== "keshvicrafts@gmail.com") {
           router.push("/");
           return;
         }
 
         // Fetch ALL orders via secure service-role API (bypasses RLS)
-        const res = await fetch('/api/admin/orders');
+        const res = await fetch('/api/admin/orders', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
         const result = await res.json();
 
         if (!result.success) {
