@@ -60,6 +60,7 @@ function CheckoutContent() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [isCartLoading, setIsCartLoading] = useState(true);
   const [isDirectCheckout, setIsDirectCheckout] = useState(false);
   const [isGuestLocked, setIsGuestLocked] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
@@ -86,6 +87,7 @@ function CheckoutContent() {
           quantity: directItem.quantity,
           image: directItem.image,
         }]);
+        setIsCartLoading(false);
         return;
       }
     } else {
@@ -95,6 +97,7 @@ function CheckoutContent() {
 
     const currentCart = await getAsyncCart(user);
     setItems(currentCart);
+    setIsCartLoading(false);
   }, [isPlacingOrder, isOrderPlaced, user]);
 
   useEffect(() => {
@@ -450,7 +453,7 @@ function CheckoutContent() {
 
   // ── Success Screen is now handled by redirecting to /order-success ──
 
-  if (!hydrated) {
+  if (!hydrated || isCartLoading) {
     return <main className="checkout-page checkout-container checkout-flow py-10" />;
   }
 
