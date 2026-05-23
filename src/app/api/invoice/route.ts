@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import fs from 'fs';
+import path from 'path';
 import { cookies } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
@@ -133,27 +135,27 @@ export async function GET(req: Request) {
     // 1. BRAND HEADER
     doc.setFillColor(accentColor[0], accentColor[1], accentColor[2]);
     doc.rect(0, 0, width, 15, 'F');
-    
-    // Add Logo (Attempt to fetch from public/logo.png on the same host)
-    try {
-      const host = orderData.h || (typeof window !== 'undefined' ? window.location.origin : '');
-      const logoUrl = host ? `${host}/logo.png` : '';
-      if (logoUrl) {
-         // Fallback logic empty
-      }
-    } catch {}
 
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(24);
-    doc.setTextColor(90, 62, 43); // #5a3e2b
-    doc.text("Keshvi Crafts", 20, 35);
-    
-    doc.setFontSize(10);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(100);
-    doc.text("Handmade with Love", 20, 42);
+    // Embed actual logo from disk
+    try {
+      const logoPath = path.join(process.cwd(), 'public', 'logo.png');
+      const logoBuffer = fs.readFileSync(logoPath);
+      const logoBase64 = logoBuffer.toString('base64');
+      doc.addImage(`data:image/png;base64,${logoBase64}`, 'PNG', 18, 22, 42, 20);
+    } catch (e) {
+      // Fallback to text if logo not found
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(22);
+      doc.setTextColor(90, 62, 43);
+      doc.text('Keshvi Crafts', 20, 35);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(100);
+      doc.text('Handmade with Love', 20, 42);
+    }
 
     doc.setFontSize(20);
+    doc.setFont("helvetica", "bold");
     doc.setTextColor(47, 42, 38); // #2f2a26
     doc.text(documentType, width - 20, 35, { align: "right" });
 
@@ -167,24 +169,10 @@ export async function GET(req: Request) {
       day: '2-digit', month: 'long', year: 'numeric'
     });
     doc.text(`DATE: ${dateStr}`, width - 20, 50, { align: "right" });
-    
-    // Payment Mode (always shown in neutral color)
-    doc.setTextColor(100);
-    const paymentModeLabel = orderData.pm?.toLowerCase() === 'cod' ? 'Cash on Delivery (COD)' : 'Online Payment';
-    doc.text(`MODE: ${paymentModeLabel}`, width - 20, 55, { align: "right" });
-
-    // Payment Status in Colors
-    if (isOnline || orderData.status === 'paid') {
-      doc.setTextColor(34, 139, 34); // Forest Green
-      doc.text(`STATUS: PAID ✓`, width - 20, 60, { align: "right" });
-    } else {
-      doc.setTextColor(200, 100, 0); // Orange/Warning
-      doc.text(`STATUS: UNPAID (Collect on Delivery)`, width - 20, 60, { align: "right" });
-    }
 
     // 3. BILL TO & SHIP TO
     doc.setDrawColor(230);
-    doc.line(20, 70, width - 20, 70);
+    doc.line(20, 60, width - 20, 60);
 
     doc.setFontSize(10);
     doc.setTextColor(150);
@@ -273,6 +261,30 @@ export async function GET(req: Request) {
     doc.setTextColor(90, 62, 43);
     doc.text("Grand Total:", summaryLeftX, finalY);
     doc.text(`Rs. ${Number(orderData.t || 0).toLocaleString('en-IN')}`, summaryRightX, finalY, { align: "right" });
+
+    // 5.5 PAYMENT MODE & STATUS SECTION
+    finalY += 18;
+    doc.setDrawColor(230);
+    doc.line(20, finalY - 4, width - 20, finalY - 4);
+
+    const paymentModeLabel = orderData.pm?.toLowerCase() === 'cod' ? 'Cash on Delivery (COD)' : 'Online Payment';
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    doc.setTextColor(80);
+    doc.text(`Payment Mode: ${paymentModeLabel}`, 20, finalY + 4);
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    if (isOnline || orderData.status === 'paid') {
+      doc.setTextColor(34, 139, 34); // Green
+      doc.text('Payment Status: PAID ✓', 20, finalY + 13);
+    } else {
+      doc.setTextColor(200, 100, 0); // Orange
+      doc.text('Payment Status: UNPAID — Collect on Delivery', 20, finalY + 13);
+    }
+
+    doc.setDrawColor(230);
+    doc.line(20, finalY + 18, width - 20, finalY + 18);
 
     // 6. FOOTER
     const footerY = doc.internal.pageSize.getHeight() - 30;
