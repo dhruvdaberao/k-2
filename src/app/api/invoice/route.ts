@@ -168,18 +168,23 @@ export async function GET(req: Request) {
     });
     doc.text(`DATE: ${dateStr}`, width - 20, 50, { align: "right" });
     
+    // Payment Mode (always shown in neutral color)
+    doc.setTextColor(100);
+    const paymentModeLabel = orderData.pm?.toLowerCase() === 'cod' ? 'Cash on Delivery (COD)' : 'Online Payment';
+    doc.text(`MODE: ${paymentModeLabel}`, width - 20, 55, { align: "right" });
+
     // Payment Status in Colors
     if (isOnline || orderData.status === 'paid') {
       doc.setTextColor(34, 139, 34); // Forest Green
-      doc.text(`STATUS: PAID`, width - 20, 55, { align: "right" });
+      doc.text(`STATUS: PAID ✓`, width - 20, 60, { align: "right" });
     } else {
       doc.setTextColor(200, 100, 0); // Orange/Warning
-      doc.text(`STATUS: PENDING (COD)`, width - 20, 55, { align: "right" });
+      doc.text(`STATUS: UNPAID (Collect on Delivery)`, width - 20, 60, { align: "right" });
     }
 
     // 3. BILL TO & SHIP TO
     doc.setDrawColor(230);
-    doc.line(20, 65, width - 20, 65);
+    doc.line(20, 70, width - 20, 70);
 
     doc.setFontSize(10);
     doc.setTextColor(150);
