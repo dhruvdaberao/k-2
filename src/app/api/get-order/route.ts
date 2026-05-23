@@ -13,11 +13,19 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Order ID is required" }, { status: 400 });
   }
 
-  const supabase = createRouteHandlerClient({ cookies });
+  const supabaseAuth = createRouteHandlerClient({ cookies });
+  
+  // Use service role to bypass RLS for fetching
+  const { createClient } = require('@supabase/supabase-js');
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false } }
+  );
 
   try {
-    // 1. Fetch the order
-    const { data: order, error } = await supabase
+    // 1. Fetch the order (bypassing RLS)
+    const { data: order, error } = await supabaseAdmin
       .from("orders")
       .select("*, order_items(*)")
       .or(`id.eq.${orderId},display_id.eq.${orderId}`)
@@ -29,7 +37,7 @@ export async function GET(request: Request) {
     }
 
     // 2. Validate access
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await supabaseAuth.auth.getUser();
     
     const isOwner = user && user.id === order.user_id;
     const hasValidToken = token && token === order.access_token;

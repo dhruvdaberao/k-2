@@ -130,42 +130,20 @@ export default function OrderDetailPage() {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get("token") || "";
 
-        if (authError || !user) {
-          router.replace("/login");
-          return;
-        }
+        const res = await fetch(`/api/get-order?orderId=${orderId}&token=${token}`);
+        const result = await res.json();
 
-        // Fetch order intelligently by display_id or fallback UUID based on pattern
-        const isDisplayId = orderId.startsWith("KC-");
-        const { data: orderData, error: orderError } = await supabase
-          .from("orders")
-          .select("*")
-          .eq(isDisplayId ? "display_id" : "id", orderId)
-          .eq("user_id", user.id)
-          .single();
-
-        if (orderError || !orderData) {
-          console.error("[OrderDetail] Order fetch error:", orderError?.message);
+        if (!res.ok) {
+          console.error("[OrderDetail] Fetch error:", result.error);
           setNotFound(true);
-          setLoading(false);
           return;
         }
 
-        setOrder(orderData);
-
-        // Fetch items mapping to the explicit inner UUID safely
-        const { data: itemsData, error: itemsError } = await supabase
-          .from("order_items")
-          .select("*")
-          .eq("order_id", orderData.id);
-
-        if (itemsError) {
-          console.error("[OrderDetail] Items fetch error:", itemsError.message);
-        } else {
-          setItems(itemsData || []);
-        }
+        setOrder(result);
+        setItems(result.items || []);
       } catch (err) {
         console.error("[OrderDetail] Unexpected error:", err);
         setNotFound(true);
@@ -175,7 +153,7 @@ export default function OrderDetailPage() {
     };
 
     fetchOrder();
-  }, [orderId, router]);
+  }, [orderId]);
 
   // ── Cancel order handler ───────────────────────────────────────────────
   const handleCancelClick = () => {

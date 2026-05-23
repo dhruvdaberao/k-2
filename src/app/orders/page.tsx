@@ -80,17 +80,14 @@ export default function OrdersPage() {
           }
         }
 
-        const { data, error } = await supabase
-          .from("orders")
-          .select("id, display_id, created_at, total_amount, status")
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false });
+        const res = await fetch("/api/user/orders");
+        const result = await res.json();
 
-        if (error) {
-          console.error("❌ [ORDERS] Fetch error:", error);
-        } else if (data) {
-          setOrders(data);
-          localStorage.setItem(cacheKey, JSON.stringify(data));
+        if (!result.success) {
+          console.error("❌ [ORDERS] Fetch error:", result.error);
+        } else {
+          setOrders(result.orders || []);
+          localStorage.setItem(cacheKey, JSON.stringify(result.orders || []));
         }
       } catch (err) {
         console.error("🔥 [ORDERS] Crash:", err);
