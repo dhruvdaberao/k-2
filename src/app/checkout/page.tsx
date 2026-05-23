@@ -777,25 +777,28 @@ function CheckoutContent() {
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-3 pl-9 mt-1">
+                <div className="grid grid-cols-4 w-full place-items-center pt-5 mt-4 border-t border-stone-100">
                   {[
-                    { id: "upi", src: "/payments/upi-new.svg", alt: "UPI" },
-                    { id: "card", src: "/payments/card-icon.svg", alt: "Cards" },
-                    { id: "wallet", src: "/payments/wallet-icon.svg", alt: "Wallets" },
-                    { id: "netbanking", src: "/payments/bank-icon.svg", alt: "Net Banking" }
+                    { id: "upi", src: "/payments/upi-new.svg", alt: "UPI", label: "UPI" },
+                    { id: "card", src: "/payments/card-icon.svg", alt: "Cards", label: "Card" },
+                    { id: "wallet", src: "/payments/wallet-icon.svg", alt: "Wallets", label: "Wallet" },
+                    { id: "netbanking", src: "/payments/bank-icon.svg", alt: "Net Banking", label: "Net Banking" }
                   ].map((method) => (
-                    <div key={method.id} className="transition-transform hover:scale-105 flex items-center justify-center">
-                      <img
-                        src={method.src}
-                        alt={method.alt}
-                        style={{
-                          width: method.id === "upi" ? "56px" : "32px",
-                          height: method.id === "upi" ? "24px" : "32px",
-                          objectFit: "contain",
-                          opacity: 0.8
-                        }}
-                        className="drop-shadow-sm"
-                      />
+                    <div key={method.id} className="transition-transform hover:scale-105 flex flex-col items-center justify-center gap-1.5">
+                      <div className="h-[28px] flex items-center justify-center">
+                        <img
+                          src={method.src}
+                          alt={method.alt}
+                          style={{
+                            width: method.id === "upi" ? "42px" : "28px",
+                            height: method.id === "upi" ? "20px" : "28px",
+                            objectFit: "contain",
+                            opacity: 0.85
+                          }}
+                          className="drop-shadow-sm"
+                        />
+                      </div>
+                      <span className="text-[10px] font-bold text-[#8c8273] tracking-wide text-center whitespace-nowrap">{method.label}</span>
                     </div>
                   ))}
                 </div>
