@@ -210,7 +210,7 @@ export default function AdminOrders() {
                   {/* Bottom Row */}
                   <div className="flex justify-between items-center gap-4 pt-1 border-t border-gray-50 mt-2">
                     <p className="text-[16px] font-black text-[#5A3E2B]">
-                      ₹{order.shipping_charge !== null && order.shipping_charge !== undefined ? order.total_amount : (order.total_amount + (order.total_amount >= 650 ? 0 : 40))}
+                      ₹{order.total_amount}
                     </p>
                     <Link 
                       href={`/admin/orders/${order.id}`} 

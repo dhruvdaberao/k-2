@@ -92,15 +92,19 @@ export async function GET(req: Request) {
 
         let addr: any = order.delivery_address || (typeof order.address === 'string' ? { address_line: order.address } : order.address) || {};
 
+        const subtotalFromItems = items.reduce((sum: number, it: any) => sum + (Number(it.price || 0) * Number(it.quantity || 1)), 0);
+        const calculatedShipping = subtotalFromItems >= 650 ? 0 : 40;
+        const finalShipping = order.shipping_charge !== null && order.shipping_charge !== undefined ? Number(order.shipping_charge) : calculatedShipping;
+
         orderData = {
           o: order.display_id || order.id,
           c: order.created_at,
-          s: Number(order.total_amount || 0) + (Number(order.discount_amount || 0)) - (Number(order.shipping_charge || 0)),
+          s: subtotalFromItems,
           d: Number(order.discount_amount || 0),
-          sh: Number(order.shipping_charge || 0),
+          sh: finalShipping,
           sd: 0, 
           t: Number(order.total_amount || 0),
-          pm: order.payment_method,
+          pm: order.payment_method || 'COD',
           status: order.status,
           u: {
             n: addr.full_name || addr.name || "Customer",

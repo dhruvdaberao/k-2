@@ -97,15 +97,19 @@ export default function OrderDetailPage() {
     const items = typeof order.items === 'string' ? JSON.parse(order.items) : (order.items || []);
     const addr = order.delivery_address || {};
     
+    const subtotalFromItems = items.reduce((sum: number, it: any) => sum + (Number(it.price || 0) * Number(it.quantity || 1)), 0);
+    const calculatedShipping = subtotalFromItems >= 650 ? 0 : 40;
+    const finalShipping = order.shipping_charge !== null && order.shipping_charge !== undefined ? Number(order.shipping_charge) : calculatedShipping;
+
     const statelessData: any = {
       o: order.display_id || order.id || orderId,
       c: order.created_at,
-      s: Number(order.total_amount || 0) + (Number(order.discount_amount || 0)) - (Number(order.shipping_charge || 0)),
+      s: subtotalFromItems,
       d: Number(order.discount_amount || 0),
-      sh: Number(order.shipping_charge || 0),
+      sh: finalShipping,
       sd: 0,
       t: Number(order.total_amount || 0),
-      pm: order.payment_method === 'cod' ? 'Cash on Delivery' : 'Online Payment',
+      pm: order.payment_method || 'COD',
       u: {
         n: addr.full_name || addr.name || "Customer",
         p: addr.phone || "",
@@ -247,7 +251,7 @@ export default function OrderDetailPage() {
             </div>
             <div className="text-right">
               <span className="od-label">Total</span>
-              <span className="od-value od-value--total">₹{(order.shipping_charge !== null && order.shipping_charge !== undefined ? order.total_amount : ((order.total_amount || 0) + ((order.total_amount || 0) >= 650 ? 0 : 40))).toLocaleString("en-IN")}</span>
+              <span className="od-value od-value--total">₹{(order.total_amount || 0).toLocaleString("en-IN")}</span>
             </div>
           </div>
         </div>
@@ -334,7 +338,7 @@ export default function OrderDetailPage() {
           {/* Total summary */}
           <div className="od-total-row">
             <span>Total Amount</span>
-            <span className="od-total-amount">₹{(order.shipping_charge !== null && order.shipping_charge !== undefined ? order.total_amount : ((order.total_amount || 0) + ((order.total_amount || 0) >= 650 ? 0 : 40))).toLocaleString("en-IN")}</span>
+            <span className="od-total-amount">₹{(order.total_amount || 0).toLocaleString("en-IN")}</span>
           </div>
         </div>
 
