@@ -71,18 +71,46 @@ export async function POST(req: Request) {
       // Mark the order as paid
       await supabase.from("orders").update({ status: "paid" }).eq("id", udf1);
       
-      // Clear the user's cart if they have a registered account associated with this order
-      const { data: orderData } = await supabase.from("orders").select("user_id, display_id").eq("id", udf1).single();
-      if (orderData && orderData.user_id) {
-        await supabase.from("cart").delete().eq("user_id", orderData.user_id);
+      const { data: orderData } = await supabase.from("orders").select("*, order_items(*)").eq("id", udf1).single();
+      
+      if (orderData) {
+        // Clear the user's cart if they have a registered account
+        if (orderData.user_id) {
+          await supabase.from("cart").delete().eq("user_id", orderData.user_id);
+        }
+
+        // Send order confirmation email
+        const addr = orderData.delivery_address || (typeof orderData.address === 'string' ? { full_name: orderData.address } : orderData.address) || {};
+        const emailPayload = {
+          type: "order_placed",
+          email: orderData.email || addr.email || "",
+          orderId: orderData.display_id || udf1,
+          items: (orderData.order_items || []).map((item: any) => ({ name: item.name, quantity: item.quantity, price: item.price })),
+          total: orderData.total_amount,
+          subtotal: orderData.total_amount, // Approximated
+          shipping: orderData.shipping_charge || 0,
+          discount: orderData.discount_amount || 0,
+          paymentMethod: 'Online Payment',
+          invoiceUrl: `${siteUrl}/api/invoice?orderId=${orderData.display_id || udf1}&token=${orderData.access_token}`,
+          customerName: addr.full_name || addr.name || "Customer"
+        };
+        
+        try {
+           await fetch(`${siteUrl}/api/send-email`, {
+             method: "POST",
+             headers: { "Content-Type": "application/json" },
+             body: JSON.stringify(emailPayload)
+           });
+        } catch(e) { console.error("[PayU Callback] Email failed", e) }
       }
       
       const displayId = orderData?.display_id || udf1;
-      return NextResponse.redirect(`${siteUrl}/payment/success?order_id=${displayId}`, 303);
+      const token = orderData?.access_token || "";
+      return NextResponse.redirect(`${siteUrl}/order-success?orderId=${displayId}&token=${token}`, 303);
     }
 
     // Fallback if udf1 is somehow missing but payment succeeded
-    return NextResponse.redirect(`${siteUrl}/payment/success?order_id=unknown`, 303);
+    return NextResponse.redirect(`${siteUrl}/order-success?orderId=unknown`, 303);
 
   } catch (err: any) {
     console.error('🔴 [API PayU Callback] Error:', err);
