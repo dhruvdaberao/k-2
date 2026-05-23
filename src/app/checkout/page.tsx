@@ -747,43 +747,46 @@ function CheckoutContent() {
                 type="button"
                 className={`checkout-payment-card ${paymentMethod === "online" ? "is-selected" : ""}`}
                 onClick={() => setPaymentMethod("online")}
-                style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: "20px", height: "auto", gap: "16px" }}
+                style={{ display: "flex", flexDirection: "column", padding: "20px", height: "auto", gap: "12px", alignItems: "flex-start" }}
               >
-                <div className="flex items-start gap-4 flex-1 min-w-0 text-left">
-                  <span className="checkout-payment-card__radio flex-shrink-0" aria-hidden="true" style={{ margin: 0, marginTop: "2px" }} />
-                  <div className="flex flex-col gap-1.5 min-w-0">
-                    <span className="checkout-payment-card__title text-lg font-bold text-[#2f2a26]" style={{ margin: 0 }}>Online Payment</span>
-                    <span className="text-xs text-[#8c8273]">
-                      Secure payments powered by PayU
-                    </span>
-                    <div className="flex flex-wrap items-center gap-3 mt-2">
-                      {[
-                        { id: "upi", src: "/payments/upi.png", alt: "UPI" },
-                        { id: "card", src: "/payments/card.png", alt: "Cards" },
-                        { id: "wallet", src: "/payments/wallet.png", alt: "Wallets" },
-                        { id: "netbanking", src: "/payments/online-banking.png", alt: "Net Banking" }
-                      ].map((method) => (
-                        <div key={method.id} className="transition-transform hover:scale-105 flex items-center justify-center">
-                          <Image
-                            src={method.src}
-                            alt={method.alt}
-                            width={method.id === "upi" ? 56 : 40}
-                            height={40}
-                            className={`object-contain drop-shadow-sm ${method.id === "upi" ? "w-[56px] h-10" : "w-10 h-10"}`}
-                          />
-                        </div>
-                      ))}
+                <div className="flex flex-row items-start w-full justify-between gap-3">
+                  <div className="flex items-start gap-4">
+                    <span className="checkout-payment-card__radio flex-shrink-0" aria-hidden="true" style={{ margin: 0, marginTop: "2px" }} />
+                    <div className="flex flex-col text-left">
+                      <span className="checkout-payment-card__title text-lg font-bold text-[#2f2a26]" style={{ margin: 0 }}>Online Payment</span>
+                      <span className="text-xs text-[#8c8273] mt-1">
+                        Secure payments powered by PayU
+                      </span>
                     </div>
                   </div>
+                  <div className="flex-shrink-0 mt-1">
+                    <Image 
+                      src="/payments/payU.png" 
+                      alt="PayU" 
+                      width={60} 
+                      height={28} 
+                      className="object-contain opacity-90 w-[60px] h-auto"
+                    />
+                  </div>
                 </div>
-                <div className="flex-shrink-0 pl-2 flex items-center justify-center">
-                  <Image 
-                    src="/payments/payU.png" 
-                    alt="PayU" 
-                    width={70} 
-                    height={32} 
-                    className="object-contain opacity-90 w-[70px] h-auto"
-                  />
+
+                <div className="flex flex-wrap items-center gap-3 pl-9 mt-1">
+                  {[
+                    { id: "upi", src: "/payments/upi.png", alt: "UPI" },
+                    { id: "card", src: "/payments/card.png", alt: "Cards" },
+                    { id: "wallet", src: "/payments/wallet.png", alt: "Wallets" },
+                    { id: "netbanking", src: "/payments/online-banking.png", alt: "Net Banking" }
+                  ].map((method) => (
+                    <div key={method.id} className="transition-transform hover:scale-105 flex items-center justify-center">
+                      <Image
+                        src={method.src}
+                        alt={method.alt}
+                        width={method.id === "upi" ? 56 : 40}
+                        height={40}
+                        className={`object-contain drop-shadow-sm ${method.id === "upi" ? "w-[56px] h-10" : "w-10 h-10"}`}
+                      />
+                    </div>
+                  ))}
                 </div>
               </button>
             </div>
