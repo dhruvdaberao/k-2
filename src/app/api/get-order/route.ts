@@ -45,10 +45,11 @@ export async function GET(request: Request) {
     // 2. Validate access
     const { data: { user } } = await supabaseAuth.auth.getUser();
     
+    const isAdmin = user && user.email === 'keshvicrafts@gmail.com';
     const isOwner = user && user.id === order.user_id;
     const hasValidToken = token && token === order.access_token;
 
-    if (!isOwner && !hasValidToken) {
+    if (!isAdmin && !isOwner && !hasValidToken) {
       return NextResponse.json({ error: "Unauthorized access to order" }, { status: 403 });
     }
 

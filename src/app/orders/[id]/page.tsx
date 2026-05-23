@@ -137,7 +137,8 @@ export default function OrderDetailPage() {
         const authToken = sessionData?.session?.access_token;
 
         const res = await fetch(`/api/get-order?orderId=${orderId}&token=${token}`, {
-          headers: authToken ? { Authorization: `Bearer ${authToken}` } : undefined
+          headers: authToken ? { Authorization: `Bearer ${authToken}` } : undefined,
+          cache: "no-store"
         });
         const result = await res.json();
 

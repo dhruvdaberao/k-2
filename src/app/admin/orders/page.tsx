@@ -50,7 +50,8 @@ export default function AdminOrders() {
         const res = await fetch('/api/admin/orders', {
           headers: {
             Authorization: `Bearer ${token}`
-          }
+          },
+          cache: 'no-store'
         });
         const result = await res.json();
 
