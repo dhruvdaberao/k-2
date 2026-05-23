@@ -40,7 +40,7 @@ type OrderRow = {
   delivery_address?: DeliveryAddress | null;
   items?: any;
   discount_amount?: number;
-  shipping_charge?: number;
+  shipping_charge?: number | null;
 };
 
 type OrderItem = {

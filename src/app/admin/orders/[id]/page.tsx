@@ -23,6 +23,7 @@ type Order = {
   display_id: string;
   email: string;
   total_amount: number;
+  shipping_charge?: number | null;
   status: string;
   created_at: string;
   delivery_address: any;

@@ -14,6 +14,7 @@ type Order = {
   display_id?: string;
   created_at: string;
   total_amount: number;
+  shipping_charge?: number | null;
   status: OrderStatus;
 };
 
