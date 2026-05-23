@@ -7,6 +7,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
   try {
+    cookies(); // Force dynamic rendering and opt out of Next.js static caching
     const token = request.headers.get("Authorization")?.replace("Bearer ", "");
     if (!token) {
       return NextResponse.json({ success: false, error: 'Unauthorized - No Token' }, { status: 401 });

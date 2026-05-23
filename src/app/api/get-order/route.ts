@@ -6,6 +6,7 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
+  cookies(); // Force dynamic rendering and opt out of Next.js static caching
   const { searchParams } = new URL(request.url);
   const orderId = searchParams.get("orderId");
   const token = searchParams.get("token");

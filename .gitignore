@@ -8,3 +8,4 @@ build/
 *.log
 *.zip
 .env.local
+.vercel
