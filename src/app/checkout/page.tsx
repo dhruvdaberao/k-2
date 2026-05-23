@@ -763,9 +763,9 @@ function CheckoutContent() {
                     <Image 
                       src="/payments/payU.png" 
                       alt="PayU" 
-                      width={60} 
-                      height={28} 
-                      className="object-contain opacity-90 w-[60px] h-auto"
+                      width={85} 
+                      height={38} 
+                      className="object-contain opacity-95 w-[85px] h-auto"
                     />
                   </div>
                 </div>
