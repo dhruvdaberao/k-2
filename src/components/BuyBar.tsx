@@ -390,10 +390,10 @@ export default function BuyBar({
         }
 
         .bnm-price-preview {
-          font-size: 22px;
-          font-weight: 700;
+          font-size: 26px;
+          font-weight: 800;
           color: #3E2C1C;
-          font-family: var(--font-serif, serif);
+          font-family: var(--font-outfit), var(--font-sans, system-ui), sans-serif;
         }
       `}</style>
     </>

@@ -46,7 +46,8 @@ function CheckoutContent() {
   const { user, profile, loading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const isGuest = searchParams.get("guest") === "true";
+  const [autoGuest, setAutoGuest] = useState(false);
+  const isGuest = searchParams.get("guest") === "true" || autoGuest;
   
   const [items, setItems] = useState<CartItem[]>([]);
   const [addonItems, setAddonItems] = useState<CartItem[]>([]);
@@ -62,6 +63,12 @@ function CheckoutContent() {
   const [isDirectCheckout, setIsDirectCheckout] = useState(false);
   const [isGuestLocked, setIsGuestLocked] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
+
+  useEffect(() => {
+    if (!loading && !user) {
+      setAutoGuest(true);
+    }
+  }, [loading, user]);
 
   const refreshCart = useCallback(async () => {
     if (isPlacingOrder || isOrderPlaced) return;
