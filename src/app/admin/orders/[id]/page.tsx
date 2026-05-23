@@ -235,7 +235,7 @@ export default function OrderDetails() {
               
               <div className="flex items-center gap-2 text-[10px] text-gray-400 mt-1">
                 <span>{new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
-                <span className="font-bold text-[#5A3E2B]">₹{order.total_amount}</span>
+                <span className="font-bold text-[#5A3E2B]">₹{order.shipping_charge !== null && order.shipping_charge !== undefined ? order.total_amount : (order.total_amount + (order.total_amount >= 650 ? 0 : 40))}</span>
               </div>
 
               {/* ITEM CHIPS */}

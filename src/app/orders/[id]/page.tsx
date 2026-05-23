@@ -247,7 +247,7 @@ export default function OrderDetailPage() {
             </div>
             <div className="text-right">
               <span className="od-label">Total</span>
-              <span className="od-value od-value--total">₹{(order.total_amount || 0).toLocaleString("en-IN")}</span>
+              <span className="od-value od-value--total">₹{(order.shipping_charge !== null && order.shipping_charge !== undefined ? order.total_amount : ((order.total_amount || 0) + ((order.total_amount || 0) >= 650 ? 0 : 40))).toLocaleString("en-IN")}</span>
             </div>
           </div>
         </div>
@@ -334,7 +334,7 @@ export default function OrderDetailPage() {
           {/* Total summary */}
           <div className="od-total-row">
             <span>Total Amount</span>
-            <span className="od-total-amount">₹{(order.total_amount || 0).toLocaleString("en-IN")}</span>
+            <span className="od-total-amount">₹{(order.shipping_charge !== null && order.shipping_charge !== undefined ? order.total_amount : ((order.total_amount || 0) + ((order.total_amount || 0) >= 650 ? 0 : 40))).toLocaleString("en-IN")}</span>
           </div>
         </div>
 

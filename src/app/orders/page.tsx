@@ -188,7 +188,7 @@ export default function OrdersPage() {
                       <div className="order-card__info">
                         <span className="order-card__id">{order.display_id || shortenId(order.id)}</span>
                         <span className="order-card__date">{formatDate(order.created_at)}</span>
-                        <span className="order-card__total">₹{(order.total_amount || 0).toLocaleString("en-IN")}</span>
+                        <span className="order-card__total">₹{(order.shipping_charge !== null && order.shipping_charge !== undefined ? order.total_amount : ((order.total_amount || 0) + ((order.total_amount || 0) >= 650 ? 0 : 40))).toLocaleString("en-IN")}</span>
                       </div>
 
                       {/* Right side */}

@@ -33,14 +33,18 @@ export async function POST(req: Request) {
       auth: { persistSession: false, autoRefreshToken: false }
     });
 
-    const totalAmount = items.reduce((sum: number, item: any) => sum + (Number(item.price) * Number(item.quantity)), 0);
+    const subtotal = items.reduce((sum: number, item: any) => sum + (Number(item.price) * Number(item.quantity)), 0);
+    const shippingCharge = subtotal >= 650 ? 0 : 40;
+    const grandTotal = subtotal + shippingCharge;
+    
     const displayId = `KC-${Date.now()}`;
     const accessToken = crypto.randomUUID();
 
     // 1. Build order payload
     const orderPayload: any = {
       email: email,
-      total_amount: totalAmount,
+      total_amount: grandTotal,
+      shipping_charge: shippingCharge,
       status: "placed",
       payment_method: "COD",
       address: deliveryDetails ? `${deliveryDetails.address}, ${deliveryDetails.city}, ${deliveryDetails.state}, ${deliveryDetails.country} - ${deliveryDetails.pincode}` : "No Address Provided",

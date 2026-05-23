@@ -233,7 +233,15 @@ export async function GET(req: Request) {
 
     // 5. SUMMARY
     let finalY = (doc as any).lastAutoTable.finalY + 10;
+    const pageHeight = doc.internal.pageSize.getHeight();
     
+    // Check if there's enough space for the summary and payment section (approx 60 units needed)
+    // -40 is the footer area limit
+    if (finalY + 60 > pageHeight - 40) {
+      doc.addPage();
+      finalY = 20; // Reset Y position on new page
+    }
+
     const summaryRightX = width - 20;
     const summaryLeftX = width - 80;
 
