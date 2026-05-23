@@ -779,7 +779,7 @@ function CheckoutContent() {
 
                 <div className="flex flex-row justify-center items-center gap-6 sm:gap-8 w-full pt-4 mt-3 border-t border-stone-100">
                   {[
-                    { id: "upi", src: "/payments/upi-outline.svg", alt: "UPI" },
+                    { id: "upi", src: "/payments/upi-new.svg", alt: "UPI" },
                     { id: "card", src: "/payments/card-icon.svg", alt: "Cards" },
                     { id: "wallet", src: "/payments/wallet-icon.svg", alt: "Wallets" },
                     { id: "netbanking", src: "/payments/bank-icon.svg", alt: "Net Banking" }
@@ -790,8 +790,8 @@ function CheckoutContent() {
                           src={method.src}
                           alt={method.alt}
                           style={{
-                            width: "24px",
-                            height: "24px",
+                            width: method.id === "upi" ? "36px" : "24px",
+                            height: method.id === "upi" ? "16px" : "24px",
                             objectFit: "contain",
                             opacity: 0.85
                           }}
