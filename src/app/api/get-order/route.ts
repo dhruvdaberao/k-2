@@ -3,7 +3,9 @@ import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+export const revalidate = 0;
 
 export async function GET(request: Request) {
   cookies(); // Force dynamic rendering and opt out of Next.js static caching
