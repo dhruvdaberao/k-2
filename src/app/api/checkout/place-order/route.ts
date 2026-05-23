@@ -44,7 +44,6 @@ export async function POST(req: Request) {
     const orderPayload: any = {
       email: email,
       total_amount: grandTotal,
-      shipping_charge: shippingCharge,
       status: "placed",
       payment_method: "COD",
       address: deliveryDetails ? `${deliveryDetails.address}, ${deliveryDetails.city}, ${deliveryDetails.state}, ${deliveryDetails.country} - ${deliveryDetails.pincode}` : "No Address Provided",
