@@ -85,8 +85,12 @@ export default function OrderDetails() {
 
   const fetchOrder = async () => {
     try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const authToken = sessionData?.session?.access_token;
+      
       const res = await fetch(`/api/get-order?orderId=${orderId}`, {
-        cache: "no-store"
+        cache: "no-store",
+        headers: authToken ? { Authorization: `Bearer ${authToken}` } : undefined
       });
       const data = await res.json();
 
