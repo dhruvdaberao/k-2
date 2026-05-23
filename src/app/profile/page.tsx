@@ -212,8 +212,12 @@ function ProfileContent() {
     try { localStorage.clear(); } catch {}
     try { sessionStorage.clear(); } catch {}
 
+    showToast("Logged out successfully!");
+
     // 3. Hard redirect — never use router.push for logout as it can silently fail
-    window.location.href = "/";
+    setTimeout(() => {
+      window.location.href = "/";
+    }, 800);
   };
 
 

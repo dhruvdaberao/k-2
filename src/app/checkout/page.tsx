@@ -93,14 +93,11 @@ function CheckoutContent() {
       setIsDirectCheckout(false);
     }
 
-    const currentCart = await getAsyncCart();
+    const currentCart = await getAsyncCart(user);
     setItems(currentCart);
-  }, [isPlacingOrder, isOrderPlaced]);
+  }, [isPlacingOrder, isOrderPlaced, user]);
 
   useEffect(() => {
-    if (hasInitialized.current) return;
-    hasInitialized.current = true;
-    
     setHydrated(true);
     refreshCart();
 

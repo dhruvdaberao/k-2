@@ -47,7 +47,7 @@ export default function AdminOrders() {
         }
 
         // Fetch ALL orders via secure service-role API (bypasses RLS)
-        const res = await fetch('/api/admin/orders', {
+        const res = await fetch(`/api/admin/orders?t=${Date.now()}`, {
           headers: {
             Authorization: `Bearer ${token}`
           },

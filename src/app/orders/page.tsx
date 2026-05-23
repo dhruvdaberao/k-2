@@ -83,7 +83,7 @@ export default function OrdersPage() {
           }
         }
 
-        const res = await fetch("/api/user/orders", {
+        const res = await fetch(`/api/user/orders?t=${Date.now()}`, {
           headers: {
             Authorization: `Bearer ${token}`
           },
