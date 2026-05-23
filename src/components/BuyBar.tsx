@@ -113,6 +113,8 @@ export default function BuyBar({
                   height: "100%",
                   background: "transparent",
                   border: "none",
+                  outline: "none",
+                  WebkitTapHighlightColor: "transparent",
                   color: "white",
                   fontSize: "1.4rem",
                   fontWeight: 700,
@@ -145,6 +147,8 @@ export default function BuyBar({
                   height: "100%",
                   background: "transparent",
                   border: "none",
+                  outline: "none",
+                  WebkitTapHighlightColor: "transparent",
                   color: "white",
                   fontSize: "1.4rem",
                   fontWeight: 700,
@@ -339,6 +343,9 @@ export default function BuyBar({
           height: 100%;
           background: transparent;
           border: none;
+          outline: none;
+          box-shadow: none;
+          -webkit-tap-highlight-color: transparent;
           color: white;
           font-size: 1.3rem;
           font-weight: 700;
@@ -347,6 +354,11 @@ export default function BuyBar({
           align-items: center;
           justify-content: center;
           transition: background 0.15s;
+        }
+
+        .bnm-qty-btn:focus {
+          outline: none;
+          box-shadow: none;
         }
 
         .bnm-qty-btn:hover {

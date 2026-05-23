@@ -260,6 +260,9 @@
 .qty-controls button {
   background: transparent !important;
   border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent !important;
   color: white !important;
   width: 36px !important;
   height: 36px !important;
@@ -271,6 +274,11 @@
   cursor: pointer !important;
   border-radius: 50% !important; /* Circular background to avoid faint squares */
   transition: all 0.2s ease !important;
+}
+
+.qty-controls button:focus {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .qty-controls button:hover {
