@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 import GlobalLoader from "@/components/ui/GlobalLoader";
 
@@ -215,10 +216,6 @@ function CheckoutContent() {
   };
 
   const handlePaymentNext = () => {
-    if (paymentMethod === "online") {
-      showToast("Online payment is not available currently.");
-      return;
-    }
     setStep(3);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -304,7 +301,46 @@ function CheckoutContent() {
         image: item.image || ""
       }));
 
-      console.log("📦 Creating order in DB...");
+      if (paymentMethod === "online") {
+        console.log("💳 Initiating PayU online payment...");
+        const res = await fetch("/api/payments/payu/initiate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            items: mappedFinalItems,
+            deliveryDetails: details,
+            userEmail: user?.email,
+            userId: authUser?.id,
+            calculatedTotal: total
+          })
+        });
+        
+        const data = await res.json();
+        if (!data.success) {
+          showToast(data.error || "Failed to initiate payment");
+          setIsPlacingOrder(false);
+          return;
+        }
+        
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = data.payuUrl;
+        
+        Object.keys(data.payload).forEach(key => {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = key;
+          input.value = data.payload[key];
+          form.appendChild(input);
+        });
+        
+        document.body.appendChild(form);
+        form.submit();
+        
+        return;
+      }
+
+      console.log("📦 Creating COD order in DB...");
       const result = await placeOrderInDB(mappedFinalItems, details);
       console.log("✅ Order result:", result);
 
@@ -711,16 +747,44 @@ function CheckoutContent() {
                 type="button"
                 className={`checkout-payment-card ${paymentMethod === "online" ? "is-selected" : ""}`}
                 onClick={() => setPaymentMethod("online")}
+                style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: "20px", height: "auto", gap: "16px" }}
               >
-                <span className="checkout-payment-card__radio" aria-hidden="true" />
-                <span className="checkout-payment-card__title">Online Payment</span>
-                <span className="checkout-payment-card__copy">UPI / Card</span>
-                {paymentMethod === "online" && (
-                  <span className="text-[10px] font-bold text-red-600 mt-1 uppercase tracking-wider bg-red-50 px-2 py-0.5 rounded-full border border-red-100 flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
-                    Currently Unavailable
-                  </span>
-                )}
+                <div className="flex items-start gap-4 flex-1 min-w-0 text-left">
+                  <span className="checkout-payment-card__radio flex-shrink-0" aria-hidden="true" style={{ margin: 0, marginTop: "2px" }} />
+                  <div className="flex flex-col gap-1.5 min-w-0">
+                    <span className="checkout-payment-card__title text-lg font-bold text-[#2f2a26]" style={{ margin: 0 }}>Online Payment</span>
+                    <span className="text-xs text-[#8c8273]">
+                      Secure payments powered by PayU
+                    </span>
+                    <div className="flex flex-wrap items-center gap-3 mt-2">
+                      {[
+                        { id: "upi", src: "/payments/upi.png", alt: "UPI" },
+                        { id: "card", src: "/payments/card.png", alt: "Cards" },
+                        { id: "wallet", src: "/payments/wallet.png", alt: "Wallets" },
+                        { id: "netbanking", src: "/payments/online-banking.png", alt: "Net Banking" }
+                      ].map((method) => (
+                        <div key={method.id} className="transition-transform hover:scale-105 flex items-center justify-center">
+                          <Image
+                            src={method.src}
+                            alt={method.alt}
+                            width={method.id === "upi" ? 56 : 40}
+                            height={40}
+                            className={`object-contain drop-shadow-sm ${method.id === "upi" ? "w-[56px] h-10" : "w-10 h-10"}`}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-shrink-0 pl-2 flex items-center justify-center">
+                  <Image 
+                    src="/payments/payU.png" 
+                    alt="PayU" 
+                    width={70} 
+                    height={32} 
+                    className="object-contain opacity-90 w-[70px] h-auto"
+                  />
+                </div>
               </button>
             </div>
 
@@ -821,7 +885,9 @@ function CheckoutContent() {
                 aria-busy={isPlacingOrder}
                 style={isPlacingOrder ? { pointerEvents: "none", opacity: 0.7 } : undefined}
               >
-                {isPlacingOrder ? "Processing…" : "Confirm & Place Order"}
+                {isPlacingOrder 
+                  ? (paymentMethod === "online" ? "Redirecting to PayU..." : "Processing…") 
+                  : (paymentMethod === "online" ? "Pay Now" : "Confirm & Place Order")}
               </button>
             </div>
             <p className="checkout-note" style={{ marginTop: "1rem", fontSize: "0.85rem", color: "#666", lineHeight: "1.4" }}>
