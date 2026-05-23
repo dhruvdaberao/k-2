@@ -779,26 +779,25 @@ function CheckoutContent() {
 
                 <div className="flex flex-row justify-center items-center gap-6 sm:gap-8 w-full pt-4 mt-3 border-t border-stone-100">
                   {[
-                    { id: "upi", src: "/payments/upi-new.svg", alt: "UPI", label: "UPI" },
-                    { id: "card", src: "/payments/card-icon.svg", alt: "Cards", label: "Card" },
-                    { id: "wallet", src: "/payments/wallet-icon.svg", alt: "Wallets", label: "Wallet" },
-                    { id: "netbanking", src: "/payments/bank-icon.svg", alt: "Net Banking", label: "Net Banking" }
+                    { id: "upi", src: "/payments/upi-outline.svg", alt: "UPI" },
+                    { id: "card", src: "/payments/card-icon.svg", alt: "Cards" },
+                    { id: "wallet", src: "/payments/wallet-icon.svg", alt: "Wallets" },
+                    { id: "netbanking", src: "/payments/bank-icon.svg", alt: "Net Banking" }
                   ].map((method) => (
-                    <div key={method.id} className="transition-transform hover:scale-105 flex flex-col items-center justify-center gap-1">
-                      <div className="h-[20px] flex items-center justify-center">
+                    <div key={method.id} className="transition-transform hover:scale-105 flex flex-col items-center justify-center">
+                      <div className="h-[24px] flex items-center justify-center">
                         <img
                           src={method.src}
                           alt={method.alt}
                           style={{
-                            width: method.id === "upi" ? "34px" : "20px",
-                            height: method.id === "upi" ? "16px" : "20px",
+                            width: "24px",
+                            height: "24px",
                             objectFit: "contain",
                             opacity: 0.85
                           }}
                           className="drop-shadow-sm"
                         />
                       </div>
-                      <span className="text-[9px] font-medium text-[#8c8273] text-center whitespace-nowrap">{method.label}</span>
                     </div>
                   ))}
                 </div>
