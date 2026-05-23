@@ -9,6 +9,7 @@ function OrderSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams?.get("orderId");
+  const paymentType = searchParams?.get("type"); // "online" for PayU payments
   const [loading, setLoading] = useState(true);
   const [invoiceUrl, setInvoiceUrl] = useState<string | null>(null);
 
@@ -74,10 +75,10 @@ function OrderSuccessContent() {
 
         {/* Heading */}
         <h1 style={{ fontSize: 22, fontWeight: 700, color: '#2f2a26', margin: '0 0 6px', fontFamily: 'Georgia, serif' }}>
-          Order Confirmed
+          {paymentType === 'online' ? 'Payment Successful!' : 'Order Confirmed'}
         </h1>
         <p style={{ fontSize: 14, color: '#6b7280', margin: '0 0 24px', lineHeight: 1.5 }}>
-          Your order has been successfully placed
+          {paymentType === 'online' ? 'Your payment was received and your order is confirmed.' : 'Your order has been successfully placed'}
         </p>
 
         {/* Order ID card */}
@@ -105,7 +106,7 @@ function OrderSuccessContent() {
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" y1="15" x2="12" y2="3" />
               </svg>
-              Download Invoice
+              {paymentType === 'online' ? 'Download Receipt' : 'Download Invoice'}
             </button>
           )}
         </div>

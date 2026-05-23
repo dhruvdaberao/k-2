@@ -106,11 +106,11 @@ export async function POST(req: Request) {
       
       const displayId = orderData?.display_id || udf1;
       const token = orderData?.access_token || "";
-      return NextResponse.redirect(`${siteUrl}/order-success?orderId=${displayId}&token=${token}`, 303);
+      return NextResponse.redirect(`${siteUrl}/order-success?orderId=${displayId}&token=${token}&type=online`, 303);
     }
 
     // Fallback if udf1 is somehow missing but payment succeeded
-    return NextResponse.redirect(`${siteUrl}/order-success?orderId=unknown`, 303);
+    return NextResponse.redirect(`${siteUrl}/order-success?orderId=unknown&type=online`, 303);
 
   } catch (err: any) {
     console.error('🔴 [API PayU Callback] Error:', err);

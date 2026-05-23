@@ -37,14 +37,20 @@ export async function GET(req: Request) {
     // Phase 2: Fallback to orderId (Requires DB fetch)
     if (!orderData && orderId) {
       console.log("[Invoice API] Fallback to DB fetch for:", orderId);
-      const supabase = createRouteHandlerClient({ cookies });
+      
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+      const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+      const { createClient } = require('@supabase/supabase-js');
+      const supabaseAdmin = createClient(supabaseUrl, serviceKey, {
+        auth: { persistSession: false }
+      });
       
       // Cleanup orderId from any quotes or spaces
       const cleanId = orderId.trim().replace(/['"]/g, '');
 
-      let { data: order, error } = await supabase
+      let { data: order, error } = await supabaseAdmin
         .from('orders')
-        .select('*')
+        .select('*, order_items(*)')
         .or(`display_id.eq.${cleanId},id.eq.${cleanId}`)
         .maybeSingle();
 
@@ -55,13 +61,15 @@ export async function GET(req: Request) {
       // Final fallback: try separate equality checks if OR failed or returned nothing
       if (!order) {
         console.log("[Invoice API] OR query yielded nothing, trying exact display_id match...");
-        const { data: dMatch } = await supabase.from('orders').select('*').eq('display_id', cleanId).maybeSingle();
+        const { data: dMatch } = await supabaseAdmin.from('orders').select('*, order_items(*)').eq('display_id', cleanId).maybeSingle();
         order = dMatch;
       }
 
       if (order) {
         // SECURITY CHECK
-        const { data: { user } } = await supabase.auth.getUser();
+        const supabaseAuth = createRouteHandlerClient({ cookies });
+        const { data: { user } } = await supabaseAuth.auth.getUser();
+        
         const isOwner = user && user.id === order.user_id;
         const hasValidToken = token && token === order.access_token;
 
@@ -71,11 +79,14 @@ export async function GET(req: Request) {
         }
 
         console.log('[Invoice API] Successfully found and authorized order:', order.id);
-        // ... mapping logic
-        let items = [];
-        try {
-          items = typeof order.items === 'string' ? JSON.parse(order.items) : (order.items || []);
-        } catch(e) {}
+        
+        // Items are in order.order_items now
+        let items = order.order_items || [];
+        if (items.length === 0) {
+           try {
+             items = typeof order.items === 'string' ? JSON.parse(order.items) : (order.items || []);
+           } catch(e) {}
+        }
 
         let addr: any = order.delivery_address || (typeof order.address === 'string' ? { address_line: order.address } : order.address) || {};
 
@@ -88,6 +99,7 @@ export async function GET(req: Request) {
           sd: 0, 
           t: Number(order.total_amount || 0),
           pm: order.payment_method,
+          status: order.status,
           u: {
             n: addr.full_name || addr.name || "Customer",
             p: addr.phone || "",
@@ -110,6 +122,9 @@ export async function GET(req: Request) {
       return new Response("Invoice data not found. Please provide 'd' or 'orderId'.", { status: 400 });
     }
 
+    const isOnline = orderData.pm?.toLowerCase() !== 'cod';
+    const documentType = isOnline ? 'RECEIPT' : 'INVOICE';
+
     // --- Generate PDF with jsPDF ---
     const doc = new jsPDF();
     const width = doc.internal.pageSize.getWidth();
@@ -124,9 +139,7 @@ export async function GET(req: Request) {
       const host = orderData.h || (typeof window !== 'undefined' ? window.location.origin : '');
       const logoUrl = host ? `${host}/logo.png` : '';
       if (logoUrl) {
-         // In server-side Next.js, we might need to read from filesystem or fetch
-         // Since we are in an API route, let's try reading the file from the local disk if possible
-         // Or just use the text-fallback if image fails
+         // Fallback logic empty
       }
     } catch {}
 
@@ -142,19 +155,27 @@ export async function GET(req: Request) {
 
     doc.setFontSize(20);
     doc.setTextColor(47, 42, 38); // #2f2a26
-    doc.text("INVOICE", width - 20, 35, { align: "right" });
+    doc.text(documentType, width - 20, 35, { align: "right" });
 
     // 2. ORDER DETAILS
     doc.setFontSize(9);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(100);
-    doc.text(`INVOICE NO: ${orderData.o}`, width - 20, 45, { align: "right" });
+    doc.text(`${documentType} NO: ${orderData.o}`, width - 20, 45, { align: "right" });
     
     const dateStr = new Date(orderData.c).toLocaleDateString('en-IN', {
       day: '2-digit', month: 'long', year: 'numeric'
     });
     doc.text(`DATE: ${dateStr}`, width - 20, 50, { align: "right" });
-    doc.text(`PAYMENT: ${(orderData.pm || 'COD').toUpperCase()}`, width - 20, 55, { align: "right" });
+    
+    // Payment Status in Colors
+    if (isOnline || orderData.status === 'paid') {
+      doc.setTextColor(34, 139, 34); // Forest Green
+      doc.text(`STATUS: PAID`, width - 20, 55, { align: "right" });
+    } else {
+      doc.setTextColor(200, 100, 0); // Orange/Warning
+      doc.text(`STATUS: PENDING (COD)`, width - 20, 55, { align: "right" });
+    }
 
     // 3. BILL TO & SHIP TO
     doc.setDrawColor(230);

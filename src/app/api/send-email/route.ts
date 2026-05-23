@@ -51,7 +51,7 @@ export async function POST(req: Request) {
             </div>
 
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${invoiceUrl}" style="background-color: #5A3E2B; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Download Invoice</a>
+              <a href="${invoiceUrl}" style="background-color: #5A3E2B; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Download ${paymentMethod === 'Online Payment' ? 'Receipt' : 'Invoice'}</a>
             </div>
 
             <p>We'll notify you as soon as your handmade goodies are shipped!</p>
@@ -150,7 +150,7 @@ export async function POST(req: Request) {
 
             ${absoluteInvoiceUrl ? `
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${absoluteInvoiceUrl}" style="background-color: #5A3E2B; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Download Invoice</a>
+              <a href="${absoluteInvoiceUrl}" style="background-color: #5A3E2B; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Download ${paymentMethod === 'Online Payment' ? 'Receipt' : 'Invoice'}</a>
             </div>` : ''}
 
             <p>Please log in to the admin dashboard to manage this order.</p>
