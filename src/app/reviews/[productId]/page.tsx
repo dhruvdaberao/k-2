@@ -284,13 +284,8 @@ export default function ReviewPage() {
         .eq("orders.user_id", user.id)
         .eq("orders.status", "delivered");
 
-      if (orderError) {
-        console.error("Order check error:", orderError);
-        showToast("Error checking order eligibility");
-        return;
-      }
-
-      if (!orderChecks || orderChecks.length === 0) {
+      if (orderError || !orderChecks || orderChecks.length === 0) {
+        if (orderError) console.error("Order check error:", orderError);
         setIneligibleModal(true);
         return;
       }
@@ -346,13 +341,8 @@ export default function ReviewPage() {
         .eq("orders.user_id", user.id)
         .eq("orders.status", "delivered");
 
-      if (orderError) {
-        console.error("Order check error:", orderError);
-        showToast("Error verifying purchase status");
-        return;
-      }
-
-      if (!orderChecks || orderChecks.length === 0) {
+      if (orderError || !orderChecks || orderChecks.length === 0) {
+        if (orderError) console.error("Order check error:", orderError);
         showToast("You can only review delivered items");
         return;
       }
