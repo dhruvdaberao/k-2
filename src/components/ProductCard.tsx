@@ -100,7 +100,7 @@ export default function ProductCard({ p }: { p: Product }) {
           onClick={handleCardClick}
         >
           {/* Square Aspect Ratio */}
-          <div className="relative w-full aspect-square">
+          <div className="relative w-full aspect-[5/4]">
             <ImageWithFallback
               src={p.images?.[0] || '/placeholder.png'}
               alt={p.title}
@@ -167,15 +167,15 @@ export default function ProductCard({ p }: { p: Product }) {
       </div>
 
       {/* CONTENT */}
-      <div className="flex flex-col flex-grow p-4 md:p-5">
-        <h3 className="text-[15px] md:text-[17px] font-bold text-[#2C1810] leading-snug mb-2 line-clamp-1">
+      <div className="flex flex-col flex-grow p-3 md:p-3.5">
+        <h3 className="text-[15px] md:text-[16px] font-bold text-[#2C1810] leading-snug mb-1.5 whitespace-nowrap overflow-hidden text-ellipsis block">
           <Link href={`/products/${encoded}`} onClick={handleCardClick} className="product-title-link">
             {p.title}
           </Link>
         </h3>
 
         <div className="mt-auto flex flex-col justify-end">
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center mb-2.5">
             <span className="text-lg md:text-xl font-bold text-[#4A3219]">{priceDisplay}</span>
             <div 
               className="flex items-center gap-1 cursor-pointer hover:opacity-80 transition-all active:scale-95"

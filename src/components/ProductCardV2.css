@@ -274,7 +274,7 @@
   font-weight: 700 !important;
   cursor: pointer !important;
   border-radius: 50% !important; /* Circular background to avoid faint squares */
-  transition: all 0.2s ease !important;
+  transition: transform 0.1s ease, background 0.15s ease !important;
 }
 
 .qty-controls button:focus {
@@ -282,13 +282,17 @@
   box-shadow: none !important;
 }
 
-.qty-controls button:hover {
-  background: rgba(255, 255, 255, 0.15) !important;
-  transform: scale(1.1);
+@media (hover: hover) {
+  .qty-controls button:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    transform: scale(1.1);
+  }
 }
 
 .qty-controls button:active {
-  transform: scale(0.9);
+  background: rgba(255, 255, 255, 0.25) !important;
+  transform: scale(0.9) !important;
+  transition: transform 0.05s ease, background 0.05s ease !important;
 }
 
 .qty-controls span {
