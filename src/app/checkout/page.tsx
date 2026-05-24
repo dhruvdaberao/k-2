@@ -516,7 +516,7 @@ function CheckoutContent() {
         }}
       />
       <label htmlFor="agree-terms" style={{ fontSize: '14px', color: '#4a4a4a', lineHeight: '1.5', cursor: 'pointer' }}>
-        I agree to the <a href="/terms" target="_blank" style={{ color: '#0066cc', textDecoration: 'underline' }}>Terms</a>, <a href="/privacy" target="_blank" style={{ color: '#0066cc', textDecoration: 'underline' }}>Privacy Policy</a>, and <a href="/returns" target="_blank" style={{ color: '#0066cc', textDecoration: 'underline' }}>Returns Policy</a>.
+        I agree to the <a href="/terms" style={{ color: '#0066cc', textDecoration: 'underline' }}>Terms</a>, <a href="/privacy" style={{ color: '#0066cc', textDecoration: 'underline' }}>Privacy Policy</a>, and <a href="/returns" style={{ color: '#0066cc', textDecoration: 'underline' }}>Returns Policy</a>.
       </label>
     </div>
   );
