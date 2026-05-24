@@ -2711,7 +2711,7 @@ body {
 
 .checkout-card {
   background: white;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--brand);
   border-radius: 18px;
   padding: 1.5rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
@@ -2780,7 +2780,7 @@ body {
 
 .checkout-payment-card {
   position: relative;
-  border: 1px solid rgba(74, 50, 25, 0.12);
+  border: 1px solid var(--brand);
   border-radius: 18px;
   background: #fff;
   padding: 1.25rem;
