@@ -157,7 +157,7 @@ export default function CollectionsContent({ serverCategory }: { serverCategory?
       <CategoryChips serverCategory={serverCategory} />
 
       <div className="collections-control-bar">
-        <div className="collections-result-count items-count">{sorted.length}</div>
+        <div className="collections-result-count items-count">{sorted.length} items</div>
         <div className="collections-controls-right">
           <button
             className="collections-filter-btn"

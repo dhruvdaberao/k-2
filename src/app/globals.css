@@ -1879,7 +1879,7 @@ summary::-webkit-details-marker {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 0 12px 8px;
+  padding: 16px 0;
   margin-bottom: var(--spacing-lg);
   border-bottom: 1px solid var(--border);
   gap: 8px;
@@ -1904,35 +1904,15 @@ summary::-webkit-details-marker {
   min-width: 0;
 }
 
-.collections-result-count::before {
-  content: "";
-  width: 16px;
-  height: 16px;
-  display: inline-block;
-  background: url('/icons/box.svg') no-repeat center;
-  background-size: contain;
-  flex-shrink: 0;
-}
-
 .items-count {
   display: flex;
   align-items: center;
   gap: 6px;
   font-weight: 500;
   color: #6b4226;
-  font-size: 13px;
+  font-size: 14px;
   white-space: nowrap;
   min-width: 0;
-}
-
-.items-count::before {
-  content: "";
-  width: 16px;
-  height: 16px;
-  display: inline-block;
-  background: url('/icons/box.svg') no-repeat center;
-  background-size: contain;
-  flex-shrink: 0;
 }
 
 /* ====== Category Chips ====== */
