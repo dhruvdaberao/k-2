@@ -133,6 +133,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   width: 100%;
   height: clamp(320px, 56vw, 680px);
   background: transparent;
+  border: 1px solid var(--brand);
   border-radius: 16px;
   overflow: hidden;
   position: relative;
