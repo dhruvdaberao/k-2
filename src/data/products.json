@@ -5,6 +5,7 @@
     "title": "Tulip Keyring",
     "description": "Handmade crochet tulip keyring crafted with love \u2014 perfect for keys, bags, and gifting.",
     "price": 90,
+    "priority": 70,
     "images": [
       "/uploads/products/keychains/tulip_keychain.png"
     ],
@@ -46,6 +47,7 @@
     "title": "Sunflower Keyring",
     "description": "Handmade crochet sunflower keyring crafted with love \u2014 perfect for keys, bags, and gifting.",
     "price": 90,
+    "priority": 90,
     "images": [
       "/uploads/products/keychains/sunflower_keychain.png"
     ],
@@ -87,6 +89,7 @@
     "title": "Strawberry Keyring",
     "description": "Handmade crochet strawberry keyring crafted with love \u2014 perfect for keys, bags, and gifting.",
     "price": 50,
+    "priority": 100,
     "images": [
       "/uploads/products/keychains/strawberry_keychain.png"
     ],
@@ -128,6 +131,7 @@
     "title": "Evil Eye Keyring",
     "description": "Handmade crochet evil eye keyring crafted with love \u2014 perfect for keys, bags, and gifting.",
     "price": 85,
+    "priority": 80,
     "images": [
       "/uploads/products/keychains/evileye_keychain.png"
     ],
@@ -282,6 +286,7 @@
     "title": "Crochet Earpod Holder",
     "description": "Handmade crochet earpod holder \u2014 lightweight, durable, and perfect for everyday use.",
     "price": 80,
+    "priority": 60,
     "images": [
       "/uploads/accessories/earpod-holder.jpg"
     ],
