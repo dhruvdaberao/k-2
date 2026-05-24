@@ -543,12 +543,12 @@ export default function ReviewPage() {
               ) : ratingData.count === 0 ? (
                 <span className="text-sm text-gray-400">No reviews yet</span>
               ) : (
-                <>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <StarIcon filled={true} size={20} />
-                  <span className="text-base text-[#5a3e2b] font-bold" style={{ fontSize: '16px' }}>
-                    {ratingData.avg} <span style={{ color: '#888', fontWeight: 400, fontSize: '14px' }}>({ratingData.count})</span>
+                  <span className="text-[#5a3e2b] font-bold" style={{ fontSize: '16px', lineHeight: 1, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    {ratingData.avg} <span style={{ color: '#888', fontWeight: 400, fontSize: '14px', lineHeight: 1 }}>({ratingData.count})</span>
                   </span>
-                </>
+                </div>
               )}
             </div>
           </div>
