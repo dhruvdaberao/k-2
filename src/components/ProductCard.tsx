@@ -90,11 +90,8 @@ export default function ProductCard({ p }: { p: Product }) {
 
   return (
     <article 
-      className="relative plp-card-mobile h-full flex flex-col group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
-      style={{ border: '1px solid #4A3219' }}
+      className="relative plp-card-mobile plp-card h-full flex flex-col group bg-[#FDFBF9] rounded-[18px] overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
     >
-
-      {/* MEDIA WRAPPER */}
       <div className="relative w-full bg-stone-100 overflow-hidden">
         <Link
           href={`/products/${encoded}`}
@@ -103,7 +100,7 @@ export default function ProductCard({ p }: { p: Product }) {
           onClick={handleCardClick}
         >
           {/* Square Aspect Ratio */}
-          <div className="relative w-full h-0" style={{ paddingBottom: '100%' }}>
+          <div className="relative w-full aspect-square">
             <ImageWithFallback
               src={p.images?.[0] || '/placeholder.png'}
               alt={p.title}
@@ -170,17 +167,16 @@ export default function ProductCard({ p }: { p: Product }) {
       </div>
 
       {/* CONTENT */}
-      <div className="flex flex-col flex-grow p-4">
-        <h3 className="text-base font-medium text-neutral-900 leading-snug mb-2 line-clamp-2 min-h-[2.5em]">
+      <div className="flex flex-col flex-grow p-4 md:p-5">
+        <h3 className="text-[15px] md:text-[17px] font-bold text-[#2C1810] leading-snug mb-2 line-clamp-1">
           <Link href={`/products/${encoded}`} onClick={handleCardClick} className="product-title-link">
             {p.title}
           </Link>
         </h3>
 
-        <div className="mt-auto">
-
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-lg font-bold text-neutral-900">{priceDisplay}</span>
+        <div className="mt-auto flex flex-col justify-end">
+          <div className="flex justify-between items-center mb-4">
+            <span className="text-lg md:text-xl font-bold text-[#4A3219]">{priceDisplay}</span>
             <div 
               className="flex items-center gap-1 cursor-pointer hover:opacity-80 transition-all active:scale-95"
               onClick={(e) => {
