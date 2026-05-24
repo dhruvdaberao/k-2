@@ -2708,6 +2708,9 @@ body {
   display: grid;
   gap: 1.5rem;
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0 4px;
 }
 
 .checkout-card {
@@ -2834,8 +2837,7 @@ body {
 }
 
 .add-ons {
-  padding-left: 0;
-  padding-right: 0;
+  width: 100%;
 }
 
 .card,
@@ -3077,8 +3079,8 @@ body {
   .checkout-card {
     padding: 1rem;
     border-radius: 14px;
-    width: calc(100% - 8px) !important;
-    margin: 0 auto !important;
+    width: auto !important;
+    margin: 0 !important;
   }
 
   .checkout-actions,
