@@ -16,7 +16,7 @@ export async function getProductRating(productId: string) {
       return { avg: null, count: 0 };
     }
 
-    const avg = data.reduce((sum, r) => sum + r.rating, 0) / data.length;
+    const avg = data.reduce((sum: number, r: any) => sum + r.rating, 0) / data.length;
 
     return {
       avg: avg.toFixed(1),

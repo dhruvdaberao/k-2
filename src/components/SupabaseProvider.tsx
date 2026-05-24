@@ -12,13 +12,13 @@ export default function SupabaseProvider({
   const [authReady, setAuthReady] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
+    supabase.auth.getSession().then(({ data }: any) => {
       console.log("HYDRATED SESSION:", data.session);
       setAuthReady(true);
     });
 
     const { data: listener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      (event: any, session: any) => {
         if (session) {
           console.log("User is now available:", session.user);
         }

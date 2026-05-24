@@ -59,7 +59,7 @@ export default function AdminManageReviewsPage() {
       console.log("✅ [ADMIN] Reviews Loaded:", reviewData.length);
 
       // 2. Fetch Profiles separately to avoid join errors
-      const userIds = Array.from(new Set(reviewData.map(r => r.user_id)));
+      const userIds = Array.from(new Set(reviewData.map((r: any) => r.user_id)));
       const { data: profileData, error: profileError } = await supabase
         .from("profiles")
         .select("id, name")
@@ -75,7 +75,7 @@ export default function AdminManageReviewsPage() {
       }, {});
 
       // 3. Enrich with names + product info from JSON
-      const enriched = reviewData.map(r => {
+      const enriched = reviewData.map((r: any) => {
         const p = (productsData as any[]).find(x => x.id === r.product_id || x.slug === r.product_id)
         return {
           ...r,

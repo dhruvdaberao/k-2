@@ -82,7 +82,7 @@ export default function MyReviewsPage() {
 
         if (error) throw error
 
-        const enriched = (data || []).map(r => {
+        const enriched = (data || []).map((r: any) => {
           const p = (productsData as any[]).find(x => x.id === r.product_id || x.slug === r.product_id)
           return {
             ...r,

@@ -132,7 +132,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     window.addEventListener("bag:changed", onBagChange);
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: any, session: any) => {
       console.log("[CartHook] Auth event:", event);
       if (event === "SIGNED_IN" && session?.user?.id) {
         await syncLocalCartToDB(session.user.id);

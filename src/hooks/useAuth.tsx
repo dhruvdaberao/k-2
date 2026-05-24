@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession()
-      .then(({ data: { session }, error }) => {
+      .then(({ data: { session }, error }: any) => {
         if (error) {
           if (error.message.includes("refresh_token_not_found") || error.message.includes("Invalid Refresh Token")) {
             console.warn("Auth: Token issue detected. Relying on onAuthStateChange for genuine logouts.");
@@ -59,7 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           if (session.user.id) fetchProfile(session.user.id);
         }
       })
-      .catch(err => {
+      .catch((err: any) => {
         if (err?.message?.includes("Lock")) {
           console.warn("Auth: Benign lock error caught.");
         } else {
@@ -71,7 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
     // Listen for auth changes natively
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: any, session: any) => {
       if (session) {
         setSession(session);
         setUser(session.user);

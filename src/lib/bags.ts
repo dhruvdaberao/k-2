@@ -297,7 +297,7 @@ export async function loadWishlist(passedUser?: any): Promise<ItemSnapshot[]> {
     return read<ItemSnapshot[]>(WISHLIST_KEY, []); // fallback to local on error
   }
 
-  const items: ItemSnapshot[] = (data || []).map(row => ({
+  const items: ItemSnapshot[] = (data || []).map((row: any) => ({
     id: row.product_id,
     name: "Product", // Placeholder since we only store IDs for speed/reliability
     price: 0,
