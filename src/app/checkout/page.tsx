@@ -55,7 +55,7 @@ function CheckoutContent() {
   
   const [step, setStep] = useState<CheckoutStep>(1);
   const [details, setDetails] = useState<CheckoutCustomerDetails>(initialDetails);
-  const [paymentMethod, setPaymentMethod] = useState<CheckoutPaymentMethod>("cod");
+  const [paymentMethod, setPaymentMethod] = useState<CheckoutPaymentMethod>("online");
   
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
@@ -799,16 +799,6 @@ return (
             <div className="checkout-payment-grid">
               <button
                 type="button"
-                className={`checkout-payment-card ${paymentMethod === "cod" ? "is-selected" : ""}`}
-                onClick={() => setPaymentMethod("cod")}
-              >
-                <span className="checkout-payment-card__radio" aria-hidden="true" />
-                <span className="checkout-payment-card__title">COD</span>
-                <span className="checkout-payment-card__copy">Cash on Delivery</span>
-              </button>
-
-              <button
-                type="button"
                 className={`checkout-payment-card ${paymentMethod === "online" ? "is-selected" : ""}`}
                 onClick={() => setPaymentMethod("online")}
                 style={{ display: "flex", flexDirection: "column", padding: "20px", height: "auto", gap: "12px", alignItems: "flex-start" }}
@@ -857,6 +847,19 @@ return (
                       </div>
                     </div>
                   ))}
+                </div>
+              </button>
+
+              <button
+                type="button"
+                className="checkout-payment-card"
+                onClick={() => showToast("COD is currently not available")}
+                style={{ display: "flex", flexDirection: "row", padding: "20px", height: "auto", gap: "16px", alignItems: "center", opacity: 0.6, cursor: "not-allowed" }}
+              >
+                <span className="checkout-payment-card__radio flex-shrink-0" aria-hidden="true" style={{ margin: 0, opacity: 0.5 }} />
+                <div className="flex flex-col text-left">
+                  <span className="checkout-payment-card__title text-lg font-bold text-[#2f2a26]" style={{ margin: 0 }}>COD</span>
+                  <span className="text-xs text-[#8c8273] mt-1">Currently not available</span>
                 </div>
               </button>
             </div>
