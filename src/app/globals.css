@@ -2182,7 +2182,7 @@ summary::-webkit-details-marker {
   }
 
   .collections-filter-btn {
-    display: none;
+    /* display: none; */
   }
 
   .collections-controls-right {
