@@ -57,16 +57,13 @@ export default function ProductCardV2({ p }: { p: Product }) {
         if (isCustomOrder) {
             // Enquire action
             const messageText = `Hi Keshvi Crafts! I would like to enquire about this product: ${p.title} (https://keshvicrafts.in/products/${p.id || p.slug})`;
-            navigator.clipboard.writeText(messageText).catch(() => {});
-
-            const defaultUrl = "https://ig.me/m/keshvi_crafts";
-
-            const url = p.cta?.url || defaultUrl;
+            
+            const encodedMessage = encodeURIComponent(messageText);
+            const url = `https://wa.me/917310045515?text=${encodedMessage}`;
             window.open(url, "_blank", "noopener,noreferrer");
 
-            showToast(`Enquiry message copied! Just paste it in the DM 📋`);
             trackEvent({
-                action: "click_instagram_enquiry",
+                action: "click_whatsapp_enquiry",
                 category: "Card",
                 label: p.title,
                 location: "card",
@@ -87,7 +84,7 @@ export default function ProductCardV2({ p }: { p: Product }) {
     };
 
     const getButtonLabel = () => {
-        if (isCustomOrder) return "Enquire on Instagram";
+        if (isCustomOrder) return "Enquire";
         return "Add to Cart";
     };
 

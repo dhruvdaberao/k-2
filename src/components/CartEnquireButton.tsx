@@ -14,22 +14,19 @@ export default function CartEnquireButton({
     items,
     total,
     className = "btn-secondary w-full text-sm mt-3",
-    label = "Enquire on Instagram"
+    label = "Enquire"
 }: CartEnquireButtonProps) {
     const handleEnquire = () => {
         const itemList = items.map(it => `${it.title} (x${it.qty})`).join(", ");
         const message = `Hi Keshvi Crafts! I want to enquire about my cart:\n\nItems: ${itemList}\n\nTotal: ₹${total}\n\nPlease share availability and delivery time.`;
 
-        navigator.clipboard.writeText(message);
-
-        // Fix for Desktop Firefox Redirect Loop
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        const url = "https://www.instagram.com/direct/t/17844051177388084/";
+        const encodedMessage = encodeURIComponent(message);
+        const url = `https://wa.me/917310045515?text=${encodedMessage}`;
 
         window.open(url, "_blank", "noreferrer");
-        showToast("Cart details copied! Paste in Instagram DM.");
+        
         trackEvent({
-            action: "click_instagram_enquiry",
+            action: "click_whatsapp_enquiry",
             category: "Ecommerce",
             label: "Cart Enquiry",
             location: "cart",

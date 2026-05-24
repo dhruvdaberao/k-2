@@ -270,59 +270,30 @@ export default function ProductPageClient({
             </div>
           )}
 
-          {/* Actions: BuyBar or Instagram Enquiry */}
+          {/* Actions: BuyBar or WhatsApp Enquiry */}
           <div style={{ marginBottom: "1.5rem" }}>
             {product.type === "custom-order" ? (
               <div className="flex flex-col gap-3">
                 <button
                   onClick={() => {
                     const messageText = `Hi Keshvi Crafts! I would like to enquire about this product: ${product.title} (${window.location.href})`;
-                    navigator.clipboard.writeText(messageText).catch(() => {});
-
-                    const url = `https://ig.me/m/keshvi_crafts`;
+                    
+                    const encodedMessage = encodeURIComponent(messageText);
+                    const url = `https://wa.me/917310045515?text=${encodedMessage}`;
                     window.open(url, "_blank", "noopener,noreferrer");
 
-                    showToast(`Enquiry message copied! Just paste it in the DM 📋`);
                     trackEvent({
-                      action: "click_instagram_enquiry",
+                      action: "click_whatsapp_enquiry",
                       category: "Ecommerce",
                       label: product.title,
                       location: "pdp_primary",
                       slug: (product.id || product.slug)
                     });
                   }}
-                  className="btn-primary w-full text-lg"
-                  style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
+                  className="btn-primary w-full text-lg font-bold"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                    <circle cx="12" cy="12" r="4"/>
-                    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
-                  </svg>
-                  Enquire on Instagram
+                  Enquire
                 </button>
-
-                <button
-                  onClick={() => {
-                    const message = product.cta?.prefillMessage || `Hi! I'm interested in ${product.title}`;
-                    navigator.clipboard.writeText(message);
-                    // Simple toast feedback
-                    const btn = document.getElementById("copy-btn");
-                    if (btn) {
-                      const original = btn.innerText;
-                      btn.innerText = "Copied! ✓";
-                      setTimeout(() => btn.innerText = original, 2000);
-                    }
-                  }}
-                  id="copy-btn"
-                  className="btn-secondary w-full text-sm"
-                >
-                  Copy Enquiry Message
-                </button>
-
-                <p className="text-xs text-center text-stone-500 mt-2">
-                  Since this is a custom piece, we take orders personally on Instagram to ensure perfect customization.
-                </p>
               </div>
             ) : (
               <BuyBar

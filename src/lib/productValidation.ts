@@ -28,7 +28,7 @@ export const validateProduct = (product: any): Product | null => {
             console.warn(`Custom order product ${product.slug} missing CTA object. patching...`);
             product.cta = {
                 type: "instagram-enquiry",
-                label: "Enquire on Instagram",
+                label: "Enquire",
                 url: "https://ig.me/m/keshvi_crafts", // Fallback
                 prefillMessage: `Hi! I'm interested in ${product.title}`
             };
