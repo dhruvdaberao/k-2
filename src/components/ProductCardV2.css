@@ -281,12 +281,15 @@
   box-shadow: none !important;
 }
 
-.qty-controls button:hover {
-  background: rgba(255, 255, 255, 0.15) !important;
-  transform: scale(1.1);
+@media (hover: hover) {
+  .qty-controls button:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    transform: scale(1.1);
+  }
 }
 
 .qty-controls button:active {
+  background: rgba(255, 255, 255, 0.2) !important;
   transform: scale(0.9);
 }
 
