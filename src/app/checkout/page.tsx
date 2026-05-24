@@ -648,7 +648,7 @@ return (
                     type="text"
                     value={details.city}
                     onChange={(e) => handleFieldChange("city", e.target.value)}
-                    placeholder="Bikini Bottom"
+                    placeholder="Mumbai"
                     disabled={isGuestLocked}
                     className="w-full border p-2 rounded"
                     style={isGuestLocked ? { opacity: 0.7 } : undefined}
