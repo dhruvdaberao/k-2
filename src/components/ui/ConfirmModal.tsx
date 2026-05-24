@@ -30,9 +30,11 @@ export default function ConfirmModal({
         <h2 className="cm-title">{title}</h2>
         <p className="cm-message">{message}</p>
         <div className="cm-actions">
-          <button className="cm-btn cm-btn--cancel" onClick={onCancel}>
-            {cancelLabel}
-          </button>
+          {cancelLabel && (
+            <button className="cm-btn cm-btn--cancel" onClick={onCancel}>
+              {cancelLabel}
+            </button>
+          )}
           <button
             className={`cm-btn ${destructive ? "cm-btn--destructive" : "cm-btn--confirm"}`}
             onClick={onConfirm}

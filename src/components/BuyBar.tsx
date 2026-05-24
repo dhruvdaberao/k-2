@@ -16,6 +16,7 @@ export default function BuyBar({
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showQtyModal, setShowQtyModal] = useState(false);
   const [buyQty, setBuyQty] = useState(1);
+  const [showOutOfStockModal, setShowOutOfStockModal] = useState(false);
 
   // Sync cart qty on mount and on bag:changed events
   const syncQty = async () => {
@@ -31,6 +32,10 @@ export default function BuyBar({
   }, [slug]);
 
   async function onAddToCart() {
+    if (disabled) {
+      setShowOutOfStockModal(true);
+      return;
+    }
     await handleAddToCart({ id: slug, slug, title, price, image: image || "/placeholder.png" });
     trackEvent({ action: "add_to_cart", category: "Ecommerce", label: title, value: price });
   }
@@ -46,6 +51,10 @@ export default function BuyBar({
 
   // ── Buy Now flow ────────────────────────────────────────────────────────
   function onBuyNowClick() {
+    if (disabled) {
+      setShowOutOfStockModal(true);
+      return;
+    }
     setShowConfirmModal(true);
   }
 
@@ -86,8 +95,7 @@ export default function BuyBar({
           <button
             className="btn-primary"
             onClick={onBuyNowClick}
-            disabled={disabled}
-            style={{ flex: "1 1 auto", minWidth: "140px", borderRadius: "12px", height: "48px" }}
+            style={{ flex: "1 1 auto", minWidth: "140px", borderRadius: "12px", height: "48px", opacity: disabled ? 0.6 : 1 }}
           >
             Buy Now
           </button>
@@ -169,8 +177,7 @@ export default function BuyBar({
             <button
               className="btn-secondary"
               onClick={onAddToCart}
-              disabled={disabled}
-              style={{ flex: "1 1 auto", minWidth: "140px", borderRadius: "12px", height: "48px" }}
+              style={{ flex: "1 1 auto", minWidth: "140px", borderRadius: "12px", height: "48px", opacity: disabled ? 0.6 : 1 }}
             >
               Add to Cart
             </button>
@@ -179,6 +186,22 @@ export default function BuyBar({
       </div>
 
       {/* ── Modal 1: Confirm direct buy ──────────────────── */}
+      {showOutOfStockModal && (
+        <div className="bnm-overlay" onClick={() => setShowOutOfStockModal(false)}>
+          <div className="bnm-modal" onClick={(e) => e.stopPropagation()}>
+            <h3 className="bnm-title">Item Out of Stock</h3>
+            <p className="bnm-text">
+              Sorry, <strong>{title}</strong> is currently out of stock. We are working on making more!
+            </p>
+            <div className="bnm-actions">
+              <button className="bnm-btn bnm-btn--primary" onClick={() => setShowOutOfStockModal(false)}>
+                Okay
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showConfirmModal && (
         <div className="bnm-overlay" onClick={() => setShowConfirmModal(false)}>
           <div className="bnm-modal" onClick={(e) => e.stopPropagation()}>

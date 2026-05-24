@@ -21,6 +21,7 @@ export default function CartPage() {
   // Modal state for confirmations
   const [removeTarget, setRemoveTarget] = useState<{ id: string; name: string } | null>(null);
   const [showClearAll, setShowClearAll] = useState(false);
+  const [showOutOfStockCartModal, setShowOutOfStockCartModal] = useState(false);
 
   // Select all items whenever cart changes
   useEffect(() => {
@@ -71,6 +72,23 @@ export default function CartPage() {
       await updateQuantity(id, newQuantity);
     } finally {
       setIsUpdating(false);
+    }
+  };
+
+  const handleCheckoutClick = (e: React.MouseEvent) => {
+    if (selectedItems.length === 0) {
+      e.preventDefault();
+      return;
+    }
+    
+    const outOfStockItems = selectedCartItems.filter((it) => {
+      const p = (products as Product[]).find(x => x.slug === it.id || x.id === it.id);
+      return p && typeof p.stock === "number" && p.stock <= 0 && p.type !== "custom-order";
+    });
+
+    if (outOfStockItems.length > 0) {
+      e.preventDefault();
+      setShowOutOfStockCartModal(true);
     }
   };
 
@@ -251,7 +269,7 @@ export default function CartPage() {
                     href="/checkout"
                     className={`btn btn-primary w-100 py-3 mt-4 fw-bold shadow-sm${selectedItems.length === 0 ? " disabled opacity-50 pe-none" : ""}`}
                     aria-disabled={selectedItems.length === 0}
-                    onClick={(e) => { if (selectedItems.length === 0) e.preventDefault(); }}
+                    onClick={handleCheckoutClick}
                   >
                     {selectedItems.length === 0 ? "Select items to checkout" : `Checkout (${itemCount})`}
                   </NextLink>
@@ -261,7 +279,7 @@ export default function CartPage() {
                       href="/auth"
                       className={`btn btn-primary w-100 py-3 fw-bold shadow-sm${selectedItems.length === 0 ? " disabled opacity-50 pe-none" : ""}`}
                       aria-disabled={selectedItems.length === 0}
-                      onClick={(e) => { if (selectedItems.length === 0) e.preventDefault(); }}
+                      onClick={handleCheckoutClick}
                     >
                       Login / Signup
                     </NextLink>
@@ -270,7 +288,7 @@ export default function CartPage() {
                       className={`btn btn-primary w-100 py-3 fw-bold shadow-sm${selectedItems.length === 0 ? " disabled opacity-50 pe-none" : ""}`}
                       style={{ background: "transparent", color: "var(--brand)", border: "2px solid var(--brand)", boxShadow: 'none' }}
                       aria-disabled={selectedItems.length === 0}
-                      onClick={(e) => { if (selectedItems.length === 0) e.preventDefault(); }}
+                      onClick={handleCheckoutClick}
                     >
                       Continue as Guest
                     </NextLink>
@@ -319,6 +337,17 @@ export default function CartPage() {
           setShowClearAll(false);
         }}
         onCancel={() => setShowClearAll(false)}
+      />
+
+      {/* ── Out of Stock Notification ── */}
+      <ConfirmModal
+        isOpen={showOutOfStockCartModal}
+        title="Out of Stock Items"
+        message="One or more items in your cart are currently out of stock. Please remove them to proceed with checkout."
+        confirmLabel="Okay"
+        cancelLabel=""
+        onConfirm={() => setShowOutOfStockCartModal(false)}
+        onCancel={() => setShowOutOfStockCartModal(false)}
       />
     </main>
   );
