@@ -87,7 +87,6 @@ function CheckoutContent() {
           quantity: directItem.quantity,
           image: directItem.image,
         }]);
-        }]);
         return;
       }
     } else {
