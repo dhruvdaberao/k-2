@@ -2207,6 +2207,8 @@ summary::-webkit-details-marker {
   max-width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
 }
 
 .checkout-header {
