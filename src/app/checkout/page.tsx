@@ -523,7 +523,7 @@ function CheckoutContent() {
       <div className="checkout-header">
         <h1 className="checkout-title">
           {step === 1 && "Your Details"}
-          {step === 2 && "Select Payment Method"}
+          {step === 2 && "Select Payment Mode"}
           {step === 3 && "Order Summary"}
         </h1>
         <p className="checkout-note">
@@ -534,7 +534,7 @@ function CheckoutContent() {
       <div className="checkout-stepper" aria-label="Checkout progress">
         {[
           { key: 1, label: "Your Details", number: "1" },
-          { key: 2, label: "Payment", number: "2" },
+          { key: 2, label: "Payment Mode", number: "2" },
           { key: 3, label: "Summary", number: "3" },
         ].map((stepItem, index) => {
           const isActive = stepItem.key === step;

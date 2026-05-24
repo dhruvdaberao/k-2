@@ -1366,7 +1366,7 @@ summary::-webkit-details-marker {
   background: white;
   padding: 8px;
   border-radius: 12px;
-  border: 1px solid rgba(0,0,0,0.03);
+  border: 1px solid var(--brand);
 }
 
 .checkout-item-summary-thumb {
@@ -1472,7 +1472,7 @@ summary::-webkit-details-marker {
 .checkout-details-summary {
   background: white;
   border-radius: 16px;
-  border: 1px solid rgba(0,0,0,0.05);
+  border: 1px solid var(--brand);
   padding: 24px;
   margin-bottom: 24px;
 }
@@ -2613,7 +2613,6 @@ body {
   border-color: var(--brand);
   background: var(--brand);
   color: white;
-  box-shadow: 0 4px 12px rgba(74, 50, 25, 0.22);
 }
 
 .checkout-stepper__dot.is-complete {
