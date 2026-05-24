@@ -585,7 +585,7 @@ return (
         </div>
       )}
 
-      <div className="checkout-shell" style={{ padding: "0 16px", boxSizing: "border-box", width: "100%", overflowX: "hidden" }}>
+      <div className="checkout-shell">
         {step === 1 && (
           isGuest ? (
             <section className="checkout-card checkout-section">
