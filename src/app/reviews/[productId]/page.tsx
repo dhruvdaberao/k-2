@@ -187,7 +187,7 @@ export default function ReviewPage() {
       }
 
       // 2. Fetch Profiles
-      const userIds = Array.from(new Set(reviewData.map(r => r.user_id)));
+      const userIds = Array.from(new Set(reviewData.map((r: any) => r.user_id)));
       const { data: profileData } = await supabase
         .from("profiles")
         .select("id, name") 

@@ -64,6 +64,7 @@ function CheckoutContent() {
   const [isDirectCheckout, setIsDirectCheckout] = useState(false);
   const [isGuestLocked, setIsGuestLocked] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -198,6 +199,13 @@ function CheckoutContent() {
     const missing = getMissingField(details);
     if (missing) {
       const msg = `Please fill ${missing} to continue. You have not provided your ${missing.toLowerCase()}.`;
+      setCheckoutError(msg);
+      showToast(msg);
+      return;
+    }
+
+    if (!agreedToTerms) {
+      const msg = "Please agree to the Terms and Policies to continue.";
       setCheckoutError(msg);
       showToast(msg);
       return;
@@ -477,6 +485,37 @@ function CheckoutContent() {
     );
   }
 
+  const termsCheckboxUI = (
+    <div style={{
+      display: 'flex',
+      alignItems: 'flex-start',
+      gap: '12px',
+      padding: '16px',
+      backgroundColor: '#f8f4ef',
+      border: '1px solid #e8e2da',
+      borderRadius: '12px',
+      marginTop: '16px',
+      marginBottom: '16px'
+    }}>
+      <input
+        type="checkbox"
+        id="agree-terms"
+        checked={agreedToTerms}
+        onChange={(e) => { setAgreedToTerms(e.target.checked); setCheckoutError(""); }}
+        style={{
+          marginTop: '3px',
+          width: '18px',
+          height: '18px',
+          cursor: 'pointer',
+          accentColor: '#5a3e2b'
+        }}
+      />
+      <label htmlFor="agree-terms" style={{ fontSize: '14px', color: '#4a4a4a', lineHeight: '1.5', cursor: 'pointer' }}>
+        I agree to the <a href="/terms" target="_blank" style={{ color: '#0066cc', textDecoration: 'underline' }}>Terms</a>, <a href="/privacy" target="_blank" style={{ color: '#0066cc', textDecoration: 'underline' }}>Privacy Policy</a>, and <a href="/refund-policy" target="_blank" style={{ color: '#0066cc', textDecoration: 'underline' }}>Returns Policy</a>.
+      </label>
+    </div>
+  );
+
   return (
     <main className="checkout-page checkout-container checkout-flow">
       <meta name="robots" content="noindex" />
@@ -658,9 +697,12 @@ function CheckoutContent() {
                 </button>
 
                 {isGuestLocked && (
-                  <button type="button" className="btn-primary checkout-button w-full" onClick={handleDetailsNext} style={{ background: 'transparent', color: 'var(--brand)', border: '2px solid var(--brand)' }}>
-                    Proceed to Payment {"\u2192"}
-                  </button>
+                  <>
+                    {termsCheckboxUI}
+                    <button type="button" className="btn-primary checkout-button w-full" onClick={handleDetailsNext} style={{ background: 'transparent', color: 'var(--brand)', border: '2px solid var(--brand)' }}>
+                      Select Payment Mode {"\u2192"}
+                    </button>
+                  </>
                 )}
               </div>
             </section>
@@ -721,13 +763,15 @@ function CheckoutContent() {
                 </div>
               )}
 
-              <div className="checkout-actions mt-10">
+              {termsCheckboxUI}
+
+              <div className="checkout-actions mt-4">
                 <button 
                   type="button" 
                   className={`btn-primary checkout-button w-full ${getMissingField(details) ? "opacity-60" : ""}`} 
                   onClick={handleDetailsNext}
                 >
-                  Proceed to Payment {"\u2192"}
+                  Select Payment Mode {"\u2192"}
                 </button>
               </div>
               {!details.fullName || !details.address || !details.phoneNumber || !details.pincode || !details.state || !details.country ? (
