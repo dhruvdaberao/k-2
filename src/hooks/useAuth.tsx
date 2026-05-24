@@ -46,25 +46,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .then(({ data: { session }, error }) => {
         if (error) {
           if (error.message.includes("refresh_token_not_found") || error.message.includes("Invalid Refresh Token")) {
-            console.warn("Auth: Session expired or token invalid. Clearing local state.");
-            setUser(null);
-            setSession(null);
-            setProfile(null);
-            clearAllLocalData();
-            showToast("Session expired. Please log in again.");
+            console.warn("Auth: Token issue detected. Relying on onAuthStateChange for genuine logouts.");
+          } else if (error.message.includes("Lock")) {
+            console.warn("Auth: Benign lock error from another tab.");
           } else {
             console.error("Auth Session Error:", error);
           }
-        } else {
+        }
+        if (session) {
           setSession(session);
-          setUser(session?.user ?? null);
-          if (session?.user?.id) fetchProfile(session.user.id);
+          setUser(session.user);
+          if (session.user.id) fetchProfile(session.user.id);
         }
       })
       .catch(err => {
-        console.error("Auth Promise Catch:", err);
-        setUser(null);
-        setSession(null);
+        if (err?.message?.includes("Lock")) {
+          console.warn("Auth: Benign lock error caught.");
+        } else {
+          console.error("Auth Promise Catch:", err);
+        }
       })
       .finally(() => {
         setLoading(false);

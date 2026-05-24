@@ -32,6 +32,7 @@ function ProfileContent() {
   const [details, setDetails] = useState<CheckoutCustomerDetails>(initialDetails);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [modalContent, setModalContent] = useState<{ title: string; message: string } | null>(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
@@ -73,6 +74,7 @@ function ProfileContent() {
     if (!user) return;
 
     const loadProfile = async () => {
+      setIsLoadingProfile(true);
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
@@ -94,6 +96,7 @@ function ProfileContent() {
         // Fallback for missing profile
         setDetails(prev => ({ ...prev, email: user.email || "" }));
       }
+      setIsLoadingProfile(false);
     };
 
     loadProfile();
@@ -295,7 +298,7 @@ function ProfileContent() {
   };
 
   // Step 3-4: Loading Guards
-  if (loading || !hydrated) {
+  if (loading || !hydrated || (user && isLoadingProfile)) {
     return <GlobalLoader message="Loading your profile..." />;
   }
 

@@ -60,6 +60,7 @@ function CheckoutContent() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [isFetchingCart, setIsFetchingCart] = useState(true);
   const [isDirectCheckout, setIsDirectCheckout] = useState(false);
   const [isGuestLocked, setIsGuestLocked] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
@@ -87,6 +88,7 @@ function CheckoutContent() {
           quantity: directItem.quantity,
           image: directItem.image,
         }]);
+        setIsFetchingCart(false);
         return;
       }
     } else {
@@ -96,6 +98,7 @@ function CheckoutContent() {
 
     const currentCart = await getAsyncCart(user);
     setItems(currentCart);
+    setIsFetchingCart(false);
   }, [isPlacingOrder, isOrderPlaced, user]);
 
   useEffect(() => {
@@ -463,7 +466,7 @@ function CheckoutContent() {
 
   // ── Success Screen is now handled by redirecting to /order-success ──
 
-  if (!hydrated) {
+  if (!hydrated || (isFetchingCart && finalItems.length === 0)) {
     return <GlobalLoader message="Loading checkout..." />;
   }
 
@@ -513,7 +516,7 @@ function CheckoutContent() {
         }}
       />
       <label htmlFor="agree-terms" style={{ fontSize: '14px', color: '#4a4a4a', lineHeight: '1.5', cursor: 'pointer' }}>
-        I agree to the <a href="/terms" target="_blank" style={{ color: '#0066cc', textDecoration: 'underline' }}>Terms</a>, <a href="/privacy" target="_blank" style={{ color: '#0066cc', textDecoration: 'underline' }}>Privacy Policy</a>, and <a href="/refund-policy" target="_blank" style={{ color: '#0066cc', textDecoration: 'underline' }}>Returns Policy</a>.
+        I agree to the <a href="/terms" target="_blank" style={{ color: '#0066cc', textDecoration: 'underline' }}>Terms</a>, <a href="/privacy" target="_blank" style={{ color: '#0066cc', textDecoration: 'underline' }}>Privacy Policy</a>, and <a href="/returns" target="_blank" style={{ color: '#0066cc', textDecoration: 'underline' }}>Returns Policy</a>.
       </label>
     </div>
   );
