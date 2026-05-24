@@ -93,8 +93,8 @@ export default function ProductCardV2({ p }: { p: Product }) {
 
     return (
         <article 
-            className="relative plp-card-mobile plp-card h-full flex flex-col group bg-white rounded-2xl overflow-hidden border shadow-sm hover:shadow-md transition-shadow duration-300"
-            style={{ borderColor: '#4A3219' }}
+            className="relative plp-card-mobile plp-card h-full flex flex-col group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
+            style={{ border: '1px solid #4A3219' }}
         >
 
             {/* MEDIA WRAPPER - Relative container for Image + Badges + Heart */}
