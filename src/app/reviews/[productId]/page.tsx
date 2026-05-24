@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from "react"
 import products from "@/data/products.json"
 import Image from "next/image"
 import { supabase } from "@/lib/supabaseClient"
-import { invalidateRatingCache } from "@/lib/ratingCache"
+import { invalidateRatingCache, getCachedRating, ensureRatingsLoaded } from "@/lib/ratingCache"
 import { showToast } from "@/components/Toast"
 
 // Reusable Curved Star Component
@@ -155,11 +155,17 @@ export default function ReviewPage() {
     
     try {
       // 1. Fetch Reviews + Profiles in parallel (2 queries instead of 4!)
-      const { data: reviewData, error: reviewError } = await supabase
+      const fetchPromise = supabase
         .from("reviews")
         .select("*")
         .eq("product_id", pId)
         .order("created_at", { ascending: false });
+        
+      const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve({ error: new Error("Timeout") }), 8000));
+      
+      const response: any = await Promise.race([fetchPromise, timeoutPromise]);
+      const reviewData = response.data;
+      const reviewError = response.error;
 
       if (reviewError) {
         console.error("[REVIEWS] FETCH ERROR:", reviewError);
@@ -246,6 +252,31 @@ export default function ReviewPage() {
       setRatingBreakdown(cached.breakdown);
       setReviewsLoaded(true);
       setLoading(false);
+    } else {
+      // If not in local cache, check global rating cache instantly
+      const globalRating = getCachedRating(productData.id);
+      if (globalRating && globalRating.count === 0) {
+        setReviews([]);
+        setRatingData({ avg: null, count: 0 });
+        setRatingBreakdown(null);
+        setReviewsLoaded(true);
+        setLoading(false);
+      } else if (globalRating && globalRating.count > 0) {
+        setRatingData(globalRating);
+      }
+      
+      ensureRatingsLoaded().then(() => {
+        const updatedRating = getCachedRating(productData.id);
+        if (updatedRating && updatedRating.count === 0) {
+          setReviews([]);
+          setRatingData({ avg: null, count: 0 });
+          setRatingBreakdown(null);
+          setReviewsLoaded(true);
+          setLoading(false);
+        } else if (updatedRating && updatedRating.count > 0) {
+          setRatingData(prev => prev.count === 0 ? updatedRating : prev);
+        }
+      });
     }
 
     // Always refresh from Supabase in background (even if cache hit)

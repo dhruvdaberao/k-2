@@ -161,13 +161,9 @@ export default function ProductCardV2({ p }: { p: Product }) {
 
                     <div className="flex items-center justify-between mb-2">
                         <span className="text-base md:text-lg font-bold text-neutral-900">{priceDisplay}</span>
-                        <div 
+                        <Link 
+                            href={`/reviews/${p.id || p.slug}`}
                             className="flex items-center gap-1 cursor-pointer hover:opacity-80 transition-all active:scale-95"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                router.push(`/reviews/${p.id || p.slug}`);
-                            }}
                         >
                         {ratingData.count === -1 ? (
                             /* Loading — show subtle placeholder, not "No reviews" */
@@ -191,7 +187,7 @@ export default function ProductCardV2({ p }: { p: Product }) {
                                     <span className="font-bold text-base">{ratingData.avg}</span>
                                 </div>
                             )}
-                        </div>
+                        </Link>
                     </div>
 
                     {isCustomOrder ? (
