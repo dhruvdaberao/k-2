@@ -2707,7 +2707,7 @@ body {
 .checkout-shell {
   display: grid;
   gap: 1.5rem;
-  margin: 0 4px;
+  width: 100%;
 }
 
 .checkout-card {
@@ -2834,7 +2834,8 @@ body {
 }
 
 .add-ons {
-  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .card,
@@ -2927,7 +2928,6 @@ body {
   padding: 1rem 1.1rem;
   border-radius: 18px;
   background: rgba(74, 50, 25, 0.04);
-  margin: 0 1rem;
 }
 
 .checkout-summary-panel__row {
@@ -3077,8 +3077,8 @@ body {
   .checkout-card {
     padding: 1rem;
     border-radius: 14px;
-    width: auto !important;
-    margin: 0 !important;
+    width: calc(100% - 8px) !important;
+    margin: 0 auto !important;
   }
 
   .checkout-actions,
