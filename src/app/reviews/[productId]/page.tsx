@@ -66,11 +66,20 @@ export default function ReviewPage() {
   const productId = params?.productId as string
   const router = useRouter()
   
+  // Initialize product synchronously to render header instantly
+  const slug = productId ? decodeURIComponent(productId) : null;
+  const p = slug ? (products as any[]).find(x => x.slug === slug || x.id === slug) : null;
+  const initialProduct = p ? {
+    id: p.id || p.slug, 
+    name: p.title,
+    image: p.images?.[0] || "/placeholder.png",
+  } : null;
+
   const [user, setUser] = useState<any>(null);
-  const [product, setProduct] = useState<any>(null)
+  const [product, setProduct] = useState<any>(initialProduct)
   const [reviews, setReviews] = useState<any[]>([])
   const [ratingData, setRatingData] = useState<{ avg: string | null; count: number }>({ avg: null, count: 0 })
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!initialProduct) // Only true if product not found yet
   const [reviewsLoaded, setReviewsLoaded] = useState(false) // Only true after DB query completes
 
   // Auth Effect
@@ -161,9 +170,7 @@ export default function ReviewPage() {
         .eq("product_id", pId)
         .order("created_at", { ascending: false });
         
-      const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve({ error: new Error("Timeout") }), 8000));
-      
-      const response: any = await Promise.race([fetchPromise, timeoutPromise]);
+      const response: any = await fetchPromise;
       const reviewData = response.data;
       const reviewError = response.error;
 
