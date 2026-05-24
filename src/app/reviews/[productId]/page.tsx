@@ -198,7 +198,7 @@ export default function ReviewPage() {
         return acc;
       }, {});
 
-      const enrichedReviews = reviewData.map(r => ({
+      const enrichedReviews = reviewData.map((r: any) => ({
         ...r,
         author_name: profileMap[r.user_id] || "Verified Customer"
       }));
