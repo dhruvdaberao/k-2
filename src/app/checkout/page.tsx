@@ -516,7 +516,7 @@ function CheckoutContent() {
     </div>
   );
 
-  return (
+return (
     <main className="checkout-page checkout-container checkout-flow">
       <meta name="robots" content="noindex" />
 
@@ -583,7 +583,7 @@ function CheckoutContent() {
         </div>
       )}
 
-      <div className="checkout-shell">
+      <div className="checkout-shell" style={{ padding: "0 16px", boxSizing: "border-box", width: "100%", overflowX: "hidden" }}>
         {step === 1 && (
           isGuest ? (
             <section className="checkout-card checkout-section">
