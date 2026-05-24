@@ -126,18 +126,18 @@ function AccountSettingsContent() {
 
       <div className="mx-auto w-full max-w-md px-4">
         
-        <div className="flex items-center justify-between relative mt-8 mb-6">
+        <div className="flex items-center justify-between mt-8 mb-6">
           <button
             onClick={() => router.push("/profile")}
-            style={{ background: 'none', border: 'none', padding: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#5a3e2b', zIndex: 10, marginLeft: '-8px' }}
+            style={{ background: 'none', border: 'none', padding: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#5a3e2b', marginLeft: '-12px', flexShrink: 0 }}
             aria-label="Go Back"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
           </button>
-          <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#1a1a1a', margin: 0, position: 'absolute', left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap' }}>
+          <h1 style={{ fontSize: 'clamp(22px, 6vw, 28px)', fontWeight: 800, color: '#1a1a1a', margin: 0, whiteSpace: 'nowrap', textAlign: 'center', flex: 1 }}>
             Account Settings
           </h1>
-          <div style={{ width: '40px' }}></div>
+          <div style={{ width: '44px', flexShrink: 0 }}></div>
         </div>
 
         <div className="flex flex-col" style={{ gap: '1.5rem' }}>
