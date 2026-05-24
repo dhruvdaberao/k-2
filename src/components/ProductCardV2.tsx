@@ -191,7 +191,7 @@ export default function ProductCardV2({ p }: { p: Product }) {
                         <button
                             type="button"
                             onClick={handleAction}
-                            className="w-full btn-primary btn-sm-mobile"
+                            className={`w-full btn-primary font-bold mt-2`}
                         >
                             {getButtonLabel()}
                         </button>
