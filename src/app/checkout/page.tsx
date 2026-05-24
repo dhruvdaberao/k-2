@@ -7,7 +7,7 @@ import GlobalLoader from "@/components/ui/GlobalLoader";
 import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from "react";
 import products from "@/data/products.json";
 import { useRouter, useSearchParams } from "next/navigation";
-import { clearCart, loadCart as getAsyncCart } from "@/lib/bags";
+import { clearCart, loadCart as getAsyncCart, getCart } from "@/lib/bags";
 import { type CartItem } from "@/lib/bags";
 import { calculateShipping } from "@/lib/shipping";
 import CheckoutAddons from "@/components/CheckoutAddons";
@@ -60,7 +60,6 @@ function CheckoutContent() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
   const [hydrated, setHydrated] = useState(false);
-  const [isCartLoading, setIsCartLoading] = useState(true);
   const [isDirectCheckout, setIsDirectCheckout] = useState(false);
   const [isGuestLocked, setIsGuestLocked] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
@@ -88,7 +87,7 @@ function CheckoutContent() {
           quantity: directItem.quantity,
           image: directItem.image,
         }]);
-        setIsCartLoading(false);
+        }]);
         return;
       }
     } else {
@@ -98,10 +97,14 @@ function CheckoutContent() {
 
     const currentCart = await getAsyncCart(user);
     setItems(currentCart);
-    setIsCartLoading(false);
   }, [isPlacingOrder, isOrderPlaced, user]);
 
   useEffect(() => {
+    // Instantly load local cart to prevent empty state flicker
+    const localCart = getCart();
+    if (localCart && localCart.length > 0 && items.length === 0) {
+      setItems(localCart);
+    }
     setHydrated(true);
     refreshCart();
 
@@ -461,8 +464,8 @@ function CheckoutContent() {
 
   // ── Success Screen is now handled by redirecting to /order-success ──
 
-  if (!hydrated || isCartLoading) {
-    return <main className="checkout-page checkout-container checkout-flow py-10" />;
+  if (!hydrated) {
+    return <GlobalLoader message="Loading checkout..." />;
   }
 
   // PREVENT REDIRECTS: If cart is empty, show a friendly local UI instead of redirecting.
