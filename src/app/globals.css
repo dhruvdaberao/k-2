@@ -2707,10 +2707,7 @@ body {
 .checkout-shell {
   display: grid;
   gap: 1.5rem;
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  padding: 0 4px;
+  margin: 0 4px;
 }
 
 .checkout-card {
@@ -2930,6 +2927,7 @@ body {
   padding: 1rem 1.1rem;
   border-radius: 18px;
   background: rgba(74, 50, 25, 0.04);
+  margin: 0 1rem;
 }
 
 .checkout-summary-panel__row {
