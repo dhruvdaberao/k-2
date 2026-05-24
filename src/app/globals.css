@@ -1475,6 +1475,8 @@ summary::-webkit-details-marker {
   border: 1px solid var(--brand);
   padding: 24px;
   margin-bottom: 24px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .summary-data-grid {

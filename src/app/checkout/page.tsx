@@ -541,7 +541,15 @@ function CheckoutContent() {
           const isComplete = step > stepItem.key;
 
           return (
-            <div className="checkout-stepper__item" key={stepItem.key}>
+            <div 
+              className={`checkout-stepper__item ${isComplete ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`} 
+              key={stepItem.key}
+              onClick={() => {
+                if (isComplete) {
+                  setStep(stepItem.key as any);
+                }
+              }}
+            >
               <div className={`checkout-stepper__dot ${isActive ? "is-active" : ""} ${isComplete ? "is-complete" : ""}`}>
                 {isComplete ? (
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -755,7 +763,7 @@ function CheckoutContent() {
               </div>
 
               {checkoutError && (
-                <div style={{ color: "#dc2626", fontSize: "14px", marginBottom: "16px", textAlign: "center", fontWeight: "600", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }} className="animate-in fade-in slide-in-from-top-2">
+                <div style={{ color: "#dc2626", fontSize: "14px", marginBottom: "16px", marginTop: "24px", textAlign: "center", fontWeight: "600", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }} className="animate-in fade-in slide-in-from-top-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
                   </svg>
@@ -853,7 +861,7 @@ function CheckoutContent() {
                 &larr; Back
               </button>
               <button type="button" className="btn-primary checkout-button" onClick={handlePaymentNext}>
-                Next Step &rarr;
+                Proceed to Summary &rarr;
               </button>
             </div>
           </section>
