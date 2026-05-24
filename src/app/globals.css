@@ -3077,6 +3077,8 @@ body {
   .checkout-card {
     padding: 1rem;
     border-radius: 14px;
+    width: calc(100% - 8px) !important;
+    margin: 0 auto !important;
   }
 
   .checkout-actions,
