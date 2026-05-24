@@ -188,13 +188,15 @@ export default function ProductCardV2({ p }: { p: Product }) {
                     </div>
 
                     {isCustomOrder ? (
-                        <button
-                            type="button"
-                            onClick={handleAction}
-                            className={`w-full btn-primary font-bold mt-2`}
-                        >
-                            {getButtonLabel()}
-                        </button>
+                        <div className="interactive-qty-pill w-full">
+                            <button
+                                type="button"
+                                className="add-to-cart-overlay"
+                                onClick={handleAction}
+                            >
+                                {getButtonLabel()}
+                            </button>
+                        </div>
                     ) : (
                         <div className={`interactive-qty-pill w-full ${qtyInCart > 0 ? 'has-qty' : ''}`}>
                             <button 
