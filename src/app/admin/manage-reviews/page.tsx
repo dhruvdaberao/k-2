@@ -58,7 +58,7 @@ export default function AdminManageReviewsPage() {
       if (error) throw error
 
       // Enrich with product data from JSON (Most reliable fallback for product info)
-      const enriched = (data || []).map(r => {
+      const enriched = (data || []).map((r: any) => {
         const p = (productsData as any[]).find(x => x.id === r.product_id || x.slug === r.product_id)
         return {
           ...r,
