@@ -23,6 +23,7 @@ import { getDirectCheckoutItem, clearDirectCheckoutItem } from "@/lib/directChec
 import type { Product } from "@/types";
 
 import { useAuth } from "@/hooks/useAuth";
+import { useCart } from "@/hooks/useCart";
 
 type CheckoutStep = 1 | 2 | 3; // 1: details, 2: payment, 3: summary
 
@@ -46,6 +47,7 @@ function CheckoutContent() {
   const { user, profile, loading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { cartItems } = useCart();
   const [autoGuest, setAutoGuest] = useState(false);
   const isGuest = searchParams.get("guest") === "true" || autoGuest;
   
@@ -60,7 +62,6 @@ function CheckoutContent() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
   const [hydrated, setHydrated] = useState(false);
-  const [isFetchingCart, setIsFetchingCart] = useState(true);
   const [isDirectCheckout, setIsDirectCheckout] = useState(false);
   const [isGuestLocked, setIsGuestLocked] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
@@ -72,7 +73,9 @@ function CheckoutContent() {
     }
   }, [loading, user]);
 
-  const refreshCart = useCallback(async () => {
+  useEffect(() => {
+    setHydrated(true);
+    
     if (isPlacingOrder || isOrderPlaced) return;
 
     const isBuyNow = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("buyNow") === "true";
@@ -88,7 +91,6 @@ function CheckoutContent() {
           quantity: directItem.quantity,
           image: directItem.image,
         }]);
-        setIsFetchingCart(false);
         return;
       }
     } else {
@@ -96,20 +98,10 @@ function CheckoutContent() {
       setIsDirectCheckout(false);
     }
 
-    const currentCart = await getAsyncCart(user);
-    setItems(currentCart);
-    setIsFetchingCart(false);
-  }, [isPlacingOrder, isOrderPlaced, user]);
+    setItems(cartItems);
+  }, [cartItems, isPlacingOrder, isOrderPlaced]);
 
   useEffect(() => {
-    // Instantly load local cart to prevent empty state flicker
-    const localCart = getCart();
-    if (localCart && localCart.length > 0 && items.length === 0) {
-      setItems(localCart);
-    }
-    setHydrated(true);
-    refreshCart();
-
     const restoreDetails = () => {
       try {
         const stored = localStorage.getItem(DETAILS_STORAGE_KEY) || localStorage.getItem(LEGACY_DETAILS_STORAGE_KEY);
@@ -122,14 +114,7 @@ function CheckoutContent() {
       }
     };
     restoreDetails();
-
-    window.addEventListener("bag:changed", refreshCart);
-    window.addEventListener("storage", refreshCart);
-    return () => {
-      window.removeEventListener("bag:changed", refreshCart);
-      window.removeEventListener("storage", refreshCart);
-    };
-  }, [refreshCart]);
+  }, []);
 
   useEffect(() => {
     if (user && profile && !isGuestLocked) {
@@ -466,7 +451,7 @@ function CheckoutContent() {
 
   // ── Success Screen is now handled by redirecting to /order-success ──
 
-  if (!hydrated || (isFetchingCart && finalItems.length === 0)) {
+  if (!hydrated) {
     return <GlobalLoader message="Loading checkout..." />;
   }
 

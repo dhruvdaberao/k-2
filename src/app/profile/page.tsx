@@ -32,7 +32,6 @@ function ProfileContent() {
   const [details, setDetails] = useState<CheckoutCustomerDetails>(initialDetails);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [modalContent, setModalContent] = useState<{ title: string; message: string } | null>(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
@@ -69,51 +68,18 @@ function ProfileContent() {
     }
   }, [user, loading, router]);
 
-  // Step 4: Robust Profile Loading
+  // Sync details when 'profile' from useAuth changes
   useEffect(() => {
-    if (!user) return;
-
-    const loadProfile = async () => {
-      setIsLoadingProfile(true);
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .single();
-
-      if (data && !isEditing) {
-        setDetails({
-          fullName: data.name || "",
-          email: user.email || "",
-          phoneNumber: data.phone || "",
-          address: data.address || "",
-          city: data.city || "",
-          pincode: data.pincode || "",
-          state: data.state || "",
-          country: data.country || "",
-        });
-      } else if (!data) {
-        // Fallback for missing profile
-        setDetails(prev => ({ ...prev, email: user.email || "" }));
-      }
-      setIsLoadingProfile(false);
-    };
-
-    loadProfile();
-  }, [user, isEditing]);
-
-  // Sync details when 'profile' from useAuth changes (optional but good for consistency)
-  useEffect(() => {
-    if (profile && user && !isEditing) {
+    if (user && !isEditing) {
       setDetails({
-        fullName: profile.name || "",
+        fullName: profile?.name || "",
         email: user.email || "",
-        phoneNumber: profile.phone || "",
-        address: profile.address || "",
-        city: profile.city || "",
-        pincode: profile.pincode || "",
-        state: profile.state || "",
-        country: profile.country || "",
+        phoneNumber: profile?.phone || "",
+        address: profile?.address || "",
+        city: profile?.city || "",
+        pincode: profile?.pincode || "",
+        state: profile?.state || "",
+        country: profile?.country || "",
       });
     }
   }, [profile, user, isEditing]);
@@ -298,7 +264,7 @@ function ProfileContent() {
   };
 
   // Step 3-4: Loading Guards
-  if (loading || !hydrated || (user && isLoadingProfile)) {
+  if (loading || !hydrated) {
     return <GlobalLoader message="Loading your profile..." />;
   }
 
