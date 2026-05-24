@@ -228,7 +228,7 @@ export default function ProductPageClient({
 
             {(typeof currentStock === "number" && product.type !== "custom-order") && (
               <span className="meta" style={{ marginLeft: 12, fontSize: "0.9rem", fontWeight: 400 }}>
-                {inStock ? `${currentStock} in stock` : "Out of stock"}
+                {inStock ? "In stock" : "Out of stock"}
               </span>
             )}
           </div>
