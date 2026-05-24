@@ -519,7 +519,7 @@ function CheckoutContent() {
   );
 
 return (
-    <main className="checkout-page checkout-container checkout-flow">
+    <main className="max-w-3xl mx-auto px-4 sm:px-5 md:px-6 py-8 w-full flex flex-col gap-6">
       <meta name="robots" content="noindex" />
 
       <div className="checkout-header">
@@ -568,27 +568,25 @@ return (
 
       {/* Item summary strip - Properly Spaced Pattern */}
       {enrichedItems.length > 0 && (
-        <div className="checkout-item-summary-strip">
-          <div className="checkout-item-summary-strip__inner">
-            {enrichedItems.map((item, i) => (
-              <div className="checkout-item-summary-row" key={`thumb-${item.id}-${i}`}>
-                <div className="checkout-item-summary-thumb">
-                  <img src={item.image || "/placeholder.png"} alt={item.name} />
-                </div>
-                <div className="checkout-item-summary-content">
-                  <p className="checkout-item-summary-name">{item.name.split(" - ")[0]}</p>
-                  <p className="checkout-item-summary-meta">Qty {item.quantity} · ₹{item.price * item.quantity}</p>
-                </div>
+        <div className="rounded-[28px] border border-[#7a4b22] bg-white px-5 py-5 w-full flex flex-col gap-3">
+          {enrichedItems.map((item, i) => (
+            <div className="flex items-center gap-3" key={`thumb-${item.id}-${i}`}>
+              <div className="w-14 h-14 shrink-0 rounded-lg overflow-hidden bg-[#fdfbf7]">
+                <img src={item.image || "/placeholder.png"} alt={item.name} className="w-full h-full object-cover" />
               </div>
-            ))}
-          </div>
+              <div className="grow min-w-0">
+                <p className="text-[13px] font-bold text-[#2f2a26] m-0 whitespace-nowrap overflow-hidden text-ellipsis">{item.name.split(" - ")[0]}</p>
+                <p className="text-xs text-[#6a6150] m-0">Qty {item.quantity} · ₹{item.price * item.quantity}</p>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
-      <div className="checkout-shell">
+      <div className="w-full flex flex-col gap-6">
         {step === 1 && (
           isGuest ? (
-            <section className="checkout-card checkout-section">
+            <section className="rounded-[28px] border border-[#7a4b22] bg-white px-5 py-5 w-full flex flex-col gap-6">
               <div className="checkout-form-grid">
                 <label className="checkout-field">
                   <span>Full Name</span>
@@ -717,7 +715,7 @@ return (
               </div>
             </section>
           ) : (
-            <section className="checkout-details-summary">
+            <section className="rounded-[28px] border border-[#7a4b22] bg-white px-5 py-5 w-full flex flex-col gap-6">
               <div className="summary-data-grid">
                 <div className="summary-item">
                   <span className="summary-label">Full Name</span>
@@ -792,7 +790,7 @@ return (
         )}
 
         {step === 2 && (
-          <section className="checkout-card checkout-section">
+          <section className="rounded-[28px] border border-[#7a4b22] bg-white px-5 py-5 w-full flex flex-col gap-6">
             <div className="checkout-payment-grid">
               <button
                 type="button"
@@ -870,8 +868,8 @@ return (
         )}
 
         {step === 3 && (
-          <section className="checkout-card checkout-card--summary checkout-section order-summary">
-            <div className="checkout-summary-list checkout-items">
+          <section className="rounded-[28px] border border-[#7a4b22] bg-white px-5 py-5 w-full flex flex-col gap-6">
+            <div className="checkout-summary-list checkout-items flex flex-col gap-4">
               {enrichedItems.map((it) => (
                 <div className="flex justify-between items-start" key={it.id}>
                   <div className="min-w-0 flex-1 pr-4">
@@ -883,7 +881,7 @@ return (
               ))}
             </div>
 
-            <div className="checkout-summary-panel">
+            <div className="rounded-3xl bg-[#faf7f3] px-5 py-5 flex flex-col gap-3">
               <div className="checkout-summary-panel__row">
                 <span>Subtotal</span>
                 <span>{formatCurrency(subtotal)}</span>
@@ -934,7 +932,11 @@ return (
                 ))}
               </div>
             )}
+          </section>
+        )}
 
+        {step === 3 && (
+          <>
             <CheckoutAddons currentCartSlugs={finalItems.map((item) => item.id)} onAdded={handleAddonAdded} />
 
             <div className="checkout-actions checkout-actions--between">
@@ -954,11 +956,14 @@ return (
                   : (paymentMethod === "online" ? "Pay Now" : "Confirm & Place Order")}
               </button>
             </div>
-            <p className="checkout-note" style={{ marginTop: "1rem", fontSize: "0.85rem", color: "#666", lineHeight: "1.4" }}>
-              Note: An invoice and full summary will be generated securely on the next page.
-            </p>
-          </section>
+            <div className="rounded-[28px] border border-[#7a4b22] bg-white px-5 py-5 w-full">
+              <p className="checkout-note text-center m-0" style={{ fontSize: "0.85rem", color: "#666", lineHeight: "1.4" }}>
+                Note: An invoice and full summary will be generated securely on the next page.
+              </p>
+            </div>
+          </>
         )}
+
 
       </div>
     </main>
