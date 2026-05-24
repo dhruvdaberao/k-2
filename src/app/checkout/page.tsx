@@ -467,14 +467,6 @@ function CheckoutContent() {
     return <GlobalLoader message="Loading checkout..." />;
   }
 
-  if (!hydrated) {
-    return (
-      <main className="checkout-page checkout-container checkout-flow py-20 flex justify-center items-center h-[50vh]">
-        <div className="w-8 h-8 border-4 border-stone-200 border-t-[#4A3219] rounded-full animate-spin"></div>
-      </main>
-    );
-  }
-
   // PREVENT REDIRECTS: If cart is empty, show a friendly local UI instead of redirecting.
   // Exception: If we just placed an order, don't show the empty cart screen (allow redirect to success page)
   if (finalItems.length === 0 && !isOrderPlaced) {

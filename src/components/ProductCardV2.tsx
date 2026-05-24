@@ -92,9 +92,7 @@ export default function ProductCardV2({ p }: { p: Product }) {
     const overflowCount = badges.length - 2;
 
     return (
-        <article 
-            className="relative plp-card-mobile plp-card flex flex-col group bg-[#FDFBF9] rounded-[18px] overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
-        >
+        <article className="relative plp-card-mobile plp-card h-full flex flex-col group bg-white rounded-2xl overflow-hidden border border-[#4A3219] shadow-sm hover:shadow-md transition-shadow duration-300">
 
             {/* MEDIA WRAPPER - Relative container for Image + Badges + Heart */}
             <div className="relative w-full bg-stone-100 overflow-hidden">
@@ -149,16 +147,17 @@ export default function ProductCardV2({ p }: { p: Product }) {
             </div>
 
             {/* CONTENT */}
-            <div className="flex flex-col p-2.5 md:p-3">
-                <h3 className="text-[15px] md:text-[16px] font-bold text-[#2C1810] leading-snug mb-1 whitespace-nowrap overflow-hidden text-ellipsis block">
+            <div className="flex flex-col flex-grow p-3 md:p-4">
+                <h3 className="text-sm md:text-base font-medium text-neutral-900 leading-snug mb-1 line-clamp-1">
                     <Link href={`/products/${encoded}`} onClick={handleCardClick} className="product-title-link">
                         {p.title}
                     </Link>
                 </h3>
 
-                <div className="flex flex-col">
-                    <div className="flex justify-between items-center mb-2">
-                        <span className="text-lg md:text-xl font-bold text-[#4A3219]">{priceDisplay}</span>
+                <div className="mt-auto flex flex-col justify-end">
+
+                    <div className="flex items-center justify-between mb-2">
+                        <span className="text-base md:text-lg font-bold text-neutral-900">{priceDisplay}</span>
                         <Link 
                             href={`/reviews/${p.id || p.slug}`}
                             className="flex items-center gap-1 cursor-pointer hover:opacity-80 transition-all active:scale-95"
