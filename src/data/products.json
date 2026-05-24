@@ -413,7 +413,7 @@
     "description": "Everlasting handmade crochet rose \u2014 perfect for gifting and minimal home decor.",
     "price": 230,
     "images": [
-      "/uploads/products/Flowers/indi_red_rose-1.png"
+      "/uploads/products/Flowers/indi_red_rose.png"
     ],
     "category": "Flowers",
     "stock": 999,
@@ -431,20 +431,20 @@
     },
     "variants": [
       {
-        "name": "Pink",
-        "slug": "pink",
-        "price": 230,
-        "images": [
-          "/uploads/products/Flowers/indi_pink_rose.png"
-        ],
-        "stock": 999
-      },
-      {
         "name": "Red",
         "slug": "red",
         "price": 245,
         "images": [
           "/uploads/products/Flowers/indi_red_rose.png"
+        ],
+        "stock": 999
+      },
+      {
+        "name": "Pink",
+        "slug": "pink",
+        "price": 230,
+        "images": [
+          "/uploads/products/Flowers/indi_pink_rose.png"
         ],
         "stock": 999
       },
