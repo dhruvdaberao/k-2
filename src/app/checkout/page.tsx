@@ -907,13 +907,7 @@ function CheckoutContent() {
               </div>
             </div>
 
-            {paymentMethod === "online" && (
-              <div className="checkout-inline-note">
-                {onlinePaymentLinks.length > 0
-                  ? "Online payment links are still available below if you want to complete payment right away."
-                  : "Online payment has been selected. We will continue the payment handoff via Instagram after placing the order."}
-              </div>
-            )}
+
 
             {paymentMethod === "online" && onlinePaymentLinks.length > 0 && (
               <div className="checkout-link-list">
