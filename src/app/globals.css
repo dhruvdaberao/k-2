@@ -1879,7 +1879,7 @@ summary::-webkit-details-marker {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 0;
+  padding: 16px 16px;
   margin-bottom: var(--spacing-lg);
   border-bottom: 1px solid var(--border);
   gap: 8px;
