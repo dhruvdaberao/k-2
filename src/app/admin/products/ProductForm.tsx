@@ -16,6 +16,7 @@ interface ProductFormProps {
 export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [uploadingImages, setUploadingImages] = useState(false);
   const [formData, setFormData] = useState({
     id: initialData?.id || "",
@@ -29,7 +30,6 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   
   const [categories, setCategories] = useState<Category[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     getLiveCategories().then(data => {
@@ -158,11 +158,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     }
   };
 
-  const handleDeleteClick = () => {
-    setShowDeleteModal(true);
-  };
-
-  const confirmDelete = async () => {
+  const executeDelete = async () => {
     setShowDeleteModal(false);
     setLoading(true);
     const { error } = await supabase.from('products').delete().eq('id', formData.id);
@@ -175,6 +171,10 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
       router.push("/admin/products");
       router.refresh();
     }
+  };
+
+  const handleDelete = () => {
+    setShowDeleteModal(true);
   };
 
   return (
@@ -433,28 +433,37 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
         </div>
       </div>
 
-      <div className="flex gap-4 justify-end mt-4 md:mt-8 pt-4 border-t border-[#E6DCCF]">
-        <button type="button" onClick={() => router.push("/admin/products")} className="btn-secondary px-6 md:px-8 py-2 md:py-3 rounded-xl font-bold transition-transform active:scale-95 text-sm md:text-base">
-          Cancel
-        </button>
-        {isEdit && (
-          <button type="button" onClick={handleDeleteClick} className="px-6 md:px-8 py-2 md:py-3 rounded-xl font-bold transition-transform active:scale-95 text-white bg-red-600 hover:bg-red-700 shadow-sm text-sm md:text-base">
-            Delete Product
+      <div className="pt-4 md:pt-8 mt-4 md:mt-8 border-t border-[#E6DCCF] flex flex-wrap justify-between gap-3 md:gap-4">
+        <div>
+          {isEdit && (
+            <button 
+              type="button" 
+              onClick={handleDelete} 
+              className="px-4 py-2 md:px-6 md:py-3 rounded-xl text-sm md:text-base font-semibold transition-colors shadow-sm"
+              style={{ backgroundColor: '#ef4444', color: '#ffffff', border: 'none' }}
+            >
+              Delete Product
+            </button>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-2 md:gap-4">
+          <button type="button" onClick={() => router.back()} className="px-4 py-2 md:px-6 md:py-3 rounded-xl text-sm md:text-base font-semibold text-[#8B7355] hover:bg-[#F5EFE6] transition-colors border border-[#E6DCCF]">
+            Cancel
           </button>
-        )}
-        <button type="submit" disabled={loading} className="btn-primary px-6 md:px-10 py-2 md:py-3 rounded-xl font-bold transition-transform active:scale-95 shadow-sm text-sm md:text-base disabled:opacity-50">
-          {isEdit ? "Update Product" : "Save Product"}
-        </button>
+          <button type="submit" className="btn-primary px-5 py-2 md:px-8 md:py-3 rounded-xl text-sm md:text-base font-bold text-white shadow-sm transition-transform active:scale-95" style={{ background: "var(--brand)" }}>
+            {isEdit ? "Update Product" : "Save New Product"}
+          </button>
+        </div>
       </div>
 
       <ConfirmModal
         isOpen={showDeleteModal}
-        title="Delete Product?"
+        title="Delete Product"
         message="Are you sure you want to delete this product? This action cannot be undone."
-        confirmLabel="Delete"
+        confirmLabel="Yes, Delete"
         cancelLabel="Cancel"
-        destructive
-        onConfirm={confirmDelete}
+        destructive={true}
+        onConfirm={executeDelete}
         onCancel={() => setShowDeleteModal(false)}
       />
     </form>
