@@ -59,9 +59,19 @@ export async function addCategory(name: string): Promise<boolean> {
 }
 
 /**
- * Delete a category
+ * Delete a category and fallback its products to 'Bags'
  */
-export async function deleteCategory(id: string): Promise<boolean> {
+export async function deleteCategory(id: string, name: string): Promise<boolean> {
+  // Update all products in this category to 'Bags'
+  const { error: updateError } = await supabase
+    .from("products")
+    .update({ category: "Bags" })
+    .eq("category", name);
+
+  if (updateError) {
+    console.error("Error falling back products to Bags:", updateError);
+  }
+
   const { error } = await supabase
     .from("categories")
     .delete()

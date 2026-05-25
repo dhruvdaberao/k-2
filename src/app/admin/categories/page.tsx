@@ -62,7 +62,7 @@ export default function AdminCategories() {
   const handleDelete = async (id: string, name: string) => {
     if (!confirm(`Are you sure you want to delete the category "${name}"? This action cannot be undone.`)) return;
     
-    const success = await deleteCategory(id);
+    const success = await deleteCategory(id, name);
     if (success) {
       showToast("Category deleted");
       setCategories(categories.filter(c => c.id !== id));
