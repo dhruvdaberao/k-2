@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import GlobalLoader from "@/components/ui/GlobalLoader";
+import ConfirmModal from "@/components/ui/ConfirmModal";
 import { getLiveCategories, Category } from "@/lib/categoriesApi";
 
 interface ProductFormProps {
@@ -28,6 +29,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   
   const [categories, setCategories] = useState<Category[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     getLiveCategories().then(data => {
@@ -156,9 +158,12 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     }
   };
 
-  const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this product? This action cannot be undone.")) return;
-    
+  const handleDeleteClick = () => {
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    setShowDeleteModal(false);
     setLoading(true);
     const { error } = await supabase.from('products').delete().eq('id', formData.id);
     setLoading(false);
@@ -428,28 +433,30 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
         </div>
       </div>
 
-      <div className="pt-4 md:pt-8 mt-4 md:mt-8 border-t border-[#E6DCCF] flex flex-wrap justify-between gap-3 md:gap-4">
-        <div>
-          {isEdit && (
-            <button 
-              type="button" 
-              onClick={handleDelete} 
-              className="px-4 py-2 md:px-6 md:py-3 rounded-xl text-sm md:text-base font-semibold transition-colors shadow-sm"
-              style={{ backgroundColor: '#ef4444', color: '#ffffff', border: 'none' }}
-            >
-              Delete Product
-            </button>
-          )}
-        </div>
-        <div className="flex flex-wrap gap-2 md:gap-4">
-          <button type="button" onClick={() => router.back()} className="px-4 py-2 md:px-6 md:py-3 rounded-xl text-sm md:text-base font-semibold text-[#8B7355] hover:bg-[#F5EFE6] transition-colors border border-[#E6DCCF]">
-            Cancel
+      <div className="flex gap-4 justify-end mt-4 md:mt-8 pt-4 border-t border-[#E6DCCF]">
+        <button type="button" onClick={() => router.push("/admin/products")} className="btn-secondary px-6 md:px-8 py-2 md:py-3 rounded-xl font-bold transition-transform active:scale-95 text-sm md:text-base">
+          Cancel
+        </button>
+        {isEdit && (
+          <button type="button" onClick={handleDeleteClick} className="px-6 md:px-8 py-2 md:py-3 rounded-xl font-bold transition-transform active:scale-95 text-white bg-red-600 hover:bg-red-700 shadow-sm text-sm md:text-base">
+            Delete Product
           </button>
-          <button type="submit" className="btn-primary px-5 py-2 md:px-8 md:py-3 rounded-xl text-sm md:text-base font-bold text-white shadow-sm transition-transform active:scale-95" style={{ background: "var(--brand)" }}>
-            {isEdit ? "Update Product" : "Save New Product"}
-          </button>
-        </div>
+        )}
+        <button type="submit" disabled={loading} className="btn-primary px-6 md:px-10 py-2 md:py-3 rounded-xl font-bold transition-transform active:scale-95 shadow-sm text-sm md:text-base disabled:opacity-50">
+          {isEdit ? "Update Product" : "Save Product"}
+        </button>
       </div>
+
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        title="Delete Product?"
+        message="Are you sure you want to delete this product? This action cannot be undone."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        destructive
+        onConfirm={confirmDelete}
+        onCancel={() => setShowDeleteModal(false)}
+      />
     </form>
   );
 }
