@@ -1,4 +1,4 @@
-import products from "@/data/products.json";
+import { getLiveProducts, getProductBySlug } from "@/lib/productsApi";
 import ProductPageClient from "@/components/ProductPageClient";
 import { getProductRating } from "@/lib/ratingUtils";
 import { notFound } from "next/navigation";
@@ -15,14 +15,15 @@ import JsonLd from "@/components/JsonLd";
 export const dynamicParams = false;
 
 export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
-  return (products as P[])
-    .filter((p) => (p.status ?? "live") !== "hidden" && p.slug)
-    .map((p) => ({ slug: String(p.slug) }));
+  const liveProducts = await getLiveProducts();
+  return liveProducts
+    .filter((p: any) => p.slug)
+    .map((p: any) => ({ slug: String(p.slug) }));
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const slug = decodeURIComponent(params.slug);
-  const p: P | undefined = (products as P[]).find((x) => x.slug === slug);
+  const p = await getProductBySlug(slug);
 
   if (!p) {
     return {
@@ -50,12 +51,14 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 export default async function ProductPage({ params }: { params: { slug: string } }) {
   const slug = decodeURIComponent(params.slug);
-  const p: P | undefined = (products as P[]).find((x) => x.slug === slug);
+  const p = await getProductBySlug(slug);
   if (!p) notFound();
 
+  const allLive = await getLiveProducts();
+
   // Get related products (same category, exclude current)
-  const relatedProducts = (products as Product[])
-    .filter((prod) => prod.category === p.category && prod.slug !== p.slug && (prod.status ?? "live") !== "hidden")
+  const relatedProducts = allLive
+    .filter((prod: any) => prod.category === p.category && prod.slug !== p.slug)
     .slice(0, 4);
 
   // Pre-fetch rating on the server

@@ -2,7 +2,6 @@
 
 import { useParams, useRouter } from "next/navigation"
 import { useState, useEffect, useCallback } from "react"
-import products from "@/data/products.json"
 import Image from "next/image"
 import { supabase } from "@/lib/supabaseClient"
 import { invalidateRatingCache, getCachedRating, ensureRatingsLoaded } from "@/lib/ratingCache"
@@ -66,21 +65,12 @@ export default function ReviewPage() {
   const productId = params?.productId as string
   const router = useRouter()
   
-  // Initialize product synchronously to render header instantly
-  const slug = productId ? decodeURIComponent(productId) : null;
-  const p = slug ? (products as any[]).find(x => x.slug === slug || x.id === slug) : null;
-  const initialProduct = p ? {
-    id: p.id || p.slug, 
-    name: p.title,
-    image: p.images?.[0] || "/placeholder.png",
-  } : null;
-
   const [user, setUser] = useState<any>(null);
-  const [product, setProduct] = useState<any>(initialProduct)
+  const [product, setProduct] = useState<any>(null)
   const [reviews, setReviews] = useState<any[]>([])
   const [ratingData, setRatingData] = useState<{ avg: string | null; count: number }>({ avg: null, count: 0 })
-  const [loading, setLoading] = useState(!initialProduct) // Only true if product not found yet
-  const [reviewsLoaded, setReviewsLoaded] = useState(false) // Only true after DB query completes
+  const [loading, setLoading] = useState(true) 
+  const [reviewsLoaded, setReviewsLoaded] = useState(false) 
 
   // Auth Effect
   useEffect(() => {
@@ -237,19 +227,20 @@ export default function ReviewPage() {
     }
 
     const slug = decodeURIComponent(productId);
-    const p = (products as any[]).find(x => x.slug === slug || x.id === slug);
     
-    if (!p) {
-      setLoading(false);
-      return;
-    }
+    // Fetch product from Supabase
+    supabase.from("products").select("*").or(`slug.eq.${slug},id.eq.${slug}`).single().then(({ data: p }: { data: any }) => {
+      if (!p) {
+        setLoading(false);
+        return;
+      }
 
-    const productData = {
-      id: p.id || p.slug, 
-      name: p.title,
-      image: p.images?.[0] || "/placeholder.png",
-    };
-    setProduct(productData);
+      const productData = {
+        id: p.id || p.slug, 
+        name: p.title,
+        image: p.images?.[0] || "/placeholder.png",
+      };
+      setProduct(productData);
 
     // Try showing cached data INSTANTLY (before any network call)
     const cached = getCachedReviews();
@@ -288,6 +279,7 @@ export default function ReviewPage() {
 
     // Always refresh from Supabase in background (even if cache hit)
     loadReviewsData(productData.id);
+    });
   }, [productId, loadReviewsData, getCachedReviews]);
 
   const handleOpenReview = async () => {

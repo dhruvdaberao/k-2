@@ -9,7 +9,6 @@ import {
   getWishlist 
 } from "@/lib/bags";
 import { useAuth } from "./useAuth";
-import products from "@/data/products.json";
 
 type WishlistContextType = {
   wishlist: string[];
@@ -31,10 +30,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const hadCacheAtInit = useRef(false);
 
   const filterValidIds = useCallback((ids: string[]) => {
-    const validIds = ids.filter(id => {
-      const exists = products.some(p => p.id === id || p.slug === id);
-      return exists && id && id !== "undefined";
-    });
+    const validIds = ids.filter(id => id && id !== "undefined");
     return Array.from(new Set(validIds));
   }, []);
 
@@ -44,7 +40,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     const cached = getWishlist();
     if (cached.length > 0) {
       const ids = cached.map(i => String(i.id)).filter(id => id && id !== "undefined");
-      const valid = Array.from(new Set(ids.filter(id => products.some(p => p.id === id || p.slug === id))));
+      const valid = Array.from(new Set(ids));
       if (valid.length > 0) {
         setWishlist(valid);
         setLoading(false);

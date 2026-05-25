@@ -50,7 +50,24 @@ export default function AdminDashboard() {
           </p>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <div className="bg-[#F5EFE6] rounded-2xl border border-[#E6DCCF] shadow-sm hover:shadow-md transition-shadow flex flex-col" style={{ padding: '32px' }}>
+            <div className="mb-6 opacity-80">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#5A3E2B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                <line x1="7" y1="7" x2="7.01" y2="7"></line>
+              </svg>
+            </div>
+            <h2 className="text-xl font-bold text-[#3E2C1C] mb-2">Products</h2>
+            <p className="text-[#8B7355] text-sm mb-6">Add, edit, and manage your product catalog.</p>
+            <div className="mt-auto">
+              <Link href="/admin/products" className="btn-primary block w-full text-center py-2.5 px-4 rounded-xl font-semibold text-sm shadow-sm transition-transform active:scale-95" style={{ background: "var(--brand)", color: "white", textDecoration: "none" }}>
+                Manage Products
+              </Link>
+            </div>
+          </div>
+
           <div className="bg-[#F5EFE6] rounded-2xl border border-[#E6DCCF] shadow-sm hover:shadow-md transition-shadow flex flex-col" style={{ padding: '32px' }}>
             <div className="mb-6 opacity-80">
               <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#5A3E2B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

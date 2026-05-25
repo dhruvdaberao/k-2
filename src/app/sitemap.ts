@@ -1,10 +1,11 @@
 import { MetadataRoute } from 'next';
-import products from '@/data/products.json';
-import { DISPLAY_CATEGORIES, CATEGORY_SLUGS } from '@/lib/categories';
+import { getLiveProducts } from '@/lib/productsApi';
+import { getLiveCategories } from '@/lib/categoriesApi';
 
 const BASE_URL = 'https://keshvicrafts.in';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+    const liveProducts = await getLiveProducts();
     const staticRoutes = [
         '',
         '/collections',
@@ -22,14 +23,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: route === '' ? 1.0 : 0.8,
     }));
 
-    const categoryRoutes = DISPLAY_CATEGORIES.map((category) => ({
-        url: `${BASE_URL}/collections/${CATEGORY_SLUGS[category]}`,
+    const categories = await getLiveCategories();
+    const categoryRoutes = categories.map((category) => ({
+        url: `${BASE_URL}/collections/${category.slug}`,
         lastModified: new Date(),
         changeFrequency: 'weekly' as const,
         priority: 0.8,
     }));
 
-    const productRoutes = products.map((product) => ({
+    const productRoutes = liveProducts.map((product: any) => ({
         url: `${BASE_URL}/products/${product.slug}`,
         lastModified: new Date(),
         changeFrequency: 'weekly' as const,

@@ -1,26 +1,35 @@
 // app/collections/[slug]/page.tsx
 import { Suspense } from "react";
 import CollectionsContent from "@/components/CollectionsContent";
-import { SLUG_TO_CATEGORY } from "@/lib/categories";
 import { notFound } from "next/navigation";
+import { getLiveProducts } from "@/lib/productsApi";
+import { getLiveCategories } from "@/lib/categoriesApi";
 
-export const dynamicParams = false;
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
-export async function generateStaticParams() {
-    return [
-        { slug: "forever-blooms" },
-        { slug: "soft-fits" },
-        { slug: "home-feelings" },
-        { slug: "carry-stories" },
-        { slug: "little-things" },
-    ];
-}
-
-export default function CategoryCollectionsPage({ params }: { params: { slug: string } }) {
-    const categoryName = SLUG_TO_CATEGORY[params.slug];
-    if (!categoryName) {
-        notFound();
+export default async function CategoryCollectionsPage({ params }: { params: { slug: string } }) {
+    const targetSlug = params.slug.toLowerCase();
+    const categories = await getLiveCategories();
+    const category = categories.find((c) => (c.slug || '').toLowerCase() === targetSlug);
+    
+    if (!category) {
+        return (
+            <div className="container collections-page">
+                <div className="collections-header">
+                    <h1 className="collections-title capitalize">{targetSlug.replace(/-/g, ' ')}</h1>
+                </div>
+                <div className="py-20 text-center">
+                    <h2 className="text-2xl font-bold text-[#4A3219] mb-4">No products found</h2>
+                    <p className="text-[#8B7355]">We don't have any products in this category yet. Check back soon!</p>
+                </div>
+            </div>
+        );
     }
+    
+    const categoryName = category.name;
+
+    const liveProducts = await getLiveProducts();
 
     return (
         <div className="container collections-page">
@@ -32,7 +41,7 @@ export default function CategoryCollectionsPage({ params }: { params: { slug: st
                     </div>
                 </div>
             }>
-                <CollectionsContent serverCategory={categoryName} />
+                <CollectionsContent serverCategory={categoryName} liveProducts={liveProducts as any[]} />
             </Suspense>
         </div>
     );

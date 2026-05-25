@@ -1,8 +1,7 @@
 // app/collections/CollectionsContent.tsx
 "use client";
 
-import products from "@/data/products.json";
-import { getDisplayCategory, DISPLAY_CATEGORIES } from "@/lib/categories";
+import { getLiveCategories, Category } from "@/lib/categoriesApi";
 import ProductCard from "@/components/ProductCardV2";
 import BottomSheet from "@/components/BottomSheet";
 import CategoryChips from "@/components/CategoryChips";
@@ -21,7 +20,7 @@ const CATEGORY_DESCRIPTIONS: Record<string, string> = {
   "Little Things": "Welcome to the Little Things collection, a delightful assortment of handmade crochet accessories, keyrings, and small treasures that bring immense joy to everyday life. We believe that true beauty often lies in the smallest details, and this collection perfectly embodies that philosophy. These miniature masterpieces, ranging from cute strawberry keychains to practical earpod holders and charming scrunchies, are crafted with the exact same level of precision and care as our larger items. They are the perfect way to add a subtle, personalized pop of color and handmade charm to your keys, backpacks, or daily outfits. Furthermore, these items make incredibly thoughtful, unique gifts for friends, family, or colleagues for any occasion. Every single stitch is a testament to the patience and skill of our artisans. Browse through these small wonders and discover how integrating handmade art into your daily routine can bring a constant, comforting reminder of creativity, care, and traditional craftsmanship."
 };
 
-export default function CollectionsContent({ serverCategory }: { serverCategory?: string }) {
+export default function CollectionsContent({ serverCategory, liveProducts = [] }: { serverCategory?: string, liveProducts?: Product[] }) {
   const searchParams = useSearchParams();
   const categoryParam = serverCategory || searchParams.get("category");
   const tagParam = searchParams.get("tag");
@@ -32,6 +31,11 @@ export default function CollectionsContent({ serverCategory }: { serverCategory?
   const [category, setCategory] = useState<string | null>(categoryParam);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [showFullDescription, setShowFullDescription] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    getLiveCategories().then(setCategories);
+  }, []);
 
   useEffect(() => {
     if (categoryParam) setCategory(categoryParam);
@@ -42,7 +46,7 @@ export default function CollectionsContent({ serverCategory }: { serverCategory?
   }, [category]);
 
   const live = useMemo(() => {
-    const all = (products as Product[]).filter(p => (p.status ?? "live") !== "hidden" && !p.isVariant);
+    const all = liveProducts.filter(p => (p.status ?? "live") !== "hidden" && !p.isVariant);
     const seen = new Set();
     return all.filter(p => {
       if (seen.has(p.slug)) return false;
@@ -51,7 +55,6 @@ export default function CollectionsContent({ serverCategory }: { serverCategory?
     });
   }, []);
 
-  const categories = DISPLAY_CATEGORIES;
 
   const filtered = useMemo(() => {
     let result = live;
@@ -67,7 +70,7 @@ export default function CollectionsContent({ serverCategory }: { serverCategory?
     }
 
     if (category) {
-      result = result.filter((p) => getDisplayCategory(p.category || "") === category);
+      result = result.filter((p) => (p.category || "") === category);
     }
 
     if (tagParam) {
@@ -212,11 +215,11 @@ export default function CollectionsContent({ serverCategory }: { serverCategory?
               </button>
               {categories.map((cat) => (
                 <button
-                  key={cat}
-                  className={`filter-option ${category === cat ? "active" : ""}`}
-                  onClick={() => setCategory(cat)}
+                  key={cat.id}
+                  className={`filter-option ${category === cat.name ? "active" : ""}`}
+                  onClick={() => setCategory(cat.name)}
                 >
-                  {cat}
+                  {cat.name}
                 </button>
               ))}
             </div>

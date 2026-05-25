@@ -227,8 +227,11 @@ export default function ProductPageClient({
             )}
 
             {(typeof currentStock === "number" && product.type !== "custom-order") && (
-              <span className="meta" style={{ marginLeft: 12, fontSize: "0.9rem", fontWeight: 400 }}>
-                {inStock ? "In stock" : "Out of stock"}
+              <span 
+                className={`px-3 py-1 rounded-full text-xs font-bold align-middle ${inStock ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-red-100 text-red-700 border border-red-200'}`} 
+                style={{ marginLeft: 12 }}
+              >
+                {inStock ? "In Stock" : "Out of Stock"}
               </span>
             )}
           </div>

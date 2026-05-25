@@ -54,6 +54,11 @@ export default function ProductCardV2({ p }: { p: Product }) {
         e.preventDefault();
         e.stopPropagation();
 
+        if (!inStock) {
+            showToast("Item is currently out of stock");
+            return;
+        }
+
         if (isCustomOrder) {
             // Enquire action
             const messageText = `Hi Keshvi Crafts! I would like to enquire about this product: ${p.title} (https://keshvicrafts.in/products/${p.id || p.slug})`;
@@ -84,6 +89,7 @@ export default function ProductCardV2({ p }: { p: Product }) {
     };
 
     const getButtonLabel = () => {
+        if (!inStock) return "Out of Stock";
         if (isCustomOrder) return "Enquire";
         return "Add to Cart";
     };
@@ -201,9 +207,8 @@ export default function ProductCardV2({ p }: { p: Product }) {
                         <div className={`interactive-qty-pill w-full ${qtyInCart > 0 ? 'has-qty' : ''}`}>
                             <button 
                                 type="button"
-                                className="add-to-cart-overlay"
+                                className={`add-to-cart-overlay ${!inStock ? 'opacity-50' : ''}`}
                                 onClick={handleAction}
-                                disabled={!inStock}
                             >
                                 {getButtonLabel()}
                             </button>

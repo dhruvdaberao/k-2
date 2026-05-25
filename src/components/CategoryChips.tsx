@@ -1,17 +1,23 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { DISPLAY_CATEGORIES, CATEGORY_SLUGS } from "@/lib/categories";
+import { useEffect, useState } from "react";
+import { getLiveCategories, Category } from "@/lib/categoriesApi";
 
 export default function CategoryChips({ serverCategory }: { serverCategory?: string }) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const activeCategory = serverCategory || searchParams.get("category");
 
-    const handleCategoryClick = (category: string | null) => {
+    const [categories, setCategories] = useState<Category[]>([]);
+
+    useEffect(() => {
+        getLiveCategories().then(setCategories);
+    }, []);
+
+    const handleCategoryClick = (category: Category | null) => {
         if (category) {
-            const slug = CATEGORY_SLUGS[category];
-            router.push(`/collections/${slug}`);
+            router.push(`/collections/${category.slug}`);
         } else {
             router.push(`/collections`);
         }
@@ -26,13 +32,13 @@ export default function CategoryChips({ serverCategory }: { serverCategory?: str
                 >
                     All
                 </button>
-                {DISPLAY_CATEGORIES.map((cat) => (
+                {categories.map((cat) => (
                     <button
-                        key={cat}
+                        key={cat.id}
                         onClick={() => handleCategoryClick(cat)}
-                        className={`category-chip ${activeCategory === cat ? "active" : ""}`}
+                        className={`category-chip ${activeCategory === cat.name ? "active" : ""}`}
                     >
-                        {cat}
+                        {cat.name}
                     </button>
                 ))}
             </div>

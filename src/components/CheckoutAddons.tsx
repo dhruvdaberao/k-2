@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import products from "@/data/products.json";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabaseClient";
 import { addToCart } from "@/lib/bags";
 import type { Product } from "@/types";
 
@@ -12,9 +12,16 @@ interface CheckoutAddonsProps {
 
 export default function CheckoutAddons({ currentCartSlugs, onAdded }: CheckoutAddonsProps) {
     const [addedSlugs, setAddedSlugs] = useState<Set<string>>(new Set());
+    const [products, setProducts] = useState<Product[]>([]);
+
+    useEffect(() => {
+        supabase.from("products").select("*").then(({ data }: { data: any }) => {
+            if (data) setProducts(data as Product[]);
+        });
+    }, []);
 
     // Filter add-on products
-    const addonProducts = (products as Product[])
+    const addonProducts = products
         .filter(p => {
             // Must be direct purchase
             if (p.type !== "direct-purchase" && p.type !== undefined && p.type !== "custom-order") return false;

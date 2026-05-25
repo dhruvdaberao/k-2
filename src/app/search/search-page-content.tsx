@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import products from "@/data/products.json";
+import { supabase } from "@/lib/supabaseClient";
 import type { Product } from "@/types";
 import ProductCard from "@/components/ProductCardV2";
 import "./search.css";
@@ -11,12 +11,20 @@ export default function SearchPageContent() {
   const router = useRouter();
   const [query, setQuery] = useState("");
 
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    supabase.from("products").select("*").then(({ data }: { data: any }) => {
+      if (data) setProducts(data as Product[]);
+    });
+  }, []);
+
   const liveProducts = useMemo(
     () =>
-      (products as Product[]).filter(
+      products.filter(
         (p) => (p.status ?? "live") !== "hidden" && !p.isVariant,
       ),
-    [],
+    [products],
   );
 
   const filtered = useMemo(() => {

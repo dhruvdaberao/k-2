@@ -5,7 +5,6 @@ import { supabase } from "@/lib/supabaseClient";
 import GlobalLoader from "@/components/ui/GlobalLoader";
 
 import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from "react";
-import products from "@/data/products.json";
 import { useRouter, useSearchParams } from "next/navigation";
 import { clearCart, loadCart as getAsyncCart, getCart } from "@/lib/bags";
 import { type CartItem } from "@/lib/bags";
@@ -58,6 +57,13 @@ function CheckoutContent() {
   const [step, setStep] = useState<CheckoutStep>(1);
   const [details, setDetails] = useState<CheckoutCustomerDetails>(initialDetails);
   const [paymentMethod, setPaymentMethod] = useState<CheckoutPaymentMethod>("online");
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    supabase.from("products").select("*").then(({ data }: { data: any }) => {
+      if (data) setProducts(data as Product[]);
+    });
+  }, []);
   
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
@@ -136,7 +142,7 @@ function CheckoutContent() {
   
   const enrichedItems = useMemo(() => {
     return finalItems.map((item) => {
-      const product = resolveProduct(item);
+      const product = products.find((p) => p.slug === item.id || p.id === item.id);
       return {
         ...item,
         product,
@@ -956,12 +962,7 @@ return (
   );
 }
 
-function resolveProduct(item: CartItem): Product | undefined {
-  const exact = (products as Product[]).find((product) => product.slug === item.id);
-  if (exact) return exact;
 
-  return (products as Product[]).find((product) => item.id && item.id.startsWith(`${product.slug}-`));
-}
 
 function formatCurrency(amount: number) {
   return amount === 0 ? "Free" : `\u20B9${amount}`;

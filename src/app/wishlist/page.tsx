@@ -6,11 +6,17 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCardV2";
-import products from "@/data/products.json";
-
+import { supabase } from "@/lib/supabaseClient";
 
 export default function WishlistPage() {
   const { wishlist: items, loading } = useWishlist();
+  const [products, setProducts] = useState<any[]>([]);
+
+  useEffect(() => {
+    supabase.from("products").select("*").then(({ data }: { data: any }) => {
+      if (data) setProducts(data);
+    });
+  }, []);
 
   if (loading && items.length === 0) {
     return (

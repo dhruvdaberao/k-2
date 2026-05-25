@@ -1,8 +1,13 @@
 // app/collections/page.tsx
 import { Suspense } from "react";
 import CollectionsContent from "@/components/CollectionsContent";
+import { getLiveProducts } from "@/lib/productsApi";
 
-export default function CollectionsPage() {
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+export default async function CollectionsPage() {
+  const liveProducts = await getLiveProducts();
   return (
     <div className="container collections-page">
       <Suspense fallback={
@@ -13,7 +18,7 @@ export default function CollectionsPage() {
           </div>
         </div>
       }>
-        <CollectionsContent />
+        <CollectionsContent liveProducts={liveProducts as any[]} />
       </Suspense>
     </div>
   );

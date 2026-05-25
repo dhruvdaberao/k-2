@@ -1,20 +1,22 @@
-import products from "@/data/products.json";
+import { getLiveProducts } from "@/lib/productsApi";
 import ProductCard from "@/components/ProductCardV2";
 import HeroSection from "@/components/HeroSection";
 
 import Link from "next/link";
 import { Product } from "@/types";
-import { getDisplayCategory, DISPLAY_CATEGORIES, CATEGORY_SLUGS } from "@/lib/categories";
+import { getLiveCategories } from "@/lib/categoriesApi";
 
 export const metadata = {
   title: "Handmade Collections — Keshvi Crafts",
   description: "Limited-run artisanal crochet pieces.",
 };
 
-export default function Home() {
-  const live = (products as Product[]).filter(
-    (p) => (p.status ?? "live") !== "hidden"
-  );
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+export default async function Home() {
+  const liveProducts = await getLiveProducts();
+  const live = liveProducts as Product[];
 
   // 1. Priority Sorting (DESC priority, ASC price)
   const sortedProducts = [...live].sort((a, b) => {
@@ -83,9 +85,9 @@ export default function Home() {
   const under499 = getDeduplicated(under499Raw, 4);
 
   // Categories (Unique Display Categories)
-  // We don't render products here, just chips. No dedupe needed for chips.
-  const activeCategories = Array.from(new Set(live.map(p => getDisplayCategory(p.category || ''))));
-  const displayCats = DISPLAY_CATEGORIES.filter(c => activeCategories.includes(c));
+  const activeCategoriesMap = Array.from(new Set(live.map(p => p.category || '')));
+  const allLiveCategories = await getLiveCategories();
+  const displayCats = allLiveCategories.filter(c => activeCategoriesMap.includes(c.name));
 
   // Featured (Top from sorted, excluding already rendered)
   // Just show whatever is left high priority
@@ -201,15 +203,15 @@ export default function Home() {
             <div className="flex flex-wrap gap-3 mb-8">
               {displayCats.slice(0, 6).map((cat) => {
                 // Approximate count
-                const count = live.filter((p) => getDisplayCategory(p.category || '') === cat).length;
-                const slug = CATEGORY_SLUGS[cat];
+                const count = live.filter((p) => (p.category || '') === cat.name).length;
+                const slug = cat.slug;
                 return (
                   <Link
-                    key={cat}
+                    key={cat.id}
                     href={`/collections/${slug}`}
                     className="collection-chip"
                   >
-                    {cat}
+                    {cat.name}
                     <span className="meta ml-2">({count})</span>
                   </Link>
                 );

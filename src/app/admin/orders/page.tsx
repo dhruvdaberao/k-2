@@ -107,13 +107,22 @@ export default function AdminOrders() {
     <main className="min-h-screen bg-[#FDFBF7] py-20 px-4 md:px-6" style={{ paddingTop: '5rem', paddingBottom: '5rem' }}>
       <div className="max-w-4xl mx-auto">
         
-        {/* HEADER */}
-        <header className="mb-6 flex flex-col gap-2">
-          <Link href="/admin" className="text-[13px] text-[#6B6B6B] hover:text-[#5A3E2B] font-medium flex items-center gap-1 w-fit transition-colors">
-            &larr; Back to Dashboard
+        {/* Header */}
+        <div className="relative text-center mb-8">
+          <Link
+            href="/admin"
+            className="absolute left-0 top-1/2 -translate-y-1/2 p-2 text-[#8B7355] hover:bg-[#F5EFE6] rounded-full transition-colors flex items-center justify-center"
+            style={{ textDecoration: "none" }}
+            title="Back to Dashboard"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
           </Link>
-          <h1 className="text-3xl font-bold text-[#5A3E2B]">Manage Orders</h1>
-        </header>
+          <h1 className="text-3xl font-bold text-[#4A3219] mb-1" style={{ margin: 0 }}>Manage Orders</h1>
+          <p className="text-[#8B7355]" style={{ margin: 0 }}>View and manage customer orders</p>
+        </div>
 
         {/* CONTROLS (SEARCH & FILTERS) */}
         <div className="mb-6 flex flex-col gap-5" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>

@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation"
 import { useState, useEffect, useCallback } from "react"
 import { supabase } from "@/lib/supabaseClient"
-import productsData from "@/data/products.json"
 import { isAdmin } from "@/lib/isAdmin"
 
 // Reusable Curved Star Component
@@ -57,7 +56,10 @@ export default function AdminManageReviewsPage() {
 
       if (error) throw error
 
-      // Enrich with product data from JSON (Most reliable fallback for product info)
+      const { data: prodData } = await supabase.from("products").select("id, slug, title, images");
+      const productsData = prodData || [];
+
+      // Enrich with product data
       const enriched = (data || []).map((r: any) => {
         const p = (productsData as any[]).find(x => x.id === r.product_id || x.slug === r.product_id)
         return {

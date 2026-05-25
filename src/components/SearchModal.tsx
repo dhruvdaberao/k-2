@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import products from "@/data/products.json";
+import { supabase } from "@/lib/supabaseClient";
 import type { Product } from "@/types";
 import "./SearchModal.css";
 
@@ -18,12 +18,20 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    supabase.from("products").select("*").then(({ data }: { data: any }) => {
+      if (data) setProducts(data as Product[]);
+    });
+  }, []);
+
   // Live filter results
   const results = useMemo(() => {
     if (!query.trim()) return [];
 
     const q = query.toLowerCase().trim();
-    return (products as Product[])
+    return products
       .filter(p => (p.status ?? 'live') !== 'hidden' && !p.isVariant)
       .filter(p => 
         p.title.toLowerCase().includes(q) || 

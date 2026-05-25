@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation"
 import { useState, useEffect, useRef } from "react"
 import { supabase } from "@/lib/supabaseClient"
-import productsData from "@/data/products.json"
 import { showToast } from "@/components/Toast"
 import { useAuth } from "@/hooks/useAuth"
 
@@ -81,6 +80,9 @@ export default function MyReviewsPage() {
           .order("created_at", { ascending: false })
 
         if (error) throw error
+
+        const { data: prodData } = await supabase.from("products").select("id, slug, title, images");
+        const productsData = prodData || [];
 
         const enriched = (data || []).map((r: any) => {
           const p = (productsData as any[]).find(x => x.id === r.product_id || x.slug === r.product_id)

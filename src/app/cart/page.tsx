@@ -4,8 +4,8 @@
 import { useCart } from "@/hooks/useCart";
 import { useEffect, useState } from "react";
 import NextLink from "next/link";
-import products from "@/data/products.json"; 
 import { showToast } from "@/components/Toast";
+import { supabase } from "@/lib/supabaseClient";
 import PriceProgressBar from "@/components/PriceProgressBar";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import type { Product } from "@/types";
@@ -22,6 +22,13 @@ export default function CartPage() {
   const [removeTarget, setRemoveTarget] = useState<{ id: string; name: string } | null>(null);
   const [showClearAll, setShowClearAll] = useState(false);
   const [showOutOfStockCartModal, setShowOutOfStockCartModal] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    supabase.from("products").select("*").then(({ data }: { data: any }) => {
+      if (data) setProducts(data as Product[]);
+    });
+  }, []);
 
   // Select all items whenever cart changes
   useEffect(() => {
