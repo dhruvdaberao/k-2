@@ -30,6 +30,23 @@ export default function CartPage() {
     });
   }, []);
 
+  // Auto-remove deleted items from cart
+  useEffect(() => {
+    if (products.length === 0 || cartItems.length === 0) return;
+    
+    const invalidItems = cartItems.filter(item => {
+      return !products.some(p => p.slug === item.id || p.id === item.id);
+    });
+
+    if (invalidItems.length > 0) {
+      invalidItems.forEach(item => {
+        removeFromCart(item.id);
+      });
+      // Optionally show a toast, though silently removing it might be less jarring
+      // showToast("Some items were removed because they are no longer available.");
+    }
+  }, [products, cartItems, removeFromCart]);
+
   // Automatically unselect items that are out of stock
   useEffect(() => {
     if (products.length === 0) return;

@@ -46,7 +46,7 @@ function CheckoutContent() {
   const { user, profile, loading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { cartItems } = useCart();
+  const { cartItems, removeFromCart } = useCart();
   const [autoGuest, setAutoGuest] = useState(false);
   const isGuest = searchParams.get("guest") === "true" || autoGuest;
   
@@ -64,6 +64,24 @@ function CheckoutContent() {
       if (data) setProducts(data as Product[]);
     });
   }, []);
+
+  // Auto-remove deleted items from cart
+  useEffect(() => {
+    if (products.length === 0 || cartItems.length === 0) return;
+    
+    // Only run if not a direct checkout (Buy Now) for safety, though Buy Now clears on empty anyway
+    if (isDirectCheckout) return;
+
+    const invalidItems = cartItems.filter(item => {
+      return !products.some(p => p.slug === item.id || p.id === item.id);
+    });
+
+    if (invalidItems.length > 0) {
+      invalidItems.forEach(item => {
+        removeFromCart(item.id);
+      });
+    }
+  }, [products, cartItems, removeFromCart, isDirectCheckout]);
   
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
