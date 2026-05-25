@@ -15,27 +15,36 @@ export default function AdminProducts() {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      // Auth check
-      const { data: authData } = await supabase.auth.getUser();
-      if (!authData?.user || authData.user.email !== "keshvicrafts@gmail.com") {
-        router.push("/");
-        return;
-      }
+      try {
+        // Auth check
+        const { data: authData } = await supabase.auth.getUser();
+        if (!authData?.user || authData.user.email !== "keshvicrafts@gmail.com") {
+          router.push("/");
+          return;
+        }
 
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .order("priority", { ascending: false });
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .order("priority", { ascending: false });
 
-      if (error) {
-        console.error("Error fetching products:", error);
-      } else {
-        setProducts(data || []);
+        if (error) {
+          console.error("Error fetching products:", error);
+        } else {
+          setProducts(data || []);
+        }
+      } catch (err) {
+        console.error("Products fetch failed:", err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchProducts();
+
+    // Safety: never show loading for more than 5 seconds
+    const safety = setTimeout(() => setLoading(false), 5000);
+    return () => clearTimeout(safety);
   }, [router]);
 
   const filteredProducts = products.filter((p) =>

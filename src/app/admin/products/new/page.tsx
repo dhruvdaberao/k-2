@@ -13,14 +13,23 @@ export default function NewProductPage() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: authData } = await supabase.auth.getUser();
-      if (!authData?.user || authData.user.email !== "keshvicrafts@gmail.com") {
-        router.push("/");
-        return;
+      try {
+        const { data: authData } = await supabase.auth.getUser();
+        if (!authData?.user || authData.user.email !== "keshvicrafts@gmail.com") {
+          router.push("/");
+          return;
+        }
+      } catch (err) {
+        console.error("Auth check failed:", err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
     checkAuth();
+
+    // Safety: never show loading for more than 5 seconds
+    const safety = setTimeout(() => setLoading(false), 5000);
+    return () => clearTimeout(safety);
   }, [router]);
 
   if (loading) return <GlobalLoader message="Authenticating..." />;

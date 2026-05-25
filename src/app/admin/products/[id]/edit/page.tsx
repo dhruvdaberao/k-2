@@ -14,32 +14,41 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
 
   useEffect(() => {
     const fetchData = async () => {
-      // Auth check
-      const { data: authData } = await supabase.auth.getUser();
-      if (!authData?.user || authData.user.email !== "keshvicrafts@gmail.com") {
-        router.push("/");
-        return;
+      try {
+        // Auth check
+        const { data: authData } = await supabase.auth.getUser();
+        if (!authData?.user || authData.user.email !== "keshvicrafts@gmail.com") {
+          router.push("/");
+          return;
+        }
+
+        // Fetch product
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .eq("id", params.id)
+          .single();
+
+        if (error || !data) {
+          console.error("Failed to fetch product:", error);
+          alert("Product not found");
+          router.push("/admin/products");
+          return;
+        }
+
+        setInitialData(data);
+      } catch (err) {
+        console.error("Edit product fetch failed:", err);
+      } finally {
+        setLoading(false);
       }
-
-      // Fetch product
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("id", params.id)
-        .single();
-
-      if (error || !data) {
-        console.error("Failed to fetch product:", error);
-        alert("Product not found");
-        router.push("/admin/products");
-        return;
-      }
-
-      setInitialData(data);
-      setLoading(false);
     };
     
     fetchData();
+
+    // Safety: never show loading for more than 5 seconds
+    const safety = setTimeout(() => setLoading(false), 5000);
+    return () => clearTimeout(safety);
   }, [params.id, router]);
 
   if (loading) return <GlobalLoader message="Loading product data..." />;
