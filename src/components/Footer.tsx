@@ -20,11 +20,11 @@ export default function Footer() {
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", alignItems: "center" }}>
               <div>
-                <span className="footer-meta-label">Founder</span>
+                <span className="footer-meta-label" style={{ color: "var(--text)", fontWeight: 700 }}>Founder</span>
                 <span className="footer-text font-medium" style={{ display: "block" }}>Vaishnavi Sharma</span>
               </div>
               <div style={{ maxWidth: "300px" }}>
-                <span className="footer-meta-label">Studio</span>
+                <span className="footer-meta-label" style={{ color: "var(--text)", fontWeight: 700 }}>Studio</span>
                 <p className="footer-text" style={{ margin: 0 }}>
                   167 L, In Front of Indane Gas Godam,<br />
                   New Colony, Madhopur, Surajkund,<br />
@@ -72,12 +72,13 @@ export default function Footer() {
               </li>
             </ul>
             <div style={{ marginTop: "1rem", display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <span className="footer-text" style={{ marginBottom: "0.5rem", display: "block" }}>
+              <span className="footer-text" style={{ marginBottom: "0.5rem", display: "block", color: "var(--text)", fontWeight: 700 }}>
                 Follow Us
               </span>
               <div style={{ display: "flex", gap: "0.8rem", justifyContent: "center" }}>
-                <a href="https://www.instagram.com/keshvi_crafts/" target="_blank" rel="noreferrer" aria-label="Instagram" className="social-link">
-                  Instagram
+                <a href="https://www.instagram.com/keshvi_crafts/" target="_blank" rel="noreferrer" aria-label="Instagram" className="social-link" style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "var(--text)", textDecoration: "none", fontWeight: 500 }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                  @keshvi_crafts
                 </a>
               </div>
             </div>
