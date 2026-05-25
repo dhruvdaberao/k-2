@@ -99,23 +99,24 @@ export default function AdminCategories() {
       <div className="max-w-4xl mx-auto" style={{ paddingTop: '20px' }}>
         
         {/* Header */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 relative">
-          <div className="flex items-center w-full justify-start md:w-auto">
-            <Link
-              href="/admin/products"
-              className="p-2 text-[#8B7355] hover:bg-[#F5EFE6] rounded-full transition-colors flex items-center justify-center"
-              style={{ textDecoration: "none" }}
-              title="Back to Products"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-              </svg>
-            </Link>
-          </div>
-          <div className="text-center md:absolute md:left-1/2 md:-translate-x-1/2">
-            <h1 className="text-2xl md:text-3xl font-bold text-[#4A3219] mb-1" style={{ margin: 0 }}>Categories</h1>
-            <p className="text-[#8B7355] text-sm md:text-base" style={{ margin: 0 }}>Manage your product categories</p>
+        <div className="flex flex-col items-center mb-8 relative">
+          <Link
+            href="/admin/products"
+            className="absolute left-0 p-2 text-[#8B7355] hover:bg-[#F5EFE6] rounded-full transition-colors flex items-center justify-center"
+            style={{ textDecoration: "none", top: '-4px' }}
+            title="Back to Products"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </Link>
+          <div className="text-center px-10">
+            <h1 className="text-2xl md:text-3xl font-bold text-[#4A3219] mb-1" style={{ margin: 0, lineHeight: '1.2' }}>Categories</h1>
+            <p className="text-[#8B7355] text-sm md:text-base mb-3" style={{ margin: 0 }}>Manage your product categories</p>
+            <span className="text-sm font-bold text-[#4A3219] bg-[#F5EFE6] px-3 py-1 rounded-full border border-[#E6DCCF] inline-block">
+              {categories.length} Categories
+            </span>
           </div>
         </div>
 
