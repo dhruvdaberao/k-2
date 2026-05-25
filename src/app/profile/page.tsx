@@ -68,6 +68,13 @@ function ProfileContent() {
     }
   }, [user, loading, router]);
 
+  // If user is loaded but profile is null, auto-fetch it
+  useEffect(() => {
+    if (user && !profile && !loading && refreshProfile) {
+      refreshProfile();
+    }
+  }, [user, profile, loading]);
+
   // Sync details when 'profile' from useAuth changes
   useEffect(() => {
     if (user && !isEditing) {

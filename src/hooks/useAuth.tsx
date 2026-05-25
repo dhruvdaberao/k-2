@@ -29,7 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
-  const loadingDone = useRef(false);
+  const initDone = useRef(false);
 
   // Safe wrapper: always resolves, never throws, never hangs
   const fetchProfile = async (uid: string) => {
@@ -46,14 +46,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setProfile(data || null);
     } catch (err) {
       console.warn("Auth: fetchProfile failed, continuing without profile:", err);
-      // Don't throw — let loading finish gracefully
-    }
-  };
-
-  const finishLoading = () => {
-    if (!loadingDone.current) {
-      loadingDone.current = true;
-      setLoading(false);
     }
   };
 
@@ -94,13 +86,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           console.error("Auth Promise Catch:", err);
         }
       } finally {
-        if (mounted) finishLoading();
+        if (mounted) {
+          initDone.current = true;
+          setLoading(false);
+        }
       }
     };
 
     init();
 
-    // Listen for auth changes natively
+    // Listen for auth changes — but ONLY act on real user actions (sign in/out),
+    // never interfere with the initial load controlled by init() above.
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event: any, session: any) => {
       if (!mounted) return;
 
@@ -110,27 +106,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       
       if (event === 'SIGNED_IN' && session?.user?.id) {
-        // Do not set loading to true here. It causes the app to flash a loading screen
-        // or get stuck when switching tabs and Supabase fires a background session refresh.
+        // If init already finished, this is a real sign-in (e.g. user just logged in).
+        // Fetch profile and ensure loading is false.
         fetchProfile(session.user.id).finally(() => {
-          if (mounted) finishLoading();
+          if (mounted && !initDone.current) {
+            initDone.current = true;
+            setLoading(false);
+          }
         });
       } else if (event === 'SIGNED_OUT') {
         setUser(null);
         setProfile(null);
         setSession(null);
         clearAllLocalData();
-        finishLoading();
-      } else {
-        finishLoading();
+        initDone.current = true;
+        setLoading(false);
       }
+      // For TOKEN_REFRESHED, INITIAL_SESSION, etc. — do NOT touch loading.
+      // Let init() handle the initial load. These events just update session/user above.
     });
 
-    // Absolute safety net — loading can NEVER stay stuck longer than 3 seconds
+    // Absolute safety net — loading can NEVER stay stuck longer than 4 seconds
     const safetyTimeout = setTimeout(() => {
-      console.warn("🕒 [AUTH] Safety timeout triggered — forcing loading=false");
-      finishLoading();
-    }, 3000);
+      if (!initDone.current) {
+        console.warn("🕒 [AUTH] Safety timeout triggered — forcing loading=false");
+        initDone.current = true;
+        setLoading(false);
+      }
+    }, 4000);
 
     return () => {
       mounted = false;
