@@ -211,7 +211,7 @@ export default function AdminCategories() {
                       <td className="p-2 md:p-4 text-center">
                         <button
                           onClick={() => handleDelete(category.id, category.name)}
-                          className="hover:opacity-70 transition-opacity flex items-center justify-center p-2 rounded-lg"
+                          className="hover:opacity-70 transition-opacity flex items-center justify-center p-2 rounded-lg mx-auto"
                           style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#ef4444' }}
                           title="Delete Category"
                         >
