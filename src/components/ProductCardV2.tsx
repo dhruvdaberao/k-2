@@ -193,7 +193,18 @@ export default function ProductCardV2({ p }: { p: Product }) {
                         </Link>
                     </div>
 
-                    {isCustomOrder ? (
+                    {(!inStock && !isCustomOrder) ? (
+                        <div className="interactive-qty-pill w-full">
+                            <button
+                                type="button"
+                                disabled={true}
+                                className="add-to-cart-overlay cursor-not-allowed"
+                                style={{ opacity: 0.5, backgroundColor: "#8B7355", color: "#F5EFE6" }}
+                            >
+                                Out of Stock
+                            </button>
+                        </div>
+                    ) : isCustomOrder ? (
                         <div className="interactive-qty-pill w-full">
                             <button
                                 type="button"
@@ -207,7 +218,7 @@ export default function ProductCardV2({ p }: { p: Product }) {
                         <div className={`interactive-qty-pill w-full ${qtyInCart > 0 ? 'has-qty' : ''}`}>
                             <button 
                                 type="button"
-                                className={`add-to-cart-overlay ${!inStock ? 'opacity-50' : ''}`}
+                                className="add-to-cart-overlay"
                                 onClick={handleAction}
                             >
                                 {getButtonLabel()}

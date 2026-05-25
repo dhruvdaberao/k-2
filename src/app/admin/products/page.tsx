@@ -90,11 +90,11 @@ export default function AdminProducts() {
   if (loading) return <GlobalLoader message="Loading products..." />;
 
   return (
-    <main className="min-h-screen bg-[#FDFBF7] py-20 px-4">
-      <div className="max-w-6xl mx-auto" style={{ paddingTop: '20px' }}>
+    <main className="min-h-screen bg-[#FDFBF7] py-6 md:py-20 px-3 md:px-4">
+      <div className="max-w-6xl mx-auto" style={{ paddingTop: '10px' }}>
         
         {/* Header */}
-        <div className="flex flex-col items-center mb-8 relative">
+        <div className="flex flex-col items-center mb-4 md:mb-8 relative">
           <Link
             href="/admin"
             className="absolute left-0 p-2 text-[#8B7355] hover:bg-[#F5EFE6] rounded-full transition-colors flex items-center justify-center"
@@ -116,17 +116,17 @@ export default function AdminProducts() {
         </div>
         
         {/* Actions Bar */}
-        <div className="flex flex-wrap gap-4 mb-8 justify-center md:justify-start">
+        <div className="flex flex-wrap gap-2 md:gap-4 mb-4 md:mb-8 justify-center md:justify-start">
           <Link
             href="/admin/categories"
-            className="btn-primary py-3 px-6 rounded-xl font-semibold text-white shadow-sm transition-transform active:scale-95 flex items-center justify-center"
+            className="btn-primary py-2 px-4 md:py-3 md:px-6 rounded-xl font-semibold text-sm md:text-base text-white shadow-sm transition-transform active:scale-95 flex items-center justify-center"
             style={{ background: "var(--brand)", textDecoration: "none", gap: '8px' }}
           >
             Manage Categories
           </Link>
           <Link
             href="/admin/products/new"
-            className="btn-primary py-3 px-6 rounded-xl font-semibold text-white shadow-sm transition-transform active:scale-95 flex items-center justify-center"
+            className="btn-primary py-2 px-4 md:py-3 md:px-6 rounded-xl font-semibold text-sm md:text-base text-white shadow-sm transition-transform active:scale-95 flex items-center justify-center"
             style={{ background: "var(--brand)", textDecoration: "none", gap: '8px' }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -138,13 +138,13 @@ export default function AdminProducts() {
         </div>
 
         {/* Search Bar */}
-        <div className="mb-8 flex justify-center">
+        <div className="mb-4 md:mb-8 flex justify-center">
           <input
             type="text"
             placeholder="Search by name or category..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="p-3 rounded-xl bg-white focus:outline-none transition-all"
+            className="p-2 md:p-3 text-sm md:text-base rounded-xl bg-white focus:outline-none transition-all"
             style={{ border: '2px solid #8B7355', width: '100%', maxWidth: '700px', color: '#3E2C1C' }}
           />
         </div>
@@ -157,14 +157,14 @@ export default function AdminProducts() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[900px] text-left border-collapse">
               <thead>
-                <tr className="bg-[#F5EFE6] text-[#8B7355] text-sm uppercase tracking-wider">
-                  <th className="p-4 font-semibold text-center" style={{ width: '80px' }}>Order</th>
-                  <th className="p-4 font-semibold" style={{ width: '100px' }}>Image</th>
-                  <th className="p-4 font-semibold" style={{ width: '35%' }}>Product Details</th>
-                  <th className="p-4 font-semibold" style={{ width: '20%' }}>Category</th>
-                  <th className="p-4 font-semibold" style={{ width: '15%' }}>Price</th>
-                  <th className="p-4 font-semibold text-center" style={{ width: '120px' }}>Stock</th>
-                  <th className="p-4 font-semibold text-center" style={{ width: '100px' }}>Actions</th>
+                <tr className="bg-[#F5EFE6] text-[#8B7355] text-xs md:text-sm uppercase tracking-wider">
+                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '80px' }}>Order</th>
+                  <th className="p-2 md:p-4 font-semibold" style={{ width: '100px' }}>Image</th>
+                  <th className="p-2 md:p-4 font-semibold" style={{ width: '35%' }}>Product Details</th>
+                  <th className="p-2 md:p-4 font-semibold" style={{ width: '20%' }}>Category</th>
+                  <th className="p-2 md:p-4 font-semibold" style={{ width: '15%' }}>Price</th>
+                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '120px' }}>Stock</th>
+                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '100px' }}>Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E6DCCF]">
@@ -182,7 +182,7 @@ export default function AdminProducts() {
                     
                     return (
                     <tr key={product.id} className="hover:bg-[#FDFBF7] transition-colors">
-                      <td className="p-4 text-center">
+                      <td className="p-2 md:p-4 text-center">
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
                           <button 
                             type="button"
@@ -202,8 +202,8 @@ export default function AdminProducts() {
                           </button>
                         </div>
                       </td>
-                      <td className="p-4" style={{ width: '80px' }}>
-                        <div className="relative overflow-hidden" style={{ width: '64px', height: '64px', borderRadius: '12px', border: '1px solid #E6DCCF' }}>
+                      <td className="p-2 md:p-4" style={{ width: '80px' }}>
+                        <div className="relative overflow-hidden" style={{ width: '48px', height: '48px', borderRadius: '10px', border: '1px solid #E6DCCF' }}>
                           <ImageWithFallback
                             src={product.images?.[0] || "/placeholder.png"}
                             alt={product.title}
@@ -212,17 +212,17 @@ export default function AdminProducts() {
                           />
                         </div>
                       </td>
-                      <td className="p-4">
-                        <div className="font-semibold text-[#3E2C1C]">{product.title}</div>
-                        <div className="text-sm text-[#8B7355]">ID: {product.id}</div>
+                      <td className="p-2 md:p-4">
+                        <div className="font-semibold text-xs md:text-sm text-[#3E2C1C]">{product.title}</div>
+                        <div className="text-xs text-[#8B7355]">ID: {product.id}</div>
                       </td>
-                      <td className="p-4 text-[#5A3E2B]">
+                      <td className="p-2 md:p-4 text-xs md:text-sm text-[#5A3E2B]">
                         {product.category || "-"}
                       </td>
-                      <td className="p-4 font-medium text-[#3E2C1C]">
+                      <td className="p-2 md:p-4 text-xs md:text-sm font-medium text-[#3E2C1C]">
                         ₹{product.price}
                       </td>
-                      <td className="p-4 text-center">
+                      <td className="p-2 md:p-4 text-center">
                         <span style={{
                           display: 'inline-block',
                           padding: '4px 12px',
@@ -237,11 +237,11 @@ export default function AdminProducts() {
                           {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
                         </span>
                       </td>
-                      <td className="p-4 text-center">
+                      <td className="p-2 md:p-4 text-center">
                         <Link
                           href={`/admin/products/${product.id}/edit`}
-                          className="btn-primary inline-block px-5 py-2 rounded-lg font-semibold text-white shadow-sm transition-transform active:scale-95"
-                          style={{ background: "var(--brand)", textDecoration: "none", fontSize: '0.875rem' }}
+                          className="btn-primary inline-block px-3 py-1.5 md:px-5 md:py-2 rounded-lg font-semibold text-white shadow-sm transition-transform active:scale-95"
+                          style={{ background: "var(--brand)", textDecoration: "none", fontSize: '0.75rem' }}
                         >
                           Edit
                         </Link>

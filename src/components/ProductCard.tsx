@@ -79,6 +79,7 @@ export default function ProductCard({ p }: { p: Product }) {
   };
 
   const getButtonLabel = () => {
+    if (!inStock && !isCustomOrder) return "Out of Stock";
     if (isCustomOrder) return "Enquire";
     return "Add to Cart";
   };
@@ -210,7 +211,16 @@ export default function ProductCard({ p }: { p: Product }) {
             </div>
           </div>
 
-          {cartItem && !isCustomOrder ? (
+          {(!inStock && !isCustomOrder) ? (
+            <button
+              type="button"
+              disabled={true}
+              className="w-full btn-primary font-bold opacity-50 cursor-not-allowed"
+              style={{ backgroundColor: "#8B7355", color: "#F5EFE6" }}
+            >
+              Out of Stock
+            </button>
+          ) : cartItem && !isCustomOrder ? (
             <div className="qty-pill-brand w-full">
               <button 
                 onClick={(e) => {
@@ -238,8 +248,7 @@ export default function ProductCard({ p }: { p: Product }) {
             <button
               type="button"
               onClick={handleAction}
-              disabled={(!inStock && !isCustomOrder)}
-              className={`w-full btn-primary font-bold`}
+              className="w-full btn-primary font-bold"
             >
               {getButtonLabel()}
             </button>

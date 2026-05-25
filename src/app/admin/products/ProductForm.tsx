@@ -173,29 +173,29 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 bg-white p-4 md:p-8 rounded-2xl border border-[#E6DCCF] shadow-sm">
+    <form onSubmit={handleSubmit} className="space-y-4 md:space-y-8 bg-white p-3 md:p-8 rounded-2xl border border-[#E6DCCF] shadow-sm">
       {loading && <GlobalLoader message="Saving Product..." />}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {/* Left Column: Details */}
         <div className="space-y-4">
-          <h2 className="text-xl font-bold text-[#4A3219] mb-4 border-b border-[#E6DCCF] pb-2">Product Details</h2>
+          <h2 className="text-base md:text-xl font-bold text-[#4A3219] mb-2 md:mb-4 border-b border-[#E6DCCF] pb-1 md:pb-2">Product Details</h2>
           
           <div>
             <label className="block text-sm font-semibold text-[#8B7355] mb-1">Product Title</label>
-            <input type="text" name="title" required value={formData.title} onChange={handleInputChange} className="w-full p-3 rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" placeholder="e.g. Handmade Crochet Tulip" />
+            <input type="text" name="title" required value={formData.title} onChange={handleInputChange} className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" placeholder="e.g. Handmade Crochet Tulip" />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3 md:gap-4">
             <div>
               <label className="block text-sm font-semibold text-[#8B7355] mb-1">Product ID (Slug)</label>
-              <input type="text" name="id" required value={formData.id} onChange={handleInputChange} disabled={isEdit} className={`w-full p-3 rounded-xl border border-[#E6DCCF] ${isEdit ? 'bg-gray-100' : 'focus:outline-none focus:ring-2 focus:ring-[#8B7355]'}`} />
+              <input type="text" name="id" required value={formData.id} onChange={handleInputChange} disabled={isEdit} className={`w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#E6DCCF] ${isEdit ? 'bg-gray-100' : 'focus:outline-none focus:ring-2 focus:ring-[#8B7355]'}`} />
             </div>
             <div>
               <label className="block text-sm font-semibold text-[#8B7355] mb-1">Category</label>
               <div className="relative">
                 <div 
-                  className="w-full p-3 rounded-xl border border-[#E6DCCF] bg-white cursor-pointer flex justify-between items-center text-[#3E2C1C]"
-                  style={{ outline: dropdownOpen ? '2px solid #8B7355' : 'none', minHeight: '50px' }}
+                  className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#E6DCCF] bg-white cursor-pointer flex justify-between items-center text-[#3E2C1C]"
+                  style={{ outline: dropdownOpen ? '2px solid #8B7355' : 'none', minHeight: '42px' }}
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                 >
                   <span>{formData.category || "Select a category"}</span>
@@ -244,7 +244,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                 }} 
                 className="w-full p-3 rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355] bg-white resize-none overflow-hidden" 
                 rows={3}
-                style={{ minHeight: '100px' }}
+                style={{ minHeight: '80px' }}
                 placeholder="Describe your product..."
                 ref={(el) => {
                   if (el) {
@@ -258,7 +258,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-[#8B7355] mb-1">Price (₹)</label>
-              <input type="number" name="price" required min="0" value={formData.price} onChange={handleInputChange} className="w-full p-3 rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" />
+              <input type="number" name="price" required min="0" value={formData.price} onChange={handleInputChange} className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" />
             </div>
             <div>
               <label className="block text-sm font-semibold text-[#8B7355] mb-2">Stock Status</label>
@@ -294,12 +294,12 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
         {/* Right Column: Images */}
         <div className="space-y-4">
-          <h2 className="text-xl font-bold text-[#4A3219] mb-4 border-b border-[#E6DCCF] pb-2">Images</h2>
+          <h2 className="text-base md:text-xl font-bold text-[#4A3219] mb-2 md:mb-4 border-b border-[#E6DCCF] pb-1 md:pb-2">Images</h2>
           
           <div 
             style={{ 
               backgroundColor: '#F5EFE6', 
-              padding: '32px', 
+              padding: '20px', 
               borderRadius: '12px', 
               border: '2px dashed #d2c4b3', 
               textAlign: 'center', 
@@ -428,24 +428,24 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
         </div>
       </div>
 
-      <div className="pt-8 mt-8 border-t border-[#E6DCCF] flex flex-wrap justify-between gap-4">
+      <div className="pt-4 md:pt-8 mt-4 md:mt-8 border-t border-[#E6DCCF] flex flex-wrap justify-between gap-3 md:gap-4">
         <div>
           {isEdit && (
             <button 
               type="button" 
               onClick={handleDelete} 
-              className="px-6 py-3 rounded-xl font-semibold transition-colors shadow-sm"
+              className="px-4 py-2 md:px-6 md:py-3 rounded-xl text-sm md:text-base font-semibold transition-colors shadow-sm"
               style={{ backgroundColor: '#ef4444', color: '#ffffff', border: 'none' }}
             >
               Delete Product
             </button>
           )}
         </div>
-        <div className="flex flex-wrap gap-4">
-          <button type="button" onClick={() => router.back()} className="px-6 py-3 rounded-xl font-semibold text-[#8B7355] hover:bg-[#F5EFE6] transition-colors border border-[#E6DCCF]">
+        <div className="flex flex-wrap gap-2 md:gap-4">
+          <button type="button" onClick={() => router.back()} className="px-4 py-2 md:px-6 md:py-3 rounded-xl text-sm md:text-base font-semibold text-[#8B7355] hover:bg-[#F5EFE6] transition-colors border border-[#E6DCCF]">
             Cancel
           </button>
-          <button type="submit" className="btn-primary px-8 py-3 rounded-xl font-bold text-white shadow-sm transition-transform active:scale-95" style={{ background: "var(--brand)" }}>
+          <button type="submit" className="btn-primary px-5 py-2 md:px-8 md:py-3 rounded-xl text-sm md:text-base font-bold text-white shadow-sm transition-transform active:scale-95" style={{ background: "var(--brand)" }}>
             {isEdit ? "Update Product" : "Save New Product"}
           </button>
         </div>

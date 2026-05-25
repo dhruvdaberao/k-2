@@ -30,10 +30,33 @@ export default function CartPage() {
     });
   }, []);
 
-  // Select all items whenever cart changes
+  // Automatically unselect items that are out of stock
   useEffect(() => {
-    setSelectedItems(cartItems.map((it) => it.id));
-  }, [cartItems]);
+    if (products.length === 0) return;
+    
+    setSelectedItems((prev) => {
+      // Keep only items that are both in prev AND not OOS
+      const newSelection = prev.filter(id => {
+        const p = (products as Product[]).find(x => x.slug === id || x.id === id);
+        const isOos = p && typeof p.stock === "number" && p.stock <= 0 && p.type !== "custom-order";
+        return !isOos;
+      });
+      
+      // If we just loaded and nothing is selected, we might want to select all available.
+      // But to be safe and avoid overwriting user un-checks, let's only auto-select all 
+      // if cartItems length matches, but actually it's better to just remove OOS from existing selection.
+      // Let's do: if prev is empty but cart has items (initial load), select all available.
+      if (prev.length === 0 && cartItems.length > 0) {
+        return cartItems.filter((it) => {
+          const p = (products as Product[]).find(x => x.slug === it.id || x.id === it.id);
+          const isOos = p && typeof p.stock === "number" && p.stock <= 0 && p.type !== "custom-order";
+          return !isOos;
+        }).map(it => it.id);
+      }
+      
+      return newSelection;
+    });
+  }, [cartItems, products]);
 
   const toggleItem = (id: string) => {
     setSelectedItems((prev) =>
@@ -42,10 +65,15 @@ export default function CartPage() {
   };
 
   const toggleAll = () => {
-    if (selectedItems.length === cartItems.length) {
+    const selectableItems = cartItems.filter((it) => {
+      const p = (products as Product[]).find(x => x.slug === it.id || x.id === it.id);
+      return !(p && typeof p.stock === "number" && p.stock <= 0 && p.type !== "custom-order");
+    });
+    
+    if (selectedItems.length === selectableItems.length && selectableItems.length > 0) {
       setSelectedItems([]);
     } else {
-      setSelectedItems(cartItems.map((it) => it.id));
+      setSelectedItems(selectableItems.map((it) => it.id));
     }
   };
 
@@ -172,11 +200,18 @@ export default function CartPage() {
               <label className="cart-select-all">
                 <input
                   type="checkbox"
-                  checked={selectedItems.length === cartItems.length && cartItems.length > 0}
+                  checked={
+                    cartItems.length > 0 && 
+                    selectedItems.length === cartItems.filter((it) => {
+                      const p = (products as Product[]).find(x => x.slug === it.id || x.id === it.id);
+                      return !(p && typeof p.stock === "number" && p.stock <= 0 && p.type !== "custom-order");
+                    }).length &&
+                    selectedItems.length > 0
+                  }
                   onChange={toggleAll}
                   className="cart-checkbox"
                 />
-                <span>Select All ({cartItems.length})</span>
+                <span>Select All Available</span>
               </label>
 
               <div className="cart-list-wrapper">
@@ -193,17 +228,23 @@ export default function CartPage() {
                     {/* Center: Details & Picker */}
                     <div className="cart-item-info-center">
                       <h3 className="cart-item-name">{it.name.split(" - ")[0]}</h3>
-                      <div className="qty-pill-brand-mini">
-                        <button onClick={async () => {
-                          if (it.quantity <= 1) {
-                            setRemoveTarget({ id: it.id, name: it.name });
-                          } else {
-                            await handleQuantityUpdate(it.id, it.quantity - 1);
-                          }
-                        }}>&minus;</button>
-                        <span key={it.quantity}>{it.quantity}</span>
-                        <button onClick={() => handleQuantityUpdate(it.id, it.quantity + 1)}>+</button>
-                      </div>
+                      {p && typeof p.stock === "number" && p.stock <= 0 && p.type !== "custom-order" ? (
+                        <div className="w-full text-center py-1.5 px-3 rounded-full text-sm font-bold mt-2 cursor-not-allowed select-none" style={{ backgroundColor: "#F5EFE6", color: "#8B7355", border: "1px solid #E6DCCF" }}>
+                          Out of Stock
+                        </div>
+                      ) : (
+                        <div className="qty-pill-brand-mini">
+                          <button onClick={async () => {
+                            if (it.quantity <= 1) {
+                              setRemoveTarget({ id: it.id, name: it.name });
+                            } else {
+                              await handleQuantityUpdate(it.id, it.quantity - 1);
+                            }
+                          }}>&minus;</button>
+                          <span key={it.quantity}>{it.quantity}</span>
+                          <button onClick={() => handleQuantityUpdate(it.id, it.quantity + 1)}>+</button>
+                        </div>
+                      )}
                     </div>
 
                     {/* Right: Price, Checkbox & Remove */}
@@ -213,6 +254,7 @@ export default function CartPage() {
                           type="checkbox"
                           checked={selectedItems.includes(it.id)}
                           onChange={() => toggleItem(it.id)}
+                          disabled={p && typeof p.stock === "number" && p.stock <= 0 && p.type !== "custom-order"}
                           className="cart-checkbox"
                         />
                         <div className="cart-item-price-main font-serif">₹{it.price * it.quantity}</div>
@@ -354,7 +396,7 @@ export default function CartPage() {
       <ConfirmModal
         isOpen={showOutOfStockCartModal}
         title="Out of Stock Items"
-        message="One or more items in your cart are currently out of stock. Please remove them to proceed with checkout."
+        message="Some items in your cart are out of stock. Please untick or remove them before checkout."
         confirmLabel="Okay"
         cancelLabel=""
         onConfirm={() => setShowOutOfStockCartModal(false)}

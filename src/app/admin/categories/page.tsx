@@ -104,11 +104,11 @@ export default function AdminCategories() {
   if (loading) return <GlobalLoader message="Loading categories..." />;
 
   return (
-    <main className="min-h-screen bg-[#FDFBF7] py-20 px-4">
-      <div className="max-w-4xl mx-auto" style={{ paddingTop: '20px' }}>
+    <main className="min-h-screen bg-[#FDFBF7] py-10 md:py-20 px-3 md:px-4">
+      <div className="max-w-4xl mx-auto" style={{ paddingTop: '10px' }}>
         
         {/* Header */}
-        <div className="flex flex-col items-center mb-8 relative">
+        <div className="flex flex-col items-center mb-4 md:mb-8 relative">
           <Link
             href="/admin/products"
             className="absolute left-0 p-2 text-[#8B7355] hover:bg-[#F5EFE6] rounded-full transition-colors flex items-center justify-center"
@@ -130,8 +130,8 @@ export default function AdminCategories() {
         </div>
 
         {/* Add Category Form */}
-        <div className="bg-white p-6 rounded-2xl border border-[#E6DCCF] shadow-sm mb-8">
-          <h2 className="text-xl font-bold text-[#4A3219] mb-4">Add New Category</h2>
+        <div className="bg-white p-3 md:p-6 rounded-2xl border border-[#E6DCCF] shadow-sm mb-4 md:mb-8">
+          <h2 className="text-base md:text-xl font-bold text-[#4A3219] mb-3 md:mb-4">Add New Category</h2>
           <form onSubmit={handleAddCategory} className="flex flex-col gap-2">
             <label className="block text-sm font-semibold text-[#8B7355]">Category Name</label>
             <div className="flex flex-wrap gap-4 items-center">
@@ -140,15 +140,15 @@ export default function AdminCategories() {
                 required 
                 value={newCategoryName} 
                 onChange={(e) => setNewCategoryName(e.target.value)} 
-                className="p-3 rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" 
+                className="p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" 
                 placeholder="e.g. Special Edition" 
                 style={{ flex: '1 1 200px', maxWidth: '100%' }}
               />
               <button 
                 type="submit" 
                 disabled={isSubmitting || !newCategoryName.trim()}
-                className="btn-primary px-8 rounded-xl font-bold text-white shadow-sm transition-transform active:scale-95 disabled:opacity-50 flex items-center justify-center" 
-                style={{ background: "var(--brand)", height: "50px", flex: '0 0 auto' }}
+                className="btn-primary px-5 md:px-8 rounded-xl font-bold text-sm md:text-base text-white shadow-sm transition-transform active:scale-95 disabled:opacity-50 flex items-center justify-center" 
+                style={{ background: "var(--brand)", height: "40px", flex: '0 0 auto' }}
               >
                 {isSubmitting ? "Adding..." : "Add Category"}
               </button>
@@ -161,11 +161,11 @@ export default function AdminCategories() {
           <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
             <table className="w-full text-left border-collapse" style={{ minWidth: '500px' }}>
               <thead>
-                <tr className="bg-[#F5EFE6] text-[#8B7355] text-sm uppercase tracking-wider">
-                  <th className="p-4 font-semibold text-center" style={{ width: '80px' }}>Order</th>
-                  <th className="p-4 font-semibold">Category Name</th>
-                  <th className="p-4 font-semibold">Slug (URL)</th>
-                  <th className="p-4 font-semibold text-center" style={{ width: '100px' }}>Actions</th>
+                <tr className="bg-[#F5EFE6] text-[#8B7355] text-xs md:text-sm uppercase tracking-wider">
+                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '80px' }}>Order</th>
+                  <th className="p-2 md:p-4 font-semibold">Category Name</th>
+                  <th className="p-2 md:p-4 font-semibold">Slug (URL)</th>
+                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '100px' }}>Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E6DCCF]">
@@ -182,7 +182,7 @@ export default function AdminCategories() {
                     
                     return (
                     <tr key={category.id} className="hover:bg-[#FDFBF7] transition-colors">
-                      <td className="p-4 text-center">
+                      <td className="p-2 md:p-4 text-center">
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
                           <button 
                             type="button"
@@ -202,13 +202,13 @@ export default function AdminCategories() {
                           </button>
                         </div>
                       </td>
-                      <td className="p-4 font-semibold text-[#3E2C1C]">
+                      <td className="p-2 md:p-4 text-xs md:text-sm font-semibold text-[#3E2C1C]">
                         {category.name}
                       </td>
-                      <td className="p-4 text-[#8B7355]">
+                      <td className="p-2 md:p-4 text-xs md:text-sm text-[#8B7355]">
                         {category.slug}
                       </td>
-                      <td className="p-4 text-center">
+                      <td className="p-2 md:p-4 text-center">
                         <button
                           onClick={() => handleDelete(category.id, category.name)}
                           className="hover:opacity-70 transition-opacity flex items-center justify-center p-2 rounded-lg"
