@@ -193,6 +193,26 @@ export default function AdminProducts() {
                           </button>
                         </div>
                       </td>
+                      <td className="p-4" style={{ width: '80px' }}>
+                        <div className="relative overflow-hidden" style={{ width: '64px', height: '64px', borderRadius: '12px', border: '1px solid #E6DCCF' }}>
+                          <ImageWithFallback
+                            src={product.images?.[0] || "/placeholder.png"}
+                            alt={product.title}
+                            fill
+                            style={{ objectFit: 'cover' }}
+                          />
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <div className="font-semibold text-[#3E2C1C]">{product.title}</div>
+                        <div className="text-sm text-[#8B7355]">ID: {product.id}</div>
+                      </td>
+                      <td className="p-4 text-[#5A3E2B]">
+                        {product.category || "-"}
+                      </td>
+                      <td className="p-4 font-medium text-[#3E2C1C]">
+                        ₹{product.price}
+                      </td>
                       <td className="p-4 text-center">
                         <span style={{
                           display: 'inline-block',

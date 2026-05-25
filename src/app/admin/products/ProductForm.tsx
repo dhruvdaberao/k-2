@@ -434,10 +434,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
             <button 
               type="button" 
               onClick={handleDelete} 
-              className="px-6 py-3 rounded-xl font-semibold text-white transition-colors shadow-sm"
-              style={{ backgroundColor: '#dc2626' }}
-              onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#b91c1c'}
-              onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#dc2626'}
+              className="px-6 py-3 rounded-xl font-semibold text-white bg-red-600 hover:bg-red-700 transition-colors shadow-sm"
             >
               Delete Product
             </button>
