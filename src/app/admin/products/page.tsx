@@ -107,17 +107,17 @@ export default function AdminProducts() {
         </div>
         
         {/* Actions Bar */}
-        <div className="flex flex-col md:flex-row gap-4 mb-8 justify-center md:justify-start">
+        <div className="flex flex-wrap gap-4 mb-8 justify-center md:justify-start">
           <Link
             href="/admin/categories"
-            className="btn-primary py-3 px-6 rounded-xl font-semibold text-white shadow-sm transition-transform active:scale-95 w-full md:w-auto flex items-center justify-center"
+            className="btn-primary py-3 px-6 rounded-xl font-semibold text-white shadow-sm transition-transform active:scale-95 flex items-center justify-center"
             style={{ background: "var(--brand)", textDecoration: "none", gap: '8px' }}
           >
             Manage Categories
           </Link>
           <Link
             href="/admin/products/new"
-            className="btn-primary py-3 px-6 rounded-xl font-semibold text-white shadow-sm transition-transform active:scale-95 w-full md:w-auto flex items-center justify-center"
+            className="btn-primary py-3 px-6 rounded-xl font-semibold text-white shadow-sm transition-transform active:scale-95 flex items-center justify-center"
             style={{ background: "var(--brand)", textDecoration: "none", gap: '8px' }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

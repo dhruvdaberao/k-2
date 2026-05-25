@@ -125,19 +125,19 @@ export default function AdminCategories() {
           <h2 className="text-xl font-bold text-[#4A3219] mb-4">Add New Category</h2>
           <form onSubmit={handleAddCategory} className="flex flex-col gap-2">
             <label className="block text-sm font-semibold text-[#8B7355]">Category Name</label>
-            <div className="flex flex-col md:flex-row gap-4 items-center">
+            <div className="flex flex-wrap gap-4 items-center">
               <input 
                 type="text" 
                 required 
                 value={newCategoryName} 
                 onChange={(e) => setNewCategoryName(e.target.value)} 
-                className="w-full md:flex-1 p-3 rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" 
+                className="flex-1 min-w-[200px] p-3 rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" 
                 placeholder="e.g. Special Edition" 
               />
               <button 
                 type="submit" 
                 disabled={isSubmitting || !newCategoryName.trim()}
-                className="w-full md:w-auto btn-primary px-8 rounded-xl font-bold text-white shadow-sm transition-transform active:scale-95 disabled:opacity-50 flex items-center justify-center" 
+                className="btn-primary px-8 rounded-xl font-bold text-white shadow-sm transition-transform active:scale-95 disabled:opacity-50 flex items-center justify-center min-w-[160px]" 
                 style={{ background: "var(--brand)", height: "50px" }}
               >
                 {isSubmitting ? "Adding..." : "Add Category"}
