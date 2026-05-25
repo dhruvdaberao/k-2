@@ -85,21 +85,32 @@ export default function AdminProducts() {
       <div className="max-w-6xl mx-auto" style={{ paddingTop: '20px' }}>
         
         {/* Header */}
-        <div className="relative text-center mb-8">
-          <Link
-            href="/admin"
-            className="absolute left-0 p-2 text-[#8B7355] hover:bg-[#F5EFE6] rounded-full transition-colors flex items-center justify-center"
-            style={{ textDecoration: "none", top: '20px', transform: 'translateY(-50%)' }}
-            title="Back to Dashboard"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="19" y1="12" x2="5" y2="12"></line>
-              <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-          </Link>
-          <h1 className="text-3xl font-bold text-[#4A3219] mb-1" style={{ margin: 0, lineHeight: '40px' }}>Products</h1>
-          <p className="text-[#8B7355]" style={{ margin: 0 }}>Manage your product catalog</p>
-          <div className="absolute right-0 flex flex-col items-end" style={{ top: '20px', transform: 'translateY(-50%)' }}>
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 relative">
+          <div className="flex items-center w-full justify-between md:w-auto">
+            <Link
+              href="/admin"
+              className="p-2 text-[#8B7355] hover:bg-[#F5EFE6] rounded-full transition-colors flex items-center justify-center"
+              style={{ textDecoration: "none" }}
+              title="Back to Dashboard"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+            </Link>
+            <div className="md:hidden">
+              <span className="text-sm font-bold text-[#4A3219] bg-[#F5EFE6] px-3 py-1 rounded-full border border-[#E6DCCF]">
+                {products.length} Products
+              </span>
+            </div>
+          </div>
+
+          <div className="text-center md:absolute md:left-1/2 md:-translate-x-1/2">
+            <h1 className="text-2xl md:text-3xl font-bold text-[#4A3219] mb-1" style={{ margin: 0 }}>Products</h1>
+            <p className="text-[#8B7355] text-sm md:text-base" style={{ margin: 0 }}>Manage your product catalog</p>
+          </div>
+
+          <div className="hidden md:flex flex-col items-end">
             <span className="text-sm font-bold text-[#4A3219] bg-[#F5EFE6] px-3 py-1 rounded-full border border-[#E6DCCF]">
               {products.length} Products
             </span>
@@ -107,17 +118,17 @@ export default function AdminProducts() {
         </div>
         
         {/* Actions Bar */}
-        <div className="flex flex-wrap gap-4 mb-8 justify-center md:justify-start">
+        <div className="flex flex-col sm:flex-row gap-4 mb-8 justify-center md:justify-start w-full">
           <Link
             href="/admin/categories"
-            className="btn-primary py-2 px-6 rounded-xl font-semibold text-white shadow-sm transition-transform active:scale-95"
+            className="btn-primary py-3 px-6 rounded-xl font-semibold text-white shadow-sm transition-transform active:scale-95 w-full sm:w-auto text-center justify-center"
             style={{ background: "var(--brand)", textDecoration: "none", display: 'flex', alignItems: 'center', gap: '8px' }}
           >
             Manage Categories
           </Link>
           <Link
             href="/admin/products/new"
-            className="btn-primary py-2 px-6 rounded-xl font-semibold text-white shadow-sm transition-transform active:scale-95"
+            className="btn-primary py-3 px-6 rounded-xl font-semibold text-white shadow-sm transition-transform active:scale-95 w-full sm:w-auto text-center justify-center"
             style={{ background: "var(--brand)", textDecoration: "none", display: 'flex', alignItems: 'center', gap: '8px' }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

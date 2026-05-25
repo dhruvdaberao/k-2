@@ -99,20 +99,24 @@ export default function AdminCategories() {
       <div className="max-w-4xl mx-auto" style={{ paddingTop: '20px' }}>
         
         {/* Header */}
-        <div className="relative text-center mb-8">
-          <Link
-            href="/admin/products"
-            className="absolute left-0 top-1/2 -translate-y-1/2 p-2 text-[#8B7355] hover:bg-[#F5EFE6] rounded-full transition-colors flex items-center justify-center"
-            style={{ textDecoration: "none" }}
-            title="Back to Products"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="19" y1="12" x2="5" y2="12"></line>
-              <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-          </Link>
-          <h1 className="text-3xl font-bold text-[#4A3219] mb-1" style={{ margin: 0 }}>Categories</h1>
-          <p className="text-[#8B7355]" style={{ margin: 0 }}>Manage your product categories</p>
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 relative">
+          <div className="flex items-center w-full justify-start md:w-auto">
+            <Link
+              href="/admin/products"
+              className="p-2 text-[#8B7355] hover:bg-[#F5EFE6] rounded-full transition-colors flex items-center justify-center"
+              style={{ textDecoration: "none" }}
+              title="Back to Products"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+            </Link>
+          </div>
+          <div className="text-center md:absolute md:left-1/2 md:-translate-x-1/2">
+            <h1 className="text-2xl md:text-3xl font-bold text-[#4A3219] mb-1" style={{ margin: 0 }}>Categories</h1>
+            <p className="text-[#8B7355] text-sm md:text-base" style={{ margin: 0 }}>Manage your product categories</p>
+          </div>
         </div>
 
         {/* Add Category Form */}
@@ -120,19 +124,19 @@ export default function AdminCategories() {
           <h2 className="text-xl font-bold text-[#4A3219] mb-4">Add New Category</h2>
           <form onSubmit={handleAddCategory} className="flex flex-col gap-2">
             <label className="block text-sm font-semibold text-[#8B7355]">Category Name</label>
-            <div className="flex gap-4 items-center">
+            <div className="flex flex-col sm:flex-row gap-4 items-center">
               <input 
                 type="text" 
                 required 
                 value={newCategoryName} 
                 onChange={(e) => setNewCategoryName(e.target.value)} 
-                className="flex-1 p-3 rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" 
+                className="w-full sm:flex-1 p-3 rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" 
                 placeholder="e.g. Special Edition" 
               />
               <button 
                 type="submit" 
                 disabled={isSubmitting || !newCategoryName.trim()}
-                className="btn-primary px-8 rounded-xl font-bold text-white shadow-sm transition-transform active:scale-95 disabled:opacity-50" 
+                className="w-full sm:w-auto btn-primary px-8 rounded-xl font-bold text-white shadow-sm transition-transform active:scale-95 disabled:opacity-50" 
                 style={{ background: "var(--brand)", height: "50px" }}
               >
                 {isSubmitting ? "Adding..." : "Add Category"}

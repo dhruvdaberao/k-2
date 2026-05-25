@@ -173,7 +173,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 bg-white p-6 md:p-8 rounded-2xl border border-[#E6DCCF] shadow-sm">
+    <form onSubmit={handleSubmit} className="space-y-8 bg-white p-4 md:p-8 rounded-2xl border border-[#E6DCCF] shadow-sm">
       {loading && <GlobalLoader message="Saving Product..." />}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Left Column: Details */}
@@ -428,23 +428,23 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
         </div>
       </div>
 
-      <div className="pt-8 mt-8 border-t border-[#E6DCCF] flex justify-between gap-4">
-        <div>
+      <div className="pt-8 mt-8 border-t border-[#E6DCCF] flex flex-col md:flex-row justify-between gap-4">
+        <div className="w-full md:w-auto order-3 md:order-1 mt-4 md:mt-0">
           {isEdit && (
             <button 
               type="button" 
               onClick={handleDelete} 
-              className="px-6 py-2.5 rounded-xl font-semibold text-red-500 hover:bg-red-50 transition-colors border border-red-200"
+              className="w-full md:w-auto px-6 py-3 rounded-xl font-semibold text-white bg-red-600 hover:bg-red-700 transition-colors shadow-sm"
             >
               Delete Product
             </button>
           )}
         </div>
-        <div className="flex gap-4">
-          <button type="button" onClick={() => router.back()} className="px-6 py-2.5 rounded-xl font-semibold text-[#8B7355] hover:bg-[#F5EFE6] transition-colors">
+        <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto order-1 md:order-2">
+          <button type="button" onClick={() => router.back()} className="w-full md:w-auto px-6 py-3 rounded-xl font-semibold text-[#8B7355] hover:bg-[#F5EFE6] transition-colors order-2 md:order-1 border border-[#E6DCCF] md:border-none">
             Cancel
           </button>
-          <button type="submit" className="btn-primary px-8 py-2.5 rounded-xl font-bold text-white shadow-sm transition-transform active:scale-95" style={{ background: "var(--brand)" }}>
+          <button type="submit" className="w-full md:w-auto btn-primary px-8 py-3 rounded-xl font-bold text-white shadow-sm transition-transform active:scale-95 order-1 md:order-2" style={{ background: "var(--brand)" }}>
             {isEdit ? "Update Product" : "Save New Product"}
           </button>
         </div>
