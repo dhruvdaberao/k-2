@@ -125,20 +125,20 @@ export default function AdminCategories() {
           <h2 className="text-xl font-bold text-[#4A3219] mb-4">Add New Category</h2>
           <form onSubmit={handleAddCategory} className="flex flex-col gap-2">
             <label className="block text-sm font-semibold text-[#8B7355]">Category Name</label>
-            <div className="flex flex-col sm:flex-row gap-4 items-center">
+            <div className="flex flex-wrap gap-3 items-center mt-2">
               <input 
                 type="text" 
                 required 
                 value={newCategoryName} 
                 onChange={(e) => setNewCategoryName(e.target.value)} 
-                className="w-full sm:flex-1 p-3 rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" 
+                className="flex-1 min-w-[200px] p-2 md:p-3 rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355] text-xs md:text-base" 
                 placeholder="e.g. Special Edition" 
               />
               <button 
                 type="submit" 
                 disabled={isSubmitting || !newCategoryName.trim()}
-                className="w-full sm:w-auto btn-primary px-8 rounded-xl font-bold text-white shadow-sm transition-transform active:scale-95 disabled:opacity-50" 
-                style={{ background: "var(--brand)", height: "50px" }}
+                className="btn-primary px-5 py-2 md:px-8 md:py-3 rounded-xl font-bold text-white shadow-sm transition-transform active:scale-95 disabled:opacity-50 text-xs md:text-base" 
+                style={{ background: "var(--brand)" }}
               >
                 {isSubmitting ? "Adding..." : "Add Category"}
               </button>
@@ -151,17 +151,17 @@ export default function AdminCategories() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[#F5EFE6] text-[#8B7355] text-sm uppercase tracking-wider">
-                  <th className="p-4 font-semibold text-center" style={{ width: '80px' }}>Order</th>
-                  <th className="p-4 font-semibold">Category Name</th>
-                  <th className="p-4 font-semibold">Slug (URL)</th>
-                  <th className="p-4 font-semibold text-center" style={{ width: '100px' }}>Actions</th>
+                <tr className="bg-[#F5EFE6] text-[#8B7355] text-[10px] md:text-sm uppercase tracking-wider">
+                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '60px' }}>Order</th>
+                  <th className="p-2 md:p-4 font-semibold">Category Name</th>
+                  <th className="p-2 md:p-4 font-semibold">Slug (URL)</th>
+                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '80px' }}>Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E6DCCF]">
                 {categories.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="p-8 text-center text-[#8B7355]">
+                    <td colSpan={4} className="p-4 md:p-8 text-center text-[#8B7355] text-xs md:text-base">
                       No categories found. Add one above!
                     </td>
                   </tr>
@@ -172,7 +172,7 @@ export default function AdminCategories() {
                     
                     return (
                     <tr key={category.id} className="hover:bg-[#FDFBF7] transition-colors">
-                      <td className="p-4 text-center">
+                      <td className="p-2 md:p-4 text-center">
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
                           <button 
                             type="button"
@@ -180,7 +180,7 @@ export default function AdminCategories() {
                             style={{ background: 'none', border: 'none', cursor: isFirst ? 'not-allowed' : 'pointer', opacity: isFirst ? 0.2 : 1 }}
                             title="Move Up"
                           >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 md:w-5 md:h-5"><polyline points="18 15 12 9 6 15"></polyline></svg>
                           </button>
                           <button 
                             type="button"
@@ -188,24 +188,24 @@ export default function AdminCategories() {
                             style={{ background: 'none', border: 'none', cursor: isLast ? 'not-allowed' : 'pointer', opacity: isLast ? 0.2 : 1 }}
                             title="Move Down"
                           >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 md:w-5 md:h-5"><polyline points="6 9 12 15 18 9"></polyline></svg>
                           </button>
                         </div>
                       </td>
-                      <td className="p-4 font-semibold text-[#3E2C1C]">
+                      <td className="p-2 md:p-4 font-bold md:font-semibold text-[#3E2C1C] text-xs md:text-base">
                         {category.name}
                       </td>
-                      <td className="p-4 text-[#8B7355]">
+                      <td className="p-2 md:p-4 text-[#8B7355] text-[10px] md:text-base">
                         {category.slug}
                       </td>
-                      <td className="p-4 text-center">
+                      <td className="p-2 md:p-4 text-center">
                         <button
                           onClick={() => handleDelete(category.id, category.name)}
-                          className="hover:opacity-70 transition-opacity flex items-center justify-center p-2 rounded-lg"
+                          className="hover:opacity-70 transition-opacity flex items-center justify-center p-1 md:p-2 rounded-lg"
                           style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#ef4444' }}
                           title="Delete Category"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 md:w-5 md:h-5">
                             <polyline points="3 6 5 6 21 6"></polyline>
                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                             <line x1="10" y1="11" x2="10" y2="17"></line>

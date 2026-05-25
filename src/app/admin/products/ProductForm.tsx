@@ -178,24 +178,24 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Left Column: Details */}
         <div className="space-y-4">
-          <h2 className="text-xl font-bold text-[#4A3219] mb-4 border-b border-[#E6DCCF] pb-2">Product Details</h2>
+          <h2 className="text-lg md:text-xl font-bold text-[#4A3219] mb-4 border-b border-[#E6DCCF] pb-2">Product Details</h2>
           
           <div>
-            <label className="block text-sm font-semibold text-[#8B7355] mb-1">Product Title</label>
-            <input type="text" name="title" required value={formData.title} onChange={handleInputChange} className="w-full p-3 rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" placeholder="e.g. Handmade Crochet Tulip" />
+            <label className="block text-xs md:text-sm font-semibold text-[#8B7355] mb-1">Product Title</label>
+            <input type="text" name="title" required value={formData.title} onChange={handleInputChange} className="w-full p-2 md:p-3 text-xs md:text-base rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" placeholder="e.g. Handmade Crochet Tulip" />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-[#8B7355] mb-1">Product ID (Slug)</label>
-              <input type="text" name="id" required value={formData.id} onChange={handleInputChange} disabled={isEdit} className={`w-full p-3 rounded-xl border border-[#E6DCCF] ${isEdit ? 'bg-gray-100' : 'focus:outline-none focus:ring-2 focus:ring-[#8B7355]'}`} />
+              <label className="block text-xs md:text-sm font-semibold text-[#8B7355] mb-1">Product ID (Slug)</label>
+              <input type="text" name="id" required value={formData.id} onChange={handleInputChange} disabled={isEdit} className={`w-full p-2 md:p-3 text-xs md:text-base rounded-xl border border-[#E6DCCF] ${isEdit ? 'bg-gray-100' : 'focus:outline-none focus:ring-2 focus:ring-[#8B7355]'}`} />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-[#8B7355] mb-1">Category</label>
+              <label className="block text-xs md:text-sm font-semibold text-[#8B7355] mb-1">Category</label>
               <div className="relative">
                 <div 
-                  className="w-full p-3 rounded-xl border border-[#E6DCCF] bg-white cursor-pointer flex justify-between items-center text-[#3E2C1C]"
-                  style={{ outline: dropdownOpen ? '2px solid #8B7355' : 'none', minHeight: '50px' }}
+                  className="w-full p-2 md:p-3 text-xs md:text-base rounded-xl border border-[#E6DCCF] bg-white cursor-pointer flex justify-between items-center text-[#3E2C1C]"
+                  style={{ outline: dropdownOpen ? '2px solid #8B7355' : 'none', minHeight: '44px' }}
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                 >
                   <span>{formData.category || "Select a category"}</span>
@@ -232,7 +232,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
           </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[#8B7355] mb-1">Description</label>
+              <label className="block text-xs md:text-sm font-semibold text-[#8B7355] mb-1">Description</label>
               <textarea 
                 name="description" 
                 required 
@@ -242,9 +242,9 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                   e.target.style.height = 'auto';
                   e.target.style.height = `${e.target.scrollHeight}px`;
                 }} 
-                className="w-full p-3 rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355] bg-white resize-none overflow-hidden" 
+                className="w-full p-2 md:p-3 text-xs md:text-base rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355] bg-white resize-none overflow-hidden" 
                 rows={3}
-                style={{ minHeight: '100px' }}
+                style={{ minHeight: '80px' }}
                 placeholder="Describe your product..."
                 ref={(el) => {
                   if (el) {
@@ -257,11 +257,11 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-[#8B7355] mb-1">Price (₹)</label>
-              <input type="number" name="price" required min="0" value={formData.price} onChange={handleInputChange} className="w-full p-3 rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" />
+              <label className="block text-xs md:text-sm font-semibold text-[#8B7355] mb-1">Price (₹)</label>
+              <input type="number" name="price" required min="0" value={formData.price} onChange={handleInputChange} className="w-full p-2 md:p-3 text-xs md:text-base rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-[#8B7355] mb-2">Stock Status</label>
+              <label className="block text-xs md:text-sm font-semibold text-[#8B7355] mb-2">Stock Status</label>
               <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '12px' }}>
                 <div style={{ position: 'relative', width: '56px', height: '32px' }}>
                   <input
@@ -284,7 +284,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                     transform: formData.stock > 0 ? 'translateX(24px)' : 'translateX(0)'
                   }}></div>
                 </div>
-                <div style={{ fontWeight: '600', color: formData.stock > 0 ? '#4A3219' : '#8B7355' }}>
+                <div className="text-xs md:text-sm" style={{ fontWeight: '600', color: formData.stock > 0 ? '#4A3219' : '#8B7355' }}>
                   {formData.stock > 0 ? 'In Stock' : 'Out of Stock'}
                 </div>
               </label>
@@ -428,24 +428,24 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
         </div>
       </div>
 
-      <div className="pt-8 mt-8 border-t border-[#E6DCCF] flex flex-col md:flex-row justify-between gap-4">
-        <div className="w-full md:w-auto order-3 md:order-1 mt-4 md:mt-0">
+      <div className="pt-6 md:pt-8 mt-6 md:mt-8 border-t border-[#E6DCCF] flex flex-wrap justify-between gap-4">
+        <div>
           {isEdit && (
             <button 
               type="button" 
               onClick={handleDelete} 
-              className="w-full md:w-auto px-6 py-3 rounded-xl font-semibold text-white bg-red-600 hover:bg-red-700 transition-colors shadow-sm"
+              className="px-5 py-2 md:px-6 md:py-3 rounded-xl font-semibold text-white bg-red-600 hover:bg-red-700 transition-colors shadow-sm text-xs md:text-base"
             >
               Delete Product
             </button>
           )}
         </div>
-        <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto order-1 md:order-2">
-          <button type="button" onClick={() => router.back()} className="w-full md:w-auto px-6 py-3 rounded-xl font-semibold text-[#8B7355] hover:bg-[#F5EFE6] transition-colors order-2 md:order-1 border border-[#E6DCCF] md:border-none">
+        <div className="flex gap-3 w-full sm:w-auto justify-end ml-auto">
+          <button type="button" onClick={() => router.back()} className="px-5 py-2 md:px-6 md:py-3 rounded-xl font-semibold text-[#8B7355] hover:bg-[#F5EFE6] transition-colors border border-[#E6DCCF] md:border-none text-xs md:text-base bg-white md:bg-transparent">
             Cancel
           </button>
-          <button type="submit" className="w-full md:w-auto btn-primary px-8 py-3 rounded-xl font-bold text-white shadow-sm transition-transform active:scale-95 order-1 md:order-2" style={{ background: "var(--brand)" }}>
-            {isEdit ? "Update Product" : "Save New Product"}
+          <button type="submit" className="btn-primary px-6 py-2 md:px-8 md:py-3 rounded-xl font-bold text-white shadow-sm transition-transform active:scale-95 text-xs md:text-base" style={{ background: "var(--brand)" }}>
+            {isEdit ? "Update Product" : "Save Product"}
           </button>
         </div>
       </div>
