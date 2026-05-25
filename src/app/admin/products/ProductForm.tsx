@@ -433,27 +433,25 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
         </div>
       </div>
 
-      <div className="pt-4 md:pt-8 mt-4 md:mt-8 border-t border-[#E6DCCF] flex flex-wrap justify-between gap-3 md:gap-4">
-        <div>
-          {isEdit && (
-            <button 
-              type="button" 
-              onClick={handleDelete} 
-              className="px-4 py-2 md:px-6 md:py-3 rounded-xl text-sm md:text-base font-semibold transition-colors shadow-sm"
-              style={{ backgroundColor: '#ef4444', color: '#ffffff', border: 'none' }}
-            >
-              Delete Product
-            </button>
-          )}
-        </div>
-        <div className="flex flex-wrap gap-2 md:gap-4">
-          <button type="button" onClick={() => router.back()} className="px-4 py-2 md:px-6 md:py-3 rounded-xl text-sm md:text-base font-semibold text-[#8B7355] hover:bg-[#F5EFE6] transition-colors border border-[#E6DCCF]">
-            Cancel
+      <div className="pt-4 md:pt-8 mt-4 md:mt-8 border-t border-[#E6DCCF] flex flex-wrap gap-3 md:gap-4">
+        <button type="submit" className="btn-primary px-5 py-2 md:px-8 md:py-3 rounded-xl text-sm md:text-base font-bold text-white shadow-sm transition-transform active:scale-95" style={{ background: "var(--brand)" }}>
+          {isEdit ? "Update Product" : "Save New Product"}
+        </button>
+        
+        <button type="button" onClick={() => router.back()} className="btn-primary px-5 py-2 md:px-8 md:py-3 rounded-xl text-sm md:text-base font-bold text-white shadow-sm transition-transform active:scale-95" style={{ background: "var(--brand)" }}>
+          Cancel
+        </button>
+
+        {isEdit && (
+          <button 
+            type="button" 
+            onClick={handleDelete} 
+            className="btn-primary px-5 py-2 md:px-8 md:py-3 rounded-xl text-sm md:text-base font-bold text-white shadow-sm transition-transform active:scale-95" 
+            style={{ background: "var(--brand)" }}
+          >
+            Delete Product
           </button>
-          <button type="submit" className="btn-primary px-5 py-2 md:px-8 md:py-3 rounded-xl text-sm md:text-base font-bold text-white shadow-sm transition-transform active:scale-95" style={{ background: "var(--brand)" }}>
-            {isEdit ? "Update Product" : "Save New Product"}
-          </button>
-        </div>
+        )}
       </div>
 
       <ConfirmModal
