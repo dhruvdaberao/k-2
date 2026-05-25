@@ -181,7 +181,7 @@ export default function AdminProducts() {
                             style={{ background: 'none', border: 'none', cursor: (search || isFirst) ? 'not-allowed' : 'pointer', opacity: (search || isFirst) ? 0.2 : 1 }}
                             title={search ? "Clear search to reorder" : "Move Up"}
                           >
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 md:w-5 md:h-5"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 md:w-5 md:h-5" style={{ minWidth: '16px', minHeight: '16px' }}><polyline points="18 15 12 9 6 15"></polyline></svg>
                           </button>
                           <button 
                             type="button"
@@ -189,7 +189,7 @@ export default function AdminProducts() {
                             style={{ background: 'none', border: 'none', cursor: (search || isLast) ? 'not-allowed' : 'pointer', opacity: (search || isLast) ? 0.2 : 1 }}
                             title={search ? "Clear search to reorder" : "Move Down"}
                           >
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 md:w-5 md:h-5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 md:w-5 md:h-5" style={{ minWidth: '16px', minHeight: '16px' }}><polyline points="6 9 12 15 18 9"></polyline></svg>
                           </button>
                         </div>
                       </td>
@@ -203,7 +203,7 @@ export default function AdminProducts() {
                         </Link>
                       </td>
                       <td className="p-2 md:p-4">
-                        <div className="relative overflow-hidden w-10 h-10 md:w-16 md:h-16 rounded-lg md:rounded-xl border border-[#E6DCCF]">
+                        <div className="relative overflow-hidden w-10 h-10 md:w-16 md:h-16 rounded-lg md:rounded-xl border border-[#E6DCCF]" style={{ minWidth: '40px', minHeight: '40px' }}>
                           <ImageWithFallback
                             src={product.images?.[0] || "/placeholder.png"}
                             alt={product.title}
@@ -223,7 +223,8 @@ export default function AdminProducts() {
                         ₹{product.price}
                       </td>
                       <td className="p-2 md:p-4 text-center">
-                        <span className="inline-block px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[9px] md:text-xs font-bold whitespace-nowrap" style={{
+                        <span className="inline-block px-2 py-0.5 md:px-3 md:py-1 rounded-full text-[9px] md:text-xs font-bold" style={{
+                          whiteSpace: 'nowrap',
                           ...(product.stock > 0 
                             ? { backgroundColor: '#dcfce7', color: '#15803d', border: '1px solid #bbf7d0' } 
                             : { backgroundColor: '#fee2e2', color: '#b91c1c', border: '1px solid #fecaca' })
