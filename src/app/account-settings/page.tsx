@@ -124,7 +124,7 @@ function AccountSettingsContent() {
         }
       `}} />
 
-      <div className="mx-auto w-full max-w-md px-4">
+      <div className="px-4" style={{ width: '100%', maxWidth: '768px', margin: '0 auto' }}>
         
         <div className="flex items-center justify-between mt-8 mb-6">
           <button
