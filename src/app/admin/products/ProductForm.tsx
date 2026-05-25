@@ -434,7 +434,8 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
             <button 
               type="button" 
               onClick={handleDelete} 
-              className="px-6 py-3 rounded-xl font-semibold text-white bg-red-600 hover:bg-red-700 transition-colors shadow-sm"
+              className="px-6 py-3 rounded-xl font-semibold transition-colors shadow-sm"
+              style={{ backgroundColor: '#ef4444', color: '#ffffff', border: 'none' }}
             >
               Delete Product
             </button>
