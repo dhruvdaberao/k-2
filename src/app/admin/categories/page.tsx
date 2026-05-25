@@ -131,14 +131,15 @@ export default function AdminCategories() {
                 required 
                 value={newCategoryName} 
                 onChange={(e) => setNewCategoryName(e.target.value)} 
-                className="flex-1 min-w-[200px] p-3 rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" 
+                className="p-3 rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" 
                 placeholder="e.g. Special Edition" 
+                style={{ flex: '1 1 200px', maxWidth: '100%' }}
               />
               <button 
                 type="submit" 
                 disabled={isSubmitting || !newCategoryName.trim()}
-                className="btn-primary px-8 rounded-xl font-bold text-white shadow-sm transition-transform active:scale-95 disabled:opacity-50 flex items-center justify-center min-w-[160px]" 
-                style={{ background: "var(--brand)", height: "50px" }}
+                className="btn-primary px-8 rounded-xl font-bold text-white shadow-sm transition-transform active:scale-95 disabled:opacity-50 flex items-center justify-center" 
+                style={{ background: "var(--brand)", height: "50px", flex: '0 0 auto' }}
               >
                 {isSubmitting ? "Adding..." : "Add Category"}
               </button>
