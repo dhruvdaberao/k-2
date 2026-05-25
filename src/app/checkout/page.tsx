@@ -567,7 +567,7 @@ return (
             {enrichedItems.map((item, i) => (
               <div className="checkout-item-summary-row" key={`thumb-${item.id}-${i}`}>
                 <div className="checkout-item-summary-thumb">
-                  <img src={item.image || "/placeholder.png"} alt={item.name} />
+                  <img src={item.product?.images?.[0] || item.image || "/placeholder.png"} alt={item.name} />
                 </div>
                 <div className="checkout-item-summary-content">
                   <p className="checkout-item-summary-name">{item.name.split(" - ")[0]}</p>

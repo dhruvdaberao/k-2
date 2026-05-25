@@ -180,11 +180,14 @@ export default function CartPage() {
               </label>
 
               <div className="cart-list-wrapper">
-                {cartItems.map((it) => (
+                {cartItems.map((it) => {
+                  const p = (products as Product[]).find(x => x.slug === it.id || x.id === it.id);
+                  const imageUrl = p?.images?.[0] || it.image || "/placeholder.png";
+                  return (
                   <div key={it.id} className={`cart-item-row-refined shadow-sm${selectedItems.includes(it.id) ? " cart-item--selected" : ""}`}>
                     {/* Left: Thumbnail */}
                     <div className="cart-item-thumbnail relative" style={{ width: 72, height: 72 }}>
-                      <NextImage src={it.image} alt={it.name} fill style={{ objectFit: 'cover' }} sizes="72px" />
+                      <NextImage src={imageUrl} alt={it.name} fill style={{ objectFit: 'cover' }} sizes="72px" />
                     </div>
 
                     {/* Center: Details & Picker */}
