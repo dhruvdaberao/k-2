@@ -148,9 +148,9 @@ export default function AdminCategories() {
         </div>
 
         {/* Categories Grid */}
-        <div className="bg-white rounded-2xl border border-[#E6DCCF] shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+        <div className="bg-white rounded-2xl border border-[#E6DCCF] shadow-sm" style={{ overflow: 'hidden' }}>
+          <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+            <table className="w-full text-left border-collapse" style={{ minWidth: '500px' }}>
               <thead>
                 <tr className="bg-[#F5EFE6] text-[#8B7355] text-sm uppercase tracking-wider">
                   <th className="p-4 font-semibold text-center" style={{ width: '80px' }}>Order</th>

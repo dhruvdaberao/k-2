@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession()
-      .then(({ data: { session }, error }: any) => {
+      .then(async ({ data: { session }, error }: any) => {
         if (error) {
           if (error.message.includes("refresh_token_not_found") || error.message.includes("Invalid Refresh Token")) {
             console.warn("Auth: Token issue detected. Relying on onAuthStateChange for genuine logouts.");
@@ -56,7 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (session) {
           setSession(session);
           setUser(session.user);
-          if (session.user.id) fetchProfile(session.user.id);
+          if (session.user.id) await fetchProfile(session.user.id);
         }
       })
       .catch((err: any) => {
