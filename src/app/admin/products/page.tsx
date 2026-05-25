@@ -150,12 +150,12 @@ export default function AdminProducts() {
               <thead>
                 <tr className="bg-[#F5EFE6] text-[#8B7355] text-sm uppercase tracking-wider">
                   <th className="p-4 font-semibold text-center" style={{ width: '80px' }}>Order</th>
-                  <th className="p-4 font-semibold text-center" style={{ width: '100px' }}>Actions</th>
                   <th className="p-4 font-semibold" style={{ width: '100px' }}>Image</th>
                   <th className="p-4 font-semibold" style={{ width: '35%' }}>Product Details</th>
                   <th className="p-4 font-semibold" style={{ width: '20%' }}>Category</th>
                   <th className="p-4 font-semibold" style={{ width: '15%' }}>Price</th>
                   <th className="p-4 font-semibold text-center" style={{ width: '120px' }}>Stock</th>
+                  <th className="p-4 font-semibold text-center" style={{ width: '100px' }}>Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E6DCCF]">
@@ -194,35 +194,6 @@ export default function AdminProducts() {
                         </div>
                       </td>
                       <td className="p-4 text-center">
-                        <Link
-                          href={`/admin/products/${product.id}/edit`}
-                          className="btn-primary inline-block px-5 py-2 rounded-lg font-semibold text-white shadow-sm transition-transform active:scale-95"
-                          style={{ background: "var(--brand)", textDecoration: "none", fontSize: '0.875rem' }}
-                        >
-                          Edit
-                        </Link>
-                      </td>
-                      <td className="p-4" style={{ width: '80px' }}>
-                        <div className="relative overflow-hidden" style={{ width: '64px', height: '64px', borderRadius: '12px', border: '1px solid #E6DCCF' }}>
-                          <ImageWithFallback
-                            src={product.images?.[0] || "/placeholder.png"}
-                            alt={product.title}
-                            fill
-                            style={{ objectFit: 'cover' }}
-                          />
-                        </div>
-                      </td>
-                      <td className="p-4">
-                        <div className="font-semibold text-[#3E2C1C]">{product.title}</div>
-                        <div className="text-sm text-[#8B7355]">ID: {product.id}</div>
-                      </td>
-                      <td className="p-4 text-[#5A3E2B]">
-                        {product.category || "-"}
-                      </td>
-                      <td className="p-4 font-medium text-[#3E2C1C]">
-                        ₹{product.price}
-                      </td>
-                      <td className="p-4 text-center">
                         <span style={{
                           display: 'inline-block',
                           padding: '4px 12px',
@@ -236,6 +207,15 @@ export default function AdminProducts() {
                         }}>
                           {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
                         </span>
+                      </td>
+                      <td className="p-4 text-center">
+                        <Link
+                          href={`/admin/products/${product.id}/edit`}
+                          className="btn-primary inline-block px-5 py-2 rounded-lg font-semibold text-white shadow-sm transition-transform active:scale-95"
+                          style={{ background: "var(--brand)", textDecoration: "none", fontSize: '0.875rem' }}
+                        >
+                          Edit
+                        </Link>
                       </td>
                     </tr>
                     );
