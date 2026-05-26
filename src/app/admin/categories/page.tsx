@@ -161,12 +161,12 @@ export default function AdminCategories() {
         </div>
         <div className="bg-white rounded-2xl border border-[#E6DCCF] shadow-sm" style={{ overflow: 'hidden' }}>
           <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-            <table className="w-full text-left border-collapse" style={{ minWidth: '500px' }}>
+            <table className="w-full text-left border-collapse min-w-[380px] md:min-w-[500px]">
               <thead>
                 <tr className="bg-[#F5EFE6] text-[#8B7355] text-xs md:text-sm uppercase tracking-wider">
-                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '80px' }}>Order</th>
-                  <th className="p-2 md:p-4 font-semibold">Category Name</th>
-                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '100px' }}>Actions</th>
+                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '60px' }}>Order</th>
+                  <th className="p-2 md:p-4 font-semibold" style={{ width: '45%' }}>Category Name</th>
+                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '80px' }}>Actions</th>
                   <th className="p-2 md:p-4 font-semibold">Slug (URL)</th>
                 </tr>
               </thead>

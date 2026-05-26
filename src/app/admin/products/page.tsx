@@ -151,16 +151,16 @@ export default function AdminProducts() {
         </div>
         <div className="bg-white rounded-2xl border border-[#E6DCCF] shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[900px] text-left border-collapse">
+            <table className="w-full min-w-[650px] md:min-w-[900px] text-left border-collapse">
               <thead>
                 <tr className="bg-[#F5EFE6] text-[#8B7355] text-xs md:text-sm uppercase tracking-wider">
-                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '80px' }}>Order</th>
-                  <th className="p-2 md:p-4 font-semibold" style={{ width: '100px' }}>Image</th>
-                  <th className="p-2 md:p-4 font-semibold" style={{ width: '35%' }}>Product Details</th>
-                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '100px' }}>Actions</th>
-                  <th className="p-2 md:p-4 font-semibold" style={{ width: '20%' }}>Category</th>
-                  <th className="p-2 md:p-4 font-semibold" style={{ width: '15%' }}>Price</th>
-                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '120px' }}>Stock</th>
+                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '50px' }}>Order</th>
+                  <th className="p-2 md:p-4 font-semibold" style={{ width: '70px' }}>Image</th>
+                  <th className="p-2 md:p-4 font-semibold" style={{ width: '160px' }}>Product Details</th>
+                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '80px' }}>Actions</th>
+                  <th className="p-2 md:p-4 font-semibold" style={{ width: '120px' }}>Category</th>
+                  <th className="p-2 md:p-4 font-semibold" style={{ width: '100px' }}>Price</th>
+                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '100px' }}>Stock</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E6DCCF]">
