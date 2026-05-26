@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import ImageWithFallback from "@/components/ImageWithFallback";
 import { supabase } from "@/lib/supabaseClient";
 import GlobalLoader from "@/components/ui/GlobalLoader";
 
@@ -584,8 +585,8 @@ return (
           <div className="checkout-item-summary-strip__inner">
             {enrichedItems.map((item, i) => (
               <div className="checkout-item-summary-row" key={`thumb-${item.id}-${i}`}>
-                <div className="checkout-item-summary-thumb">
-                  <img src={item.product?.images?.[0] || item.image || "/placeholder.png"} alt={item.name} />
+                <div className="checkout-item-summary-thumb relative">
+                  <ImageWithFallback src={item.product?.images?.[0] || item.image || "/placeholder.png"} alt={item.name} fill style={{ objectFit: 'cover' }} sizes="56px" />
                 </div>
                 <div className="checkout-item-summary-content">
                   <p className="checkout-item-summary-name">{item.name.split(" - ")[0]}</p>
