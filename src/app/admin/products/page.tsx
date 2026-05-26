@@ -291,7 +291,7 @@ export default function AdminProducts() {
                         </div>
                       </td>
                       <td className="p-2 md:p-5">
-                        <div className="relative overflow-hidden w-[40px] h-[40px] md:w-[48px] md:h-[48px] rounded-lg md:rounded-xl border border-[#E6DCCF]">
+                        <div className="relative overflow-hidden flex-shrink-0" style={{ width: '44px', height: '44px', minWidth: '44px', borderRadius: '10px', border: '1px solid #E6DCCF' }}>
                           <ImageWithFallback
                             src={product.images?.[0] || "/placeholder.png"}
                             alt={product.title}
