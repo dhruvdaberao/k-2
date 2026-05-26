@@ -246,9 +246,9 @@ export default function AdminProducts() {
                           </button>
                           
                           <input 
-                            type="number"
-                            min="1"
-                            max={products.length}
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
                             disabled={!!search}
                             title={search ? "Clear search to reorder" : "Set exact position"}
                             onBlur={(e) => {
