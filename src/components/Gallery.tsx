@@ -11,7 +11,8 @@ export default function Gallery({
   alt?: string;
   heartButton?: React.ReactNode;
 }) {
-  const list = images?.length ? images : ["/placeholder.png"];
+  const validImages = images?.filter(img => typeof img === 'string' && img.trim() !== '');
+  const list = validImages?.length ? validImages : ["/placeholder.png"];
   const [active, setActive] = React.useState(0);
   return (
     <div className="pdp-gallery">

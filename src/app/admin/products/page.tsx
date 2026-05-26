@@ -204,16 +204,16 @@ export default function AdminProducts() {
             </div>
             <div className="bg-white rounded-2xl border border-[#E6DCCF] shadow-sm overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[650px] md:min-w-[900px] text-left border-collapse">
+                <table className="w-full min-w-[800px] md:min-w-[1000px] text-left border-collapse">
               <thead>
                 <tr className="bg-[#F5EFE6] text-[#8B7355] text-xs md:text-sm uppercase tracking-wider">
-                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '50px' }}>Order</th>
-                  <th className="p-2 md:p-4 font-semibold" style={{ width: '70px' }}>Image</th>
-                  <th className="p-2 md:p-4 font-semibold" style={{ width: '160px' }}>Product Details</th>
-                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '80px' }}>Actions</th>
-                  <th className="p-2 md:p-4 font-semibold" style={{ width: '120px' }}>Category</th>
-                  <th className="p-2 md:p-4 font-semibold" style={{ width: '100px' }}>Price</th>
-                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '100px' }}>Stock</th>
+                  <th className="p-4 md:p-5 font-semibold text-center" style={{ width: '60px' }}>Order</th>
+                  <th className="p-4 md:p-5 font-semibold" style={{ width: '80px' }}>Image</th>
+                  <th className="p-4 md:p-5 font-semibold" style={{ width: '220px' }}>Product Details</th>
+                  <th className="p-4 md:p-5 font-semibold text-center" style={{ width: '140px' }}>Actions</th>
+                  <th className="p-4 md:p-5 font-semibold" style={{ width: '140px' }}>Category</th>
+                  <th className="p-4 md:p-5 font-semibold" style={{ width: '100px' }}>Price</th>
+                  <th className="p-4 md:p-5 font-semibold text-center" style={{ width: '100px' }}>Stock</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E6DCCF]">
@@ -233,7 +233,7 @@ export default function AdminProducts() {
                     
                     return (
                     <tr key={product.id} className="hover:bg-[#FDFBF7] transition-colors">
-                      <td className="p-2 md:p-4 text-center">
+                      <td className="p-4 md:p-5 text-center">
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
                           <button 
                             type="button"
@@ -290,7 +290,7 @@ export default function AdminProducts() {
                           </button>
                         </div>
                       </td>
-                      <td className="p-2 md:p-4" style={{ width: '80px' }}>
+                      <td className="p-4 md:p-5">
                         <div className="relative overflow-hidden" style={{ width: '48px', height: '48px', borderRadius: '10px', border: '1px solid #E6DCCF' }}>
                           <ImageWithFallback
                             src={product.images?.[0] || "/placeholder.png"}
@@ -300,11 +300,11 @@ export default function AdminProducts() {
                           />
                         </div>
                       </td>
-                      <td className="p-2 md:p-4">
+                      <td className="p-4 md:p-5">
                         <div className="font-semibold text-xs md:text-sm text-[#3E2C1C]">{product.title}</div>
                         <div className="text-xs text-[#8B7355]">ID: {product.id}</div>
                       </td>
-                      <td className="p-2 md:p-4 text-center">
+                      <td className="p-4 md:p-5 text-center">
                         <Link
                           href={`/admin/products/${product.id}/edit`}
                           className="btn-primary inline-block px-3 py-1.5 md:px-5 md:py-2 rounded-lg font-semibold text-white shadow-sm transition-transform active:scale-95"
@@ -313,13 +313,13 @@ export default function AdminProducts() {
                           Edit
                         </Link>
                       </td>
-                      <td className="p-2 md:p-4 text-xs md:text-sm text-[#5A3E2B]">
+                      <td className="p-4 md:p-5 text-xs md:text-sm text-[#5A3E2B]">
                         {product.category || "-"}
                       </td>
-                      <td className="p-2 md:p-4 text-xs md:text-sm font-medium text-[#3E2C1C]">
+                      <td className="p-4 md:p-5 text-xs md:text-sm font-medium text-[#3E2C1C]">
                         ₹{product.price}
                       </td>
-                      <td className="p-2 md:p-4 text-center">
+                      <td className="p-4 md:p-5 text-center">
                         <span style={{
                           display: 'inline-block',
                           padding: '4px 12px',

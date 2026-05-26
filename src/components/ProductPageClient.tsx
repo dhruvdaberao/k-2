@@ -73,7 +73,8 @@ export default function ProductPageClient({
   };
 
   // Use variant images/price if variant selected, otherwise use product defaults
-  const currentImages = selectedVariant?.images || product.images || ["/placeholder.png"];
+  const variantImages = selectedVariant?.images?.filter(img => typeof img === 'string' && img.trim() !== '');
+  const currentImages = variantImages?.length ? variantImages : (product.images || ["/placeholder.png"]);
   const currentPrice = selectedVariant?.price || product.price;
   const currentStock = selectedVariant?.stock ?? product.stock ?? 0;
   const inStock = typeof currentStock === "number" ? currentStock > 0 : true;
