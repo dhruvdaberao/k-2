@@ -234,11 +234,11 @@ export default function AdminProducts() {
                     return (
                     <tr key={product.id} className="hover:bg-[#FDFBF7] transition-colors">
                       <td className="p-4 md:p-5 text-center">
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', gap: '2px' }}>
                           <button 
                             type="button"
                             onClick={() => moveProduct(product, 'up')}
-                            style={{ background: 'none', border: 'none', cursor: (search || isFirst) ? 'not-allowed' : 'pointer', opacity: (search || isFirst) ? 0.2 : 1 }}
+                            style={{ background: 'none', border: 'none', padding: 0, display: 'flex', justifyContent: 'center', cursor: (search || isFirst) ? 'not-allowed' : 'pointer', opacity: (search || isFirst) ? 0.2 : 1 }}
                             title={search ? "Clear search to reorder" : "Move Up"}
                             disabled={!!search}
                           >
@@ -282,7 +282,7 @@ export default function AdminProducts() {
                           <button 
                             type="button"
                             onClick={() => moveProduct(product, 'down')}
-                            style={{ background: 'none', border: 'none', cursor: (search || isLast) ? 'not-allowed' : 'pointer', opacity: (search || isLast) ? 0.2 : 1 }}
+                            style={{ background: 'none', border: 'none', padding: 0, display: 'flex', justifyContent: 'center', cursor: (search || isLast) ? 'not-allowed' : 'pointer', opacity: (search || isLast) ? 0.2 : 1 }}
                             title={search ? "Clear search to reorder" : "Move Down"}
                             disabled={!!search}
                           >
