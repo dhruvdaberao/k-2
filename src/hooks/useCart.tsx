@@ -27,8 +27,6 @@ type CartContextType = {
   updateQuantity: (productId: string, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;
   loading: boolean;
-  isCartDrawerOpen: boolean;
-  setIsCartDrawerOpen: (isOpen: boolean) => void;
 };
 
 const CartContext = createContext<CartContextType | null>(null);
@@ -39,7 +37,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // Start with empty state to match server render (avoids hydration mismatch)
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const isInitialLoad = useRef(true);
   const hadCacheAtInit = useRef(false);
   const reqIdRef = useRef(0);
@@ -95,7 +92,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       await addToCartLib(product, userRef.current);
     } finally {
       await loadCart();
-      setIsCartDrawerOpen(true);
     }
   }, [loadCart]);
 
@@ -166,9 +162,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     updateQuantity,
     clearCart,
     loading,
-    isCartDrawerOpen,
-    setIsCartDrawerOpen,
-  }), [cartItems, addToCart, loadCart, removeFromCart, updateQuantity, clearCart, loading, isCartDrawerOpen]);
+  }), [cartItems, addToCart, loadCart, removeFromCart, updateQuantity, clearCart, loading]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

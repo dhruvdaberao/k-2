@@ -7,7 +7,6 @@ import GlobalToast from "@/components/ui/GlobalToast";
 import JsonLd from "@/components/JsonLd";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
-import CartDrawer from "@/components/CartDrawer";
 import { GoogleTagManager } from '@next/third-parties/google';
 import { AuthProvider } from "@/hooks/useAuth";
 import { CartProvider } from "@/hooks/useCart";
@@ -96,7 +95,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <WishlistProvider>
               <BootstrapNavbar />
               <GlobalToast />
-              <CartDrawer />
               {children}
               <Footer />
             </WishlistProvider>
