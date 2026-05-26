@@ -161,11 +161,9 @@ export default function AdminCategories() {
 
         {/* Categories Grid */}
         {loading ? (
-          <div className="flex flex-col justify-center items-center py-20">
-            <div className="flex justify-center items-center gap-3 text-[#4A3219] font-bold text-xl">
-              <div className="w-8 h-8 rounded-full border-4 border-[#4A3219] border-t-transparent animate-spin"></div>
-              <span>Loading categories...</span>
-            </div>
+          <div className="flex flex-col justify-center items-center py-20 w-full">
+            <div className="w-10 h-10 rounded-full border-4 border-[#4A3219] border-t-transparent animate-spin mb-4"></div>
+            <div className="text-[#4A3219] font-bold text-xl text-center">Loading categories...</div>
           </div>
         ) : (
           <>
