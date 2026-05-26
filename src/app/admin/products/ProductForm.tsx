@@ -245,6 +245,29 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
       .from('products')
       .upsert(productPayload);
 
+    if (!error && isEdit && initialData) {
+      // Clean up orphaned images from storage
+      const oldImages = initialData.images || [];
+      const oldVariantImages = (initialData.variants || []).flatMap((v: any) => v.images || []);
+      const allOldUrls = [...oldImages, ...oldVariantImages];
+
+      const newImages = images || [];
+      const newVariantImages = (hasVariants ? variants : []).flatMap((v: any) => v.images || []);
+      const allNewUrls = [...newImages, ...newVariantImages];
+
+      const removedUrls = allOldUrls.filter(url => !allNewUrls.includes(url));
+      
+      const pathsToDelete = removedUrls.map(url => {
+        const parts = url.split('product-images/');
+        return parts.length === 2 ? parts[1] : null;
+      }).filter(Boolean) as string[];
+
+      if (pathsToDelete.length > 0) {
+        supabase.storage.from('product-images').remove(pathsToDelete)
+          .catch(err => console.error("Failed to clean up storage:", err));
+      }
+    }
+
     setLoading(false);
 
     if (error) {
@@ -261,6 +284,25 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     setShowDeleteModal(false);
     setLoading(true);
     const { error } = await supabase.from('products').delete().eq('id', formData.id);
+    
+    if (!error && isEdit && initialData) {
+      // Clean delete: wipe all images from storage
+      const allOldUrls = [
+        ...(initialData.images || []), 
+        ...((initialData.variants || []).flatMap((v: any) => v.images || []))
+      ];
+      
+      const pathsToDelete = allOldUrls.map(url => {
+        const parts = url.split('product-images/');
+        return parts.length === 2 ? parts[1] : null;
+      }).filter(Boolean) as string[];
+
+      if (pathsToDelete.length > 0) {
+        supabase.storage.from('product-images').remove(pathsToDelete)
+          .catch(err => console.error("Failed to wipe storage:", err));
+      }
+    }
+
     setLoading(false);
     
     if (error) {
