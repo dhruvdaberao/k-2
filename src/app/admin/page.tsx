@@ -12,6 +12,7 @@ export default function AdminDashboard() {
 
   // 1. Unified Auth Check
   useEffect(() => {
+    let isMounted = true;
     const init = async () => {
       try {
         const { data: authData } = await supabase.auth.getUser();
@@ -22,13 +23,21 @@ export default function AdminDashboard() {
       } catch (err) {
         console.error("Admin Auth Error:", err);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     init();
 
+    // Safety: never show loading for more than 2 seconds if auth API hangs
+    const safety = setTimeout(() => {
+      if (isMounted) setLoading(false);
+    }, 2000);
 
+    return () => {
+      isMounted = false;
+      clearTimeout(safety);
+    };
   }, [router]);
 
 
