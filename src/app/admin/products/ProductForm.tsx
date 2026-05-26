@@ -5,7 +5,6 @@ import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import GlobalLoader from "@/components/ui/GlobalLoader";
-import ImageCropper from "./ImageCropper";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { showToast } from "@/components/Toast";
 import { getLiveCategories, Category } from "@/lib/categoriesApi";
@@ -22,11 +21,6 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [uploadingImages, setUploadingImages] = useState<boolean | number>(false);
   
-  // Cropper State
-  const [cropQueue, setCropQueue] = useState<{file: File, url: string, vIdx?: number}[]>([]);
-  const [currentCropIndex, setCurrentCropIndex] = useState(0);
-  const [isCropping, setIsCropping] = useState(false);
-
   const [formData, setFormData] = useState({
     id: initialData?.id || "",
     slug: initialData?.slug || "",
@@ -77,93 +71,60 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     if (!e.target.files || e.target.files.length === 0) return;
     
     const files = Array.from(e.target.files);
-    e.target.value = ''; // reset input
-    
-    const newQueue = files.map(f => ({
-      file: f,
-      url: URL.createObjectURL(f),
-      vIdx: variantIndex
-    }));
-    
-    setCropQueue(newQueue);
-    setCurrentCropIndex(0);
-    setIsCropping(true);
-  };
-
-  const advanceCropQueue = () => {
-    if (currentCropIndex < cropQueue.length - 1) {
-      setCurrentCropIndex(currentCropIndex + 1);
-    } else {
-      setIsCropping(false);
-      cropQueue.forEach(q => URL.revokeObjectURL(q.url));
-      setCropQueue([]);
-    }
-  };
-
-  const handleCropCancel = () => {
-    advanceCropQueue();
-  };
-
-  const handleCropComplete = async (croppedBlob: Blob) => {
-    const currentItem = cropQueue[currentCropIndex];
-    const file = new File([croppedBlob], currentItem.file.name, { type: 'image/jpeg' });
-    const variantIndex = currentItem.vIdx;
-    
     setUploadingImages(typeof variantIndex === 'number' ? variantIndex : true);
-    setIsCropping(false); // Hide cropper while processing this one, or just advance?
-    // Actually, to keep it simple, we can hide the cropper, process, and then show the next one,
-    // or just let it process. Let's just process it while showing a loader on the cropper, or close it and show the global loader.
-    // Since upload might take a few seconds, closing the cropper and showing the "Uploading images..." UI is better.
-    // If there are more items, we will show the next cropper AFTER this upload finishes, or immediately?
-    // To make it smooth, let's close cropper, upload, then open cropper for next item.
-    
+
     try {
       const uploadedUrls: string[] = [];
       const productId = formData.id || 'temp_' + Date.now();
 
-      let compressedFile = file;
-      try {
-        const options = {
-          maxSizeMB: 0.6,
-          maxWidthOrHeight: 1600,
-          useWebWorker: true,
-          initialQuality: 0.85
-        };
-        compressedFile = await imageCompression(file, options);
-      } catch (error) {
-        console.error("Compression failed", error);
-      }
+      for (const file of files) {
+        let compressedFile = file;
+        try {
+          const options = {
+            maxSizeMB: 0.6,
+            maxWidthOrHeight: 1600,
+            useWebWorker: true,
+            initialQuality: 0.85
+          };
+          compressedFile = await imageCompression(file, options);
+        } catch (error) {
+          console.error("Compression failed, using original file", error);
+        }
 
-      const fileExt = compressedFile.name.split('.').pop() || 'jpg';
-      const fileName = `${productId}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
-      
-      const { error: uploadError } = await supabase.storage
-        .from('product-images')
-        .upload(fileName, compressedFile);
+        const fileExt = compressedFile.name.split('.').pop() || 'jpg';
+        const fileName = `${productId}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('product-images')
+          .upload(fileName, compressedFile);
 
-      if (uploadError) {
-        console.error("Upload error:", uploadError);
-        showToast(`Failed to upload ${file.name}`);
-      } else {
+        if (uploadError) {
+          console.error("Upload error:", uploadError);
+          showToast(`Failed to upload ${file.name}`);
+          continue;
+        }
+
         const { data: { publicUrl } } = supabase.storage
           .from('product-images')
           .getPublicUrl(fileName);
         
-        if (typeof variantIndex === 'number') {
-          setVariants(prev => {
-            const newVariants = [...prev];
-            newVariants[variantIndex] = {
-              ...newVariants[variantIndex],
-              images: [...(newVariants[variantIndex].images || []), publicUrl]
-            };
-            return newVariants;
-          });
+        uploadedUrls.push(publicUrl);
+      }
+
+      if (typeof variantIndex === 'number') {
+        setVariants(prev => {
+          const newVariants = [...prev];
+          newVariants[variantIndex] = {
+            ...newVariants[variantIndex],
+            images: [...(newVariants[variantIndex].images || []), ...uploadedUrls]
+          };
+          return newVariants;
+        });
+      } else {
+        if (hasVariants) {
+          setImages(prev => prev.length === 0 ? [uploadedUrls[0]] : prev);
         } else {
-          if (hasVariants) {
-            setImages(prev => prev.length === 0 ? [publicUrl] : prev);
-          } else {
-            setImages(prev => [...prev, publicUrl]);
-          }
+          setImages(prev => [...prev, ...uploadedUrls]);
         }
       }
     } catch (err) {
@@ -171,14 +132,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
       showToast("An error occurred during upload.");
     } finally {
       setUploadingImages(false);
-      
-      if (currentCropIndex < cropQueue.length - 1) {
-        setCurrentCropIndex(currentCropIndex + 1);
-        setIsCropping(true);
-      } else {
-        cropQueue.forEach(q => URL.revokeObjectURL(q.url));
-        setCropQueue([]);
-      }
+      e.target.value = ''; // reset input
     }
   };
 
@@ -322,13 +276,6 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 md:space-y-8 bg-white p-3 md:p-8 rounded-2xl border border-[#E6DCCF] shadow-sm">
-      {isCropping && cropQueue.length > 0 && (
-        <ImageCropper
-          imageSrc={cropQueue[currentCropIndex].url}
-          onCropComplete={handleCropComplete}
-          onCancel={handleCropCancel}
-        />
-      )}
       {loading && <GlobalLoader message="Saving Product..." />}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {/* Left Column: Details */}
