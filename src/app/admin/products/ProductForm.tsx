@@ -45,6 +45,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   
   const [images, setImages] = useState<string[]>(initialData?.images || []);
   const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
+  const [draggedOverIdx, setDraggedOverIdx] = useState<number | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -131,10 +132,16 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   const handleDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = "move";
+    setDraggedOverIdx(index);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    setDraggedOverIdx(null);
   };
 
   const handleDrop = (e: React.DragEvent, index: number) => {
     e.preventDefault();
+    setDraggedOverIdx(null);
     if (draggedIdx === null) return;
     
     const newImages = [...images];
@@ -401,18 +408,22 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                     draggable
                     onDragStart={(e) => handleDragStart(e, idx)}
                     onDragOver={(e) => handleDragOver(e, idx)}
+                    onDragLeave={handleDragLeave}
                     onDrop={(e) => handleDrop(e, idx)}
                     className="group"
                     style={{
                       position: 'relative',
                       width: '100%',
-                      paddingBottom: '100%', /* 1:1 Aspect Ratio */
+                      aspectRatio: '1 / 1',
                       borderRadius: '12px',
-                      border: '1px solid #E6DCCF',
+                      border: draggedOverIdx === idx ? '3px solid #4A3219' : '1px solid #E6DCCF',
                       overflow: 'hidden',
-                      cursor: 'move',
+                      cursor: 'grab',
                       backgroundColor: 'white',
-                      boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                      boxShadow: draggedOverIdx === idx ? '0 0 0 4px rgba(74, 50, 25, 0.1)' : '0 1px 2px rgba(0,0,0,0.05)',
+                      opacity: draggedIdx === idx ? 0.5 : 1,
+                      transform: draggedOverIdx === idx ? 'scale(1.02)' : 'scale(1)',
+                      transition: 'all 0.2s ease-in-out'
                     }}
                   >
                     <ImageWithFallback src={img} alt={`Preview ${idx}`} fill style={{ objectFit: 'cover' }} />
@@ -424,7 +435,8 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                       width: '24px', height: '24px', 
                       display: 'flex', alignItems: 'center', justifyContent: 'center', 
                       borderRadius: '50%', fontSize: '12px', fontWeight: 'bold', 
-                      border: '2px solid white', zIndex: 10 
+                      border: '2px solid white', zIndex: 10,
+                      opacity: draggedIdx === idx ? 0 : 1
                     }}>
                       {idx + 1}
                     </div>
@@ -433,7 +445,8 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                       <div style={{
                         position: 'absolute', bottom: 0, left: 0, right: 0,
                         backgroundColor: 'rgba(74, 50, 25, 0.9)', color: 'white',
-                        fontSize: '10px', fontWeight: 'bold', textAlign: 'center', padding: '4px 0', zIndex: 10
+                        fontSize: '10px', fontWeight: 'bold', textAlign: 'center', padding: '4px 0', zIndex: 10,
+                        opacity: draggedIdx === idx ? 0 : 1
                       }}>
                         MAIN COVER
                       </div>
