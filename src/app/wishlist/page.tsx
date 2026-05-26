@@ -2,7 +2,7 @@
 "use client";
 
 import { useWishlist } from "@/hooks/useWishlist";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCardV2";
@@ -12,12 +12,30 @@ export default function WishlistPage() {
   const { wishlist: items, loading } = useWishlist();
   const [products, setProducts] = useState<any[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
-  const [fetchError, setFetchError] = useState(false);
+  const fetchControllerRef = useRef(0);
 
   const itemsStr = items.sort().join(',');
 
+  const fetchProducts = useCallback((ids: string[]) => {
+    const reqId = ++fetchControllerRef.current;
+    supabase
+      .from("products")
+      .select("*")
+      .or(`id.in.(${ids.join(',')}),slug.in.(${ids.join(',')})`)
+      .then(({ data }: { data: any }) => {
+        if (reqId !== fetchControllerRef.current) return;
+        if (data) setProducts(data);
+        setIsLoadingProducts(false);
+      })
+      .catch((err: any) => {
+        console.error("Wishlist product fetch error:", err);
+        setIsLoadingProducts(false);
+      });
+  }, []);
+
+  // Fetch products when wishlist IDs change
   useEffect(() => {
-    if (loading) return; // Wait for useWishlist to load
+    if (loading) return;
 
     if (!itemsStr) {
       setProducts([]);
@@ -25,44 +43,19 @@ export default function WishlistPage() {
       return;
     }
 
-    const ids = itemsStr.split(',');
+    fetchProducts(itemsStr.split(','));
+  }, [loading, itemsStr, fetchProducts]);
 
-    let isMounted = true;
-
-    // Safety net: Use setInterval + Date.now() to bypass Chrome background tab throttling
-    const startTime = Date.now();
-    const safety = setInterval(() => {
-      if (Date.now() - startTime > 4000) {
-        if (isMounted) {
-          setIsLoadingProducts(false);
-          setFetchError(true);
-        }
-        clearInterval(safety);
+  // Auto-retry fetch when user returns to the tab (PWA background resume fix)
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === 'visible' && itemsStr) {
+        fetchProducts(itemsStr.split(','));
       }
-    }, 500);
-
-    supabase
-      .from("products")
-      .select("*")
-      .or(`id.in.(${ids.join(',')}),slug.in.(${ids.join(',')})`)
-      .then(({ data }: { data: any }) => {
-        if (!isMounted) return;
-        if (data) setProducts(data);
-        setIsLoadingProducts(false);
-      })
-      .catch((err: any) => {
-        if (!isMounted) return;
-        console.error("Wishlist product fetch error:", err);
-        clearInterval(safety);
-        setIsLoadingProducts(false);
-        setFetchError(true);
-      });
-
-    return () => {
-      isMounted = false;
-      clearInterval(safety);
     };
-  }, [loading, itemsStr]);
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, [itemsStr, fetchProducts]);
 
   if (loading || (items.length > 0 && isLoadingProducts)) {
     return (
@@ -90,24 +83,7 @@ export default function WishlistPage() {
     <div className="container py-8">
       <h1 className="text-3xl font-serif font-bold text-[#2f2a26] mb-8 text-center">Wishlist</h1>
 
-      {fetchError ? (
-        <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4 max-w-md mx-auto">
-          <div className="mb-6 text-red-400">
-            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-              <line x1="12" y1="9" x2="12" y2="13"></line>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-          </div>
-          <h2 className="text-xl font-serif font-bold text-[#2f2a26] mb-2">Connection Issue</h2>
-          <p className="text-stone-500 mb-8 text-sm">
-            We couldn't connect to the server to load your wishlist. Please check your internet and try again.
-          </p>
-          <button onClick={() => window.location.reload()} className="btn-primary px-10 py-3 rounded-full font-bold">
-            Retry
-          </button>
-        </div>
-      ) : wishlistProducts.length === 0 ? (
+      {wishlistProducts.length === 0 ? (
         <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4 max-w-md mx-auto">
           <div className="mb-6 opacity-30">
             <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">

@@ -2,7 +2,7 @@
 "use client";
 
 import { useCart } from "@/hooks/useCart";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import NextLink from "next/link";
 import { showToast } from "@/components/Toast";
 import { supabase } from "@/lib/supabaseClient";
@@ -23,58 +23,44 @@ export default function CartPage() {
   const [showClearAll, setShowClearAll] = useState(false);
   const [showOutOfStockCartModal, setShowOutOfStockCartModal] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
-  const [productsLoading, setProductsLoading] = useState(true);
-  const [fetchError, setFetchError] = useState(false);
+  const fetchControllerRef = useRef(0);
 
   const cartIdsStr = cartItems.map(it => it.id).sort().join(',');
 
-  useEffect(() => {
-    if (loading) return; // Wait for useCart to load initial state
-
-    if (!cartIdsStr) {
-      setProducts([]);
-      setProductsLoading(false);
-      return;
-    }
-
-    const ids = cartIdsStr.split(',');
-    
-    let isMounted = true;
-    
-    // Absolute safety net: Use setInterval + Date.now() to bypass Chrome background tab throttling
-    const startTime = Date.now();
-    const safety = setInterval(() => {
-      if (Date.now() - startTime > 4000) {
-        if (isMounted) {
-          setProductsLoading(false);
-          setFetchError(true);
-        }
-        clearInterval(safety);
-      }
-    }, 500);
-
+  const fetchProducts = useCallback((ids: string[]) => {
+    const reqId = ++fetchControllerRef.current;
     supabase
       .from("products")
       .select("*")
       .or(`id.in.(${ids.join(',')}),slug.in.(${ids.join(',')})`)
       .then(({ data }: { data: any }) => {
-        if (!isMounted) return;
+        if (reqId !== fetchControllerRef.current) return;
         if (data) setProducts(data as Product[]);
-        setProductsLoading(false);
       })
       .catch((err: any) => {
-        if (!isMounted) return;
         console.error("Cart product fetch error:", err);
-        clearInterval(safety);
-        setProductsLoading(false);
-        setFetchError(true);
       });
-      
-    return () => {
-      isMounted = false;
-      clearInterval(safety);
+  }, []);
+
+  // Fetch products for stock info (non-blocking — cart renders from cached items)
+  useEffect(() => {
+    if (loading || !cartIdsStr) {
+      if (!loading && !cartIdsStr) setProducts([]);
+      return;
+    }
+    fetchProducts(cartIdsStr.split(','));
+  }, [loading, cartIdsStr, fetchProducts]);
+
+  // Auto-retry fetch when user returns to the tab (PWA background resume fix)
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === 'visible' && cartIdsStr) {
+        fetchProducts(cartIdsStr.split(','));
+      }
     };
-  }, [loading, cartIdsStr]);
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, [cartIdsStr, fetchProducts]);
 
   // Auto-remove deleted items from cart
   useEffect(() => {
@@ -190,9 +176,9 @@ export default function CartPage() {
     }
   };
 
-  const isCartLoading = loading || (cartItems.length > 0 && productsLoading);
-
-  if (isCartLoading) {
+  // Only block on the useCart hook loading (instant from localStorage cache)
+  // Products fetch is non-blocking — it runs silently for stock validation
+  if (loading) {
     return (
       <main className="cart-page py-4 py-md-5 px-3 bg-[#FAF7F2] min-h-screen">
         <div className="container" style={{ maxWidth: '900px' }}>
@@ -228,11 +214,6 @@ export default function CartPage() {
         {/* Header - centered matching Collections */}
         <header className="mb-8 text-center pt-2">
           <h1 className="text-3xl font-serif font-bold text-[#2f2a26]">Cart</h1>
-          {fetchError && (
-            <p className="text-red-500 text-sm mt-2 font-medium">
-              ⚠️ Working offline: Unable to check live stock & prices.
-            </p>
-          )}
         </header>
 
         {cartItems.length === 0 ? (
