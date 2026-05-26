@@ -23,10 +23,12 @@ export default function CartPage() {
   const [showClearAll, setShowClearAll] = useState(false);
   const [showOutOfStockCartModal, setShowOutOfStockCartModal] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
+  const [productsLoading, setProductsLoading] = useState(true);
 
   useEffect(() => {
     supabase.from("products").select("*").then(({ data }: { data: any }) => {
       if (data) setProducts(data as Product[]);
+      setProductsLoading(false);
     });
   }, []);
 
@@ -144,8 +146,9 @@ export default function CartPage() {
     }
   };
 
-  // Only show full skeleton if we truly have NO data (no cache)
-  if (loading && cartItems.length === 0) {
+  const isCartLoading = loading || (cartItems.length > 0 && productsLoading);
+
+  if (isCartLoading) {
     return (
       <main className="cart-page py-4 py-md-5 px-3 bg-[#FAF7F2] min-h-screen">
         <div className="container" style={{ maxWidth: '900px' }}>
