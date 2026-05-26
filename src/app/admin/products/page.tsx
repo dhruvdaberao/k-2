@@ -166,17 +166,19 @@ export default function AdminProducts() {
               <tbody className="divide-y divide-[#E6DCCF]">
                 {loading ? (
                   <tr>
-                    <td colSpan={7} className="p-8 text-center text-[#8B7355]">
-                      <div className="flex justify-center items-center gap-3">
-                        <div className="w-5 h-5 rounded-full border-2 border-[#8B7355] border-t-transparent animate-spin"></div>
+                    <td colSpan={7} className="p-8">
+                      <div className="flex justify-center items-center gap-3 sticky left-0 w-full text-[#4A3219] font-bold text-lg">
+                        <div className="w-6 h-6 rounded-full border-4 border-[#4A3219] border-t-transparent animate-spin"></div>
                         <span>Loading products...</span>
                       </div>
                     </td>
                   </tr>
                 ) : filteredProducts.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="p-8 text-center text-[#8B7355]">
-                      No products found.
+                    <td colSpan={7} className="p-8">
+                      <div className="flex justify-center items-center sticky left-0 w-full text-[#8B7355] font-semibold">
+                        No products found.
+                      </div>
                     </td>
                   </tr>
                 ) : (
