@@ -54,6 +54,20 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
 
   if (loading) return <GlobalLoader message="Loading product data..." />;
 
+  if (!initialData) {
+    return (
+      <main className="min-h-screen bg-[#FDFBF7] flex items-center justify-center px-4">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-[#4A3219] mb-2">Product Not Found</h1>
+          <p className="text-[#8B7355] mb-6">The product could not be loaded. It may have been deleted or there was a network issue.</p>
+          <button onClick={() => router.push('/admin/products')} className="px-6 py-3 bg-[#4A3219] text-white rounded-xl font-bold">
+            Back to Products
+          </button>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-[#FDFBF7] py-10 md:py-20 px-3 md:px-4">
       <div className="max-w-4xl mx-auto" style={{ paddingTop: '10px' }}>
@@ -61,7 +75,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
           <BackButton />
           <h1 className="text-xl md:text-3xl font-bold text-[#4A3219]" style={{ margin: 0 }}>Edit Product</h1>
         </div>
-        <p className="text-sm md:text-base text-[#8B7355]" style={{ marginBottom: '1.25rem', marginLeft: '44px' }}>Update details for {initialData.title}</p>
+        <p className="text-sm md:text-base text-[#8B7355]" style={{ marginBottom: '1.25rem', marginLeft: '44px' }}>Update details for {initialData?.title || 'this product'}</p>
         
         <ProductForm isEdit={true} initialData={initialData} />
       </div>
