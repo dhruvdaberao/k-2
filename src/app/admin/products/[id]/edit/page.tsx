@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import GlobalLoader from "@/components/ui/GlobalLoader";
 import ProductForm from "../../ProductForm";
 import BackButton from "@/components/BackButton";
+import { showToast } from "@/components/Toast";
 
 export default function EditProductPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -31,7 +32,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
 
         if (error || !data) {
           console.error("Failed to fetch product:", error);
-          alert("Product not found");
+          showToast("Product not found");
           router.push("/admin/products");
           return;
         }

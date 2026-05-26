@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import GlobalLoader from "@/components/ui/GlobalLoader";
 import ConfirmModal from "@/components/ui/ConfirmModal";
+import { showToast } from "@/components/Toast";
 import { getLiveCategories, Category } from "@/lib/categoriesApi";
 import imageCompression from "browser-image-compression";
 
@@ -95,7 +96,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
         if (uploadError) {
           console.error("Upload error:", uploadError);
-          alert(`Failed to upload ${file.name}`);
+          showToast(`Failed to upload ${file.name}`);
           continue;
         }
 
@@ -109,7 +110,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
       setImages(prev => [...prev, ...uploadedUrls]);
     } catch (err) {
       console.error(err);
-      alert("An error occurred during upload.");
+      showToast("An error occurred during upload.");
     } finally {
       setUploadingImages(false);
       e.target.value = ''; // reset input
@@ -147,7 +148,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.id || !formData.title) {
-      alert("ID and Title are required.");
+      showToast("ID and Title are required.");
       return;
     }
 
@@ -166,8 +167,9 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
     if (error) {
       console.error(error);
-      alert("Failed to save product: " + error.message);
+      showToast("Failed to save product: " + error.message);
     } else {
+      showToast(isEdit ? "Product updated successfully ✓" : "Product added successfully ✓");
       router.push("/admin/products");
       router.refresh();
     }
@@ -181,8 +183,9 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     
     if (error) {
       console.error(error);
-      alert("Failed to delete product: " + error.message);
+      showToast("Failed to delete product: " + error.message);
     } else {
+      showToast("Product deleted successfully");
       router.push("/admin/products");
       router.refresh();
     }

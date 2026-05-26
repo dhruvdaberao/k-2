@@ -6,6 +6,7 @@ import { revalidateStorefront } from "@/actions/revalidate";
 import Link from "next/link";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import { useRouter } from "next/navigation";
+import { showToast } from "@/components/Toast";
 
 export default function AdminProducts() {
   const router = useRouter();
@@ -56,7 +57,7 @@ export default function AdminProducts() {
 
   const moveProduct = async (product: any, direction: 'up' | 'down') => {
     if (search) {
-      alert("Please clear the search to reorder products.");
+      showToast("Please clear the search to reorder products.");
       return;
     }
     
@@ -86,7 +87,7 @@ export default function AdminProducts() {
       await revalidateStorefront();
     } catch (e) {
       console.error(e);
-      alert("Error saving new order");
+      showToast("Error saving new order");
     }
   };
 
@@ -125,7 +126,7 @@ export default function AdminProducts() {
       }
     } catch (e) {
       console.error(e);
-      alert("Error saving new order");
+      showToast("Error saving new order");
     }
   };
 
