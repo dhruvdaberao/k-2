@@ -43,7 +43,7 @@ export default function CartPage() {
       .from("products")
       .select("*")
       .or(`id.in.(${ids.join(',')}),slug.in.(${ids.join(',')})`)
-      .then(({ data }) => {
+      .then(({ data }: { data: any }) => {
         if (data) setProducts(data as Product[]);
         setProductsLoading(false);
       });

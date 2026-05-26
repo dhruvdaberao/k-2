@@ -30,7 +30,7 @@ export default function WishlistPage() {
       .from("products")
       .select("*")
       .or(`id.in.(${ids.join(',')}),slug.in.(${ids.join(',')})`)
-      .then(({ data }) => {
+      .then(({ data }: { data: any }) => {
         if (data) setProducts(data);
         setIsLoadingProducts(false);
       });
