@@ -88,17 +88,55 @@ export default function AdminCategories() {
     newCategories[index] = newCategories[swapIndex];
     newCategories[swapIndex] = temp;
     
-    setCategories(newCategories);
-    
-    const updates = newCategories.map((c, i) => ({
-      id: c.id,
+    const updatedCategories = newCategories.map((c, i) => ({
+      ...c,
       priority: newCategories.length - i
     }));
     
+    setCategories(updatedCategories);
+    
     try {
-      await Promise.all(updates.map(u => 
+      await Promise.all(updatedCategories.map(u => 
         supabase.from('categories').update({ priority: u.priority }).eq('id', u.id)
       ));
+    } catch (e) {
+      console.error(e);
+      showToast("Error saving new order");
+    }
+  };
+
+  const moveToPosition = async (category: Category, newPosition: number) => {
+    const currentIdx = categories.findIndex(c => c.id === category.id);
+    if (currentIdx === -1) return;
+    
+    let targetIdx = newPosition - 1;
+    if (targetIdx < 0) targetIdx = 0;
+    if (targetIdx >= categories.length) targetIdx = categories.length - 1;
+    
+    if (targetIdx === currentIdx) return;
+    
+    const newCategories = [...categories];
+    const [item] = newCategories.splice(currentIdx, 1);
+    newCategories.splice(targetIdx, 0, item);
+    
+    const updatedCategories = newCategories.map((c, i) => ({
+      ...c,
+      priority: newCategories.length - i
+    }));
+    
+    setCategories(updatedCategories);
+    
+    const changedUpdates = updatedCategories.filter(u => {
+       const oldCat = categories.find(c => c.id === u.id);
+       return oldCat && oldCat.priority !== u.priority;
+    });
+    
+    try {
+      if (changedUpdates.length > 0) {
+        await Promise.all(changedUpdates.map(u => 
+          supabase.from('categories').update({ priority: u.priority }).eq('id', u.id)
+        ));
+      }
     } catch (e) {
       console.error(e);
       showToast("Error saving new order");
@@ -195,7 +233,7 @@ export default function AdminCategories() {
                     return (
                     <tr key={category.id} className="hover:bg-[#FDFBF7] transition-colors">
                       <td className="p-2 md:p-4 text-center">
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
                           <button 
                             type="button"
                             onClick={() => moveCategory(category, 'up')}
@@ -204,6 +242,30 @@ export default function AdminCategories() {
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
                           </button>
+                          
+                          <input 
+                            type="number"
+                            min="1"
+                            max={categories.length}
+                            onBlur={(e) => {
+                              const val = parseInt(e.target.value);
+                              if (!isNaN(val) && val !== idx + 1) {
+                                moveToPosition(category, val);
+                              } else {
+                                e.target.value = (idx + 1).toString();
+                              }
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                e.currentTarget.blur();
+                              }
+                            }}
+                            className="w-10 text-center text-sm font-semibold text-[#4A3219] bg-transparent border-b border-transparent hover:border-[#E6DCCF] focus:border-[#8B7355] focus:outline-none focus:bg-white rounded px-0 py-0 m-0"
+                            style={{ MozAppearance: 'textfield', WebkitAppearance: 'none' }}
+                            key={`input-${category.id}-${idx}`}
+                            defaultValue={idx + 1}
+                          />
+
                           <button 
                             type="button"
                             onClick={() => moveCategory(category, 'down')}

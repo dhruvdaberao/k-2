@@ -71,17 +71,55 @@ export default function AdminProducts() {
     newProducts[index] = newProducts[swapIndex];
     newProducts[swapIndex] = temp;
     
-    setProducts(newProducts);
-    
-    const updates = newProducts.map((p, i) => ({
-      id: p.id,
+    const updatedProducts = newProducts.map((p, i) => ({
+      ...p,
       priority: newProducts.length - i
     }));
     
+    setProducts(updatedProducts);
+    
     try {
-      await Promise.all(updates.map(u => 
+      await Promise.all(updatedProducts.map(u => 
         supabase.from('products').update({ priority: u.priority }).eq('id', u.id)
       ));
+    } catch (e) {
+      console.error(e);
+      alert("Error saving new order");
+    }
+  };
+
+  const moveToPosition = async (product: any, newPosition: number) => {
+    const currentIdx = products.findIndex(p => p.id === product.id);
+    if (currentIdx === -1) return;
+    
+    let targetIdx = newPosition - 1;
+    if (targetIdx < 0) targetIdx = 0;
+    if (targetIdx >= products.length) targetIdx = products.length - 1;
+    
+    if (targetIdx === currentIdx) return;
+    
+    const newProducts = [...products];
+    const [item] = newProducts.splice(currentIdx, 1);
+    newProducts.splice(targetIdx, 0, item);
+    
+    const updatedProducts = newProducts.map((p, i) => ({
+      ...p,
+      priority: newProducts.length - i
+    }));
+    
+    setProducts(updatedProducts);
+    
+    const changedUpdates = updatedProducts.filter(u => {
+       const oldProd = products.find(p => p.id === u.id);
+       return oldProd && oldProd.priority !== u.priority;
+    });
+    
+    try {
+      if (changedUpdates.length > 0) {
+        await Promise.all(changedUpdates.map(u => 
+          supabase.from('products').update({ priority: u.priority }).eq('id', u.id)
+        ));
+      }
     } catch (e) {
       console.error(e);
       alert("Error saving new order");
@@ -192,20 +230,48 @@ export default function AdminProducts() {
                     return (
                     <tr key={product.id} className="hover:bg-[#FDFBF7] transition-colors">
                       <td className="p-2 md:p-4 text-center">
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
                           <button 
                             type="button"
                             onClick={() => moveProduct(product, 'up')}
                             style={{ background: 'none', border: 'none', cursor: (search || isFirst) ? 'not-allowed' : 'pointer', opacity: (search || isFirst) ? 0.2 : 1 }}
                             title={search ? "Clear search to reorder" : "Move Up"}
+                            disabled={!!search}
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
                           </button>
+                          
+                          <input 
+                            type="number"
+                            min="1"
+                            max={products.length}
+                            disabled={!!search}
+                            title={search ? "Clear search to reorder" : "Set exact position"}
+                            onBlur={(e) => {
+                              const val = parseInt(e.target.value);
+                              if (!isNaN(val) && val !== actualIndex + 1) {
+                                moveToPosition(product, val);
+                              } else {
+                                e.target.value = (actualIndex + 1).toString();
+                              }
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                e.currentTarget.blur();
+                              }
+                            }}
+                            className="w-10 text-center text-sm font-semibold text-[#4A3219] bg-transparent border-b border-transparent hover:border-[#E6DCCF] focus:border-[#8B7355] focus:outline-none focus:bg-white rounded px-0 py-0 m-0 disabled:opacity-50"
+                            style={{ MozAppearance: 'textfield', WebkitAppearance: 'none' }}
+                            key={`input-${product.id}-${actualIndex}`}
+                            defaultValue={actualIndex + 1}
+                          />
+
                           <button 
                             type="button"
                             onClick={() => moveProduct(product, 'down')}
                             style={{ background: 'none', border: 'none', cursor: (search || isLast) ? 'not-allowed' : 'pointer', opacity: (search || isLast) ? 0.2 : 1 }}
                             title={search ? "Clear search to reorder" : "Move Down"}
+                            disabled={!!search}
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                           </button>
