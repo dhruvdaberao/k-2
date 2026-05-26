@@ -59,6 +59,14 @@ function CheckoutContent() {
   const [paymentMethod, setPaymentMethod] = useState<CheckoutPaymentMethod>("online");
   const [products, setProducts] = useState<Product[]>([]);
 
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [isOrderPlaced, setIsOrderPlaced] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+  const [isDirectCheckout, setIsDirectCheckout] = useState(false);
+  const [isGuestLocked, setIsGuestLocked] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+
   useEffect(() => {
     supabase.from("products").select("*").then(({ data }: { data: any }) => {
       if (data) setProducts(data as Product[]);
@@ -82,14 +90,6 @@ function CheckoutContent() {
       });
     }
   }, [products, cartItems, removeFromCart, isDirectCheckout]);
-  
-  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
-  const [isOrderPlaced, setIsOrderPlaced] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
-  const [isDirectCheckout, setIsDirectCheckout] = useState(false);
-  const [isGuestLocked, setIsGuestLocked] = useState(false);
-  const [checkoutError, setCheckoutError] = useState("");
-  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
