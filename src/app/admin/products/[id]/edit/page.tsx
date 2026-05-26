@@ -60,8 +60,8 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
         <div className="text-center">
           <h1 className="text-2xl font-bold text-[#4A3219] mb-2">Product Not Found</h1>
           <p className="text-[#8B7355] mb-6">The product could not be loaded. It may have been deleted or there was a network issue.</p>
-          <button onClick={() => router.push('/admin/products')} className="px-6 py-3 rounded-xl font-bold" style={{ backgroundColor: '#4A3219', color: '#ffffff' }}>
-            Back to Products
+          <button onClick={() => window.location.reload()} className="px-6 py-3 rounded-xl font-bold" style={{ backgroundColor: '#4A3219', color: '#ffffff' }}>
+            Retry
           </button>
         </div>
       </main>
