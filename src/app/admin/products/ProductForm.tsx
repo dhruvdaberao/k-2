@@ -439,27 +439,30 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                 {hasVariants ? "Cover Image" : "Drag to reorder (Primary image first)"}
               </p>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '12px' }}>
-                {images.map((img, idx) => (
+                {images.map((img, idx) => {
+                  const isFaded = hasVariants && idx > 0;
+                  return (
                   <div
                     key={img}
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, idx)}
-                    onDragOver={(e) => handleDragOver(e, idx)}
-                    onDragLeave={handleDragLeave}
-                    onDrop={(e) => handleDrop(e, idx)}
+                    draggable={!isFaded}
+                    onDragStart={(e) => !isFaded && handleDragStart(e, idx)}
+                    onDragOver={(e) => !isFaded && handleDragOver(e, idx)}
+                    onDragLeave={!isFaded ? handleDragLeave : undefined}
+                    onDrop={(e) => !isFaded && handleDrop(e, idx)}
                     className="group"
                     style={{
                       position: 'relative',
                       width: '100%',
                       aspectRatio: '1 / 1',
                       borderRadius: '12px',
-                      border: draggedOverIdx === idx ? '3px solid #4A3219' : '1px solid #E6DCCF',
+                      border: draggedOverIdx === idx && !isFaded ? '3px solid #4A3219' : '1px solid #E6DCCF',
                       overflow: 'hidden',
-                      cursor: 'grab',
+                      cursor: isFaded ? 'default' : 'grab',
                       backgroundColor: 'white',
-                      boxShadow: draggedOverIdx === idx ? '0 0 0 4px rgba(74, 50, 25, 0.1)' : '0 1px 2px rgba(0,0,0,0.05)',
-                      opacity: draggedIdx === idx ? 0.5 : 1,
-                      transform: draggedOverIdx === idx ? 'scale(1.02)' : 'scale(1)',
+                      boxShadow: draggedOverIdx === idx && !isFaded ? '0 0 0 4px rgba(74, 50, 25, 0.1)' : '0 1px 2px rgba(0,0,0,0.05)',
+                      opacity: isFaded ? 0.3 : (draggedIdx === idx ? 0.5 : 1),
+                      filter: isFaded ? 'grayscale(80%)' : 'none',
+                      transform: draggedOverIdx === idx && !isFaded ? 'scale(1.02)' : 'scale(1)',
                       transition: 'all 0.2s ease-in-out'
                     }}
                   >
@@ -486,6 +489,16 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                         opacity: draggedIdx === idx ? 0 : 1
                       }}>
                         MAIN COVER
+                      </div>
+                    )}
+
+                    {isFaded && (
+                      <div style={{
+                        position: 'absolute', bottom: 0, left: 0, right: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.6)', color: 'white',
+                        fontSize: '10px', fontWeight: 'bold', textAlign: 'center', padding: '4px 0', zIndex: 10
+                      }}>
+                        NOT IN USE
                       </div>
                     )}
                     
