@@ -169,18 +169,15 @@ export default function AdminCategories() {
           </div>
         ) : (
           <>
-            <div className="md:hidden text-sm text-[#8B7355] mb-2 flex items-center justify-end gap-1">
-              Swipe to see more <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
-            </div>
             <div className="bg-white rounded-2xl border border-[#E6DCCF] shadow-sm" style={{ overflow: 'hidden' }}>
               <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-                <table className="w-full text-left border-collapse min-w-[380px] md:min-w-[500px]">
+                <table className="w-full text-left border-collapse min-w-full">
               <thead>
                 <tr className="bg-[#F5EFE6] text-[#8B7355] text-xs md:text-sm uppercase tracking-wider">
-                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '60px' }}>Order</th>
-                  <th className="p-2 md:p-4 font-semibold" style={{ width: '45%' }}>Category Name</th>
-                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '80px' }}>Actions</th>
-                  <th className="p-2 md:p-4 font-semibold">Slug (URL)</th>
+                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '15%' }}>Order</th>
+                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '35%' }}>Category Name</th>
+                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '20%' }}>Actions</th>
+                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '30%' }}>Slug (URL)</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E6DCCF]">
@@ -219,7 +216,7 @@ export default function AdminCategories() {
                           </button>
                         </div>
                       </td>
-                      <td className="p-2 md:p-4 text-xs md:text-sm font-semibold text-[#3E2C1C]">
+                      <td className="p-2 md:p-4 text-xs md:text-sm font-semibold text-[#3E2C1C] text-center">
                         {category.name}
                       </td>
                       <td className="p-2 md:p-4 text-center">
@@ -243,7 +240,7 @@ export default function AdminCategories() {
                           </svg>
                         </button>
                       </td>
-                      <td className="p-2 md:p-4 text-xs md:text-sm text-[#8B7355]">
+                      <td className="p-2 md:p-4 text-xs md:text-sm text-[#8B7355] text-center">
                         {category.slug}
                       </td>
                     </tr>
