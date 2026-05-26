@@ -30,7 +30,12 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     category: initialData?.category || "",
     stock: initialData?.stock || 0,
     variants: initialData?.variants || null,
+    badges: initialData?.badges || [],
+    badge: initialData?.badge || "",
+    tags: initialData?.tags || ["handmade"],
   });
+  
+  const [tagInput, setTagInput] = useState("");
   
   const [categories, setCategories] = useState<Category[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -49,6 +54,21 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   const [images, setImages] = useState<string[]>(initialData?.images || []);
   const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
   const [draggedOverIdx, setDraggedOverIdx] = useState<number | null>(null);
+
+  const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const newTag = tagInput.trim().toLowerCase();
+      if (newTag && !formData.tags.includes(newTag)) {
+        setFormData(prev => ({ ...prev, tags: [...prev.tags, newTag] }));
+      }
+      setTagInput("");
+    }
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setFormData(prev => ({ ...prev, tags: prev.tags.filter(t => t !== tagToRemove) }));
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -435,6 +455,69 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                   {formData.stock > 0 ? 'In Stock' : 'Out of Stock'}
                 </div>
               </label>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div>
+              <label className="block text-sm font-semibold text-[#8B7355] mb-2">Bestseller Badge</label>
+              <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '12px' }}>
+                <div style={{ position: 'relative', width: '56px', height: '32px' }}>
+                  <input
+                    type="checkbox"
+                    style={{ opacity: 0, width: 0, height: 0, position: 'absolute' }}
+                    checked={formData.badge === "Bestseller" || formData.badges?.includes("Bestseller")}
+                    onChange={(e) => {
+                      const isBestseller = e.target.checked;
+                      setFormData(prev => {
+                        const newBadges = prev.badges.filter((b: string) => b !== "Bestseller");
+                        if (isBestseller) newBadges.push("Bestseller");
+                        return { 
+                          ...prev, 
+                          badge: isBestseller ? "Bestseller" : "", 
+                          badges: newBadges 
+                        };
+                      });
+                    }}
+                  />
+                  <div style={{ 
+                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, 
+                    borderRadius: '34px', transition: 'background-color 0.3s',
+                    backgroundColor: (formData.badge === "Bestseller" || formData.badges?.includes("Bestseller")) ? '#4A3219' : '#E6DCCF'
+                  }}></div>
+                  <div style={{
+                    position: 'absolute', top: '4px', left: '4px', 
+                    width: '24px', height: '24px', borderRadius: '50%', 
+                    backgroundColor: 'white', transition: 'transform 0.3s',
+                    transform: (formData.badge === "Bestseller" || formData.badges?.includes("Bestseller")) ? 'translateX(24px)' : 'translateX(0)'
+                  }}></div>
+                </div>
+                <div style={{ fontWeight: '600', color: (formData.badge === "Bestseller" || formData.badges?.includes("Bestseller")) ? '#4A3219' : '#8B7355' }}>
+                  {(formData.badge === "Bestseller" || formData.badges?.includes("Bestseller")) ? 'Bestseller' : 'Standard'}
+                </div>
+              </label>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-semibold text-[#8B7355] mb-1">Tags (Press Enter)</label>
+              <input 
+                type="text" 
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={handleAddTag}
+                className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355] mb-2" 
+                placeholder="e.g. handmade, valentine" 
+              />
+              <div className="flex flex-wrap gap-2">
+                {formData.tags?.map(tag => (
+                  <span key={tag} className="inline-flex items-center gap-1 px-3 py-1 bg-[#F5EFE6] text-[#4A3219] text-sm font-medium rounded-full border border-[#E6DCCF]">
+                    #{tag}
+                    <button type="button" onClick={() => removeTag(tag)} className="ml-1 text-[#8B7355] hover:text-[#4A3219] focus:outline-none">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         </div>
