@@ -68,12 +68,12 @@ function ProfileContent() {
     }
   }, [user, loading, router]);
 
-  // If user is loaded but profile is null, auto-fetch it
+  // Always ensure profile is up to date when entering the profile page
   useEffect(() => {
-    if (user && !profile && !loading && refreshProfile) {
+    if (user && !loading && refreshProfile) {
       refreshProfile();
     }
-  }, [user, profile, loading]);
+  }, [user, loading]); // run when user/loading state resolves
 
   // Sync details when 'profile' from useAuth changes
   useEffect(() => {
