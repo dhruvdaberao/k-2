@@ -7,6 +7,7 @@ import ImageWithFallback from "@/components/ImageWithFallback";
 import GlobalLoader from "@/components/ui/GlobalLoader";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { getLiveCategories, Category } from "@/lib/categoriesApi";
+import imageCompression from "browser-image-compression";
 
 interface ProductFormProps {
   initialData?: any;
@@ -71,12 +72,26 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
       const productId = formData.id || 'temp_' + Date.now();
 
       for (const file of files) {
-        const fileExt = file.name.split('.').pop();
+        let compressedFile = file;
+        try {
+          const options = {
+            maxSizeMB: 0.2, // Target ~200KB
+            maxWidthOrHeight: 1080, // Restrict dimensions for web
+            useWebWorker: true,
+            initialQuality: 0.8
+          };
+          compressedFile = await imageCompression(file, options);
+          console.log(`Compressed from ${(file.size/1024).toFixed(1)}KB to ${(compressedFile.size/1024).toFixed(1)}KB`);
+        } catch (error) {
+          console.error("Compression failed, using original file", error);
+        }
+
+        const fileExt = compressedFile.name.split('.').pop() || 'jpg';
         const fileName = `${productId}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
         
         const { error: uploadError } = await supabase.storage
           .from('product-images')
-          .upload(fileName, file);
+          .upload(fileName, compressedFile);
 
         if (uploadError) {
           console.error("Upload error:", uploadError);
