@@ -7,6 +7,7 @@ import { useEffect, useState, MouseEvent } from "react";
 import type { Product } from "@/types";
 import { useCart } from "@/hooks/useCart";
 import { useWishlist } from "@/hooks/useWishlist";
+import AnimatedHeart from "@/components/AnimatedHeart";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/analytics";
@@ -114,30 +115,12 @@ export default function ProductCard({ p }: { p: Product }) {
           </div>
         </Link>
 
-        {/* Wishlist Button - Direct SVG for visibility */}
-        <div 
-          className="absolute top-3 right-3 cursor-pointer z-10 p-1"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setIsPopping(true);
-            setTimeout(() => setIsPopping(false), 400);
-            toggleWishlist(p);
-          }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            fill={isHearted ? "#EC4899" : "none"}
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="#EC4899"
-            className={`w-6 h-6 transition-all duration-200 hover:scale-110 active:scale-95 ${isPopping ? 'animate-heart-pop' : ''}`}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.015-4.5-4.5-4.5-1.74 0-3.255 1.007-4.5 2.09-1.245-1.083-2.76-2.09-4.5-2.09C5.015 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-          </svg>
-        </div>
+        {/* Wishlist Button - Animated */}
+        <AnimatedHeart
+          isHearted={isHearted}
+          onClick={() => toggleWishlist(p)}
+          className="absolute top-1 right-1"
+        />
 
         {/* Badges - Top Left */}
         <div className="absolute top-3 left-3 flex flex-wrap gap-2 z-10 pointer-events-none max-w-[80%]">
