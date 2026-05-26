@@ -16,7 +16,8 @@
   z-index: 1400;
   height: calc(var(--nav-h) + env(safe-area-inset-top));
   background: var(--bg-nav);
-  border-bottom: none;
+  border-bottom: none !important;
+  box-shadow: none !important;
   backdrop-filter: blur(8px);
   padding: env(safe-area-inset-top) 16px 0;
 }
@@ -27,6 +28,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 16px;
+  border-bottom: none !important;
+  box-shadow: none !important;
 }
 
 .header {
@@ -62,6 +65,10 @@
   align-items: center;
   justify-content: center;
   mix-blend-mode: multiply; /* Fixes the white box issue by blending with the background */
+  border: none !important;
+  outline: none !important;
+  text-indent: -9999px; /* Hide alt text when broken */
+  color: transparent;
 }
 
 .logo {
