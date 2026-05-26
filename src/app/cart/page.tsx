@@ -41,13 +41,17 @@ export default function CartPage() {
     
     let isMounted = true;
     
-    // Absolute safety net: timeout after 8 seconds if connection is frozen
-    const safety = setTimeout(() => {
-      if (isMounted) {
-        setProductsLoading(false);
-        setFetchError(true);
+    // Absolute safety net: Use setInterval + Date.now() to bypass Chrome background tab throttling
+    const startTime = Date.now();
+    const safety = setInterval(() => {
+      if (Date.now() - startTime > 4000) {
+        if (isMounted) {
+          setProductsLoading(false);
+          setFetchError(true);
+        }
+        clearInterval(safety);
       }
-    }, 8000);
+    }, 500);
 
     supabase
       .from("products")
@@ -55,21 +59,20 @@ export default function CartPage() {
       .or(`id.in.(${ids.join(',')}),slug.in.(${ids.join(',')})`)
       .then(({ data }: { data: any }) => {
         if (!isMounted) return;
-        clearTimeout(safety);
         if (data) setProducts(data as Product[]);
         setProductsLoading(false);
       })
       .catch((err: any) => {
         if (!isMounted) return;
         console.error("Cart product fetch error:", err);
-        clearTimeout(safety);
+        clearInterval(safety);
         setProductsLoading(false);
         setFetchError(true);
       });
       
     return () => {
       isMounted = false;
-      clearTimeout(safety);
+      clearInterval(safety);
     };
   }, [loading, cartIdsStr]);
 
@@ -194,7 +197,7 @@ export default function CartPage() {
       <main className="cart-page py-4 py-md-5 px-3 bg-[#FAF7F2] min-h-screen">
         <div className="container" style={{ maxWidth: '900px' }}>
           <header className="mb-8 text-center pt-2">
-            <div className="h-8 w-32 bg-stone-200 animate-pulse rounded-md mx-auto mb-1"></div>
+            <h1 className="text-3xl font-serif font-bold text-[#2f2a26]">Cart</h1>
           </header>
           <div className="row g-4 items-start">
             <div className="col-12 col-lg-7">

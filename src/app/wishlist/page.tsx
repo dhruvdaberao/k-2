@@ -29,13 +29,17 @@ export default function WishlistPage() {
 
     let isMounted = true;
 
-    // Safety net: timeout after 8 seconds if connection is frozen
-    const safety = setTimeout(() => {
-      if (isMounted) {
-        setIsLoadingProducts(false);
-        setFetchError(true);
+    // Safety net: Use setInterval + Date.now() to bypass Chrome background tab throttling
+    const startTime = Date.now();
+    const safety = setInterval(() => {
+      if (Date.now() - startTime > 4000) {
+        if (isMounted) {
+          setIsLoadingProducts(false);
+          setFetchError(true);
+        }
+        clearInterval(safety);
       }
-    }, 8000);
+    }, 500);
 
     supabase
       .from("products")
@@ -43,21 +47,20 @@ export default function WishlistPage() {
       .or(`id.in.(${ids.join(',')}),slug.in.(${ids.join(',')})`)
       .then(({ data }: { data: any }) => {
         if (!isMounted) return;
-        clearTimeout(safety);
         if (data) setProducts(data);
         setIsLoadingProducts(false);
       })
       .catch((err: any) => {
         if (!isMounted) return;
         console.error("Wishlist product fetch error:", err);
-        clearTimeout(safety);
+        clearInterval(safety);
         setIsLoadingProducts(false);
         setFetchError(true);
       });
 
     return () => {
       isMounted = false;
-      clearTimeout(safety);
+      clearInterval(safety);
     };
   }, [loading, itemsStr]);
 
