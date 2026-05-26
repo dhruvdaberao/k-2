@@ -11,8 +11,7 @@ type P = any;
 import { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 
-// Required for output:'export' on a dynamic route
-export const dynamicParams = false;
+export const revalidate = 0;
 
 export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
   const liveProducts = await getLiveProducts();
