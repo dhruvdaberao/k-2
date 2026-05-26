@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
-import GlobalLoader from "@/components/ui/GlobalLoader";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -34,9 +33,6 @@ export default function AdminDashboard() {
     return () => clearTimeout(timeout);
   }, [router]);
 
-  if (loading) {
-    return <GlobalLoader message="Loading dashboard..." />;
-  }
 
   return (
     <main className="min-h-screen bg-[#FDFBF7] py-20 px-4">
@@ -50,7 +46,12 @@ export default function AdminDashboard() {
           </p>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="w-8 h-8 rounded-full border-4 border-[#8B7355] border-t-transparent animate-spin"></div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
           <div className="bg-[#F5EFE6] rounded-2xl border border-[#E6DCCF] shadow-sm hover:shadow-md transition-shadow flex flex-col" style={{ padding: '32px' }}>
             <div className="mb-6 opacity-80">
@@ -100,6 +101,7 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
+        )}
       </div>
     </main>
   );

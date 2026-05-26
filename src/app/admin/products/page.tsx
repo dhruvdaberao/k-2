@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
 import ImageWithFallback from "@/components/ImageWithFallback";
-import GlobalLoader from "@/components/ui/GlobalLoader";
 import { useRouter } from "next/navigation";
 
 export default function AdminProducts() {
@@ -87,7 +86,6 @@ export default function AdminProducts() {
     }
   };
 
-  if (loading) return <GlobalLoader message="Loading products..." />;
 
   return (
     <main className="min-h-screen bg-[#FDFBF7] py-6 md:py-20 px-3 md:px-4">
@@ -168,7 +166,16 @@ export default function AdminProducts() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E6DCCF]">
-                {filteredProducts.length === 0 ? (
+                {loading ? (
+                  <tr>
+                    <td colSpan={7} className="p-8 text-center text-[#8B7355]">
+                      <div className="flex justify-center items-center gap-3">
+                        <div className="w-5 h-5 rounded-full border-2 border-[#8B7355] border-t-transparent animate-spin"></div>
+                        <span>Loading products...</span>
+                      </div>
+                    </td>
+                  </tr>
+                ) : filteredProducts.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="p-8 text-center text-[#8B7355]">
                       No products found.

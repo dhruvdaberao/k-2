@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
-import GlobalLoader from "@/components/ui/GlobalLoader";
 import { useRouter } from "next/navigation";
 import { getLiveCategories, addCategory, deleteCategory, Category } from "@/lib/categoriesApi";
 import { showToast } from "@/components/Toast";
@@ -104,7 +103,6 @@ export default function AdminCategories() {
     }
   };
 
-  if (loading) return <GlobalLoader message="Loading categories..." />;
 
   return (
     <main className="min-h-screen bg-[#FDFBF7] py-10 md:py-20 px-3 md:px-4">
@@ -172,7 +170,16 @@ export default function AdminCategories() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E6DCCF]">
-                {categories.length === 0 ? (
+                {loading ? (
+                  <tr>
+                    <td colSpan={4} className="p-8 text-center text-[#8B7355]">
+                      <div className="flex justify-center items-center gap-3">
+                        <div className="w-5 h-5 rounded-full border-2 border-[#8B7355] border-t-transparent animate-spin"></div>
+                        <span>Loading categories...</span>
+                      </div>
+                    </td>
+                  </tr>
+                ) : categories.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="p-8 text-center text-[#8B7355]">
                       No categories found. Add one above!
