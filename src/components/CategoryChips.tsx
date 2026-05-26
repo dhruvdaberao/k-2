@@ -4,16 +4,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getLiveCategories, Category } from "@/lib/categoriesApi";
 
-export default function CategoryChips({ serverCategory }: { serverCategory?: string }) {
+export default function CategoryChips({ serverCategory, liveCategories = [] }: { serverCategory?: string, liveCategories?: Category[] }) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const activeCategory = serverCategory || searchParams.get("category");
 
-    const [categories, setCategories] = useState<Category[]>([]);
-
-    useEffect(() => {
-        getLiveCategories().then(setCategories);
-    }, []);
+    const categories = liveCategories || [];
 
     const handleCategoryClick = (category: Category | null) => {
         if (category) {

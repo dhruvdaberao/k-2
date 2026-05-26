@@ -6,7 +6,11 @@ import { getLiveProducts } from "@/lib/productsApi";
 export const revalidate = 60;
 
 export default async function CollectionsPage() {
-  const liveProducts = await getLiveProducts();
+  const [liveProducts, liveCategories] = await Promise.all([
+    getLiveProducts(),
+    import("@/lib/categoriesApi").then(m => m.getLiveCategories())
+  ]);
+  
   return (
     <div className="container collections-page">
       <Suspense fallback={
@@ -17,7 +21,7 @@ export default async function CollectionsPage() {
           </div>
         </div>
       }>
-        <CollectionsContent liveProducts={liveProducts as any[]} />
+        <CollectionsContent liveProducts={liveProducts as any[]} liveCategories={liveCategories as any[]} />
       </Suspense>
     </div>
   );

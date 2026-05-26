@@ -40,7 +40,7 @@ export default async function CategoryCollectionsPage({ params }: { params: { sl
                     </div>
                 </div>
             }>
-                <CollectionsContent serverCategory={categoryName} liveProducts={liveProducts as any[]} />
+                <CollectionsContent serverCategory={categoryName} liveProducts={liveProducts as any[]} liveCategories={categories as any[]} />
             </Suspense>
         </div>
     );
