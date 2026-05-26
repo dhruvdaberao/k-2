@@ -566,25 +566,101 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
                   <div>
                     <label className="block text-xs font-semibold text-[#8B7355] mb-2">Variant Images</label>
-                    <div className="flex gap-4 overflow-x-auto pb-2 items-center w-full hide-scrollbar">
-                       <label htmlFor={`variant-upload-${vIdx}`} className="flex-shrink-0 w-24 h-24 border-2 border-dashed border-[#d2c4b3] bg-[#F5EFE6] rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-[#FDFBF7] transition-colors group">
-                         <input type="file" id={`variant-upload-${vIdx}`} multiple accept="image/*" onChange={(e) => handleImageUpload(e, vIdx)} style={{ display: 'none' }} />
-                         <div className="bg-[#4A3219] rounded-full p-2 group-hover:scale-110 transition-transform">
-                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                         </div>
-                       </label>
-                       {variant.images?.map((img: string, iIdx: number) => (
-                          <div key={iIdx} className="flex-shrink-0 w-24 h-24 relative border border-[#E6DCCF] rounded-xl overflow-hidden group shadow-sm">
-                            <ImageWithFallback src={img} alt="Variant img" fill style={{ objectFit: 'cover' }} />
-                            <button type="button" onClick={() => removeVariantImage(vIdx, iIdx)} className="absolute top-1 right-1 bg-white/90 hover:bg-white rounded-full text-red-500 w-6 h-6 flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    
+                    <div 
+                      style={{ 
+                        backgroundColor: '#F5EFE6', 
+                        padding: '20px', 
+                        borderRadius: '12px', 
+                        border: '2px dashed #d2c4b3', 
+                        textAlign: 'center', 
+                        transition: 'all 0.3s ease',
+                        cursor: 'pointer',
+                        marginBottom: '16px'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#FDFBF7';
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.05)';
+                        e.currentTarget.style.borderColor = '#8B7355';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#F5EFE6';
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = 'none';
+                        e.currentTarget.style.borderColor = '#d2c4b3';
+                      }}
+                    >
+                      <input type="file" id={`variant-upload-${vIdx}`} multiple accept="image/*" onChange={(e) => handleImageUpload(e, vIdx)} style={{ display: 'none' }} />
+                      <label htmlFor={`variant-upload-${vIdx}`} style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', width: '100%', height: '100%' }}>
+                        <div style={{ backgroundColor: '#4A3219', padding: '16px', borderRadius: '50%', boxShadow: '0 4px 6px -1px rgba(74, 50, 25, 0.3)', transition: 'transform 0.2s ease' }}
+                             onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                             onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                          </svg>
+                        </div>
+                        <span style={{ fontWeight: 'bold', color: '#4A3219', fontSize: '1.125rem', marginTop: '4px' }}>Add New Images</span>
+                        <span style={{ fontSize: '0.875rem', color: '#8B7355' }}>PNG, JPG up to 5MB</span>
+                      </label>
+                    </div>
+
+                    {variant.images && variant.images.length > 0 && (
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '12px' }}>
+                        {variant.images.map((img: string, iIdx: number) => (
+                          <div
+                            key={img}
+                            style={{
+                              position: 'relative',
+                              width: '100%',
+                              aspectRatio: '1 / 1',
+                              borderRadius: '12px',
+                              border: '1px solid #E6DCCF',
+                              overflow: 'hidden',
+                              backgroundColor: 'white',
+                              boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                            }}
+                          >
+                            <ImageWithFallback src={img} alt={`Preview ${iIdx}`} fill style={{ objectFit: 'cover' }} />
+                            
+                            <div style={{ 
+                              position: 'absolute', top: '6px', left: '6px', 
+                              backgroundColor: '#4A3219', color: '#ffffff', 
+                              width: '24px', height: '24px', 
+                              display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                              borderRadius: '50%', fontSize: '12px', fontWeight: 'bold', 
+                              border: '2px solid white', zIndex: 10
+                            }}>
+                              {iIdx + 1}
+                            </div>
+                            
+                            <button
+                              type="button"
+                              onClick={() => removeVariantImage(vIdx, iIdx)}
+                              style={{
+                                position: 'absolute', top: '6px', right: '6px',
+                                backgroundColor: 'rgba(255,255,255,0.9)', color: '#ef4444',
+                                width: '24px', height: '24px',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                borderRadius: '50%', padding: '0', border: 'none', cursor: 'pointer', zIndex: 10,
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                              }}
+                              title="Remove image"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                              </svg>
                             </button>
                           </div>
-                       ))}
-                       {(!variant.images || variant.images.length === 0) && (
-                          <div className="text-xs text-stone-400 italic">No images added for this variant yet.</div>
-                       )}
-                    </div>
+                        ))}
+                      </div>
+                    )}
+                    {(!variant.images || variant.images.length === 0) && (
+                      <div className="text-xs text-stone-400 italic mt-2">No images added for this variant yet.</div>
+                    )}
                   </div>
                </div>
             ))}
