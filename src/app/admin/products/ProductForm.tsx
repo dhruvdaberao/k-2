@@ -764,7 +764,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                             <button
                               type="button"
                               onClick={() => {
-                                const newImages = variant.images.filter((_, idx) => idx !== iIdx);
+                                const newImages = variant.images.filter((_: string, idx: number) => idx !== iIdx);
                                 handleVariantChange(vIdx, 'images', newImages);
                               }}
                               style={{
