@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import GlobalLoader from "@/components/ui/GlobalLoader";
-import ImageCropper from "@/components/ImageCropper";
+import ImageCropper from "./ImageCropper";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { showToast } from "@/components/Toast";
 import { getLiveCategories, Category } from "@/lib/categoriesApi";
