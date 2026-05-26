@@ -156,6 +156,9 @@ export default function AdminCategories() {
         </div>
 
         {/* Categories Grid */}
+        <div className="md:hidden text-sm text-[#8B7355] mb-2 flex items-center justify-end gap-1">
+          Swipe to see more <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+        </div>
         <div className="bg-white rounded-2xl border border-[#E6DCCF] shadow-sm" style={{ overflow: 'hidden' }}>
           <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
             <table className="w-full text-left border-collapse" style={{ minWidth: '500px' }}>
@@ -163,8 +166,8 @@ export default function AdminCategories() {
                 <tr className="bg-[#F5EFE6] text-[#8B7355] text-xs md:text-sm uppercase tracking-wider">
                   <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '80px' }}>Order</th>
                   <th className="p-2 md:p-4 font-semibold">Category Name</th>
-                  <th className="p-2 md:p-4 font-semibold">Slug (URL)</th>
                   <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '100px' }}>Actions</th>
+                  <th className="p-2 md:p-4 font-semibold">Slug (URL)</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E6DCCF]">
@@ -215,9 +218,6 @@ export default function AdminCategories() {
                       <td className="p-2 md:p-4 text-xs md:text-sm font-semibold text-[#3E2C1C]">
                         {category.name}
                       </td>
-                      <td className="p-2 md:p-4 text-xs md:text-sm text-[#8B7355]">
-                        {category.slug}
-                      </td>
                       <td className="p-2 md:p-4 text-center">
                         <button
                           onClick={() => {
@@ -238,6 +238,9 @@ export default function AdminCategories() {
                             <line x1="14" y1="11" x2="14" y2="17"></line>
                           </svg>
                         </button>
+                      </td>
+                      <td className="p-2 md:p-4 text-xs md:text-sm text-[#8B7355]">
+                        {category.slug}
                       </td>
                     </tr>
                     );
