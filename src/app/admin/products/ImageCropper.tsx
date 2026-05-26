@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useEffect } from 'react';
+// @ts-ignore
 import { createPortal } from 'react-dom';
 import Cropper from 'react-easy-crop';
 
