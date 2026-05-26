@@ -55,29 +55,16 @@ export default async function Home() {
   const popularPicks = getDeduplicated(sortedProducts, 6);
 
   // Best Sellers Logic:
-  // 1. "Sunflower Pot" (Must be present if exists)
-  // 2. Category "Flowers" or "Pots"
-  // 3. Explicit Bestseller badge
-  // 4. Fallback to sortedProducts
-
-  const bestSellerPriority = sortedProducts.filter(p => {
-    const title = (p.title || "").toLowerCase();
-    const cat = (p.category || "").toLowerCase();
-    // Check specific item
-    if (title.includes("sunflower") && title.includes("pot")) return true;
-    // Check categories
-    if (cat === "flowers" || cat === "pots") return true;
-    return false;
-  });
+  // 1. Explicit Bestseller badge
+  // 2. Fallback to sortedProducts (which respects priority)
 
   const explicitBestsellers = sortedProducts.filter(p =>
     p.badges?.includes("Bestseller") || p.badge === "Bestseller"
   );
 
-  // Combine pools: Priority -> Explicit -> General
-  const bestSellerPool = [...bestSellerPriority, ...explicitBestsellers, ...sortedProducts];
+  // Combine pools: Explicit -> General
+  const bestSellerPool = [...explicitBestsellers, ...sortedProducts];
   const bestSellers = getDeduplicated(bestSellerPool, 4);
-
 
   // Price Collections
   const under499Raw = sortedProducts.filter(p => (p.minPrice || p.price) < 499);
