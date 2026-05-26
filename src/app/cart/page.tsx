@@ -38,15 +38,34 @@ export default function CartPage() {
 
     const ids = cartIdsStr.split(',');
     
-    // Only fetch the exact products in the cart! (Massive performance boost)
+    let isMounted = true;
+    
+    // Absolute safety net: never show skeleton for more than 3 seconds
+    const safety = setTimeout(() => {
+      if (isMounted) setProductsLoading(false);
+    }, 3000);
+
     supabase
       .from("products")
       .select("*")
       .or(`id.in.(${ids.join(',')}),slug.in.(${ids.join(',')})`)
       .then(({ data }: { data: any }) => {
+        if (!isMounted) return;
+        clearTimeout(safety);
         if (data) setProducts(data as Product[]);
         setProductsLoading(false);
+      })
+      .catch((err) => {
+        if (!isMounted) return;
+        console.error("Cart product fetch error:", err);
+        clearTimeout(safety);
+        setProductsLoading(false);
       });
+      
+    return () => {
+      isMounted = false;
+      clearTimeout(safety);
+    };
   }, [loading, cartIdsStr]);
 
   // Auto-remove deleted items from cart

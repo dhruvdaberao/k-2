@@ -26,14 +26,34 @@ export default function WishlistPage() {
 
     const ids = itemsStr.split(',');
 
+    let isMounted = true;
+
+    // Absolute safety net: never show skeleton for more than 3 seconds
+    const safety = setTimeout(() => {
+      if (isMounted) setIsLoadingProducts(false);
+    }, 3000);
+
     supabase
       .from("products")
       .select("*")
       .or(`id.in.(${ids.join(',')}),slug.in.(${ids.join(',')})`)
       .then(({ data }: { data: any }) => {
+        if (!isMounted) return;
+        clearTimeout(safety);
         if (data) setProducts(data);
         setIsLoadingProducts(false);
+      })
+      .catch((err) => {
+        if (!isMounted) return;
+        console.error("Wishlist product fetch error:", err);
+        clearTimeout(safety);
+        setIsLoadingProducts(false);
       });
+
+    return () => {
+      isMounted = false;
+      clearTimeout(safety);
+    };
   }, [loading, itemsStr]);
 
   if (loading || (items.length > 0 && isLoadingProducts)) {
