@@ -10,7 +10,6 @@ import type { Product, ProductVariant } from "@/types";
 import { trackEvent } from "@/lib/analytics";
 import SeoContentSection from "@/components/SeoContentSection";
 import { useWishlist } from "@/hooks/useWishlist";
-import AnimatedHeart from "@/components/AnimatedHeart";
 import { useRouter } from "next/navigation";
 import { showToast } from "@/components/Toast";
 
@@ -25,10 +24,17 @@ export default function ProductPageClient({
 }) {
   const router = useRouter();
   const { toggleWishlist, isWishlisted } = useWishlist();
+  const [isHearted, setIsHearted] = useState(false);
+  
   // Real Review State
   const [ratingData, setRatingData] = useState<{ avg: string | null; count: number }>(initialRating);
 
-  const isHearted = isWishlisted(product.id || product.slug);
+  useEffect(() => {
+    setIsHearted(isWishlisted(product.id || product.slug));
+  }, [product.id, product.slug, isWishlisted]);
+
+
+  const [isPopping, setIsPopping] = useState(false);
 
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
     product.variants && product.variants.length > 0 ? product.variants[0] : null
@@ -93,10 +99,29 @@ export default function ProductPageClient({
                 gap: "12px", 
                 zIndex: 40 
               }}>
-                <AnimatedHeart
-                  isHearted={isHearted}
-                  onClick={() => toggleWishlist(product)}
-                />
+                <div 
+                  className="cursor-pointer p-1"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsPopping(true);
+                    setTimeout(() => setIsPopping(false), 400);
+                    toggleWishlist(product);
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill={isHearted ? "#EC4899" : "none"}
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="#EC4899"
+                    className={`w-6 h-6 transition-all duration-200 hover:scale-110 active:scale-95 ${isPopping ? 'animate-heart-pop' : ''}`}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.015-4.5-4.5-4.5-1.74 0-3.255 1.007-4.5 2.09-1.245-1.083-2.76-2.09-4.5-2.09C5.015 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                  </svg>
+                </div>
                 
                 <button
                   onClick={onShareClick}
