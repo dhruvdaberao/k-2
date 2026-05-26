@@ -28,9 +28,7 @@ export default function AdminDashboard() {
 
     init();
 
-    // Fail-safe timeout
-    const timeout = setTimeout(() => setLoading(false), 5000);
-    return () => clearTimeout(timeout);
+
   }, [router]);
 
 

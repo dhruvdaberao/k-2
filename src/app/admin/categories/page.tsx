@@ -36,9 +36,7 @@ export default function AdminCategories() {
 
     fetchCategories();
 
-    // Safety: never show loading for more than 5 seconds
-    const safety = setTimeout(() => setLoading(false), 5000);
-    return () => clearTimeout(safety);
+
   }, [router]);
 
   const handleAddCategory = async (e: React.FormEvent) => {
