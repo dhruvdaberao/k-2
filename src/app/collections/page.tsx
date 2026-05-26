@@ -3,8 +3,7 @@ import { Suspense } from "react";
 import CollectionsContent from "@/components/CollectionsContent";
 import { getLiveProducts } from "@/lib/productsApi";
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60;
 
 export default async function CollectionsPage() {
   const liveProducts = await getLiveProducts();

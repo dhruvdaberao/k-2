@@ -11,8 +11,7 @@ export const metadata = {
   description: "Limited-run artisanal crochet pieces.",
 };
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60;
 
 export default async function Home() {
   const liveProducts = await getLiveProducts();

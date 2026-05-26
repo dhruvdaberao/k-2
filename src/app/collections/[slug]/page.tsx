@@ -5,8 +5,7 @@ import { notFound } from "next/navigation";
 import { getLiveProducts } from "@/lib/productsApi";
 import { getLiveCategories } from "@/lib/categoriesApi";
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60;
 
 export default async function CategoryCollectionsPage({ params }: { params: { slug: string } }) {
     const targetSlug = params.slug.toLowerCase();

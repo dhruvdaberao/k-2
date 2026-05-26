@@ -11,14 +11,16 @@ import { supabase } from "@/lib/supabaseClient";
 export default function WishlistPage() {
   const { wishlist: items, loading } = useWishlist();
   const [products, setProducts] = useState<any[]>([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
 
   useEffect(() => {
     supabase.from("products").select("*").then(({ data }: { data: any }) => {
       if (data) setProducts(data);
+      setIsLoadingProducts(false);
     });
   }, []);
 
-  if (loading && items.length === 0) {
+  if (loading || (items.length > 0 && isLoadingProducts)) {
     return (
       <div className="container py-8">
         <h1 className="text-3xl font-serif font-bold text-[#2f2a26] mb-8 text-center">Wishlist</h1>
