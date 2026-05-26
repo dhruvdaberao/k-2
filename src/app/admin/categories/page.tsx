@@ -36,7 +36,11 @@ export default function AdminCategories() {
 
     fetchCategories();
 
-
+    // Prevent infinite loading: if it takes over 10s, cancel loading so it doesn't spin forever.
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 10000);
+    return () => clearTimeout(timeout);
   }, [router]);
 
   const handleAddCategory = async (e: React.FormEvent) => {
@@ -156,12 +160,21 @@ export default function AdminCategories() {
         </div>
 
         {/* Categories Grid */}
-        <div className="md:hidden text-sm text-[#8B7355] mb-2 flex items-center justify-end gap-1">
-          Swipe to see more <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
-        </div>
-        <div className="bg-white rounded-2xl border border-[#E6DCCF] shadow-sm" style={{ overflow: 'hidden' }}>
-          <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-            <table className="w-full text-left border-collapse min-w-[380px] md:min-w-[500px]">
+        {loading ? (
+          <div className="flex flex-col justify-center items-center py-20">
+            <div className="flex justify-center items-center gap-3 text-[#4A3219] font-bold text-xl">
+              <div className="w-8 h-8 rounded-full border-4 border-[#4A3219] border-t-transparent animate-spin"></div>
+              <span>Loading categories...</span>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="md:hidden text-sm text-[#8B7355] mb-2 flex items-center justify-end gap-1">
+              Swipe to see more <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+            </div>
+            <div className="bg-white rounded-2xl border border-[#E6DCCF] shadow-sm" style={{ overflow: 'hidden' }}>
+              <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                <table className="w-full text-left border-collapse min-w-[380px] md:min-w-[500px]">
               <thead>
                 <tr className="bg-[#F5EFE6] text-[#8B7355] text-xs md:text-sm uppercase tracking-wider">
                   <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '60px' }}>Order</th>
@@ -171,19 +184,10 @@ export default function AdminCategories() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E6DCCF]">
-                {loading ? (
+                {categories.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="p-8">
-                      <div className="flex justify-center items-center gap-3 sticky left-0 w-full text-[#4A3219] font-bold text-lg">
-                        <div className="w-6 h-6 rounded-full border-4 border-[#4A3219] border-t-transparent animate-spin"></div>
-                        <span>Loading categories...</span>
-                      </div>
-                    </td>
-                  </tr>
-                ) : categories.length === 0 ? (
-                  <tr>
-                    <td colSpan={4} className="p-8">
-                      <div className="flex justify-center items-center sticky left-0 w-full text-[#8B7355] font-semibold">
+                    <td colSpan={4} className="p-12 text-center">
+                      <div className="text-[#8B7355] font-semibold text-lg">
                         No categories found. Add one above!
                       </div>
                     </td>
@@ -250,6 +254,8 @@ export default function AdminCategories() {
             </table>
           </div>
         </div>
+        </>
+        )}
       </div>
 
       {/* Delete Confirmation Modal */}
