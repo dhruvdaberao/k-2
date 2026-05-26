@@ -28,6 +28,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     price: initialData?.price || 0,
     category: initialData?.category || "",
     stock: initialData?.stock || 0,
+    variants: initialData?.variants || null,
   });
   
   const [categories, setCategories] = useState<Category[]>([]);
@@ -153,8 +154,21 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     }
 
     setLoading(true);
+    
+    // Automatically map images to variants if variants exist
+    let updatedVariants = formData.variants;
+    if (updatedVariants && Array.isArray(updatedVariants) && updatedVariants.length > 0) {
+      updatedVariants = updatedVariants.map((variant: any, idx: number) => {
+        if (images[idx]) {
+          return { ...variant, images: [images[idx]] };
+        }
+        return variant;
+      });
+    }
+
     const productPayload = {
       ...formData,
+      variants: updatedVariants,
       images,
       status: 'live'
     };
