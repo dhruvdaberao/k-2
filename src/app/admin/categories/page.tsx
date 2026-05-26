@@ -222,15 +222,15 @@ export default function AdminCategories() {
                       <td className="p-2 md:p-4 text-center">
                         <button
                           onClick={() => {
-                            if (category.name.toLowerCase() === "bags") {
+                            if ((category.name || "").toLowerCase() === "bags") {
                               showToast("The 'Bags' category is a default system category and cannot be deleted.");
                               return;
                             }
                             setCategoryToDelete({ id: category.id, name: category.name });
                           }}
-                          className={`transition-opacity flex items-center justify-center p-2 rounded-lg mx-auto ${category.name.toLowerCase() === 'bags' ? 'opacity-60 cursor-not-allowed' : 'hover:opacity-70 cursor-pointer'}`}
-                          style={{ background: 'transparent', border: 'none', color: category.name.toLowerCase() === 'bags' ? '#9ca3af' : '#ef4444' }}
-                          title={category.name.toLowerCase() === 'bags' ? "Default System Category" : "Delete Category"}
+                          className={`transition-opacity flex items-center justify-center p-2 rounded-lg mx-auto ${(category.name || "").toLowerCase() === 'bags' ? 'opacity-60 cursor-not-allowed' : 'hover:opacity-70 cursor-pointer'}`}
+                          style={{ background: 'transparent', border: 'none', color: (category.name || "").toLowerCase() === 'bags' ? '#9ca3af' : '#ef4444' }}
+                          title={(category.name || "").toLowerCase() === 'bags' ? "Default System Category" : "Delete Category"}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                             <polyline points="3 6 5 6 21 6"></polyline>
