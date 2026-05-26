@@ -169,7 +169,7 @@ function CheckoutContent() {
         checkoutUrl: product?.checkoutUrl,
       };
     });
-  }, [finalItems]);
+  }, [finalItems, products]);
 
   const subtotal = useMemo(() => enrichedItems.reduce((sum, item) => sum + item.price * item.quantity, 0), [enrichedItems]);
 

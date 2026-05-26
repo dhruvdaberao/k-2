@@ -130,7 +130,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       loadCart();
     };
 
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        loadCart();
+      }
+    };
+
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "cart") {
+        loadCart();
+      }
+    };
+
     window.addEventListener("bag:changed", onBagChange);
+    window.addEventListener("visibilitychange", onVisibilityChange);
+    window.addEventListener("storage", onStorage);
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: any, session: any) => {
       console.log("[CartHook] Auth event:", event);
@@ -144,6 +158,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     return () => {
       window.removeEventListener("bag:changed", onBagChange);
+      window.removeEventListener("visibilitychange", onVisibilityChange);
+      window.removeEventListener("storage", onStorage);
       subscription.unsubscribe();
     };
   }, [loadCart]); // loadCart is now stable (empty deps), so this runs once

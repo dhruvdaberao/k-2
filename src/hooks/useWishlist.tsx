@@ -107,13 +107,22 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       const items = getWishlist();
       setWishlist(filterValidIds(items.map(i => String(i.id))));
     };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        loadWishlist();
+      }
+    };
+
     window.addEventListener("bag:changed", handleSync);
     window.addEventListener("storage", handleSync);
+    window.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
       window.removeEventListener("bag:changed", handleSync);
       window.removeEventListener("storage", handleSync);
+      window.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, []);
+  }, [loadWishlist]);
 
   // Sync on Auth Change
   useEffect(() => {
