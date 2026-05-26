@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import GlobalLoader from "@/components/ui/GlobalLoader";
+import ImageCropper from "@/components/ImageCropper";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { showToast } from "@/components/Toast";
 import { getLiveCategories, Category } from "@/lib/categoriesApi";
@@ -20,6 +21,12 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   const [loading, setLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [uploadingImages, setUploadingImages] = useState<boolean | number>(false);
+  
+  // Cropper State
+  const [cropQueue, setCropQueue] = useState<{file: File, url: string, vIdx?: number}[]>([]);
+  const [currentCropIndex, setCurrentCropIndex] = useState(0);
+  const [isCropping, setIsCropping] = useState(false);
+
   const [formData, setFormData] = useState({
     id: initialData?.id || "",
     slug: initialData?.slug || "",
@@ -70,61 +77,93 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     if (!e.target.files || e.target.files.length === 0) return;
     
     const files = Array.from(e.target.files);
-    setUploadingImages(typeof variantIndex === 'number' ? variantIndex : true);
+    e.target.value = ''; // reset input
+    
+    const newQueue = files.map(f => ({
+      file: f,
+      url: URL.createObjectURL(f),
+      vIdx: variantIndex
+    }));
+    
+    setCropQueue(newQueue);
+    setCurrentCropIndex(0);
+    setIsCropping(true);
+  };
 
+  const advanceCropQueue = () => {
+    if (currentCropIndex < cropQueue.length - 1) {
+      setCurrentCropIndex(currentCropIndex + 1);
+    } else {
+      setIsCropping(false);
+      cropQueue.forEach(q => URL.revokeObjectURL(q.url));
+      setCropQueue([]);
+    }
+  };
+
+  const handleCropCancel = () => {
+    advanceCropQueue();
+  };
+
+  const handleCropComplete = async (croppedBlob: Blob) => {
+    const currentItem = cropQueue[currentCropIndex];
+    const file = new File([croppedBlob], currentItem.file.name, { type: 'image/jpeg' });
+    const variantIndex = currentItem.vIdx;
+    
+    setUploadingImages(typeof variantIndex === 'number' ? variantIndex : true);
+    setIsCropping(false); // Hide cropper while processing this one, or just advance?
+    // Actually, to keep it simple, we can hide the cropper, process, and then show the next one,
+    // or just let it process. Let's just process it while showing a loader on the cropper, or close it and show the global loader.
+    // Since upload might take a few seconds, closing the cropper and showing the "Uploading images..." UI is better.
+    // If there are more items, we will show the next cropper AFTER this upload finishes, or immediately?
+    // To make it smooth, let's close cropper, upload, then open cropper for next item.
+    
     try {
       const uploadedUrls: string[] = [];
       const productId = formData.id || 'temp_' + Date.now();
 
-      for (const file of files) {
-        let compressedFile = file;
-        try {
-          const options = {
-            maxSizeMB: 1, // Target ~1MB
-            maxWidthOrHeight: 1920, // Allow high resolution
-            useWebWorker: true,
-            initialQuality: 0.9 // Higher initial quality
-          };
-          compressedFile = await imageCompression(file, options);
-          console.log(`Compressed from ${(file.size/1024).toFixed(1)}KB to ${(compressedFile.size/1024).toFixed(1)}KB`);
-        } catch (error) {
-          console.error("Compression failed, using original file", error);
-        }
+      let compressedFile = file;
+      try {
+        const options = {
+          maxSizeMB: 0.6,
+          maxWidthOrHeight: 1600,
+          useWebWorker: true,
+          initialQuality: 0.85
+        };
+        compressedFile = await imageCompression(file, options);
+      } catch (error) {
+        console.error("Compression failed", error);
+      }
 
-        const fileExt = compressedFile.name.split('.').pop() || 'jpg';
-        const fileName = `${productId}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
-        
-        const { error: uploadError } = await supabase.storage
-          .from('product-images')
-          .upload(fileName, compressedFile);
+      const fileExt = compressedFile.name.split('.').pop() || 'jpg';
+      const fileName = `${productId}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('product-images')
+        .upload(fileName, compressedFile);
 
-        if (uploadError) {
-          console.error("Upload error:", uploadError);
-          showToast(`Failed to upload ${file.name}`);
-          continue;
-        }
-
+      if (uploadError) {
+        console.error("Upload error:", uploadError);
+        showToast(`Failed to upload ${file.name}`);
+      } else {
         const { data: { publicUrl } } = supabase.storage
           .from('product-images')
           .getPublicUrl(fileName);
         
-        uploadedUrls.push(publicUrl);
-      }
-
-      if (typeof variantIndex === 'number') {
-        setVariants(prev => {
-          const newVariants = [...prev];
-          newVariants[variantIndex] = {
-            ...newVariants[variantIndex],
-            images: [...(newVariants[variantIndex].images || []), ...uploadedUrls]
-          };
-          return newVariants;
-        });
-      } else {
-        if (hasVariants) {
-          setImages(prev => prev.length === 0 ? [uploadedUrls[0]] : prev);
+        if (typeof variantIndex === 'number') {
+          setVariants(prev => {
+            const newVariants = [...prev];
+            newVariants[variantIndex] = {
+              ...newVariants[variantIndex],
+              images: [...(newVariants[variantIndex].images || []), publicUrl]
+            };
+            return newVariants;
+          });
         } else {
-          setImages(prev => [...prev, ...uploadedUrls]);
+          if (hasVariants) {
+            setImages(prev => prev.length === 0 ? [publicUrl] : prev);
+          } else {
+            setImages(prev => [...prev, publicUrl]);
+          }
         }
       }
     } catch (err) {
@@ -132,7 +171,14 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
       showToast("An error occurred during upload.");
     } finally {
       setUploadingImages(false);
-      e.target.value = ''; // reset input
+      
+      if (currentCropIndex < cropQueue.length - 1) {
+        setCurrentCropIndex(currentCropIndex + 1);
+        setIsCropping(true);
+      } else {
+        cropQueue.forEach(q => URL.revokeObjectURL(q.url));
+        setCropQueue([]);
+      }
     }
   };
 
@@ -168,6 +214,31 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     
     setImages(newImages);
     setDraggedIdx(null);
+  };
+
+  const moveImage = (index: number, direction: 'left' | 'right') => {
+    const newIdx = direction === 'left' ? index - 1 : index + 1;
+    if (newIdx < 0 || newIdx >= images.length) return;
+    const newImages = [...images];
+    const temp = newImages[index];
+    newImages[index] = newImages[newIdx];
+    newImages[newIdx] = temp;
+    setImages(newImages);
+  };
+
+  const moveVariantImage = (vIdx: number, iIdx: number, direction: 'left' | 'right') => {
+    setVariants(prev => {
+      const newVariants = [...prev];
+      const variantImages = [...newVariants[vIdx].images];
+      const newIIdx = direction === 'left' ? iIdx - 1 : iIdx + 1;
+      if (newIIdx < 0 || newIIdx >= variantImages.length) return prev;
+      
+      const temp = variantImages[iIdx];
+      variantImages[iIdx] = variantImages[newIIdx];
+      variantImages[newIIdx] = temp;
+      newVariants[vIdx].images = variantImages;
+      return newVariants;
+    });
   };
 
   const handleVariantChange = (index: number, field: string, value: any) => {
@@ -251,6 +322,13 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 md:space-y-8 bg-white p-3 md:p-8 rounded-2xl border border-[#E6DCCF] shadow-sm">
+      {isCropping && cropQueue.length > 0 && (
+        <ImageCropper
+          imageSrc={cropQueue[currentCropIndex].url}
+          onCropComplete={handleCropComplete}
+          onCancel={handleCropCancel}
+        />
+      )}
       {loading && <GlobalLoader message="Saving Product..." />}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {/* Left Column: Details */}
@@ -520,6 +598,28 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                         <line x1="6" y1="6" x2="18" y2="18"></line>
                       </svg>
                     </button>
+
+                    {/* Mobile Reorder Controls */}
+                    {!isFaded && (
+                      <div className="md:hidden flex absolute bottom-[20px] left-0 right-0 justify-center gap-4 z-10" style={{ opacity: draggedIdx === idx ? 0 : 1 }}>
+                        <button
+                          type="button"
+                          disabled={idx === 0}
+                          onClick={() => moveImage(idx, 'left')}
+                          className="bg-white/90 text-[#4A3219] w-8 h-8 rounded-full flex items-center justify-center shadow-md disabled:opacity-30"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                        </button>
+                        <button
+                          type="button"
+                          disabled={idx === images.length - 1}
+                          onClick={() => moveImage(idx, 'right')}
+                          className="bg-white/90 text-[#4A3219] w-8 h-8 rounded-full flex items-center justify-center shadow-md disabled:opacity-30"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+                      </div>
+                    )}
                   </div>
                   );
                 })}
@@ -663,7 +763,10 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                             
                             <button
                               type="button"
-                              onClick={() => removeVariantImage(vIdx, iIdx)}
+                              onClick={() => {
+                                const newImages = variant.images.filter((_, idx) => idx !== iIdx);
+                                handleVariantChange(vIdx, 'images', newImages);
+                              }}
                               style={{
                                 position: 'absolute', top: '6px', right: '6px',
                                 backgroundColor: 'rgba(255,255,255,0.9)', color: '#ef4444',
@@ -679,6 +782,26 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                                 <line x1="6" y1="6" x2="18" y2="18"></line>
                               </svg>
                             </button>
+
+                            {/* Mobile Reorder Controls */}
+                            <div className="md:hidden flex absolute bottom-[20px] left-0 right-0 justify-center gap-4 z-10">
+                              <button
+                                type="button"
+                                disabled={iIdx === 0}
+                                onClick={() => moveVariantImage(vIdx, iIdx, 'left')}
+                                className="bg-white/90 text-[#4A3219] w-8 h-8 rounded-full flex items-center justify-center shadow-md disabled:opacity-30"
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                              </button>
+                              <button
+                                type="button"
+                                disabled={iIdx === variant.images.length - 1}
+                                onClick={() => moveVariantImage(vIdx, iIdx, 'right')}
+                                className="bg-white/90 text-[#4A3219] w-8 h-8 rounded-full flex items-center justify-center shadow-md disabled:opacity-30"
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                              </button>
+                            </div>
                           </div>
                         ))}
                       </div>
