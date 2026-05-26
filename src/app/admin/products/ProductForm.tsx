@@ -606,19 +606,19 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                           type="button"
                           disabled={idx === 0}
                           onClick={(e) => { e.preventDefault(); moveImage(idx, 'left'); }}
-                          className="md:hidden absolute top-1/2 -translate-y-1/2 left-0 z-10 p-1 disabled:opacity-30 drop-shadow-[0_2px_2px_rgba(255,255,255,0.8)]"
-                          style={{ opacity: draggedIdx === idx ? 0 : 1 }}
+                          className="md:hidden z-10 disabled:opacity-30 drop-shadow-[0_2px_2px_rgba(255,255,255,0.8)]"
+                          style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: '2px', background: 'transparent', border: 'none', padding: 0, opacity: draggedIdx === idx ? 0 : 1 }}
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8B7355" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8B7355" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
                         </button>
                         <button
                           type="button"
                           disabled={idx === images.length - 1}
                           onClick={(e) => { e.preventDefault(); moveImage(idx, 'right'); }}
-                          className="md:hidden absolute top-1/2 -translate-y-1/2 right-0 z-10 p-1 disabled:opacity-30 drop-shadow-[0_2px_2px_rgba(255,255,255,0.8)]"
-                          style={{ opacity: draggedIdx === idx ? 0 : 1 }}
+                          className="md:hidden z-10 disabled:opacity-30 drop-shadow-[0_2px_2px_rgba(255,255,255,0.8)]"
+                          style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', right: '2px', background: 'transparent', border: 'none', padding: 0, opacity: draggedIdx === idx ? 0 : 1 }}
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8B7355" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8B7355" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                         </button>
                       </>
                     )}
@@ -791,17 +791,19 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                                 type="button"
                                 disabled={iIdx === 0}
                                 onClick={(e) => { e.preventDefault(); moveVariantImage(vIdx, iIdx, 'left'); }}
-                                className="md:hidden absolute top-1/2 -translate-y-1/2 left-0 z-10 p-1 disabled:opacity-30 drop-shadow-[0_2px_2px_rgba(255,255,255,0.8)]"
+                                className="md:hidden z-10 disabled:opacity-30 drop-shadow-[0_2px_2px_rgba(255,255,255,0.8)]"
+                                style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: '2px', background: 'transparent', border: 'none', padding: 0 }}
                               >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8B7355" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8B7355" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
                               </button>
                               <button
                                 type="button"
                                 disabled={iIdx === variant.images.length - 1}
                                 onClick={(e) => { e.preventDefault(); moveVariantImage(vIdx, iIdx, 'right'); }}
-                                className="md:hidden absolute top-1/2 -translate-y-1/2 right-0 z-10 p-1 disabled:opacity-30 drop-shadow-[0_2px_2px_rgba(255,255,255,0.8)]"
+                                className="md:hidden z-10 disabled:opacity-30 drop-shadow-[0_2px_2px_rgba(255,255,255,0.8)]"
+                                style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', right: '2px', background: 'transparent', border: 'none', padding: 0 }}
                               >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8B7355" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8B7355" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                               </button>
                             </>
                           </div>
