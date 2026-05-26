@@ -121,7 +121,11 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
           return newVariants;
         });
       } else {
-        setImages(prev => [...prev, ...uploadedUrls]);
+        if (hasVariants) {
+          setImages(prev => prev.length === 0 ? [uploadedUrls[0]] : prev);
+        } else {
+          setImages(prev => [...prev, ...uploadedUrls]);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -369,44 +373,46 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
         <div className="space-y-4">
           <h2 className="text-base md:text-xl font-bold text-[#4A3219] mb-2 md:mb-4 border-b border-[#E6DCCF] pb-1 md:pb-2">Images</h2>
           
-          <div 
-            style={{ 
-              backgroundColor: '#F5EFE6', 
-              padding: '20px', 
-              borderRadius: '12px', 
-              border: '2px dashed #d2c4b3', 
-              textAlign: 'center', 
-              transition: 'all 0.3s ease',
-              cursor: 'pointer'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#FDFBF7';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.05)';
-              e.currentTarget.style.borderColor = '#8B7355';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#F5EFE6';
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = 'none';
-              e.currentTarget.style.borderColor = '#d2c4b3';
-            }}
-          >
-            <input type="file" id="image-upload" multiple accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
-            <label htmlFor="image-upload" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', width: '100%', height: '100%' }}>
-              <div style={{ backgroundColor: '#4A3219', padding: '16px', borderRadius: '50%', boxShadow: '0 4px 6px -1px rgba(74, 50, 25, 0.3)', transition: 'transform 0.2s ease' }}
-                   onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-                   onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="12" y1="5" x2="12" y2="19"></line>
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-              </div>
-              <span style={{ fontWeight: 'bold', color: '#4A3219', fontSize: '1.125rem', marginTop: '4px' }}>Add New Images</span>
-              <span style={{ fontSize: '0.875rem', color: '#8B7355' }}>PNG, JPG up to 5MB</span>
-            </label>
-          </div>
+          {(!hasVariants || images.length === 0) && (
+            <div 
+              style={{ 
+                backgroundColor: '#F5EFE6', 
+                padding: '20px', 
+                borderRadius: '12px', 
+                border: '2px dashed #d2c4b3', 
+                textAlign: 'center', 
+                transition: 'all 0.3s ease',
+                cursor: 'pointer'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#FDFBF7';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.05)';
+                e.currentTarget.style.borderColor = '#8B7355';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#F5EFE6';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
+                e.currentTarget.style.borderColor = '#d2c4b3';
+              }}
+            >
+              <input type="file" id="image-upload" multiple accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
+              <label htmlFor="image-upload" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', width: '100%', height: '100%' }}>
+                <div style={{ backgroundColor: '#4A3219', padding: '16px', borderRadius: '50%', boxShadow: '0 4px 6px -1px rgba(74, 50, 25, 0.3)', transition: 'transform 0.2s ease' }}
+                     onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                     onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                </div>
+                <span style={{ fontWeight: 'bold', color: '#4A3219', fontSize: '1.125rem', marginTop: '4px' }}>Add {hasVariants ? 'Cover Image' : 'New Images'}</span>
+                <span style={{ fontSize: '0.875rem', color: '#8B7355' }}>PNG, JPG up to 5MB</span>
+              </label>
+            </div>
+          )}
 
           {uploadingImages && (
             <div className="mt-4 p-4 rounded-xl border border-[#E6DCCF] bg-[#FDFBF7]">
@@ -429,7 +435,9 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
           {images.length > 0 && (
             <div>
-              <p className="text-xs text-[#8B7355] mb-2 font-semibold">Drag to reorder (Primary image first)</p>
+              <p className="text-xs text-[#8B7355] mb-2 font-semibold">
+                {hasVariants ? "Cover Image" : "Drag to reorder (Primary image first)"}
+              </p>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '12px' }}>
                 {images.map((img, idx) => (
                   <div
@@ -530,18 +538,18 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
           <div className="space-y-6">
             {variants.map((variant, vIdx) => (
                <div key={vIdx} className="p-4 md:p-6 bg-[#FDFBF7] border border-[#E6DCCF] rounded-2xl relative shadow-sm hover:shadow-md transition-shadow">
-                  <button type="button" onClick={() => removeVariant(vIdx)} className="absolute top-4 right-4 text-red-500 hover:bg-red-50 p-2 rounded-full transition-colors" title="Remove Variant">
+                  <button type="button" onClick={() => removeVariant(vIdx)} className="absolute top-4 right-4 transition-colors" style={{ color: '#ef4444' }} title="Remove Variant">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                   </button>
                   <h3 className="font-bold text-[#4A3219] mb-4 text-lg">Variant {vIdx + 1}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
                     <div>
                       <label className="block text-xs font-semibold text-[#8B7355] mb-1">Variant Name</label>
-                      <input type="text" required value={variant.name} onChange={(e) => handleVariantChange(vIdx, 'name', e.target.value)} className="w-full p-2.5 rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355] bg-white" placeholder="e.g. Red Rose" />
+                      <input type="text" required value={variant.name} onChange={(e) => handleVariantChange(vIdx, 'name', e.target.value)} className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355] bg-white" placeholder="e.g. Red Rose" />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-[#8B7355] mb-1">Price (₹)</label>
-                      <input type="number" required min="0" value={variant.price} onChange={(e) => handleVariantChange(vIdx, 'price', parseFloat(e.target.value) || 0)} className="w-full p-2.5 rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355] bg-white" />
+                      <input type="number" required min="0" value={variant.price} onChange={(e) => handleVariantChange(vIdx, 'price', parseFloat(e.target.value) || 0)} className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355] bg-white" />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-[#8B7355] mb-1">Stock</label>
@@ -559,8 +567,8 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                   <div>
                     <label className="block text-xs font-semibold text-[#8B7355] mb-2">Variant Images</label>
                     <div className="flex gap-4 overflow-x-auto pb-2 items-center w-full hide-scrollbar">
-                       <label className="flex-shrink-0 w-24 h-24 border-2 border-dashed border-[#d2c4b3] bg-[#F5EFE6] rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-[#FDFBF7] transition-colors group">
-                         <input type="file" multiple accept="image/*" onChange={(e) => handleImageUpload(e, vIdx)} className="hidden" />
+                       <label htmlFor={`variant-upload-${vIdx}`} className="flex-shrink-0 w-24 h-24 border-2 border-dashed border-[#d2c4b3] bg-[#F5EFE6] rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-[#FDFBF7] transition-colors group">
+                         <input type="file" id={`variant-upload-${vIdx}`} multiple accept="image/*" onChange={(e) => handleImageUpload(e, vIdx)} style={{ display: 'none' }} />
                          <div className="bg-[#4A3219] rounded-full p-2 group-hover:scale-110 transition-transform">
                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                          </div>
@@ -580,10 +588,12 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                   </div>
                </div>
             ))}
-            <button type="button" onClick={addVariant} className="w-full py-4 border-2 border-dashed border-[#4A3219] bg-[#FDFBF7] text-[#4A3219] font-bold rounded-2xl hover:bg-[#F5EFE6] transition-colors flex items-center justify-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-              Add New Variant
-            </button>
+            <div className="flex justify-start">
+              <button type="button" onClick={addVariant} className="btn-primary px-5 py-2 md:px-6 md:py-2.5 rounded-xl text-sm md:text-base font-bold text-white shadow-sm transition-transform active:scale-95 flex items-center justify-center gap-2" style={{ background: "var(--brand)", width: "fit-content" }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Add New Variant
+              </button>
+            </div>
           </div>
         )}
       </div>
