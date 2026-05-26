@@ -14,6 +14,7 @@ import { WishlistProvider } from "@/hooks/useWishlist";
 
 import RatingHydrator from "@/components/RatingHydrator";
 import { supabase } from "@/lib/supabaseClient";
+import MiniCartDrawer from "@/components/MiniCartDrawer";
 
 export const metadata = {
   metadataBase: new URL("https://keshvicrafts.in"),
@@ -95,6 +96,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <WishlistProvider>
               <BootstrapNavbar />
               <GlobalToast />
+              <MiniCartDrawer />
               {children}
               <Footer />
             </WishlistProvider>

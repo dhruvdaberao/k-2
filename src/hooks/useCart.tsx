@@ -27,6 +27,9 @@ type CartContextType = {
   updateQuantity: (productId: string, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;
   loading: boolean;
+  isCartDrawerOpen: boolean;
+  openCartDrawer: () => void;
+  closeCartDrawer: () => void;
 };
 
 const CartContext = createContext<CartContextType | null>(null);
@@ -41,6 +44,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const hadCacheAtInit = useRef(false);
   const reqIdRef = useRef(0);
   const userRef = useRef(user);
+  
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
+  const openCartDrawer = useCallback(() => setIsCartDrawerOpen(true), []);
+  const closeCartDrawer = useCallback(() => setIsCartDrawerOpen(false), []);
   
   // Keep userRef in sync without triggering re-renders
   useEffect(() => {
@@ -92,8 +99,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       await addToCartLib(product, userRef.current);
     } finally {
       await loadCart();
+      openCartDrawer();
     }
-  }, [loadCart]);
+  }, [loadCart, openCartDrawer]);
 
   const removeFromCart = useCallback(async (productId: string) => {
     setCartItems(prev => prev.filter(i => i.id !== productId));
@@ -162,7 +170,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     updateQuantity,
     clearCart,
     loading,
-  }), [cartItems, addToCart, loadCart, removeFromCart, updateQuantity, clearCart, loading]);
+    isCartDrawerOpen,
+    openCartDrawer,
+    closeCartDrawer,
+  }), [cartItems, addToCart, loadCart, removeFromCart, updateQuantity, clearCart, loading, isCartDrawerOpen, openCartDrawer, closeCartDrawer]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

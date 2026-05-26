@@ -6,11 +6,13 @@ import { showToast } from "@/components/Toast";
 import { useAuth } from "./useAuth";
 import { useRouter } from "next/navigation";
 import { pushToDataLayer } from "@/lib/analytics";
+import { useCart } from "./useCart";
 
 type AddToCartState = "idle" | "adding" | "added";
 
 export function useAddToCart() {
   const { user } = useAuth();
+  const { openCartDrawer } = useCart();
   const [state, setState] = useState<AddToCartState>("idle");
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
@@ -42,10 +44,7 @@ export function useAddToCart() {
         setState("added");
 
         if (options?.showToast !== false) {
-          showToast("Added to cart", {
-            label: "View cart",
-            onClick: () => router.push("/cart"),
-          });
+          openCartDrawer();
         }
       } catch (err) {
         console.error("[Hook] Add to cart error:", err);
