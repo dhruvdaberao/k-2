@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Cropper from 'react-easy-crop';
 
 interface ImageCropperProps {
@@ -13,6 +14,12 @@ export default function ImageCropper({ imageSrc, onCropComplete, onCancel }: Ima
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
   const onCropCompleteHandler = useCallback((croppedArea: any, croppedAreaPixels: any) => {
     setCroppedAreaPixels(croppedAreaPixels);
@@ -63,17 +70,26 @@ export default function ImageCropper({ imageSrc, onCropComplete, onCancel }: Ima
 
   const handleConfirm = async () => {
     try {
-      if (!croppedAreaPixels) return;
+      if (!croppedAreaPixels) {
+        alert('No crop area selected');
+        return;
+      }
+      if (croppedAreaPixels.width === 0 || croppedAreaPixels.height === 0) {
+        alert('Invalid crop area');
+        return;
+      }
       const croppedImageBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
       onCropComplete(croppedImageBlob);
-    } catch (e) {
-      console.error(e);
-      alert('Error cropping image');
+    } catch (e: any) {
+      console.error("Crop error:", e);
+      alert('Error cropping image: ' + e.message);
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-[100] flex flex-col bg-black/95">
+  if (!mounted) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex flex-col bg-black/95">
       <div className="flex-1 relative">
         <Cropper
           image={imageSrc}
@@ -109,6 +125,7 @@ export default function ImageCropper({ imageSrc, onCropComplete, onCancel }: Ima
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
