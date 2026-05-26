@@ -80,10 +80,10 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
         let compressedFile = file;
         try {
           const options = {
-            maxSizeMB: 0.2, // Target ~200KB
-            maxWidthOrHeight: 1080, // Restrict dimensions for web
+            maxSizeMB: 1, // Target ~1MB
+            maxWidthOrHeight: 1920, // Allow high resolution
             useWebWorker: true,
-            initialQuality: 0.8
+            initialQuality: 0.9 // Higher initial quality
           };
           compressedFile = await imageCompression(file, options);
           console.log(`Compressed from ${(file.size/1024).toFixed(1)}KB to ${(compressedFile.size/1024).toFixed(1)}KB`);
