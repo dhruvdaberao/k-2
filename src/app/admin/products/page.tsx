@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import { revalidateStorefront } from "@/actions/revalidate";
 import Link from "next/link";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import { useRouter } from "next/navigation";
@@ -82,6 +83,7 @@ export default function AdminProducts() {
       await Promise.all(updatedProducts.map(u => 
         supabase.from('products').update({ priority: u.priority }).eq('id', u.id)
       ));
+      await revalidateStorefront();
     } catch (e) {
       console.error(e);
       alert("Error saving new order");
@@ -119,6 +121,7 @@ export default function AdminProducts() {
         await Promise.all(changedUpdates.map(u => 
           supabase.from('products').update({ priority: u.priority }).eq('id', u.id)
         ));
+        await revalidateStorefront();
       }
     } catch (e) {
       console.error(e);
@@ -260,7 +263,7 @@ export default function AdminProducts() {
                                 e.currentTarget.blur();
                               }
                             }}
-                            className="w-10 text-center text-sm font-semibold text-[#4A3219] bg-transparent border-b border-transparent hover:border-[#E6DCCF] focus:border-[#8B7355] focus:outline-none focus:bg-white rounded px-0 py-0 m-0 disabled:opacity-50"
+                            className="w-10 text-center text-sm font-semibold text-[#4A3219] bg-transparent border-none shadow-none outline-none ring-0 focus:outline-none focus:ring-0 rounded-none px-0 py-0 m-0 disabled:opacity-50"
                             style={{ MozAppearance: 'textfield', WebkitAppearance: 'none' }}
                             key={`input-${product.id}-${actualIndex}`}
                             defaultValue={actualIndex + 1}

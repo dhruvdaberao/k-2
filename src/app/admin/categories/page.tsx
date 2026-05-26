@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import { revalidateStorefront } from "@/actions/revalidate";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getLiveCategories, addCategory, deleteCategory, Category } from "@/lib/categoriesApi";
@@ -99,6 +100,7 @@ export default function AdminCategories() {
       await Promise.all(updatedCategories.map(u => 
         supabase.from('categories').update({ priority: u.priority }).eq('id', u.id)
       ));
+      await revalidateStorefront();
     } catch (e) {
       console.error(e);
       showToast("Error saving new order");
@@ -136,6 +138,7 @@ export default function AdminCategories() {
         await Promise.all(changedUpdates.map(u => 
           supabase.from('categories').update({ priority: u.priority }).eq('id', u.id)
         ));
+        await revalidateStorefront();
       }
     } catch (e) {
       console.error(e);
@@ -260,7 +263,7 @@ export default function AdminCategories() {
                                 e.currentTarget.blur();
                               }
                             }}
-                            className="w-10 text-center text-sm font-semibold text-[#4A3219] bg-transparent border-b border-transparent hover:border-[#E6DCCF] focus:border-[#8B7355] focus:outline-none focus:bg-white rounded px-0 py-0 m-0"
+                            className="w-10 text-center text-sm font-semibold text-[#4A3219] bg-transparent border-none shadow-none outline-none ring-0 focus:outline-none focus:ring-0 rounded-none px-0 py-0 m-0"
                             style={{ MozAppearance: 'textfield', WebkitAppearance: 'none' }}
                             key={`input-${category.id}-${idx}`}
                             defaultValue={idx + 1}
