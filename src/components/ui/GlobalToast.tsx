@@ -88,7 +88,9 @@ export default function GlobalToast() {
           display: "flex",
           alignItems: "center",
           gap: "8px",
-          whiteSpace: "nowrap"
+          whiteSpace: "normal",
+          maxWidth: "90vw",
+          textAlign: "center"
         }}
       >
         {icon}
