@@ -19,7 +19,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [uploadingImages, setUploadingImages] = useState(false);
+  const [uploadingImages, setUploadingImages] = useState<boolean | number>(false);
   const [formData, setFormData] = useState({
     id: initialData?.id || "",
     slug: initialData?.slug || "",
@@ -70,7 +70,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     if (!e.target.files || e.target.files.length === 0) return;
     
     const files = Array.from(e.target.files);
-    setUploadingImages(true);
+    setUploadingImages(typeof variantIndex === 'number' ? variantIndex : true);
 
     try {
       const uploadedUrls: string[] = [];
@@ -414,7 +414,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
             </div>
           )}
 
-          {uploadingImages && (
+          {uploadingImages === true && (
             <div className="mt-4 p-4 rounded-xl border border-[#E6DCCF] bg-[#FDFBF7]">
               <div className="flex justify-between text-sm font-semibold text-[#4A3219] mb-2">
                 <span>Uploading images...</span>
@@ -620,6 +620,17 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                         <span style={{ fontSize: '0.875rem', color: '#8B7355' }}>PNG, JPG up to 5MB</span>
                       </label>
                     </div>
+                    {uploadingImages === vIdx && (
+                      <div className="mt-4 p-4 rounded-xl border border-[#E6DCCF] bg-[#FDFBF7]">
+                        <div className="flex justify-between text-sm font-semibold text-[#4A3219] mb-2">
+                          <span>Uploading images...</span>
+                          <span className="animate-pulse text-[#8B7355]">Processing</span>
+                        </div>
+                        <div className="w-full h-2 bg-[#E6DCCF] rounded-full overflow-hidden relative">
+                          <div className="absolute top-0 bottom-0 left-0 bg-[#4A3219] rounded-full" style={{ animation: 'loadingBar 1.5s infinite ease-in-out' }}></div>
+                        </div>
+                      </div>
+                    )}
 
                     {variant.images && variant.images.length > 0 && (
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '12px' }}>
