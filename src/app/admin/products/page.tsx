@@ -157,10 +157,10 @@ export default function AdminProducts() {
                   <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '80px' }}>Order</th>
                   <th className="p-2 md:p-4 font-semibold" style={{ width: '100px' }}>Image</th>
                   <th className="p-2 md:p-4 font-semibold" style={{ width: '35%' }}>Product Details</th>
+                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '100px' }}>Actions</th>
                   <th className="p-2 md:p-4 font-semibold" style={{ width: '20%' }}>Category</th>
                   <th className="p-2 md:p-4 font-semibold" style={{ width: '15%' }}>Price</th>
                   <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '120px' }}>Stock</th>
-                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '100px' }}>Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E6DCCF]">
@@ -223,6 +223,15 @@ export default function AdminProducts() {
                         <div className="font-semibold text-xs md:text-sm text-[#3E2C1C]">{product.title}</div>
                         <div className="text-xs text-[#8B7355]">ID: {product.id}</div>
                       </td>
+                      <td className="p-2 md:p-4 text-center">
+                        <Link
+                          href={`/admin/products/${product.id}/edit`}
+                          className="btn-primary inline-block px-3 py-1.5 md:px-5 md:py-2 rounded-lg font-semibold text-white shadow-sm transition-transform active:scale-95"
+                          style={{ background: "var(--brand)", textDecoration: "none", fontSize: '0.75rem' }}
+                        >
+                          Edit
+                        </Link>
+                      </td>
                       <td className="p-2 md:p-4 text-xs md:text-sm text-[#5A3E2B]">
                         {product.category || "-"}
                       </td>
@@ -243,15 +252,6 @@ export default function AdminProducts() {
                         }}>
                           {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
                         </span>
-                      </td>
-                      <td className="p-2 md:p-4 text-center">
-                        <Link
-                          href={`/admin/products/${product.id}/edit`}
-                          className="btn-primary inline-block px-3 py-1.5 md:px-5 md:py-2 rounded-lg font-semibold text-white shadow-sm transition-transform active:scale-95"
-                          style={{ background: "var(--brand)", textDecoration: "none", fontSize: '0.75rem' }}
-                        >
-                          Edit
-                        </Link>
                       </td>
                     </tr>
                     );
