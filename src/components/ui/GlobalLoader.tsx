@@ -2,7 +2,10 @@
 
 export default function GlobalLoader({ message = "Loading..." }: { message?: string }) {
   return (
-    <div className="fixed inset-0 z-[10000] flex flex-col items-center justify-center bg-[#FAF7F2] w-full h-full">
+    <div 
+      className="fixed inset-0 flex flex-col items-center justify-center bg-[#FAF7F2] w-full h-full" 
+      style={{ zIndex: 99999 }}
+    >
       <div 
         style={{ 
           width: '60px', 
