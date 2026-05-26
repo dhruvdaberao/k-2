@@ -509,7 +509,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                 placeholder="e.g. handmade, valentine" 
               />
               <div className="flex flex-wrap gap-2">
-                {formData.tags?.map(tag => (
+                {formData.tags?.map((tag: string) => (
                   <span key={tag} className="inline-flex items-center gap-1 px-3 py-1 bg-[#F5EFE6] text-[#4A3219] text-sm font-medium rounded-full border border-[#E6DCCF]">
                     #{tag}
                     <button type="button" onClick={() => removeTag(tag)} className="ml-1 text-[#8B7355] hover:text-[#4A3219] focus:outline-none">
