@@ -13,10 +13,18 @@ export default function ImageWithFallback({
     alt,
     ...rest
 }: ImageWithFallbackProps) {
-    const [imgSrc, setImgSrc] = useState(src);
+    const sanitizeSrc = (source: any) => {
+        if (typeof source === 'string') {
+            // Encode spaces to prevent Next.js 400 Bad Request errors
+            return source.replace(/ /g, '%20');
+        }
+        return source;
+    };
+
+    const [imgSrc, setImgSrc] = useState(sanitizeSrc(src));
 
     useEffect(() => {
-        setImgSrc(src);
+        setImgSrc(sanitizeSrc(src));
     }, [src]);
 
     return (
