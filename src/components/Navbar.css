@@ -16,7 +16,7 @@
   z-index: 1400;
   height: calc(var(--nav-h) + env(safe-area-inset-top));
   background: var(--bg-nav);
-  border-bottom: 1px solid #e6e0d8;
+  border-bottom: none;
   backdrop-filter: blur(8px);
   padding: env(safe-area-inset-top) 16px 0;
 }
