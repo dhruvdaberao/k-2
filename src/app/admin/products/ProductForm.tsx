@@ -43,6 +43,8 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     });
   }, []);
   
+  const [hasVariants, setHasVariants] = useState<boolean>(!!(initialData?.variants && initialData.variants.length > 0));
+  const [variants, setVariants] = useState<any[]>(initialData?.variants || []);
   const [images, setImages] = useState<string[]>(initialData?.images || []);
   const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
   const [draggedOverIdx, setDraggedOverIdx] = useState<number | null>(null);
@@ -64,7 +66,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     });
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, variantIndex?: number) => {
     if (!e.target.files || e.target.files.length === 0) return;
     
     const files = Array.from(e.target.files);
@@ -109,7 +111,18 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
         uploadedUrls.push(publicUrl);
       }
 
-      setImages(prev => [...prev, ...uploadedUrls]);
+      if (typeof variantIndex === 'number') {
+        setVariants(prev => {
+          const newVariants = [...prev];
+          newVariants[variantIndex] = {
+            ...newVariants[variantIndex],
+            images: [...(newVariants[variantIndex].images || []), ...uploadedUrls]
+          };
+          return newVariants;
+        });
+      } else {
+        setImages(prev => [...prev, ...uploadedUrls]);
+      }
     } catch (err) {
       console.error(err);
       showToast("An error occurred during upload.");
@@ -153,6 +166,33 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     setDraggedIdx(null);
   };
 
+  const handleVariantChange = (index: number, field: string, value: any) => {
+    setVariants(prev => {
+      const newVariants = [...prev];
+      newVariants[index] = { ...newVariants[index], [field]: value };
+      if (field === 'name') {
+         newVariants[index].slug = value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+      }
+      return newVariants;
+    });
+  };
+
+  const addVariant = () => {
+    setVariants(prev => [...prev, { name: '', slug: '', price: formData.price || 0, stock: 999, images: [] }]);
+  };
+
+  const removeVariant = (index: number) => {
+    setVariants(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const removeVariantImage = (variantIndex: number, imageIndex: number) => {
+    setVariants(prev => {
+      const newVariants = [...prev];
+      newVariants[variantIndex].images = newVariants[variantIndex].images.filter((_: any, i: number) => i !== imageIndex);
+      return newVariants;
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.id || !formData.title) {
@@ -162,20 +202,9 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
     setLoading(true);
     
-    // Automatically map images to variants if variants exist
-    let updatedVariants = formData.variants;
-    if (updatedVariants && Array.isArray(updatedVariants) && updatedVariants.length > 0) {
-      updatedVariants = updatedVariants.map((variant: any, idx: number) => {
-        if (images[idx]) {
-          return { ...variant, images: [images[idx]] };
-        }
-        return variant;
-      });
-    }
-
     const productPayload = {
       ...formData,
-      variants: updatedVariants,
+      variants: hasVariants ? variants : null,
       images,
       status: 'live'
     };
@@ -476,6 +505,87 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Variants Section */}
+      <div className="pt-6 mt-6 border-t border-[#E6DCCF]">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl md:text-2xl font-bold text-[#4A3219]">Product Variants</h2>
+          <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '12px' }}>
+            <span className="text-sm font-semibold text-[#8B7355]">Enable Variants</span>
+            <div style={{ position: 'relative', width: '50px', height: '28px' }}>
+              <input
+                type="checkbox"
+                style={{ opacity: 0, width: 0, height: 0, position: 'absolute' }}
+                checked={hasVariants}
+                onChange={(e) => setHasVariants(e.target.checked)}
+              />
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, borderRadius: '34px', backgroundColor: hasVariants ? '#4A3219' : '#E6DCCF', transition: 'background-color 0.3s' }}></div>
+              <div style={{ position: 'absolute', top: '4px', left: '4px', width: '20px', height: '20px', borderRadius: '50%', backgroundColor: 'white', transition: 'transform 0.3s', transform: hasVariants ? 'translateX(22px)' : 'translateX(0)' }}></div>
+            </div>
+          </label>
+        </div>
+
+        {hasVariants && (
+          <div className="space-y-6">
+            {variants.map((variant, vIdx) => (
+               <div key={vIdx} className="p-4 md:p-6 bg-[#FDFBF7] border border-[#E6DCCF] rounded-2xl relative shadow-sm hover:shadow-md transition-shadow">
+                  <button type="button" onClick={() => removeVariant(vIdx)} className="absolute top-4 right-4 text-red-500 hover:bg-red-50 p-2 rounded-full transition-colors" title="Remove Variant">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                  </button>
+                  <h3 className="font-bold text-[#4A3219] mb-4 text-lg">Variant {vIdx + 1}</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+                    <div>
+                      <label className="block text-xs font-semibold text-[#8B7355] mb-1">Variant Name</label>
+                      <input type="text" required value={variant.name} onChange={(e) => handleVariantChange(vIdx, 'name', e.target.value)} className="w-full p-2.5 rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355] bg-white" placeholder="e.g. Red Rose" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-[#8B7355] mb-1">Price (₹)</label>
+                      <input type="number" required min="0" value={variant.price} onChange={(e) => handleVariantChange(vIdx, 'price', parseFloat(e.target.value) || 0)} className="w-full p-2.5 rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355] bg-white" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-[#8B7355] mb-1">Stock</label>
+                      <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '8px', marginTop: '10px' }}>
+                        <div style={{ position: 'relative', width: '40px', height: '24px' }}>
+                          <input type="checkbox" style={{ opacity: 0, width: 0, height: 0, position: 'absolute' }} checked={variant.stock > 0} onChange={(e) => handleVariantChange(vIdx, 'stock', e.target.checked ? 999 : 0)} />
+                          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, borderRadius: '34px', backgroundColor: variant.stock > 0 ? '#4A3219' : '#E6DCCF', transition: 'background-color 0.3s' }}></div>
+                          <div style={{ position: 'absolute', top: '2px', left: '2px', width: '20px', height: '20px', borderRadius: '50%', backgroundColor: 'white', transition: 'transform 0.3s', transform: variant.stock > 0 ? 'translateX(16px)' : 'translateX(0)' }}></div>
+                        </div>
+                        <span className="text-sm font-semibold" style={{ color: variant.stock > 0 ? '#4A3219' : '#8B7355' }}>{variant.stock > 0 ? 'In Stock' : 'Out of Stock'}</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-[#8B7355] mb-2">Variant Images</label>
+                    <div className="flex gap-4 overflow-x-auto pb-2 items-center w-full hide-scrollbar">
+                       <label className="flex-shrink-0 w-24 h-24 border-2 border-dashed border-[#d2c4b3] bg-[#F5EFE6] rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-[#FDFBF7] transition-colors group">
+                         <input type="file" multiple accept="image/*" onChange={(e) => handleImageUpload(e, vIdx)} className="hidden" />
+                         <div className="bg-[#4A3219] rounded-full p-2 group-hover:scale-110 transition-transform">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                         </div>
+                       </label>
+                       {variant.images?.map((img: string, iIdx: number) => (
+                          <div key={iIdx} className="flex-shrink-0 w-24 h-24 relative border border-[#E6DCCF] rounded-xl overflow-hidden group shadow-sm">
+                            <ImageWithFallback src={img} alt="Variant img" fill style={{ objectFit: 'cover' }} />
+                            <button type="button" onClick={() => removeVariantImage(vIdx, iIdx)} className="absolute top-1 right-1 bg-white/90 hover:bg-white rounded-full text-red-500 w-6 h-6 flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
+                          </div>
+                       ))}
+                       {(!variant.images || variant.images.length === 0) && (
+                          <div className="text-xs text-stone-400 italic">No images added for this variant yet.</div>
+                       )}
+                    </div>
+                  </div>
+               </div>
+            ))}
+            <button type="button" onClick={addVariant} className="w-full py-4 border-2 border-dashed border-[#4A3219] bg-[#FDFBF7] text-[#4A3219] font-bold rounded-2xl hover:bg-[#F5EFE6] transition-colors flex items-center justify-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Add New Variant
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="pt-4 md:pt-8 mt-4 md:mt-8 border-t border-[#E6DCCF] flex flex-wrap gap-3 md:gap-4">
