@@ -264,7 +264,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
       if (pathsToDelete.length > 0) {
         supabase.storage.from('product-images').remove(pathsToDelete)
-          .catch(err => console.error("Failed to clean up storage:", err));
+          .catch((err: any) => console.error("Failed to clean up storage:", err));
       }
     }
 
@@ -299,7 +299,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
       if (pathsToDelete.length > 0) {
         supabase.storage.from('product-images').remove(pathsToDelete)
-          .catch(err => console.error("Failed to wipe storage:", err));
+          .catch((err: any) => console.error("Failed to wipe storage:", err));
       }
     }
 
