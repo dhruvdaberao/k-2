@@ -47,11 +47,11 @@ export default function AdminDashboard() {
               <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
           </Link>
-          <div className="text-center md:text-left px-12 md:px-14">
-            <h1 className="text-3xl md:text-5xl font-bold text-[#4A3219] mb-2" style={{ letterSpacing: "-0.3px", lineHeight: "1.2" }}>
-              Admin <br className="md:hidden" /> Dashboard
+          <div className="text-center md:text-left px-10 md:px-14">
+            <h1 className="text-3xl md:text-5xl font-bold text-[#4A3219] mb-2 leading-tight" style={{ letterSpacing: "-0.3px" }}>
+              Admin <br /> Dashboard
             </h1>
-            <p className="text-stone-500 text-base md:text-lg">
+            <p className="text-stone-500 text-sm md:text-lg mt-2">
               Manage orders and platform activity
             </p>
           </div>
