@@ -35,18 +35,43 @@ export default function AdminDashboard() {
   return (
     <main className="min-h-screen bg-[#FDFBF7] py-20 px-4">
       <div className="max-w-3xl mx-auto">
-        <header className="mb-12 text-center md:text-left" style={{ paddingTop: '40px', paddingBottom: '20px' }}>
-          <h1 className="text-3xl md:text-5xl font-bold text-[#4A3219] mb-3" style={{ letterSpacing: "-0.3px" }}>
-            Admin Dashboard
-          </h1>
+        <header className="mb-12 text-center md:text-left relative" style={{ paddingTop: '40px', paddingBottom: '20px' }}>
+          <Link
+            href="/profile"
+            className="absolute left-0 p-2 text-[#8B7355] hover:bg-[#F5EFE6] rounded-full transition-colors flex items-center justify-center md:hidden"
+            style={{ textDecoration: "none", top: '40px' }}
+            title="Back to Profile"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </Link>
+          <div className="md:flex md:items-center md:gap-4 md:mb-3">
+            <Link
+              href="/profile"
+              className="hidden md:flex p-2 text-[#8B7355] hover:bg-[#F5EFE6] rounded-full transition-colors items-center justify-center"
+              style={{ textDecoration: "none", marginTop: '-4px' }}
+              title="Back to Profile"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+            </Link>
+            <h1 className="text-3xl md:text-5xl font-bold text-[#4A3219] mb-3 md:mb-0" style={{ letterSpacing: "-0.3px" }}>
+              Admin Dashboard
+            </h1>
+          </div>
           <p className="text-stone-500 text-base md:text-lg">
             Manage orders and platform activity
           </p>
         </header>
 
         {loading ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="w-8 h-8 rounded-full border-4 border-[#8B7355] border-t-transparent animate-spin"></div>
+          <div className="flex flex-col justify-center items-center py-20 w-full">
+            <div className="w-10 h-10 rounded-full border-4 border-[#4A3219] border-t-transparent animate-spin mb-4"></div>
+            <div className="text-[#4A3219] font-bold text-xl text-center">Loading dashboard...</div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
