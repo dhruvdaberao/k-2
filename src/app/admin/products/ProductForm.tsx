@@ -458,46 +458,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <div>
-              <label className="block text-sm font-semibold text-[#8B7355] mb-2">Bestseller Badge</label>
-              <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '12px' }}>
-                <div style={{ position: 'relative', width: '56px', height: '32px' }}>
-                  <input
-                    type="checkbox"
-                    style={{ opacity: 0, width: 0, height: 0, position: 'absolute' }}
-                    checked={formData.badge === "Bestseller" || formData.badges?.includes("Bestseller")}
-                    onChange={(e) => {
-                      const isBestseller = e.target.checked;
-                      setFormData(prev => {
-                        const newBadges = prev.badges.filter((b: string) => b !== "Bestseller");
-                        if (isBestseller) newBadges.push("Bestseller");
-                        return { 
-                          ...prev, 
-                          badge: isBestseller ? "Bestseller" : "", 
-                          badges: newBadges 
-                        };
-                      });
-                    }}
-                  />
-                  <div style={{ 
-                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, 
-                    borderRadius: '34px', transition: 'background-color 0.3s',
-                    backgroundColor: (formData.badge === "Bestseller" || formData.badges?.includes("Bestseller")) ? '#4A3219' : '#E6DCCF'
-                  }}></div>
-                  <div style={{
-                    position: 'absolute', top: '4px', left: '4px', 
-                    width: '24px', height: '24px', borderRadius: '50%', 
-                    backgroundColor: 'white', transition: 'transform 0.3s',
-                    transform: (formData.badge === "Bestseller" || formData.badges?.includes("Bestseller")) ? 'translateX(24px)' : 'translateX(0)'
-                  }}></div>
-                </div>
-                <div style={{ fontWeight: '600', color: (formData.badge === "Bestseller" || formData.badges?.includes("Bestseller")) ? '#4A3219' : '#8B7355' }}>
-                  {(formData.badge === "Bestseller" || formData.badges?.includes("Bestseller")) ? 'Bestseller' : 'Standard'}
-                </div>
-              </label>
-            </div>
-            
+          <div className="mt-4">
             <div>
               <label className="block text-sm font-semibold text-[#8B7355] mb-1">Tags (Press Enter)</label>
               <input 
