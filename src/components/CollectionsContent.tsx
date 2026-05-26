@@ -188,8 +188,8 @@ export default function CollectionsContent({ serverCategory, liveProducts = [], 
         </div>
       ) : (
         <div className="plp-grid-mobile">
-          {sorted.map((p) => (
-            <ProductCard key={p.slug} p={p} />
+          {sorted.map((p, index) => (
+            <ProductCard key={p.slug} p={p} priority={index < 4} />
           ))}
         </div>
       )}

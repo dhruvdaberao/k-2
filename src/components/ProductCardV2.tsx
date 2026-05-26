@@ -14,7 +14,7 @@ import { showToast } from "@/components/Toast";
 import "./ProductCardV2.css";
 
 
-export default function ProductCardV2({ p }: { p: Product }) {
+export default function ProductCardV2({ p, priority = false }: { p: Product, priority?: boolean }) {
     const { user } = useAuth();
     const { cartItems, addToCart, updateQuantity, removeFromCart } = useCart();
     const { toggleWishlist, isWishlisted } = useWishlist();
@@ -118,7 +118,8 @@ export default function ProductCardV2({ p }: { p: Product }) {
                             className="object-cover transition-transform duration-700 group-hover:scale-105"
                             sizes="(max-width: 768px) 50vw, 33vw"
                             draggable={false}
-                            loading="lazy"
+                            priority={priority}
+                            loading={priority ? "eager" : "lazy"}
                         />
                     </div>
                 </Link>

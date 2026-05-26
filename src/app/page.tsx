@@ -114,7 +114,7 @@ export default async function Home() {
             </div>
             <div className="plp-grid-mobile">
               {valentineProducts.map((p) => (
-                <ProductCard key={p.slug} p={p} />
+                <ProductCard key={p.slug} p={p} priority={true} />
               ))}
             </div>
           </section>
