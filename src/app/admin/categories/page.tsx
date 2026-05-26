@@ -263,8 +263,17 @@ export default function AdminCategories() {
                                 e.currentTarget.blur();
                               }
                             }}
-                            className="w-10 text-center text-sm font-semibold text-[#4A3219] bg-transparent border-none shadow-none outline-none ring-0 focus:outline-none focus:ring-0 rounded-none px-0 py-0 m-0"
-                            style={{ MozAppearance: 'textfield', WebkitAppearance: 'none' }}
+                            className="text-sm font-semibold text-[#4A3219] p-0 m-0"
+                            style={{ 
+                              MozAppearance: 'textfield', 
+                              WebkitAppearance: 'none',
+                              border: 'none',
+                              background: 'transparent',
+                              outline: 'none',
+                              boxShadow: 'none',
+                              width: '40px',
+                              textAlign: 'center'
+                            }}
                             key={`input-${category.id}-${idx}`}
                             defaultValue={idx + 1}
                           />
