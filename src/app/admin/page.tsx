@@ -35,11 +35,11 @@ export default function AdminDashboard() {
   return (
     <main className="min-h-screen bg-[#FDFBF7] py-20 px-4">
       <div className="max-w-3xl mx-auto">
-        <header className="mb-12 text-center md:text-left relative" style={{ paddingTop: '40px', paddingBottom: '20px' }}>
+        <header className="mb-8 md:mb-12 relative flex flex-col items-center md:items-start" style={{ paddingTop: '40px', paddingBottom: '20px' }}>
           <Link
             href="/profile"
-            className="absolute left-0 p-2 text-[#8B7355] hover:bg-[#F5EFE6] rounded-full transition-colors flex items-center justify-center md:hidden"
-            style={{ textDecoration: "none", top: '40px' }}
+            className="absolute left-0 p-2 text-[#8B7355] hover:bg-[#F5EFE6] rounded-full transition-colors flex items-center justify-center"
+            style={{ textDecoration: "none", top: '40px', left: '-8px' }}
             title="Back to Profile"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -47,25 +47,14 @@ export default function AdminDashboard() {
               <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
           </Link>
-          <div className="md:flex md:items-center md:gap-4 md:mb-3">
-            <Link
-              href="/profile"
-              className="hidden md:flex p-2 text-[#8B7355] hover:bg-[#F5EFE6] rounded-full transition-colors items-center justify-center"
-              style={{ textDecoration: "none", marginTop: '-4px' }}
-              title="Back to Profile"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-              </svg>
-            </Link>
-            <h1 className="text-3xl md:text-5xl font-bold text-[#4A3219] mb-3 md:mb-0" style={{ letterSpacing: "-0.3px" }}>
+          <div className="text-center md:text-left px-12 md:px-14">
+            <h1 className="text-3xl md:text-5xl font-bold text-[#4A3219] mb-2" style={{ letterSpacing: "-0.3px" }}>
               Admin Dashboard
             </h1>
+            <p className="text-stone-500 text-base md:text-lg">
+              Manage orders and platform activity
+            </p>
           </div>
-          <p className="text-stone-500 text-base md:text-lg">
-            Manage orders and platform activity
-          </p>
         </header>
 
         {loading ? (
