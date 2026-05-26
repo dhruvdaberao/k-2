@@ -12,6 +12,7 @@ export default function WishlistPage() {
   const { wishlist: items, loading } = useWishlist();
   const [products, setProducts] = useState<any[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
 
   const itemsStr = items.sort().join(',');
 
@@ -28,10 +29,13 @@ export default function WishlistPage() {
 
     let isMounted = true;
 
-    // Absolute safety net: never show skeleton for more than 3 seconds
+    // Safety net: timeout after 8 seconds if connection is frozen
     const safety = setTimeout(() => {
-      if (isMounted) setIsLoadingProducts(false);
-    }, 3000);
+      if (isMounted) {
+        setIsLoadingProducts(false);
+        setFetchError(true);
+      }
+    }, 8000);
 
     supabase
       .from("products")
@@ -48,6 +52,7 @@ export default function WishlistPage() {
         console.error("Wishlist product fetch error:", err);
         clearTimeout(safety);
         setIsLoadingProducts(false);
+        setFetchError(true);
       });
 
     return () => {
@@ -82,7 +87,24 @@ export default function WishlistPage() {
     <div className="container py-8">
       <h1 className="text-3xl font-serif font-bold text-[#2f2a26] mb-8 text-center">Wishlist</h1>
 
-      {wishlistProducts.length === 0 ? (
+      {fetchError ? (
+        <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4 max-w-md mx-auto">
+          <div className="mb-6 text-red-400">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          </div>
+          <h2 className="text-xl font-serif font-bold text-[#2f2a26] mb-2">Connection Issue</h2>
+          <p className="text-stone-500 mb-8 text-sm">
+            We couldn't connect to the server to load your wishlist. Please check your internet and try again.
+          </p>
+          <button onClick={() => window.location.reload()} className="btn-primary px-10 py-3 rounded-full font-bold">
+            Retry
+          </button>
+        </div>
+      ) : wishlistProducts.length === 0 ? (
         <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4 max-w-md mx-auto">
           <div className="mb-6 opacity-30">
             <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">

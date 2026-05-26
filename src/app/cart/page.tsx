@@ -10,7 +10,7 @@ import PriceProgressBar from "@/components/PriceProgressBar";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import type { Product } from "@/types";
 
-import NextImage from "next/image";
+import ImageWithFallback from "@/components/ImageWithFallback";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function CartPage() {
@@ -24,6 +24,7 @@ export default function CartPage() {
   const [showOutOfStockCartModal, setShowOutOfStockCartModal] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [productsLoading, setProductsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
 
   const cartIdsStr = cartItems.map(it => it.id).sort().join(',');
 
@@ -40,10 +41,13 @@ export default function CartPage() {
     
     let isMounted = true;
     
-    // Absolute safety net: never show skeleton for more than 3 seconds
+    // Absolute safety net: timeout after 8 seconds if connection is frozen
     const safety = setTimeout(() => {
-      if (isMounted) setProductsLoading(false);
-    }, 3000);
+      if (isMounted) {
+        setProductsLoading(false);
+        setFetchError(true);
+      }
+    }, 8000);
 
     supabase
       .from("products")
@@ -60,6 +64,7 @@ export default function CartPage() {
         console.error("Cart product fetch error:", err);
         clearTimeout(safety);
         setProductsLoading(false);
+        setFetchError(true);
       });
       
     return () => {
@@ -218,8 +223,13 @@ export default function CartPage() {
     <main className="cart-page py-4 py-md-5 px-3 bg-[#FAF7F2] min-h-screen">
       <div className="container">
         {/* Header - centered matching Collections */}
-        <header className="mb-8 pt-2 text-center">
+        <header className="mb-8 text-center pt-2">
           <h1 className="text-3xl font-serif font-bold text-[#2f2a26]">Cart</h1>
+          {fetchError && (
+            <p className="text-red-500 text-sm mt-2 font-medium">
+              ⚠️ Working offline: Unable to check live stock & prices.
+            </p>
+          )}
         </header>
 
         {cartItems.length === 0 ? (
@@ -278,7 +288,7 @@ export default function CartPage() {
                   <div key={it.id} className={`cart-item-row-refined shadow-sm${selectedItems.includes(it.id) ? " cart-item--selected" : ""}`}>
                     {/* Left: Thumbnail */}
                     <div className="cart-item-thumbnail relative" style={{ width: 72, height: 72 }}>
-                      <NextImage src={imageUrl} alt={it.name} fill style={{ objectFit: 'cover' }} sizes="72px" />
+                      <ImageWithFallback src={imageUrl} alt={it.name} fill style={{ objectFit: 'cover' }} sizes="72px" />
                     </div>
 
                     {/* Center: Details & Picker */}
