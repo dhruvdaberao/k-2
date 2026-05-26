@@ -43,7 +43,7 @@ export default function WishlistPage() {
         if (data) setProducts(data);
         setIsLoadingProducts(false);
       })
-      .catch((err) => {
+      .catch((err: any) => {
         if (!isMounted) return;
         console.error("Wishlist product fetch error:", err);
         clearTimeout(safety);

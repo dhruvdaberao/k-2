@@ -55,7 +55,7 @@ export default function CartPage() {
         if (data) setProducts(data as Product[]);
         setProductsLoading(false);
       })
-      .catch((err) => {
+      .catch((err: any) => {
         if (!isMounted) return;
         console.error("Cart product fetch error:", err);
         clearTimeout(safety);
