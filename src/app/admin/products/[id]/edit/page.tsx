@@ -13,42 +13,43 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
   const [loading, setLoading] = useState(true);
   const [initialData, setInitialData] = useState<any>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Auth check
-        const { data: authData } = await supabase.auth.getUser();
-        if (!authData?.user || authData.user.email !== "keshvicrafts@gmail.com") {
-          router.push("/");
-          return;
-        }
-
-        // Fetch product
-        const { data, error } = await supabase
-          .from("products")
-          .select("*")
-          .eq("id", params.id)
-          .single();
-
-        if (error || !data) {
-          console.error("Failed to fetch product:", error);
-          showToast("Product not found");
-          router.push("/admin/products");
-          return;
-        }
-
-        setInitialData(data);
-      } catch (err) {
-        console.error("Edit product fetch failed:", err);
-      } finally {
-        setLoading(false);
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      // Auth check
+      const { data: authData } = await supabase.auth.getUser();
+      if (!authData?.user || authData.user.email !== "keshvicrafts@gmail.com") {
+        router.push("/");
+        return;
       }
-    };
-    
+
+      // Fetch product
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("id", params.id)
+        .single();
+
+      if (error || !data) {
+        console.error("Failed to fetch product:", error);
+        showToast("Product not found");
+        setInitialData(null);
+      } else {
+        setInitialData(data);
+      }
+    } catch (err) {
+      console.error("Edit product fetch failed:", err);
+      setInitialData(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
 
-    // Safety: never show loading for more than 5 seconds
-    const safety = setTimeout(() => setLoading(false), 5000);
+    // Safety: never show loading for more than 15 seconds
+    const safety = setTimeout(() => setLoading(false), 15000);
     return () => clearTimeout(safety);
   }, [params.id, router]);
 
@@ -60,8 +61,8 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
         <div className="text-center">
           <h1 className="text-2xl font-bold text-[#4A3219] mb-2">Product Not Found</h1>
           <p className="text-[#8B7355] mb-6">The product could not be loaded. It may have been deleted or there was a network issue.</p>
-          <button onClick={() => window.location.reload()} className="px-6 py-3 rounded-xl font-bold" style={{ backgroundColor: '#4A3219', color: '#ffffff' }}>
-            Retry
+          <button type="button" onClick={fetchData} className="px-6 py-3 rounded-xl font-bold" style={{ backgroundColor: '#4A3219', color: '#ffffff' }}>
+            Retry Loading
           </button>
         </div>
       </main>
