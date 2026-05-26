@@ -40,44 +40,16 @@ export default async function Home() {
     return output;
   };
 
-  // 2. Collections Logic
-  const normalize = (s: string) => s.toLowerCase().trim();
-
-  // Valentine's (Dedupe first)
-  const valentineRaw = sortedProducts.filter(p =>
-    p.tags?.some(t => normalize(t) === "valentine")
-  );
-  // Important: Valentine is hero content, so we render it first.
-  const valentineProducts = getDeduplicated(valentineRaw, 4);
-
-  // 1A. Popular Handmade Picks (SEO Crawl Authority Boost)
-  // Required: 6-8 top products linked via pure HTML tags.
-  const popularPicks = getDeduplicated(sortedProducts, 6);
-
-  // Best Sellers Logic:
-  // 1. Explicit Bestseller badge
-  // 2. Fallback to sortedProducts (which respects priority)
-
-  const explicitBestsellers = sortedProducts.filter(p =>
-    p.badges?.includes("Bestseller") || p.badge === "Bestseller"
-  );
-
-  // Combine pools: Explicit -> General
-  const bestSellerPool = [...explicitBestsellers, ...sortedProducts];
-  const bestSellers = getDeduplicated(bestSellerPool, 4);
-
-  // Price Collections
-  const under499Raw = sortedProducts.filter(p => (p.minPrice || p.price) < 499);
-  const under499 = getDeduplicated(under499Raw, 4);
+  // 2. Pure Priority Slicing for Home Page Sections
+  const section1 = sortedProducts.slice(0, 6);
+  const section2 = sortedProducts.slice(6, 10).map(p => ({ ...p, badge: 'Bestseller' }));
+  const section3 = sortedProducts.slice(10, 14);
+  const section4 = sortedProducts.slice(14, 22);
 
   // Categories (Unique Display Categories)
   const activeCategoriesMap = Array.from(new Set(live.map(p => p.category || '')));
   const allLiveCategories = await getLiveCategories();
   const displayCats = allLiveCategories.filter(c => activeCategoriesMap.includes(c.name));
-
-  // Featured (Top from sorted, excluding already rendered)
-  // Just show whatever is left high priority
-  const featuredProducts = getDeduplicated(sortedProducts, 8);
 
   return (
     <main>
@@ -86,38 +58,20 @@ export default async function Home() {
 
       <div className="container py-40 mt-10">
       
-
-
-        {/* Valentine's Collection (Campaign) */}
-        {valentineProducts.length > 0 && (
-          <section className="mb-16">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-3xl font-bold flex items-center gap-2" style={{ color: "var(--brand)" }}>
-                <span>💘</span> Valentine&apos;s Special
-              </h2>
-              <Link href="/collections?tag=valentine" className="meta hover:underline" style={{ color: "var(--brand)" }}>
-                View All →
-              </Link>
-            </div>
-            <div className="plp-grid-mobile">
-              {valentineProducts.map((p) => (
-                <ProductCard key={p.slug} p={p} priority={true} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Popular Handmade Picks (SEO Authority) */}
-        {popularPicks.length > 0 && (
+        {/* Section 1: Popular Handmade Picks */}
+        {section1.length > 0 && (
           <section className="mb-16">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
                 Popular Handmade Picks
               </h2>
+              <Link href="/collections" className="meta hover:underline" style={{ color: "var(--brand)" }}>
+                View All →
+              </Link>
             </div>
             <div className="plp-grid-mobile">
-              {popularPicks.map((p) => (
-                <ProductCard key={p.slug} p={p} />
+              {section1.map((p) => (
+                <ProductCard key={p.slug} p={p} priority={true} />
               ))}
             </div>
           </section>
@@ -161,8 +115,8 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Best Sellers Section */}
-        {bestSellers.length > 0 && (
+        {/* Section 2: Best Sellers (Auto-badged) */}
+        {section2.length > 0 && (
           <section className="mb-12">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
@@ -173,7 +127,7 @@ export default async function Home() {
               </Link>
             </div>
             <div className="plp-grid-mobile">
-              {bestSellers.map((p) => (
+              {section2.map((p) => (
                 <ProductCard key={p.slug} p={p} />
               ))}
             </div>
@@ -188,7 +142,6 @@ export default async function Home() {
             </h2>
             <div className="flex flex-wrap gap-3 mb-8">
               {displayCats.slice(0, 6).map((cat) => {
-                // Approximate count
                 const count = live.filter((p) => (p.category || '') === cat.name).length;
                 const slug = cat.slug;
                 return (
@@ -209,27 +162,27 @@ export default async function Home() {
           </section>
         )}
 
-        {/* Price Based (Under 499) */}
-        {under499.length > 0 && (
+        {/* Section 3: Trending Now */}
+        {section3.length > 0 && (
           <section className="mb-12">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
-                Best Under ₹499
+                Trending Creations
               </h2>
-              <Link href="/collections?maxPrice=499" className="meta hover:underline">
+              <Link href="/collections" className="meta hover:underline">
                 View All →
               </Link>
             </div>
             <div className="plp-grid-mobile">
-              {under499.map((p) => (
+              {section3.map((p) => (
                 <ProductCard key={p.slug} p={p} />
               ))}
             </div>
           </section>
         )}
 
-        {/* Featured Products Section (Remaining Top Priority) */}
-        {featuredProducts.length > 0 && (
+        {/* Section 4: Featured Collections */}
+        {section4.length > 0 && (
           <section className="mb-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
@@ -240,11 +193,11 @@ export default async function Home() {
               </Link>
             </div>
             <p className="meta mb-6">
-              Crafted on request • Ships across India • Sorted by Priority
+              Crafted on request • Ships across India
             </p>
 
             <div className="plp-grid-mobile">
-              {featuredProducts.map((p) => (
+              {section4.map((p) => (
                 <ProductCard key={p.slug} p={p} />
               ))}
             </div>
