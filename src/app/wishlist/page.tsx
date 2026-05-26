@@ -13,12 +13,28 @@ export default function WishlistPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
 
+  const itemsStr = items.sort().join(',');
+
   useEffect(() => {
-    supabase.from("products").select("*").then(({ data }: { data: any }) => {
-      if (data) setProducts(data);
+    if (loading) return; // Wait for useWishlist to load
+
+    if (!itemsStr) {
+      setProducts([]);
       setIsLoadingProducts(false);
-    });
-  }, []);
+      return;
+    }
+
+    const ids = itemsStr.split(',');
+
+    supabase
+      .from("products")
+      .select("*")
+      .or(`id.in.(${ids.join(',')}),slug.in.(${ids.join(',')})`)
+      .then(({ data }) => {
+        if (data) setProducts(data);
+        setIsLoadingProducts(false);
+      });
+  }, [loading, itemsStr]);
 
   if (loading || (items.length > 0 && isLoadingProducts)) {
     return (

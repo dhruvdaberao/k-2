@@ -25,12 +25,29 @@ export default function CartPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [productsLoading, setProductsLoading] = useState(true);
 
+  const cartIdsStr = cartItems.map(it => it.id).sort().join(',');
+
   useEffect(() => {
-    supabase.from("products").select("*").then(({ data }: { data: any }) => {
-      if (data) setProducts(data as Product[]);
+    if (loading) return; // Wait for useCart to load initial state
+
+    if (!cartIdsStr) {
+      setProducts([]);
       setProductsLoading(false);
-    });
-  }, []);
+      return;
+    }
+
+    const ids = cartIdsStr.split(',');
+    
+    // Only fetch the exact products in the cart! (Massive performance boost)
+    supabase
+      .from("products")
+      .select("*")
+      .or(`id.in.(${ids.join(',')}),slug.in.(${ids.join(',')})`)
+      .then(({ data }) => {
+        if (data) setProducts(data as Product[]);
+        setProductsLoading(false);
+      });
+  }, [loading, cartIdsStr]);
 
   // Auto-remove deleted items from cart
   useEffect(() => {
