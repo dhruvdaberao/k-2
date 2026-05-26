@@ -86,6 +86,7 @@ export default function ProductPageClient({
       <div className="product-page-grid">
         <div className="product-page-media product-image-container">
           <Gallery
+            key={currentImages.join(',')}
             images={currentImages}
             alt={product.title}
             heartButton={
