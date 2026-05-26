@@ -521,7 +521,8 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                       </svg>
                     </button>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
