@@ -155,11 +155,6 @@ export default function AdminCarousels() {
           </div>
         ) : (
           <div className="bg-white rounded-2xl border border-[#E6DCCF] overflow-hidden shadow-sm">
-            <div className="md:hidden text-xs text-[#8B7355] p-2 bg-[#F5EFE6] border-b border-[#E6DCCF] flex items-center justify-center gap-1 font-medium">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-              Swipe horizontally to view full table
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-            </div>
             <div className="overflow-x-auto custom-scrollbar">
               <table className="w-full md:min-w-[800px] text-left border-collapse">
                 <thead>
