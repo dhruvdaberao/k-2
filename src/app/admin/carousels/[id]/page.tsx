@@ -363,7 +363,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             {/* Status */}
-            <div className="md:col-span-2 flex items-center justify-between p-4 md:p-5 rounded-xl border border-[#E6DCCF] shadow-sm">
+            <div className="md:col-span-2 flex items-center justify-between p-4 md:p-5 rounded-xl border border-[#E6DCCF] shadow-sm" style={{ gridColumn: '1 / -1' }}>
               <div>
                 <div className="font-bold text-sm md:text-base text-[#4A3219] mb-1">Carousel Visibility</div>
                 <p className="text-[11px] md:text-xs text-[#8B7355]">When active, this slide will be shown on the homepage.</p>
@@ -394,7 +394,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
             </div>
 
             {/* Text Content */}
-            <div className="md:col-span-2">
+            <div className="md:col-span-2" style={{ gridColumn: '1 / -1' }}>
               <label className="block text-xs md:text-sm font-bold text-[#3E2C1C] mb-2">Main Heading</label>
               <input
                 id="title"
@@ -407,7 +407,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
               />
             </div>
             
-            <div className="md:col-span-2">
+            <div className="md:col-span-2" style={{ gridColumn: '1 / -1' }}>
               <label className="block text-xs md:text-sm font-bold text-[#3E2C1C] mb-2">Subheading</label>
               <input
                 id="subtitle"
@@ -554,12 +554,12 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row items-center gap-4 pt-8 border-t border-[#E6DCCF] w-full">
+          <div className="flex flex-wrap items-center gap-4 pt-8 border-t border-[#E6DCCF] w-full">
             <button
               type="submit"
               disabled={saving}
-              className="w-full md:w-auto px-6 py-3 md:px-8 md:py-0 text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md hover:opacity-90 rounded-lg md:h-[50px] text-sm md:text-base"
-              style={{ backgroundColor: '#4A3219', color: '#ffffff' }}
+              className="px-6 py-3 md:px-8 md:py-0 text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md hover:opacity-90 rounded-lg md:h-[50px] text-sm md:text-base"
+              style={{ backgroundColor: '#4A3219', color: '#ffffff', flexGrow: 1, flexBasis: 'auto', maxWidth: '200px' }}
             >
               <span style={{ color: '#ffffff' }}>{saving ? 'Saving...' : 'Save Slide'}</span>
             </button>
@@ -567,8 +567,8 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
             <button
               type="button"
               onClick={() => router.push("/admin/carousels")}
-              className="w-full md:w-auto px-6 py-3 md:px-8 md:py-0 text-white font-bold transition-colors flex items-center justify-center shadow-md hover:opacity-90 rounded-lg md:h-[50px] text-sm md:text-base"
-              style={{ backgroundColor: '#4A3219', color: '#ffffff' }}
+              className="px-6 py-3 md:px-8 md:py-0 text-white font-bold transition-colors flex items-center justify-center shadow-md hover:opacity-90 rounded-lg md:h-[50px] text-sm md:text-base"
+              style={{ backgroundColor: '#4A3219', color: '#ffffff', flexGrow: 1, flexBasis: 'auto', maxWidth: '200px' }}
             >
               <span style={{ color: '#ffffff' }}>Cancel</span>
             </button>
@@ -578,8 +578,8 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
                 type="button"
                 onClick={handleDelete}
                 disabled={saving}
-                className="w-full md:w-auto px-6 py-3 md:px-8 md:py-0 text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-md hover:opacity-90 rounded-lg md:h-[50px] text-sm md:text-base md:ml-auto"
-                style={{ backgroundColor: '#4A3219', color: '#ffffff' }}
+                className="px-6 py-3 md:px-8 md:py-0 text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-md hover:opacity-90 rounded-lg md:h-[50px] text-sm md:text-base md:ml-auto"
+                style={{ backgroundColor: '#4A3219', color: '#ffffff', flexGrow: 1, flexBasis: 'auto', maxWidth: '200px' }}
               >
                 <span style={{ color: '#ffffff' }}>Delete Slide</span>
               </button>
