@@ -75,7 +75,7 @@ export default function EditTimerPage() {
               <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
           </Link>
-          <h1 className="text-2xl md:text-3xl font-bold text-[#4A3219]">Edit Auto-Play Timer</h1>
+          <h1 className="text-xl md:text-3xl font-bold text-[#4A3219]">Edit Auto-Play Timer</h1>
         </div>
 
         <div className="bg-white rounded-2xl border border-[#E6DCCF] shadow-sm p-6 md:p-8">
@@ -93,9 +93,9 @@ export default function EditTimerPage() {
                   max="60"
                   value={timerValue} 
                   onChange={(e) => setTimerValue(e.target.value)} 
-                  className="w-32 border border-stone-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8B7355] text-lg font-bold text-[#4A3219]"
+                  className="w-24 md:w-32 border border-stone-300 p-2 md:p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8B7355] text-base md:text-lg font-bold text-[#4A3219]"
                 />
-                <span className="text-stone-500 font-bold">seconds</span>
+                <span className="text-sm md:text-base text-stone-500 font-bold">seconds</span>
               </div>
               <p className="text-sm text-stone-500 mb-8">Enter a value between 1 and 60 seconds. This controls how fast the hero banner auto-rotates on the homepage.</p>
               
@@ -104,15 +104,15 @@ export default function EditTimerPage() {
                   type="button" 
                   onClick={saveTimer} 
                   disabled={savingTimer} 
-                  className="rounded-xl font-bold transition-transform active:scale-95 disabled:opacity-50 flex items-center justify-center"
-                  style={{ background: '#4A3219', color: '#ffffff', border: 'none', padding: '12px 24px' }}
+                  className="rounded-lg md:rounded-xl text-sm md:text-base font-bold transition-transform active:scale-95 disabled:opacity-50 flex items-center justify-center px-4 py-2 md:px-6 md:py-3"
+                  style={{ background: '#4A3219', color: '#ffffff', border: 'none' }}
                 >
                   <span style={{ color: '#ffffff' }}>{savingTimer ? "Saving..." : "Save Timer"}</span>
                 </button>
                 <Link
                   href="/admin/carousels"
-                  className="rounded-xl font-bold transition-transform active:scale-95 flex items-center justify-center"
-                  style={{ background: '#4A3219', color: '#ffffff', border: 'none', textDecoration: 'none', padding: '12px 24px' }}
+                  className="rounded-lg md:rounded-xl text-sm md:text-base font-bold transition-transform active:scale-95 flex items-center justify-center px-4 py-2 md:px-6 md:py-3"
+                  style={{ background: '#4A3219', color: '#ffffff', border: 'none', textDecoration: 'none' }}
                 >
                   <span style={{ color: '#ffffff' }}>Cancel</span>
                 </Link>

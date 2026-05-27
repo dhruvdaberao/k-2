@@ -253,7 +253,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
         <form onSubmit={handleSubmit} noValidate className="bg-white rounded-2xl border border-[#E6DCCF] p-4 md:p-6 shadow-sm">
           {/* Image Upload */}
           <div className="mb-8">
-            <h3 className="font-bold text-[#4A3219] mb-2 text-xl border-b border-[#E6DCCF] pb-2">Carousel Image</h3>
+            <h3 className="font-bold text-[#4A3219] mb-2 text-lg md:text-xl border-b border-[#E6DCCF] pb-2">Carousel Image</h3>
             <p className="text-xs text-[#8B7355] mb-4">Recommended size: 1440x720px (2:1 ratio). Uploaded in original quality.</p>
             
             <div className="flex flex-wrap justify-center gap-6 items-center mt-4">
@@ -365,8 +365,8 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
             {/* Status */}
             <div className="md:col-span-2 flex items-center justify-between p-4 md:p-5 rounded-xl border border-[#E6DCCF] shadow-sm">
               <div>
-                <div className="font-bold text-sm text-[#4A3219] mb-1">Carousel Visibility</div>
-                <p className="text-xs text-[#8B7355]">When active, this slide will be shown on the homepage.</p>
+                <div className="font-bold text-sm md:text-base text-[#4A3219] mb-1">Carousel Visibility</div>
+                <p className="text-[11px] md:text-xs text-[#8B7355]">When active, this slide will be shown on the homepage.</p>
               </div>
               <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '12px' }}>
                 <div style={{ position: 'relative', width: '40px', height: '24px' }}>
@@ -395,53 +395,53 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
 
             {/* Text Content */}
             <div className="md:col-span-2">
-              <label className="block text-sm font-bold text-[#3E2C1C] mb-2">Main Heading</label>
+              <label className="block text-xs md:text-sm font-bold text-[#3E2C1C] mb-2">Main Heading</label>
               <input
                 id="title"
                 type="text"
                 required
                 value={formData.title}
                 onChange={(e) => setFormData({...formData, title: e.target.value})}
-                className="w-full border border-stone-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                className="w-full border border-stone-300 p-2 md:p-3 text-sm md:text-base rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
                 placeholder="e.g., Soft Switch"
               />
             </div>
             
             <div className="md:col-span-2">
-              <label className="block text-sm font-bold text-[#3E2C1C] mb-2">Subheading</label>
+              <label className="block text-xs md:text-sm font-bold text-[#3E2C1C] mb-2">Subheading</label>
               <input
                 id="subtitle"
                 type="text"
                 required
                 value={formData.subtitle}
                 onChange={(e) => setFormData({...formData, subtitle: e.target.value})}
-                className="w-full border border-stone-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                className="w-full border border-stone-300 p-2 md:p-3 text-sm md:text-base rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
                 placeholder="e.g., Discover comfortable and stylish clothing..."
               />
             </div>
 
             {/* Buttons Setup */}
             <div className="p-4 md:p-5 rounded-xl border border-[#E6DCCF] shadow-sm">
-              <h3 className="text-lg font-bold text-[#4A3219] mb-4 border-b border-[#E6DCCF] pb-2">Primary Button</h3>
+              <h3 className="text-base md:text-lg font-bold text-[#4A3219] mb-4 border-b border-[#E6DCCF] pb-2">Primary Button</h3>
               
               <div className="mb-4">
-                <label className="block text-sm font-bold text-stone-600 mb-1">Button Text</label>
+                <label className="block text-xs md:text-sm font-bold text-stone-600 mb-1">Button Text</label>
                 <input
                   id="primary_cta_label"
                   type="text"
                   value={formData.primary_cta_label}
                   onChange={(e) => setFormData({...formData, primary_cta_label: e.target.value})}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-sm text-[#3E2C1C] focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                  className="w-full px-3 py-2 md:px-4 md:py-3 rounded-lg border border-stone-300 bg-white text-sm md:text-base text-[#3E2C1C] focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-stone-600 mb-1">Links to Category</label>
+                <label className="block text-xs md:text-sm font-bold text-stone-600 mb-1">Links to Category</label>
                 <div className="relative">
                   <div 
                     id="primary_cta_href"
                     tabIndex={0}
-                    className="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white cursor-pointer flex justify-between items-center text-sm text-[#3E2C1C] focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                    className="w-full px-3 py-2 md:px-4 md:py-3 rounded-lg border border-stone-300 bg-white cursor-pointer flex justify-between items-center text-sm md:text-base text-[#3E2C1C] focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
                     style={{ outline: primaryDropdownOpen ? '2px solid #8B7355' : 'none' }}
                     onClick={() => setPrimaryDropdownOpen(!primaryDropdownOpen)}
                   >
@@ -485,27 +485,31 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
               </div>
             </div>
 
-            <div className="p-5 rounded-xl border border-[#E6DCCF] shadow-sm">
-              <h3 className="text-lg font-bold text-[#4A3219] mb-4 border-b border-[#E6DCCF] pb-2">Secondary Button</h3>
+            <div className="p-4 md:p-5 rounded-xl border border-[#E6DCCF] shadow-sm">
+              <div className="flex items-center justify-between mb-4 border-b border-[#E6DCCF] pb-2">
+                <h3 className="text-base md:text-lg font-bold text-[#4A3219]">Secondary Button</h3>
+                <span className="text-[11px] md:text-xs text-stone-500 bg-[#F5EFE6] px-2 py-1 rounded-full">Optional</span>
+              </div>
               
               <div className="mb-4">
-                <label className="block text-sm font-bold text-stone-600 mb-1">Button Text</label>
+                <label className="block text-xs md:text-sm font-bold text-stone-600 mb-1">Button Text</label>
                 <input
                   id="secondary_cta_label"
                   type="text"
                   value={formData.secondary_cta_label}
                   onChange={(e) => setFormData({...formData, secondary_cta_label: e.target.value})}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-sm text-[#3E2C1C] focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                  className="w-full px-3 py-2 md:px-4 md:py-3 rounded-lg border border-stone-300 bg-white text-sm md:text-base text-[#3E2C1C] focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                  placeholder="e.g., View Catalog"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-stone-600 mb-1">Links to Category</label>
+                <label className="block text-xs md:text-sm font-bold text-stone-600 mb-1">Links to Category</label>
                 <div className="relative">
                   <div 
                     id="secondary_cta_href"
                     tabIndex={0}
-                    className="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white cursor-pointer flex justify-between items-center text-sm text-[#3E2C1C] focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                    className="w-full px-3 py-2 md:px-4 md:py-3 rounded-lg border border-stone-300 bg-white cursor-pointer flex justify-between items-center text-sm md:text-base text-[#3E2C1C] focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
                     style={{ outline: secondaryDropdownOpen ? '2px solid #8B7355' : 'none' }}
                     onClick={() => setSecondaryDropdownOpen(!secondaryDropdownOpen)}
                   >
@@ -550,12 +554,12 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4 pt-8 border-t border-[#E6DCCF] w-full">
+          <div className="flex flex-col md:flex-row items-center gap-4 pt-8 border-t border-[#E6DCCF] w-full">
             <button
               type="submit"
               disabled={saving}
-              className="px-8 text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md hover:opacity-90"
-              style={{ backgroundColor: '#4A3219', color: '#ffffff', borderRadius: '8px', height: '50px' }}
+              className="w-full md:w-auto px-6 py-3 md:px-8 md:py-0 text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md hover:opacity-90 rounded-lg md:h-[50px] text-sm md:text-base"
+              style={{ backgroundColor: '#4A3219', color: '#ffffff' }}
             >
               <span style={{ color: '#ffffff' }}>{saving ? 'Saving...' : 'Save Slide'}</span>
             </button>
@@ -563,8 +567,8 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
             <button
               type="button"
               onClick={() => router.push("/admin/carousels")}
-              className="px-8 text-white font-bold transition-colors flex items-center justify-center shadow-md hover:opacity-90"
-              style={{ backgroundColor: '#4A3219', color: '#ffffff', borderRadius: '8px', height: '50px' }}
+              className="w-full md:w-auto px-6 py-3 md:px-8 md:py-0 text-white font-bold transition-colors flex items-center justify-center shadow-md hover:opacity-90 rounded-lg md:h-[50px] text-sm md:text-base"
+              style={{ backgroundColor: '#4A3219', color: '#ffffff' }}
             >
               <span style={{ color: '#ffffff' }}>Cancel</span>
             </button>
@@ -574,8 +578,8 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
                 type="button"
                 onClick={handleDelete}
                 disabled={saving}
-                className="px-8 text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-md hover:opacity-90"
-                style={{ backgroundColor: '#4A3219', color: '#ffffff', borderRadius: '8px', height: '50px' }}
+                className="w-full md:w-auto px-6 py-3 md:px-8 md:py-0 text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-md hover:opacity-90 rounded-lg md:h-[50px] text-sm md:text-base md:ml-auto"
+                style={{ backgroundColor: '#4A3219', color: '#ffffff' }}
               >
                 <span style={{ color: '#ffffff' }}>Delete Slide</span>
               </button>
