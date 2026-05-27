@@ -96,7 +96,7 @@ export default function AdminCarousels() {
   };
 
   return (
-    <main className="min-h-screen bg-[#FDFBF7] py-8 px-4">
+    <main className="min-h-screen bg-[#FDFBF7] py-8 px-2 md:px-4">
       <style>{`
         .custom-scrollbar::-webkit-scrollbar {
           height: 12px;
@@ -161,7 +161,7 @@ export default function AdminCarousels() {
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
             </div>
             <div className="overflow-x-auto custom-scrollbar">
-              <table className="w-full min-w-[500px] md:min-w-[800px] text-left border-collapse">
+              <table className="w-full md:min-w-[800px] text-left border-collapse">
                 <thead>
                   <tr className="bg-[#F5EFE6] text-[#8B7355] text-[10px] md:text-xs uppercase tracking-wider">
                     <th className="p-2 md:p-5 font-semibold text-center w-[40px] md:w-[60px]">Order</th>
