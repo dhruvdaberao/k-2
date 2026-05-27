@@ -363,23 +363,23 @@ function ProfileContent() {
           <label className="checkout-field"><span>Country</span><input type="text" value={details.country} onChange={(e) => handleFieldChange("country", e.target.value)} readOnly={!isEditing} /></label>
         </div>
 
-        <div className="flex gap-4 justify-center items-center flex-wrap mt-8 pt-4 border-t border-[#e6ded4] w-full">
+        <div className="flex flex-row gap-3 justify-center items-center mt-8 pt-4 border-t border-[#e6ded4] w-full">
           {!isEditing ? (
-            <button onClick={() => setIsEditing(true)} className="btn-primary py-3 px-8 shadow-sm rounded-lg" style={{ minWidth: '140px' }}>Edit</button>
+            <button onClick={() => setIsEditing(true)} className="btn-primary py-3 px-4 shadow-sm rounded-lg flex-1 md:flex-none md:min-w-[140px]">Edit</button>
           ) : (
-            <button onClick={saveDetails} disabled={isSaving} className="btn-primary py-3 px-8 shadow-sm rounded-lg" style={{ minWidth: '140px', background: isSaving ? "#c9b99a" : "var(--brand)" }}>
+            <button onClick={saveDetails} disabled={isSaving} className="btn-primary py-3 px-4 shadow-sm rounded-lg flex-1 md:flex-none md:min-w-[140px]" style={{ background: isSaving ? "#c9b99a" : "var(--brand)" }}>
               {isSaving ? "Saving..." : "Save Changes"}
             </button>
           )}
-          <button onClick={handleLogout} className="px-8 py-3 rounded-lg text-sm font-medium transition-opacity shadow-sm" style={{ background: "#5a3e2b", color: "white", border: "none", minWidth: '140px' }}>Log Out</button>
+          <button onClick={handleLogout} className="btn-primary py-3 px-4 shadow-sm rounded-lg flex-1 md:flex-none md:min-w-[140px]" style={{ background: 'var(--brand)', color: 'white', border: 'none' }}>Log Out</button>
         </div>
       </section>
 
-      <section className="mx-auto flex flex-wrap justify-center gap-4 mt-8 px-4 md:px-0" style={{ maxWidth: '900px' }}>
-        <button onClick={() => router.push("/orders")} className="btn-primary py-3 px-8 shadow-sm rounded-lg">Your Orders</button>
-        <button onClick={() => router.push("/my-reviews")} className="btn-primary py-3 px-8 shadow-sm rounded-lg">Your Reviews</button>
-        <button onClick={() => router.push('/account-settings')} className="btn-primary py-3 px-8 shadow-sm rounded-lg" style={{ background: 'var(--bg-main)', color: 'var(--brand)', border: '1px solid var(--brand)' }}>Account Settings</button>
-        {isAdmin(user) && (<button onClick={() => router.push('/admin')} className="btn-primary py-3 px-8 shadow-sm rounded-lg" style={{ background: 'var(--brand)', color: 'white' }}>Admin Dashboard</button>)}
+      <section className="mx-auto grid grid-cols-2 md:flex md:flex-wrap md:justify-center gap-3 md:gap-4 mt-8 px-4 md:px-0" style={{ maxWidth: '900px' }}>
+        <button onClick={() => router.push("/orders")} className="btn-primary py-3 px-2 md:px-8 text-sm md:text-base shadow-sm rounded-lg w-full md:w-auto whitespace-nowrap">Your Orders</button>
+        <button onClick={() => router.push("/my-reviews")} className="btn-primary py-3 px-2 md:px-8 text-sm md:text-base shadow-sm rounded-lg w-full md:w-auto whitespace-nowrap">Your Reviews</button>
+        <button onClick={() => router.push('/account-settings')} className="btn-primary py-3 px-2 md:px-8 text-sm md:text-base shadow-sm rounded-lg w-full md:w-auto whitespace-nowrap" style={{ background: 'var(--bg-main)', color: 'var(--brand)', border: '1px solid var(--brand)' }}>Settings</button>
+        {isAdmin(user) && (<button onClick={() => router.push('/admin')} className="btn-primary py-3 px-2 md:px-8 text-sm md:text-base shadow-sm rounded-lg w-full md:w-auto whitespace-nowrap" style={{ background: 'var(--brand)', color: 'white' }}>Admin</button>)}
       </section>
       {profileModalHTML}
       <ConfirmModal isOpen={showLogoutConfirm} title="Confirm Logout" message="Are you sure you want to log out?" confirmLabel="Log Out" onConfirm={executeLogout} onCancel={() => setShowLogoutConfirm(false)} />
