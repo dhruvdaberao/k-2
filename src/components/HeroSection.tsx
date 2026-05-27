@@ -33,7 +33,7 @@ const heroSlides = [
     title: "Everyday Essentials",
     subtitle: "Curated products designed to elevate your daily life.",
     image: "/uploads/hero/corosal-4.png",
-    primaryCta: { label: "Browse Essentials", href: "/collections/keyrings" },
+    primaryCta: { label: "Browse Keyrings", href: "/collections/keyrings" },
     secondaryCta: { label: "View Collection", href: "/collections" },
   },
 ] as const;
