@@ -61,6 +61,19 @@ function ProfileContent() {
     }
   }, [searchParams]);
 
+  useEffect(() => {
+    if (hydrated && typeof window !== "undefined") {
+      const prompt = localStorage.getItem('promptSetPassword');
+      if (prompt === 'true') {
+        setModalContent({
+          title: "Account Auto-Created!",
+          message: "We automatically saved your details from your guest checkout! For easier access in the future, please go to 'Account Settings' below to set up your own password. If you skip this, you can always log in via OTP."
+        });
+        localStorage.removeItem('promptSetPassword');
+      }
+    }
+  }, [hydrated]);
+
   // Step 7: Protected Route Redirect
   useEffect(() => {
     if (!loading && !user) {
@@ -102,16 +115,16 @@ function ProfileContent() {
       return;
     }
     
-    const phoneRegex = /^[+]?[0-9\s\-]{10,15}$/;
-    if (!phoneRegex.test(details.phoneNumber) || details.phoneNumber.replace(/[^0-9]/g,"").length < 10) {
-      showToast("Please enter a valid phone number (10+ digits).");
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(details.phoneNumber)) {
+      showToast("Invalid Phone Number. It must be exactly 10 digits.");
       return;
     }
 
     if (details.pincode) {
-      const pinRegex = /^[0-9]{5,6}$/;
+      const pinRegex = /^\d{6}$/;
       if (!pinRegex.test(details.pincode)) {
-        showToast("Please enter a valid 6-digit pincode.");
+        showToast("Invalid Pincode. It must be exactly 6 digits.");
         return;
       }
     }
@@ -325,19 +338,9 @@ function ProfileContent() {
         <h1 className="text-3xl font-serif font-bold text-[#2f2a26]">Your Profile</h1>
       </header>
 
-      <section className="checkout-card bg-[#f3ede6] rounded-2xl shadow-sm border border-[#e6ded4]" style={{ maxWidth: '900px', width: '92%', margin: '0 auto' }}>
+      <section className="checkout-card rounded-2xl shadow-sm" style={{ maxWidth: '900px', width: '92%', margin: '0 auto', border: '1px solid rgba(139, 94, 60, 0.4)' }}>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b pb-4 px-2">
           <h2 className="text-xl font-bold" style={{ color: "var(--text)", margin: 0 }}>Personal Information</h2>
-          <div className="flex gap-3 items-center flex-wrap">
-            {!isEditing ? (
-              <button onClick={() => setIsEditing(true)} className="btn-edit text-sm">Edit</button>
-            ) : (
-              <button onClick={saveDetails} disabled={isSaving} className="btn-edit text-sm" style={{ background: isSaving ? "#c9b99a" : "var(--brand)", color: "white" }}>
-                {isSaving ? "Saving..." : "Save Changes"}
-              </button>
-            )}
-            <button onClick={handleLogout} className="px-4 py-2 rounded-lg text-sm font-medium transition-opacity hover:opacity-90" style={{ background: "#5a3e2b", color: "white", border: "none" }}>Log Out</button>
-          </div>
         </div>
 
         <div className="checkout-form-grid" style={{ opacity: isEditing ? 1 : 0.8 }}>
@@ -358,6 +361,17 @@ function ProfileContent() {
           <label className="checkout-field"><span>Pincode</span><input type="text" value={details.pincode} onChange={(e) => handleFieldChange("pincode", e.target.value)} readOnly={!isEditing} /></label>
           <label className="checkout-field"><span>State</span><input type="text" value={details.state} onChange={(e) => handleFieldChange("state", e.target.value)} readOnly={!isEditing} /></label>
           <label className="checkout-field"><span>Country</span><input type="text" value={details.country} onChange={(e) => handleFieldChange("country", e.target.value)} readOnly={!isEditing} /></label>
+        </div>
+
+        <div className="flex gap-4 justify-center items-center flex-wrap mt-8 pt-4 border-t border-[#e6ded4] w-full">
+          {!isEditing ? (
+            <button onClick={() => setIsEditing(true)} className="btn-primary py-3 px-8 shadow-sm rounded-lg" style={{ minWidth: '140px' }}>Edit</button>
+          ) : (
+            <button onClick={saveDetails} disabled={isSaving} className="btn-primary py-3 px-8 shadow-sm rounded-lg" style={{ minWidth: '140px', background: isSaving ? "#c9b99a" : "var(--brand)" }}>
+              {isSaving ? "Saving..." : "Save Changes"}
+            </button>
+          )}
+          <button onClick={handleLogout} className="px-8 py-3 rounded-lg text-sm font-medium transition-opacity shadow-sm" style={{ background: "#5a3e2b", color: "white", border: "none", minWidth: '140px' }}>Log Out</button>
         </div>
       </section>
 

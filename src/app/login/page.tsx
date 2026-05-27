@@ -10,10 +10,11 @@ import { useAuth } from "@/hooks/useAuth";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [authMode, setAuthMode] = useState<"login" | "signup" | "forgot">("login");
+  const [authMode, setAuthMode] = useState<"login" | "signup" | "forgot" | "otp" | "otp_verify">("login");
   const [authEmail, setAuthEmail] = useState("");
   const [authPassword, setAuthPassword] = useState("");
   const [authConfirmPassword, setAuthConfirmPassword] = useState("");
+  const [otpCode, setOtpCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
@@ -33,15 +34,33 @@ export default function LoginPage() {
     setErrorMsg("");
     setSuccessMsg("");
 
-    if (!authEmail || (authMode !== "forgot" && !authPassword)) {
-      const msg = "Please fill all fields";
+    if (!authEmail) {
+      const msg = "Please enter your email";
       setErrorMsg(msg);
       showToast(msg);
       return;
     }
 
+    if (authMode === "login" || authMode === "signup") {
+      if (!authPassword) {
+        const msg = "Please fill all fields";
+        setErrorMsg(msg);
+        showToast(msg);
+        return;
+      }
+    }
+
+    if (authMode === "otp_verify" && !otpCode) {
+      const msg = "Please enter the 6-digit OTP";
+      setErrorMsg(msg);
+      showToast(msg);
+      return;
+    }
+
+    const cleanEmail = authEmail.trim().toLowerCase();
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(authEmail)) {
+    if (!emailRegex.test(cleanEmail)) {
       const msg = "Enter valid email";
       setErrorMsg(msg);
       showToast(msg);
@@ -68,7 +87,7 @@ export default function LoginPage() {
         }
 
         const { data, error } = await supabase.auth.signUp({
-          email: authEmail,
+          email: cleanEmail,
           password: authPassword,
         });
 
@@ -107,14 +126,14 @@ export default function LoginPage() {
         }
       } else if (authMode === "login") {
         const { data, error } = await supabase.auth.signInWithPassword({
-          email: authEmail,
+          email: cleanEmail,
           password: authPassword,
         });
 
         if (error) {
           let message = "Login failed";
           if (error.message.includes("Invalid login credentials")) {
-            message = "Invalid email or password";
+            message = "Invalid password. If you checked out as a guest previously, please click 'Login via OTP' below.";
           } else if (error.message.includes("Email not confirmed")) {
             message = "Please verify your email first";
           } else {
@@ -137,8 +156,40 @@ export default function LoginPage() {
           setSuccessModal(false);
           router.replace("/profile");
         }, 2000);
+      } else if (authMode === "otp") {
+        const { error } = await supabase.auth.signInWithOtp({
+          email: cleanEmail,
+        });
+        if (error) throw error;
+        setSuccessMsg("OTP sent to your email!");
+        showToast("OTP sent to your email!");
+        setAuthMode("otp_verify");
+      } else if (authMode === "otp_verify") {
+        const { data, error } = await supabase.auth.verifyOtp({
+          email: cleanEmail,
+          token: otpCode,
+          type: 'email'
+        });
+
+        if (error) {
+          setErrorMsg("Invalid or expired OTP");
+          showToast("Invalid or expired OTP");
+          setAuthLoading(false);
+          return;
+        }
+
+        showToast("Logged in successfully");
+        if (data.user?.id) {
+          await syncLocalCartToDB(data.user.id);
+        }
+
+        setSuccessModal(true);
+        setTimeout(() => {
+          setSuccessModal(false);
+          router.replace("/profile");
+        }, 2000);
       } else if (authMode === "forgot") {
-        const { error } = await supabase.auth.resetPasswordForEmail(authEmail, {
+        const { error } = await supabase.auth.resetPasswordForEmail(cleanEmail, {
           redirectTo: `${window.location.origin}/account-settings?reset=true`
         });
         if (error) throw error;
@@ -203,7 +254,7 @@ export default function LoginPage() {
           <div className="text-center mb-8">
             <img src="/uploads/hero/logo.png" alt="Logo" className="mx-auto mb-4" style={{ height: '110px', width: 'auto', mixBlendMode: 'multiply' }} />
             <h1 className="text-2xl font-bold" style={{ color: "var(--brand)" }}>
-              {authMode === "login" ? "Welcome Back" : authMode === "signup" ? "Create an Account" : "Reset Password"}
+              {authMode === "login" ? "Welcome Back" : authMode === "signup" ? "Create an Account" : authMode === "otp" ? "Login via OTP" : authMode === "otp_verify" ? "Enter OTP Code" : "Reset Password"}
             </h1>
           </div>
 
@@ -219,12 +270,13 @@ export default function LoginPage() {
                     setErrorMsg("");
                   }}
                   placeholder="name@example.com"
+                  disabled={authMode === "otp_verify"}
                   required
                   className="w-full border p-2 rounded"
                 />
               </label>
 
-              {authMode !== "forgot" && (
+              {(authMode === "login" || authMode === "signup") && (
                 <label className="checkout-field">
                   <span>Password</span>
                   <div style={{ position: 'relative' }}>
@@ -268,6 +320,23 @@ export default function LoginPage() {
                 </label>
               )}
 
+              {authMode === "otp_verify" && (
+                <label className="checkout-field">
+                  <span>6-Digit OTP Code</span>
+                  <input
+                    type="text"
+                    value={otpCode}
+                    onChange={(e) => {
+                      setOtpCode(e.target.value);
+                      setErrorMsg("");
+                    }}
+                    placeholder="000000"
+                    className="w-full border p-2 rounded text-center text-lg tracking-[0.2em] font-mono"
+                    required
+                  />
+                </label>
+              )}
+
               {errorMsg && (
                 <div style={{ color: "#dc2626", fontSize: "13px", marginTop: "4px", textAlign: "center", fontWeight: "600", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }} className="animate-in fade-in slide-in-from-top-1">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -287,14 +356,17 @@ export default function LoginPage() {
               )}
 
               <button type="submit" className="btn-primary w-full py-3 mt-2" disabled={authLoading}>
-                {authLoading ? "Processing..." : authMode === "login" ? "Login" : authMode === "signup" ? "Create Account" : "Send Reset Link"}
+                {authLoading ? "Processing..." : authMode === "login" ? "Login" : authMode === "signup" ? "Create Account" : authMode === "otp" ? "Get OTP Code" : authMode === "otp_verify" ? "Verify & Login" : "Send Reset Link"}
               </button>
             </form>
 
             <div className="mt-8 flex flex-col items-center gap-3 text-sm">
               {authMode === "login" ? (
                 <>
-                  <button type="button" onClick={() => setAuthMode("forgot")} className="auth-link-btn">Forgot Password?</button>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-stone-500">Forgot password?</span>
+                    <button type="button" onClick={() => setAuthMode("otp")} className="auth-link-btn font-bold" style={{ color: '#2f2a26', textDecoration: 'underline' }}>Login via OTP</button>
+                  </div>
                   <p className="text-stone-500">Don't have an account? <button type="button" onClick={() => setAuthMode("signup")} className="auth-link-btn font-bold text-[var(--brand)]">Sign Up</button></p>
                 </>
               ) : (

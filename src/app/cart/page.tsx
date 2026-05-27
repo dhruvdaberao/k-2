@@ -387,7 +387,7 @@ export default function CartPage() {
                       aria-disabled={selectedItems.length === 0}
                       onClick={handleCheckoutClick}
                     >
-                      Login / Signup
+                      Login
                     </NextLink>
                     <NextLink
                       href="/checkout?guest=true"
@@ -396,7 +396,7 @@ export default function CartPage() {
                       aria-disabled={selectedItems.length === 0}
                       onClick={handleCheckoutClick}
                     >
-                      Continue as Guest
+                      New User
                     </NextLink>
                   </div>
                 )}

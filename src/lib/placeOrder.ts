@@ -10,7 +10,7 @@ export type PlaceOrderResult = {
 
 let isOrderInFlight = false;
 
-export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: any): Promise<PlaceOrderResult> {
+export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: any, explicitUserId?: string | null, explicitUserEmail?: string | null): Promise<PlaceOrderResult> {
   if (isOrderInFlight) {
     return { success: false, orderId: null, error: "Order already in progress." };
   }
@@ -25,7 +25,7 @@ export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: an
         user = sessionData.session.user;
       }
     } catch (e) {
-      console.warn("[PlaceOrder] No active session found (Guest Mode)");
+      console.warn("[PlaceOrder] No active session found");
     }
     
     let cartItems = customItems;
@@ -42,6 +42,9 @@ export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: an
       return { success: false, orderId: null, error: "Cart is empty." };
     }
 
+    const finalUserId = explicitUserId || user?.id;
+    const finalUserEmail = explicitUserEmail || user?.email || deliveryDetails?.email;
+
     console.log("🔄 Calling server-side place-order API...");
     const res = await fetch("/api/checkout/place-order", {
       method: "POST",
@@ -49,8 +52,8 @@ export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: an
       body: JSON.stringify({
         items: cartItems,
         deliveryDetails,
-        userId: user?.id,
-        userEmail: user?.email || deliveryDetails?.email
+        userId: finalUserId,
+        userEmail: finalUserEmail
       })
     });
 

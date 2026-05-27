@@ -41,7 +41,10 @@ function AccountSettingsContent() {
     }
   }, [searchParams]);
 
-  const handleUpdateEmail = async (e: React.FormEvent) => {
+  const [emailOtpState, setEmailOtpState] = useState<"idle" | "verify">("idle");
+  const [emailOtpCode, setEmailOtpCode] = useState("");
+
+  const handleUpdateEmailRequest = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newEmail === user?.email) {
       showToast("This is already your current email.");
@@ -53,17 +56,47 @@ function AccountSettingsContent() {
       const { error } = await supabase.auth.updateUser({ email: newEmail });
       if (error) throw error;
       
+      setEmailOtpState("verify");
+      showToast("OTP sent to your email addresses!");
+    } catch (err: any) {
+      console.error(err);
+      showToast(err.message || "Could not request email update.");
+    } finally {
+      setIsUpdatingEmail(false);
+    }
+  };
+
+  const handleVerifyEmailOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!emailOtpCode) {
+      showToast("Please enter the OTP.");
+      return;
+    }
+
+    setIsUpdatingEmail(true);
+    try {
+      // Note: If Secure Email Change is ON in Supabase, the user might need to click the link
+      // in their OLD email first, and then enter the OTP from their NEW email here.
+      const { error } = await supabase.auth.verifyOtp({ 
+        email: newEmail, 
+        token: emailOtpCode, 
+        type: 'email_change' 
+      });
+      
+      if (error) throw error;
+
       if (user?.id) {
         const { error: profileError } = await supabase.from('profiles').update({ email: newEmail }).eq('id', user.id);
         if (profileError) console.error("Could not sync email to profile table:", profileError.message);
       }
 
-      localStorage.setItem('emailChangePending', 'true');
-      setModalContent({ title: "Confirm Email Identity", message: "Please check your current and new email inboxes to seamlessly confirm the update securely." });
+      setModalContent({ title: "Email Updated", message: "Your email address has been successfully updated securely." });
+      setEmailOtpState("idle");
+      setEmailOtpCode("");
       setNewEmail("");
     } catch (err: any) {
       console.error(err);
-      showToast(err.message || "Could not update email.");
+      showToast(err.message || "Invalid or expired OTP.");
     } finally {
       setIsUpdatingEmail(false);
     }
@@ -148,39 +181,77 @@ function AccountSettingsContent() {
               <p className="text-stone-500 text-sm mt-1">Update your primary login address.</p>
             </div>
             
-            <form onSubmit={handleUpdateEmail} className="flex flex-col gap-4">
-              <label className="checkout-field">
-                <span>Current Email</span>
-                <input
-                  type="email"
-                  value={user?.email || ""}
-                  disabled
-                  readOnly
-                  style={{ opacity: 0.6, cursor: 'not-allowed', background: 'transparent' }}
-                />
-              </label>
+            {emailOtpState === "idle" ? (
+              <form onSubmit={handleUpdateEmailRequest} className="flex flex-col gap-4">
+                <label className="checkout-field">
+                  <span>Current Email</span>
+                  <input
+                    type="email"
+                    value={user?.email || ""}
+                    disabled
+                    readOnly
+                    style={{ opacity: 0.6, cursor: 'not-allowed', background: 'transparent' }}
+                  />
+                </label>
 
-              <label className="checkout-field">
-                <span>New Email Address</span>
-                <input
-                  type="email"
-                  value={newEmail}
-                  onChange={(e) => setNewEmail(e.target.value)}
-                  placeholder="name@example.com"
-                  required
-                />
-              </label>
+                <label className="checkout-field">
+                  <span>New Email Address</span>
+                  <input
+                    type="email"
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    placeholder="name@example.com"
+                    required
+                  />
+                </label>
 
-              <div className="flex justify-end mt-2">
-                <button 
-                  type="submit" 
-                  className="btn-primary py-2 px-6 rounded-lg text-sm md:text-base font-medium shadow-sm transition-transform active:scale-95" 
-                  disabled={isUpdatingEmail}
-                >
-                  {isUpdatingEmail ? "Processing..." : "Update Email"}
-                </button>
-              </div>
-            </form>
+                <div className="flex justify-end mt-2">
+                  <button 
+                    type="submit" 
+                    className="btn-primary py-2 px-6 rounded-lg text-sm md:text-base font-medium shadow-sm transition-transform active:scale-95" 
+                    disabled={isUpdatingEmail}
+                  >
+                    {isUpdatingEmail ? "Processing..." : "Request OTP to Update Email"}
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <form onSubmit={handleVerifyEmailOtp} className="flex flex-col gap-4">
+                <label className="checkout-field">
+                  <span>Enter OTP Code</span>
+                  <p className="text-sm text-stone-500 mb-2">Check your email for the 6-digit confirmation code.</p>
+                  <input
+                    type="text"
+                    value={emailOtpCode}
+                    onChange={(e) => setEmailOtpCode(e.target.value)}
+                    placeholder="000000"
+                    className="w-full border p-2 rounded text-center text-lg tracking-[0.2em] font-mono"
+                    required
+                  />
+                </label>
+
+                <div className="flex justify-end mt-2 gap-3">
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      setEmailOtpState("idle");
+                      setEmailOtpCode("");
+                    }}
+                    className="py-2 px-6 rounded-lg text-sm md:text-base font-medium transition-transform active:scale-95 border border-stone-300 bg-white" 
+                    disabled={isUpdatingEmail}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit" 
+                    className="btn-primary py-2 px-6 rounded-lg text-sm md:text-base font-medium shadow-sm transition-transform active:scale-95" 
+                    disabled={isUpdatingEmail}
+                  >
+                    {isUpdatingEmail ? "Verifying..." : "Verify OTP & Update"}
+                  </button>
+                </div>
+              </form>
+            )}
           </section>
 
           {/* Password Update Card */}

@@ -219,6 +219,33 @@ function CheckoutContent() {
       return;
     }
 
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(details.email)) {
+      const msg = "Invalid Email Address. Please enter a valid email (e.g. name@gmail.com).";
+      setCheckoutError(msg);
+      showToast(msg);
+      return;
+    }
+
+    // Phone validation (strictly 10 digits)
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(details.phoneNumber)) {
+      const msg = "Invalid Phone Number. It must be exactly 10 digits.";
+      setCheckoutError(msg);
+      showToast(msg);
+      return;
+    }
+
+    // Pincode validation (strictly 6 digits)
+    const pincodeRegex = /^\d{6}$/;
+    if (!pincodeRegex.test(details.pincode)) {
+      const msg = "Invalid Pincode. It must be exactly 6 digits.";
+      setCheckoutError(msg);
+      showToast(msg);
+      return;
+    }
+
     if (!agreedToTerms) {
       const msg = "Please agree to the Terms and Policies to continue.";
       setCheckoutError(msg);
@@ -317,7 +344,59 @@ function CheckoutContent() {
         return;
       }
 
-      if (!authUser && !isGuest) {
+      let currentUserId = authUser?.id;
+      let currentUserEmail = authUser?.email || details.email;
+
+      if (isGuest && !authUser && details.email) {
+        console.log("[Checkout] Attempting to auto-create shadow account for guest:", details.email);
+        const randomPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8) + "Kc1!";
+        
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          email: details.email,
+          password: randomPassword,
+          options: {
+            data: {
+              name: details.fullName,
+              phone: details.phoneNumber
+            }
+          }
+        });
+        
+        if (signUpError) {
+          console.warn("[Checkout] Auto-create failed (maybe user exists). Proceeding as guest.", signUpError.message);
+        } else if (signUpData?.user) {
+          console.log("[Checkout] Auto-created account successfully!", signUpData.user.id);
+          currentUserId = signUpData.user.id;
+          currentUserEmail = signUpData.user.email;
+          
+          // Silently log them in since we just created the account
+          await supabase.auth.signInWithPassword({
+            email: details.email,
+            password: randomPassword
+          });
+
+          // Save their profile details so they appear in Profile page
+          const { error: profileError } = await supabase.from('profiles').upsert({
+            id: signUpData.user.id,
+            name: details.fullName,
+            phone: details.phoneNumber,
+            address: details.address,
+            city: details.city,
+            pincode: details.pincode,
+            state: details.state,
+            country: details.country,
+          }, { onConflict: 'id' });
+
+          if (profileError) {
+            console.error("[Checkout] Failed to save profile data:", profileError);
+          }
+          
+          // Flag to show popup on profile page
+          localStorage.setItem('promptSetPassword', 'true');
+        }
+      }
+
+      if (!authUser && !isGuest && !currentUserId) {
         showToast("Please login to place your order.");
         setIsPlacingOrder(false);
         return;
@@ -339,8 +418,8 @@ function CheckoutContent() {
           body: JSON.stringify({
             items: mappedFinalItems,
             deliveryDetails: details,
-            userEmail: user?.email,
-            userId: authUser?.id,
+            userEmail: currentUserEmail,
+            userId: currentUserId,
             calculatedTotal: total
           })
         });
@@ -371,7 +450,7 @@ function CheckoutContent() {
       }
 
       console.log("📦 Creating COD order in DB...");
-      const result = await placeOrderInDB(mappedFinalItems, details);
+      const result = await placeOrderInDB(mappedFinalItems, details, currentUserId, currentUserEmail);
       console.log("✅ Order result:", result);
 
       if (!result.success) {
@@ -862,14 +941,18 @@ return (
 
               <button
                 type="button"
-                className="checkout-payment-card"
-                onClick={() => showToast("COD is currently not available")}
-                style={{ display: "flex", flexDirection: "row", padding: "20px", height: "auto", gap: "16px", alignItems: "center", opacity: 0.6, cursor: "not-allowed" }}
+                className={`checkout-payment-card ${paymentMethod === "cod" ? "is-selected" : ""}`}
+                onClick={() => setPaymentMethod("cod")}
+                style={{ display: "flex", flexDirection: "column", padding: "20px", height: "auto", gap: "12px", alignItems: "flex-start" }}
               >
-                <span className="checkout-payment-card__radio flex-shrink-0" aria-hidden="true" style={{ margin: 0, opacity: 0.5 }} />
-                <div className="flex flex-col text-left">
-                  <span className="checkout-payment-card__title text-lg font-bold text-[#2f2a26]" style={{ margin: 0 }}>COD</span>
-                  <span className="text-xs text-[#8c8273] mt-1">Currently not available</span>
+                <div className="flex flex-row items-start w-full justify-between gap-3">
+                  <div className="flex items-start gap-4">
+                    <span className="checkout-payment-card__radio flex-shrink-0" aria-hidden="true" style={{ margin: 0, marginTop: "2px" }} />
+                    <div className="flex flex-col text-left">
+                      <span className="checkout-payment-card__title text-lg font-bold text-[#2f2a26]" style={{ margin: 0 }}>Cash on Delivery</span>
+                      <span className="text-xs text-[#8c8273] mt-1">Pay with cash when your order arrives</span>
+                    </div>
+                  </div>
                 </div>
               </button>
             </div>
