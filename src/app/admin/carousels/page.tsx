@@ -163,12 +163,12 @@ export default function AdminCarousels() {
             <div className="overflow-x-auto custom-scrollbar">
               <table className="w-full min-w-[500px] md:min-w-[800px] text-left border-collapse">
                 <thead>
-                  <tr className="bg-[#FDFBF7] border-b border-[#E6DCCF] text-[10px] md:text-xs uppercase text-stone-500 font-semibold tracking-wider">
-                    <th className="px-2 md:px-4 py-3 md:py-4 w-[15%] md:w-[15%] text-center">Order</th>
-                    <th className="px-2 md:px-4 py-3 md:py-4 w-[25%] md:w-[20%] text-center">Image</th>
-                    <th className="px-2 md:px-4 py-3 md:py-4 w-[40%] md:w-[35%]">Details</th>
-                    <th className="px-2 md:px-4 py-3 md:py-4 w-[20%] md:w-[15%] text-center">Actions</th>
-                    <th className="hidden md:table-cell px-4 py-4 w-[15%] text-center">Status</th>
+                  <tr className="bg-[#F5EFE6] text-[#8B7355] text-[10px] md:text-xs uppercase tracking-wider">
+                    <th className="p-2 md:p-5 font-semibold text-center w-[40px] md:w-[60px]">Order</th>
+                    <th className="p-2 md:p-5 font-semibold text-center w-[60px] md:w-[100px]">Image</th>
+                    <th className="p-2 md:p-5 font-semibold md:w-[220px]">Details</th>
+                    <th className="p-2 md:p-5 font-semibold text-center w-[70px] md:w-[140px]">Actions</th>
+                    <th className="hidden md:table-cell p-4 md:p-5 font-semibold w-[100px] text-center">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#E6DCCF]">
@@ -181,12 +181,12 @@ export default function AdminCarousels() {
                   ) : (
                     slides.map((slide, idx) => (
                       <tr key={slide.id} className="hover:bg-[#FCFAFA] transition-colors">
-                        <td className="px-2 md:px-4 py-3 md:py-4 w-[15%] md:w-[15%] text-center">
+                        <td className="p-1 md:p-5 text-center">
                           <div className="flex flex-col items-center gap-1">
                             <button 
                               onClick={() => moveSlide(idx, "up")}
                               disabled={idx === 0}
-                              className={`p-1 ${idx === 0 ? "opacity-30 cursor-not-allowed" : "text-[#4A3219] hover:opacity-70 transition-opacity"}`}
+                              className={`p-0 ${idx === 0 ? "opacity-30 cursor-not-allowed" : "text-[#4A3219] hover:opacity-70 transition-opacity"}`}
                               style={{ background: 'none', border: 'none' }}
                             >
                               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
@@ -195,35 +195,35 @@ export default function AdminCarousels() {
                             <button 
                               onClick={() => moveSlide(idx, "down")}
                               disabled={idx === slides.length - 1}
-                              className={`p-1 ${idx === slides.length - 1 ? "opacity-30 cursor-not-allowed" : "text-[#4A3219] hover:opacity-70 transition-opacity"}`}
+                              className={`p-0 ${idx === slides.length - 1 ? "opacity-30 cursor-not-allowed" : "text-[#4A3219] hover:opacity-70 transition-opacity"}`}
                               style={{ background: 'none', border: 'none' }}
                             >
                               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                             </button>
                           </div>
                         </td>
-                        <td className="px-2 md:px-4 py-3 md:py-4 w-[25%] md:w-[20%]">
+                        <td className="p-2 md:p-5 text-center">
                           <div className="flex justify-center">
-                            <div className="relative bg-stone-100 rounded-lg overflow-hidden border border-stone-200 w-[60px] h-[60px] md:w-[80px] md:h-[80px] min-w-[60px] md:min-w-[80px]">
+                            <div className="relative bg-stone-100 rounded-lg overflow-hidden border border-stone-200 flex-shrink-0" style={{ width: '44px', height: '44px', minWidth: '44px' }}>
                               {slide.image_url && (
-                                <img src={slide.image_url} alt={slide.title} className="absolute inset-0 w-full h-full" style={{ objectFit: 'contain', padding: '4px' }} />
+                                <img src={slide.image_url} alt={slide.title} className="absolute inset-0 w-full h-full" style={{ objectFit: 'contain', padding: '2px' }} />
                               )}
                             </div>
                           </div>
                         </td>
-                        <td className="px-2 md:px-4 py-3 md:py-4 w-[40%] md:w-[35%]">
-                          <div className="font-bold text-[#4A3219] text-sm md:text-base">{slide.title}</div>
-                          <div className="text-xs md:text-sm text-stone-500 line-clamp-1 max-w-[150px] md:max-w-xs">{slide.subtitle}</div>
+                        <td className="p-2 md:p-5">
+                          <div className="font-bold text-[#4A3219] text-[13px] md:text-base leading-tight mb-1">{slide.title}</div>
+                          <div className="text-[11px] md:text-sm text-stone-500 line-clamp-2 md:line-clamp-1 max-w-[140px] md:max-w-xs leading-tight">{slide.subtitle}</div>
                           <div className="text-[10px] md:text-xs text-[#8B7355] mt-1 bg-[#F5EFE6] inline-block px-1.5 md:px-2 py-0.5 rounded">
                             {slide.primary_cta_label}
                           </div>
                         </td>
-                        <td className="px-2 md:px-4 py-3 md:py-4 w-[20%] md:w-[15%] text-center">
+                        <td className="p-2 md:p-5 text-center">
                           <div className="flex justify-center gap-2">
                             <Link 
                               href={`/admin/carousels/${slide.id}`} 
                               className="text-sm font-bold transition-transform active:scale-95 flex items-center justify-center text-white hover:text-white"
-                              style={{ background: '#4A3219', color: '#ffffff', padding: '8px 20px', borderRadius: '8px', border: 'none', textDecoration: 'none' }}
+                              style={{ background: '#4A3219', color: '#ffffff', padding: '8px 16px', borderRadius: '8px', border: 'none', textDecoration: 'none' }}
                             >
                               <span style={{ color: '#ffffff' }}>Edit</span>
                             </Link>
