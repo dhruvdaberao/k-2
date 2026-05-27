@@ -1,0 +1,597 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
+
+export default function EditCarousel({ params }: { params: { id: string } }) {
+  const router = useRouter();
+  const isNew = params.id === "new";
+
+  const [loading, setLoading] = useState(!isNew);
+  const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState({ show: false, msg: "", type: "success" });
+
+  const [formData, setFormData] = useState({
+    title: "",
+    subtitle: "",
+    image_url: "",
+    primary_cta_label: "",
+    primary_cta_href: "/collections",
+    secondary_cta_label: "View Collection",
+    secondary_cta_href: "/collections",
+    is_active: true,
+  });
+
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [primaryDropdownOpen, setPrimaryDropdownOpen] = useState(false);
+  const [secondaryDropdownOpen, setSecondaryDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    fetchCategories();
+    if (!isNew) {
+      fetchSlide();
+    }
+  }, []);
+
+  const fetchCategories = async () => {
+    const { data } = await supabase.from("categories").select("slug, name").order("priority", { ascending: false });
+    if (data) setCategories(data);
+  };
+
+  const fetchSlide = async () => {
+    try {
+      const { data, error } = await supabase.from("hero_slides").select("*").eq("id", params.id).single();
+      if (error) throw error;
+      if (data) {
+        setFormData(data);
+        setImagePreview(data.image_url);
+      }
+    } catch (err) {
+      console.error(err);
+      showToast("Failed to load slide", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const showToast = (msg: string, type: "success" | "error" = "success") => {
+    setToast({ show: true, msg, type });
+    setTimeout(() => setToast({ show: false, msg: "", type: "success" }), 3000);
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    const file = e.target.files[0];
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!imageFile && !formData.image_url) {
+      showToast("Please upload a Carousel Image", "error");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    if (!formData.title) {
+      showToast("Please fill in the Main Heading", "error");
+      document.getElementById("title")?.focus();
+      return;
+    }
+    if (!formData.subtitle) {
+      showToast("Please fill in the Subheading", "error");
+      document.getElementById("subtitle")?.focus();
+      return;
+    }
+    if (!formData.primary_cta_label) {
+      showToast("Please fill in the Primary Button Text", "error");
+      document.getElementById("primary_cta_label")?.focus();
+      return;
+    }
+    if (!formData.primary_cta_href) {
+      showToast("Please select a Primary Link to Category", "error");
+      document.getElementById("primary_cta_href")?.focus();
+      return;
+    }
+    if (!formData.secondary_cta_label) {
+      showToast("Please fill in the Secondary Button Text", "error");
+      document.getElementById("secondary_cta_label")?.focus();
+      return;
+    }
+    if (!formData.secondary_cta_href) {
+      showToast("Please select a Secondary Link to Category", "error");
+      document.getElementById("secondary_cta_href")?.focus();
+      return;
+    }
+
+    setSaving(true);
+    try {
+      let finalImageUrl = formData.image_url;
+
+      // 1. Upload new image if provided
+      if (imageFile) {
+        // Delete old image if it exists and wasn't a static asset
+        if (formData.image_url && !formData.image_url.startsWith("/uploads")) {
+           const parts = formData.image_url.split("/");
+           const oldFilename = parts[parts.length - 1];
+           if (oldFilename) {
+             await supabase.storage.from("carousel-images").remove([oldFilename]);
+           }
+        }
+
+        const ext = imageFile.name.split(".").pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${ext}`;
+        
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("carousel-images")
+          .upload(fileName, imageFile, {
+            cacheControl: "3600",
+            upsert: false,
+            // NO COMPRESSION (removed transform options used in product images)
+          });
+
+        if (uploadError) throw uploadError;
+
+        const { data: publicUrlData } = supabase.storage
+          .from("carousel-images")
+          .getPublicUrl(fileName);
+
+        finalImageUrl = publicUrlData.publicUrl;
+      }
+
+      if (!finalImageUrl) {
+        throw new Error("An image is required!");
+      }
+
+      const slideData = {
+        title: formData.title,
+        subtitle: formData.subtitle,
+        image_url: finalImageUrl,
+        primary_cta_label: formData.primary_cta_label,
+        primary_cta_href: formData.primary_cta_href,
+        secondary_cta_label: formData.secondary_cta_label,
+        secondary_cta_href: formData.secondary_cta_href,
+        is_active: formData.is_active,
+      };
+
+      if (isNew) {
+        // Get highest position
+        const { data: posData } = await supabase.from("hero_slides").select("position").order("position", { ascending: false }).limit(1);
+        const nextPos = posData && posData.length > 0 ? posData[0].position + 1 : 0;
+        
+        const { error } = await supabase.from("hero_slides").insert({ ...slideData, position: nextPos });
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("hero_slides").update(slideData).eq("id", params.id);
+        if (error) throw error;
+      }
+
+      showToast(`Carousel slide ${isNew ? 'added' : 'updated'} successfully!`);
+      setTimeout(() => router.push("/admin/carousels"), 1000);
+      
+    } catch (err: any) {
+      console.error(err);
+      showToast(err.message || "Failed to save slide", "error");
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (isNew || !window.confirm("Are you sure you want to delete this slide?")) return;
+    setSaving(true);
+    try {
+      const { error } = await supabase.from("hero_slides").delete().eq("id", params.id);
+      if (error) throw error;
+
+      if (formData.image_url && !formData.image_url.startsWith("/uploads")) {
+        const parts = formData.image_url.split("/");
+        const filename = parts[parts.length - 1];
+        if (filename) {
+          await supabase.storage.from("carousel-images").remove([filename]);
+        }
+      }
+
+      showToast("Slide deleted successfully!");
+      setTimeout(() => router.push("/admin/carousels"), 1000);
+    } catch (err: any) {
+      console.error(err);
+      showToast(err.message || "Failed to delete slide", "error");
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-[#FDFBF7] py-8 px-4">
+        <div className="max-w-3xl mx-auto">
+          <header className="flex items-center gap-4 mb-8">
+            <Link
+              href="/admin/carousels"
+              className="p-2 text-[#8B7355] hover:bg-[#F5EFE6] rounded-full transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+            </Link>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-[#4A3219]">{isNew ? 'Add New Carousel' : 'Edit Carousel'}</h1>
+            </div>
+          </header>
+          <div className="flex justify-center items-center py-32">
+            <div className="w-12 h-12 rounded-full border-4 border-stone-200 border-t-[#4A3219] animate-spin"></div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className="min-h-screen bg-[#FDFBF7] py-8 px-4">
+      <div className="max-w-3xl mx-auto">
+        <header className="flex items-center gap-4 mb-8">
+          <Link
+            href="/admin/carousels"
+            className="p-2 text-[#8B7355] hover:bg-[#F5EFE6] rounded-full transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </Link>
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-[#4A3219]">{isNew ? 'Add New Carousel' : 'Edit Carousel'}</h1>
+          </div>
+        </header>
+
+        <form onSubmit={handleSubmit} noValidate className="bg-white rounded-2xl border border-[#E6DCCF] p-4 md:p-6 shadow-sm">
+          {/* Image Upload */}
+          <div className="mb-8">
+            <h3 className="font-bold text-[#4A3219] mb-2 text-xl border-b border-[#E6DCCF] pb-2">Carousel Image</h3>
+            <p className="text-xs text-[#8B7355] mb-4">Recommended size: 1440x720px (2:1 ratio). Uploaded in original quality.</p>
+            
+            <div className="flex flex-wrap justify-center gap-6 items-center mt-4">
+              {imagePreview ? (
+                <>
+                  {/* Current Image (Left) */}
+                  <div 
+                    className="relative rounded-xl border border-stone-200 overflow-hidden group shadow-sm flex-shrink-0 bg-white"
+                    style={{ width: '128px', height: '128px' }}
+                  >
+                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                    <div className="absolute top-1 right-1">
+                      <button type="button" onClick={() => { setImagePreview(null); setImageFile(null); }} className="w-6 h-6 flex items-center justify-center bg-white rounded-full text-red-500 shadow-md hover:bg-red-50 transition-colors border border-red-100">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Change Image Card (Right) */}
+                  <div 
+                    style={{ 
+                      backgroundColor: '#F5EFE6', 
+                      width: '128px',
+                      height: '128px',
+                      borderRadius: '12px', 
+                      border: '2px dashed #d2c4b3', 
+                      textAlign: 'center', 
+                      transition: 'all 0.3s ease',
+                      cursor: 'pointer',
+                      flexShrink: 0
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#FDFBF7';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.05)';
+                      e.currentTarget.style.borderColor = '#8B7355';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = '#F5EFE6';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = 'none';
+                      e.currentTarget.style.borderColor = '#d2c4b3';
+                    }}
+                  >
+                    <input
+                      type="file"
+                      id="imageUploadSmall"
+                      accept="image/png, image/jpeg, image/webp"
+                      onChange={handleImageChange}
+                      style={{ display: 'none' }}
+                    />
+                    <label htmlFor="imageUploadSmall" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mb-2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                      <span className="text-xs font-bold text-[#8B7355]">Change Image</span>
+                    </label>
+                  </div>
+                </>
+              ) : (
+                <div 
+                  style={{ 
+                    backgroundColor: '#F5EFE6', 
+                    padding: '32px', 
+                    borderRadius: '12px', 
+                    border: '2px dashed #d2c4b3', 
+                    textAlign: 'center', 
+                    transition: 'all 0.3s ease',
+                    cursor: 'pointer',
+                    width: '100%'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#FDFBF7';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.05)';
+                    e.currentTarget.style.borderColor = '#8B7355';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#F5EFE6';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'none';
+                    e.currentTarget.style.borderColor = '#d2c4b3';
+                  }}
+                >
+                  <input
+                    type="file"
+                    id="imageUpload"
+                    accept="image/png, image/jpeg, image/webp"
+                    onChange={handleImageChange}
+                    style={{ display: 'none' }}
+                  />
+                  <label htmlFor="imageUpload" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', width: '100%', height: '100%' }}>
+                    <div style={{ backgroundColor: '#4A3219', width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', boxShadow: '0 4px 6px -1px rgba(74, 50, 25, 0.3)', transition: 'transform 0.2s ease' }}
+                         onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                         onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </div>
+                    <div>
+                      <p style={{ fontWeight: 'bold', color: '#4A3219', fontSize: '1rem', marginBottom: '4px' }}>Add New Image</p>
+                      <p style={{ fontSize: '0.875rem', color: '#8B7355' }}>PNG, JPG up to 5MB</p>
+                    </div>
+                  </label>
+                </div>
+              )}
+            </div>
+
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            {/* Status */}
+            <div className="md:col-span-2 flex items-center justify-between p-4 md:p-5 rounded-xl border border-[#E6DCCF] shadow-sm">
+              <div>
+                <div className="font-bold text-sm text-[#4A3219] mb-1">Carousel Visibility</div>
+                <p className="text-xs text-[#8B7355]">When active, this slide will be shown on the homepage.</p>
+              </div>
+              <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '12px' }}>
+                <div style={{ position: 'relative', width: '40px', height: '24px' }}>
+                  <input
+                    type="checkbox"
+                    style={{ opacity: 0, width: 0, height: 0, position: 'absolute' }}
+                    checked={formData.is_active}
+                    onChange={(e) => setFormData({...formData, is_active: e.target.checked})}
+                  />
+                  {/* Track */}
+                  <div style={{ 
+                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, 
+                    borderRadius: '34px', transition: 'background-color 0.3s',
+                    backgroundColor: formData.is_active ? '#4A3219' : '#E6DCCF'
+                  }}></div>
+                  {/* Thumb */}
+                  <div style={{
+                    position: 'absolute', top: '3px', left: '3px', 
+                    width: '18px', height: '18px', borderRadius: '50%', 
+                    backgroundColor: 'white', transition: 'transform 0.3s',
+                    transform: formData.is_active ? 'translateX(16px)' : 'translateX(0)'
+                  }}></div>
+                </div>
+              </label>
+            </div>
+
+            {/* Text Content */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-bold text-[#3E2C1C] mb-2">Main Heading</label>
+              <input
+                id="title"
+                type="text"
+                required
+                value={formData.title}
+                onChange={(e) => setFormData({...formData, title: e.target.value})}
+                className="w-full border border-stone-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                placeholder="e.g., Soft Switch"
+              />
+            </div>
+            
+            <div className="md:col-span-2">
+              <label className="block text-sm font-bold text-[#3E2C1C] mb-2">Subheading</label>
+              <input
+                id="subtitle"
+                type="text"
+                required
+                value={formData.subtitle}
+                onChange={(e) => setFormData({...formData, subtitle: e.target.value})}
+                className="w-full border border-stone-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                placeholder="e.g., Discover comfortable and stylish clothing..."
+              />
+            </div>
+
+            {/* Buttons Setup */}
+            <div className="p-4 md:p-5 rounded-xl border border-[#E6DCCF] shadow-sm">
+              <h3 className="text-lg font-bold text-[#4A3219] mb-4 border-b border-[#E6DCCF] pb-2">Primary Button</h3>
+              
+              <div className="mb-4">
+                <label className="block text-sm font-bold text-stone-600 mb-1">Button Text</label>
+                <input
+                  id="primary_cta_label"
+                  type="text"
+                  value={formData.primary_cta_label}
+                  onChange={(e) => setFormData({...formData, primary_cta_label: e.target.value})}
+                  className="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-sm text-[#3E2C1C] focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-stone-600 mb-1">Links to Category</label>
+                <div className="relative">
+                  <div 
+                    id="primary_cta_href"
+                    tabIndex={0}
+                    className="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white cursor-pointer flex justify-between items-center text-sm text-[#3E2C1C] focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                    style={{ outline: primaryDropdownOpen ? '2px solid #8B7355' : 'none' }}
+                    onClick={() => setPrimaryDropdownOpen(!primaryDropdownOpen)}
+                  >
+                    <span>{formData.primary_cta_href === "/collections" ? "All Collections" : (categories.find(c => `/collections/${c.slug}` === formData.primary_cta_href)?.name || "All Collections")}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: primaryDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </div>
+                  
+                  {primaryDropdownOpen && (
+                    <>
+                      <div className="fixed inset-0 z-10" onClick={() => setPrimaryDropdownOpen(false)}></div>
+                      <div className="absolute z-20 w-full mt-2 bg-white border border-[#E6DCCF] rounded-xl shadow-lg max-h-60 overflow-y-auto" style={{ top: '100%' }}>
+                        <div 
+                          className="px-4 py-3 hover:bg-[#F5EFE6] cursor-pointer text-[#3E2C1C] transition-colors text-sm"
+                          style={{ backgroundColor: formData.primary_cta_href === "/collections" ? '#FDFBF7' : 'transparent', fontWeight: formData.primary_cta_href === "/collections" ? 'bold' : 'normal' }}
+                          onClick={() => {
+                            setFormData(prev => ({ ...prev, primary_cta_href: "/collections" }));
+                            setPrimaryDropdownOpen(false);
+                          }}
+                        >
+                          All Collections
+                        </div>
+                        {categories.map(c => (
+                          <div 
+                            key={c.slug} 
+                            className="px-4 py-3 hover:bg-[#F5EFE6] cursor-pointer text-[#3E2C1C] transition-colors text-sm"
+                            style={{ backgroundColor: formData.primary_cta_href === `/collections/${c.slug}` ? '#FDFBF7' : 'transparent', fontWeight: formData.primary_cta_href === `/collections/${c.slug}` ? 'bold' : 'normal' }}
+                            onClick={() => {
+                              setFormData(prev => ({ ...prev, primary_cta_href: `/collections/${c.slug}` }));
+                              setPrimaryDropdownOpen(false);
+                            }}
+                          >
+                            {c.name}
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="p-5 rounded-xl border border-[#E6DCCF] shadow-sm">
+              <h3 className="text-lg font-bold text-[#4A3219] mb-4 border-b border-[#E6DCCF] pb-2">Secondary Button</h3>
+              
+              <div className="mb-4">
+                <label className="block text-sm font-bold text-stone-600 mb-1">Button Text</label>
+                <input
+                  id="secondary_cta_label"
+                  type="text"
+                  value={formData.secondary_cta_label}
+                  onChange={(e) => setFormData({...formData, secondary_cta_label: e.target.value})}
+                  className="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white text-sm text-[#3E2C1C] focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-stone-600 mb-1">Links to Category</label>
+                <div className="relative">
+                  <div 
+                    id="secondary_cta_href"
+                    tabIndex={0}
+                    className="w-full px-4 py-3 rounded-lg border border-stone-300 bg-white cursor-pointer flex justify-between items-center text-sm text-[#3E2C1C] focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                    style={{ outline: secondaryDropdownOpen ? '2px solid #8B7355' : 'none' }}
+                    onClick={() => setSecondaryDropdownOpen(!secondaryDropdownOpen)}
+                  >
+                    <span>{formData.secondary_cta_href === "/collections" ? "All Collections" : (categories.find(c => `/collections/${c.slug}` === formData.secondary_cta_href)?.name || "All Collections")}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: secondaryDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </div>
+                  
+                  {secondaryDropdownOpen && (
+                    <>
+                      <div className="fixed inset-0 z-10" onClick={() => setSecondaryDropdownOpen(false)}></div>
+                      <div className="absolute z-20 w-full mt-2 bg-white border border-[#E6DCCF] rounded-xl shadow-lg max-h-60 overflow-y-auto" style={{ top: '100%' }}>
+                        <div 
+                          className="px-4 py-3 hover:bg-[#F5EFE6] cursor-pointer text-[#3E2C1C] transition-colors text-sm"
+                          style={{ backgroundColor: formData.secondary_cta_href === "/collections" ? '#FDFBF7' : 'transparent', fontWeight: formData.secondary_cta_href === "/collections" ? 'bold' : 'normal' }}
+                          onClick={() => {
+                            setFormData(prev => ({ ...prev, secondary_cta_href: "/collections" }));
+                            setSecondaryDropdownOpen(false);
+                          }}
+                        >
+                          All Collections
+                        </div>
+                        {categories.map(c => (
+                          <div 
+                            key={c.slug} 
+                            className="px-4 py-3 hover:bg-[#F5EFE6] cursor-pointer text-[#3E2C1C] transition-colors text-sm"
+                            style={{ backgroundColor: formData.secondary_cta_href === `/collections/${c.slug}` ? '#FDFBF7' : 'transparent', fontWeight: formData.secondary_cta_href === `/collections/${c.slug}` ? 'bold' : 'normal' }}
+                            onClick={() => {
+                              setFormData(prev => ({ ...prev, secondary_cta_href: `/collections/${c.slug}` }));
+                              setSecondaryDropdownOpen(false);
+                            }}
+                          >
+                            {c.name}
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-4 pt-8 border-t border-[#E6DCCF] w-full">
+            <button
+              type="submit"
+              disabled={saving}
+              className="px-8 text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md hover:opacity-90"
+              style={{ backgroundColor: '#4A3219', color: '#ffffff', borderRadius: '8px', height: '50px' }}
+            >
+              <span style={{ color: '#ffffff' }}>{saving ? 'Saving...' : 'Save Slide'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => router.push("/admin/carousels")}
+              className="px-8 text-white font-bold transition-colors flex items-center justify-center shadow-md hover:opacity-90"
+              style={{ backgroundColor: '#4A3219', color: '#ffffff', borderRadius: '8px', height: '50px' }}
+            >
+              <span style={{ color: '#ffffff' }}>Cancel</span>
+            </button>
+
+            {!isNew && (
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={saving}
+                className="px-8 text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-md hover:opacity-90"
+                style={{ backgroundColor: '#4A3219', color: '#ffffff', borderRadius: '8px', height: '50px' }}
+              >
+                <span style={{ color: '#ffffff' }}>Delete Slide</span>
+              </button>
+            )}
+          </div>
+        </form>
+
+        {/* Toast */}
+        {toast.show && (
+          <div className={`fixed top-6 left-1/2 -translate-x-1/2 px-8 py-4 rounded-xl shadow-2xl text-base font-bold flex items-center gap-3 z-50 ${
+            toast.type === "success" ? "bg-green-600 text-white" : "bg-red-600 text-white"
+          }`}>
+            {toast.msg}
+          </div>
+        )}
+      </div>
+    </main>
+  );
+}

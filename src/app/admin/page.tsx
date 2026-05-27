@@ -72,7 +72,7 @@ export default function AdminDashboard() {
             <div className="text-[#4A3219] font-bold text-xl text-center">Loading dashboard...</div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
           <div className="bg-[#F5EFE6] rounded-2xl border border-[#E6DCCF] shadow-sm hover:shadow-md transition-shadow flex flex-col" style={{ padding: '32px' }}>
             <div className="mb-6 opacity-80">
@@ -121,6 +121,24 @@ export default function AdminDashboard() {
               </Link>
             </div>
           </div>
+
+          <div className="bg-[#F5EFE6] rounded-2xl border border-[#E6DCCF] shadow-sm hover:shadow-md transition-shadow flex flex-col" style={{ padding: '32px' }}>
+            <div className="mb-6 opacity-80">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#5A3E2B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+            </div>
+            <h2 className="text-xl font-bold text-[#3E2C1C] mb-2">Carousels</h2>
+            <p className="text-[#8B7355] text-sm mb-6">Manage homepage hero slides and timer.</p>
+            <div className="mt-auto">
+              <Link href="/admin/carousels" className="btn-primary block w-full text-center py-2.5 px-4 rounded-xl font-semibold text-sm shadow-sm transition-transform active:scale-95" style={{ background: "var(--brand)", color: "white", textDecoration: "none" }}>
+                Manage Carousels
+              </Link>
+            </div>
+          </div>
+
         </div>
         )}
       </div>

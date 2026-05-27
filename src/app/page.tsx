@@ -5,17 +5,38 @@ import HeroSection from "@/components/HeroSection";
 import Link from "next/link";
 import { Product } from "@/types";
 import { getLiveCategories } from "@/lib/categoriesApi";
+import { supabase } from "@/lib/supabaseClient";
 
 export const metadata = {
   title: "Handmade Collections — Keshvi Crafts",
   description: "Limited-run artisanal crochet pieces.",
 };
 
-export const revalidate = 60;
+export const revalidate = 0;
 
 export default async function Home() {
   const liveProducts = await getLiveProducts();
   const live = liveProducts as Product[];
+
+  // 1. Fetch Dynamic Carousel Data
+  let heroSlides = [];
+  let carouselDelay = 4500;
+  
+  try {
+    const [slidesRes, timerRes] = await Promise.all([
+      supabase.from("hero_slides").select("*").eq("is_active", true).order("position", { ascending: true }),
+      supabase.from("site_settings").select("setting_value").eq("setting_key", "carousel_delay").single(),
+    ]);
+    
+    if (slidesRes.data && slidesRes.data.length > 0) {
+      heroSlides = slidesRes.data;
+    }
+    if (timerRes.data?.setting_value?.ms) {
+      carouselDelay = timerRes.data.setting_value.ms;
+    }
+  } catch (err) {
+    console.error("Error fetching carousel data:", err);
+  }
 
   // 1. Priority Sorting (DESC priority, ASC price)
   const sortedProducts = [...live].sort((a, b) => {
@@ -54,7 +75,7 @@ export default async function Home() {
   return (
     <main>
       {/* Hero Section */}
-      <HeroSection />
+      <HeroSection slides={heroSlides} autoPlayMs={carouselDelay} />
 
       <div className="container py-40 mt-10">
       

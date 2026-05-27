@@ -5,63 +5,74 @@ import Image from "next/image";
 import Link from "next/link";
 import "./HeroSection.css";
 
-const AUTO_PLAY_MS = 4500;
+const DEFAULT_AUTO_PLAY_MS = 4500;
 
-const heroSlides = [
+const defaultSlides = [
   {
     title: "Soft Switch",
     subtitle: "Discover comfortable and stylish clothing for every moment.",
-    image: "/uploads/hero/corosal-1.png",
-    primaryCta: { label: "Browse Clothing", href: "/collections/apparels" },
-    secondaryCta: { label: "Explore Collection", href: "/collections" },
+    image_url: "/uploads/hero/corosal-1.png",
+    primary_cta_label: "Browse Clothing",
+    primary_cta_href: "/collections/apparels",
+    secondary_cta_label: "Explore Collection",
+    secondary_cta_href: "/collections",
   },
   {
     title: "Forever Blooms",
     subtitle: "Elegant floral arrangements for every occasion.",
-    image: "/uploads/hero/corosal-2.png",
-    primaryCta: { label: "Browse Flowers", href: "/collections/flowers" },
-    secondaryCta: { label: "Send a Bouquet", href: "/collections" },
+    image_url: "/uploads/hero/corosal-2.png",
+    primary_cta_label: "Browse Flowers",
+    primary_cta_href: "/collections/flowers",
+    secondary_cta_label: "Send a Bouquet",
+    secondary_cta_href: "/collections",
   },
   {
     title: "Cozy Corners",
     subtitle: "Transform your home with minimal and elegant decor.",
-    image: "/uploads/hero/corosal-3.png",
-    primaryCta: { label: "Browse Decor", href: "/collections/home-decor" },
-    secondaryCta: { label: "Shop Now", href: "/collections" },
+    image_url: "/uploads/hero/corosal-3.png",
+    primary_cta_label: "Browse Decor",
+    primary_cta_href: "/collections/home-decor",
+    secondary_cta_label: "Shop Now",
+    secondary_cta_href: "/collections",
   },
   {
     title: "Everyday Essentials",
     subtitle: "Curated products designed to elevate your daily life.",
-    image: "/uploads/hero/corosal-4.png",
-    primaryCta: { label: "Browse Keyrings", href: "/collections/keyrings" },
-    secondaryCta: { label: "View Collection", href: "/collections" },
+    image_url: "/uploads/hero/corosal-4.png",
+    primary_cta_label: "Browse Keyrings",
+    primary_cta_href: "/collections/keyrings",
+    secondary_cta_label: "View Collection",
+    secondary_cta_href: "/collections",
   },
-] as const;
+];
 
-export default function HeroSection() {
+export default function HeroSection({ slides, autoPlayMs }: { slides?: any[], autoPlayMs?: number }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+
+  const displaySlides = slides && slides.length > 0 ? slides : defaultSlides;
+  const currentAutoPlayMs = autoPlayMs || DEFAULT_AUTO_PLAY_MS;
 
   useEffect(() => {
     if (isPaused) return;
 
     const timer = window.setInterval(() => {
-      setActiveIndex((current) => (current + 1) % heroSlides.length);
-    }, AUTO_PLAY_MS);
+      setActiveIndex((current) => (current + 1) % displaySlides.length);
+    }, currentAutoPlayMs);
 
     return () => window.clearInterval(timer);
-  }, [isPaused]);
+  }, [isPaused, currentAutoPlayMs, displaySlides.length]);
 
   const goToSlide = (index: number) => {
     setActiveIndex(index);
   };
 
   const goToPrevious = () => {
-    setActiveIndex((current) => (current - 1 + heroSlides.length) % heroSlides.length);
+    setActiveIndex((current) => (current - 1 + displaySlides.length) % displaySlides.length);
   };
 
   const goToNext = () => {
-    setActiveIndex((current) => (current + 1) % heroSlides.length);
+    setActiveIndex((current) => (current + 1) % displaySlides.length);
   };
 
   return (
@@ -77,13 +88,13 @@ export default function HeroSection() {
           className="hero-carousel__track"
           style={{ transform: `translateX(-${activeIndex * 100}%)` }}
         >
-          {heroSlides.map((slide, index) => (
+          {displaySlides.map((slide, index) => (
             <article className="hero-slide" key={slide.title} aria-hidden={activeIndex !== index}>
               <div className="hero-slide__inner">
                 <div className="hero-slide__media">
                   <div className="hero-slide__image-shell">
                     <Image
-                      src={slide.image}
+                      src={slide.image_url || slide.image}
                       alt={slide.title}
                       width={720}
                       height={720}
@@ -99,11 +110,11 @@ export default function HeroSection() {
                   <p className="hero-slide__subtitle">{slide.subtitle}</p>
 
                   <div className="hero-slide__actions">
-                    <Link href={slide.primaryCta.href} className="btn-luxe hero-slide__button">
-                      {slide.primaryCta.label}
+                    <Link href={slide.primary_cta_href} className="btn-luxe hero-slide__button">
+                      {slide.primary_cta_label}
                     </Link>
-                    <Link href={slide.secondaryCta.href} className="btn-secondary hero-slide__button hero-slide__button--secondary">
-                      {slide.secondaryCta.label}
+                    <Link href={slide.secondary_cta_href} className="btn-secondary hero-slide__button hero-slide__button--secondary">
+                      {slide.secondary_cta_label}
                     </Link>
                   </div>
                 </div>
@@ -136,7 +147,7 @@ export default function HeroSection() {
       </button>
 
       <div className="hero-carousel__dots" aria-label="Carousel navigation">
-        {heroSlides.map((slide, index) => (
+        {displaySlides.map((slide, index) => (
           <button
             key={slide.title}
             type="button"
