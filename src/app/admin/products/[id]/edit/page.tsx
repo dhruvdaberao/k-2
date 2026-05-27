@@ -17,8 +17,8 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
     setLoading(true);
     try {
       // Auth check
-      const { data: authData } = await supabase.auth.getUser();
-      if (!authData?.user || authData.user.email !== "keshvicrafts@gmail.com") {
+      const { data: authData } = await supabase.auth.getSession();
+      if (!authData?.session?.user || authData.session.user.email !== "keshvicrafts@gmail.com") {
         router.push("/");
         return;
       }
@@ -51,7 +51,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
     // Safety: never show loading for more than 15 seconds
     const safety = setTimeout(() => setLoading(false), 15000);
     return () => clearTimeout(safety);
-  }, [params.id, router]);
+  }, [params.id]);
 
   if (loading) return <GlobalLoader message="Loading product data..." />;
 

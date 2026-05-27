@@ -73,7 +73,7 @@ export default function AdminOrders() {
     // Fail-safe timeout
     const timeout = setTimeout(() => setLoading(false), 5000);
     return () => clearTimeout(timeout);
-  }, [router]);
+  }, []);
 
   if (loading) {
     return <GlobalLoader message="Loading orders..." />;

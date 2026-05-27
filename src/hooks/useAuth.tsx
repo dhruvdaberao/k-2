@@ -35,7 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const fetchProfile = async (uid: string) => {
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 4000);
+      const timeout = setTimeout(() => controller.abort(), 15000);
       const { data } = await supabase
         .from('profiles')
         .select('*')
@@ -126,14 +126,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Let init() handle the initial load. These events just update session/user above.
     });
 
-    // Absolute safety net — loading can NEVER stay stuck longer than 4 seconds
+    // Absolute safety net — loading can NEVER stay stuck longer than 15 seconds
     const safetyTimeout = setTimeout(() => {
       if (!initDone.current) {
         console.warn("🕒 [AUTH] Safety timeout triggered — forcing loading=false");
         initDone.current = true;
         setLoading(false);
       }
-    }, 4000);
+    }, 15000);
 
     return () => {
       mounted = false;

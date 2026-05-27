@@ -57,8 +57,8 @@ export default function OrderDetails() {
       try {
         console.log("🚀 [ADMIN-ORDER] Init for:", orderId);
         // Auth check
-        const { data: authData } = await supabase.auth.getUser();
-        if (!authData?.user || authData.user.email !== "keshvicrafts@gmail.com") {
+        const { data: authData } = await supabase.auth.getSession();
+        if (!authData?.session?.user || authData.session.user.email !== "keshvicrafts@gmail.com") {
           console.warn("⚠️ [ADMIN-ORDER] Unauthorized access");
           router.push("/");
           return;
@@ -82,7 +82,7 @@ export default function OrderDetails() {
     }, 5000);
 
     return () => clearTimeout(timeout);
-  }, [orderId, router]);
+  }, [orderId]);
 
   const fetchOrder = async () => {
     try {

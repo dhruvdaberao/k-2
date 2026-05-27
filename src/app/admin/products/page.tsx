@@ -18,8 +18,8 @@ export default function AdminProducts() {
     const fetchProducts = async () => {
       try {
         // Auth check
-        const { data: authData } = await supabase.auth.getUser();
-        if (!authData?.user || authData.user.email !== "keshvicrafts@gmail.com") {
+        const { data: authData } = await supabase.auth.getSession();
+        if (!authData?.session?.user || authData.session.user.email !== "keshvicrafts@gmail.com") {
           router.push("/");
           return;
         }
@@ -48,7 +48,7 @@ export default function AdminProducts() {
       setLoading(false);
     }, 10000);
     return () => clearTimeout(timeout);
-  }, [router]);
+  }, []);
 
   const filteredProducts = products.filter((p) =>
     p.title.toLowerCase().includes(search.toLowerCase()) ||

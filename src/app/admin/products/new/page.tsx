@@ -14,8 +14,8 @@ export default function NewProductPage() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const { data: authData } = await supabase.auth.getUser();
-        if (!authData?.user || authData.user.email !== "keshvicrafts@gmail.com") {
+        const { data: authData } = await supabase.auth.getSession();
+        if (!authData?.session?.user || authData.session.user.email !== "keshvicrafts@gmail.com") {
           router.push("/");
           return;
         }
@@ -30,7 +30,7 @@ export default function NewProductPage() {
     // Safety: never show loading for more than 5 seconds
     const safety = setTimeout(() => setLoading(false), 5000);
     return () => clearTimeout(safety);
-  }, [router]);
+  }, []);
 
   if (loading) return <GlobalLoader message="Authenticating..." />;
 

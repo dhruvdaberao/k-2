@@ -27,19 +27,28 @@ export default function CartPage() {
 
   const cartIdsStr = cartItems.map(it => it.id).sort().join(',');
 
-  const fetchProducts = useCallback((ids: string[]) => {
+  const fetchProducts = useCallback(async (ids: string[]) => {
     const reqId = ++fetchControllerRef.current;
-    supabase
-      .from("products")
-      .select("*")
-      .or(`id.in.(${ids.join(',')}),slug.in.(${ids.join(',')})`)
-      .then(({ data }: { data: any }) => {
-        if (reqId !== fetchControllerRef.current) return;
-        if (data) setProducts(data as Product[]);
-      })
-      .catch((err: any) => {
-        console.error("Cart product fetch error:", err);
-      });
+    
+    try {
+      // 5-second timeout for PWA cold start/offline issues
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Timeout")), 5000)
+      );
+      
+      const fetchPromise = supabase
+        .from("products")
+        .select("*")
+        .or(`id.in.(${ids.join(',')}),slug.in.(${ids.join(',')})`);
+
+      const { data } = await Promise.race([fetchPromise, timeoutPromise]) as any;
+
+      if (reqId !== fetchControllerRef.current) return;
+      if (data) setProducts(data as Product[]);
+    } catch (err: any) {
+      console.error("Cart product fetch error:", err);
+      // Even if fetch fails, we keep the UI working with local cache
+    }
   }, []);
 
   // Fetch products for stock info (non-blocking — cart renders from cached items)
@@ -74,38 +83,32 @@ export default function CartPage() {
       invalidItems.forEach(item => {
         removeFromCart(item.id);
       });
-      // Optionally show a toast, though silently removing it might be less jarring
-      // showToast("Some items were removed because they are no longer available.");
     }
   }, [products, cartItems, removeFromCart]);
 
-  // Automatically unselect items that are out of stock
+  const seenItemsRef = useRef<Set<string>>(new Set());
+
+  // Automatically select items as soon as they appear in the cart (fixes unticked issue on load)
+  useEffect(() => {
+    const newItems = cartItems.filter(it => !seenItemsRef.current.has(it.id));
+    if (newItems.length > 0) {
+      setSelectedItems(prev => [...prev, ...newItems.map(it => it.id)]);
+      newItems.forEach(it => seenItemsRef.current.add(it.id));
+    }
+  }, [cartItems]);
+
+  // Automatically unselect items that are out of stock when product data loads
   useEffect(() => {
     if (products.length === 0) return;
     
     setSelectedItems((prev) => {
-      // Keep only items that are both in prev AND not OOS
-      const newSelection = prev.filter(id => {
+      return prev.filter(id => {
         const p = (products as Product[]).find(x => x.slug === id || x.id === id);
         const isOos = p && typeof p.stock === "number" && p.stock <= 0 && p.type !== "custom-order";
         return !isOos;
       });
-      
-      // If we just loaded and nothing is selected, we might want to select all available.
-      // But to be safe and avoid overwriting user un-checks, let's only auto-select all 
-      // if cartItems length matches, but actually it's better to just remove OOS from existing selection.
-      // Let's do: if prev is empty but cart has items (initial load), select all available.
-      if (prev.length === 0 && cartItems.length > 0) {
-        return cartItems.filter((it) => {
-          const p = (products as Product[]).find(x => x.slug === it.id || x.id === it.id);
-          const isOos = p && typeof p.stock === "number" && p.stock <= 0 && p.type !== "custom-order";
-          return !isOos;
-        }).map(it => it.id);
-      }
-      
-      return newSelection;
     });
-  }, [cartItems, products]);
+  }, [products]);
 
   const toggleItem = (id: string) => {
     setSelectedItems((prev) =>

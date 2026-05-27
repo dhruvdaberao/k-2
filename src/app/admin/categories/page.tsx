@@ -19,9 +19,8 @@ export default function AdminCategories() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        // Auth check
-        const { data: authData } = await supabase.auth.getUser();
-        if (!authData?.user || authData.user.email !== "keshvicrafts@gmail.com") {
+        const { data: authData } = await supabase.auth.getSession();
+        if (!authData?.session?.user || authData.session.user.email !== "keshvicrafts@gmail.com") {
           router.push("/");
           return;
         }
@@ -42,7 +41,7 @@ export default function AdminCategories() {
       setLoading(false);
     }, 10000);
     return () => clearTimeout(timeout);
-  }, [router]);
+  }, []);
 
   const handleAddCategory = async (e: React.FormEvent) => {
     e.preventDefault();

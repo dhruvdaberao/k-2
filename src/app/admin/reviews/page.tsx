@@ -96,17 +96,18 @@ export default function AdminManageReviewsPage() {
   }, [])
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user || !isAdmin(user)) {
+    const checkAuthAndFetchData = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      const user = session?.user;
+      if (!user || user.email !== "keshvicrafts@gmail.com") {
         setLoading(false)
-        setUser(user)
+        setUser(user || null)
         return
       }
       setUser(user)
       fetchReviews()
     }
-    checkAuth()
+    checkAuthAndFetchData()
   }, [fetchReviews])
 
   const handleDeleteReview = async () => {

@@ -15,8 +15,8 @@ export default function AdminDashboard() {
     let isMounted = true;
     const init = async () => {
       try {
-        const { data: authData } = await supabase.auth.getUser();
-        if (!authData?.user || authData.user.email !== "keshvicrafts@gmail.com") {
+        const { data: authData } = await supabase.auth.getSession();
+        if (!authData?.session?.user || authData.session.user.email !== "keshvicrafts@gmail.com") {
           router.push("/");
           return;
         }
@@ -38,7 +38,7 @@ export default function AdminDashboard() {
       isMounted = false;
       clearTimeout(safety);
     };
-  }, [router]);
+  }, []);
 
 
   return (

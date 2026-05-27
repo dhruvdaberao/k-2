@@ -96,15 +96,17 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     try {
       const productId = formData.id || 'temp_' + Date.now();
 
-      // Process all images in parallel for maximum speed
-      const uploadPromises = files.map(async (file) => {
+      // Process images sequentially to prevent mobile memory overload and crashes
+      const uploadedUrls: string[] = [];
+      for (const file of files) {
         let compressedFile = file;
         try {
           const options = {
-            maxSizeMB: 1,
-            maxWidthOrHeight: 1200,
-            useWebWorker: true,
-            initialQuality: 0.8
+            maxSizeMB: 0.4,
+            maxWidthOrHeight: 1000,
+            useWebWorker: false, // Prevents worker spin-up overhead and mobile crashes
+            initialQuality: 0.7,
+            maxIteration: 2 // Prevent slow binary search loops
           };
           compressedFile = await imageCompression(file, options);
         } catch (error) {
@@ -121,18 +123,15 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
         if (uploadError) {
           console.error("Upload error:", uploadError);
           showToast(`Failed to upload ${file.name}`);
-          return null;
+          continue;
         }
 
         const { data: { publicUrl } } = supabase.storage
           .from('product-images')
           .getPublicUrl(fileName);
         
-        return publicUrl;
-      });
-
-      const results = await Promise.all(uploadPromises);
-      const uploadedUrls = results.filter((url): url is string => url !== null);
+        uploadedUrls.push(publicUrl);
+      }
 
       if (typeof variantIndex === 'number') {
         setVariants(prev => {

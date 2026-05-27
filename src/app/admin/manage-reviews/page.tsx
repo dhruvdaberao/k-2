@@ -81,10 +81,11 @@ export default function AdminManageReviewsPage() {
   // Auth & Admin Check
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { session } } = await supabase.auth.getSession();
+      const user = session?.user;
       if (!user || !isAdmin(user)) {
         setLoading(false)
-        setUser(user)
+        setUser(user || null)
         return
       }
       setUser(user)
