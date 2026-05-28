@@ -78,7 +78,7 @@ export default function BootstrapNavbar() {
               aria-label="Open search"
               title="Search"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="search-icon"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <Image src={isActive("/search") ? "/nav-icons/search-filled.png" : "/nav-icons/search-unfilled.png"} alt="Search" width={22} height={22} className="search-icon" />
             </Link>
             
             <Link
@@ -88,7 +88,7 @@ export default function BootstrapNavbar() {
               title={user ? "Profile" : "Login"}
               style={{ alignItems: "center", marginLeft: "12px" }}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="profile-icon"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <Image src={isActive(authLink) ? "/nav-icons/profile-filled.png" : "/nav-icons/profile-unfilled.png"} alt="Profile" width={22} height={22} className="profile-icon" />
             </Link>
           </div>
         </div>
