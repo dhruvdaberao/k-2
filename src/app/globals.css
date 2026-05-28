@@ -64,12 +64,12 @@
 }
 
 /* FORCE CONSISTENT TYPOGRAPHY / OVERRIDE BOOTSTRAP */
-html, body, p, a, span, button, input, textarea,
-h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+html, body, p, a, span, button, input, textarea {
   font-family: var(--font-poppins, 'Poppins'), -apple-system, system-ui, sans-serif !important;
 }
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: var(--font-playfair, 'Playfair Display'), serif !important;
   color: var(--text);
   margin-top: 0;
 }
