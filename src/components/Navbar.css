@@ -284,12 +284,9 @@ body {
   }
 
   .mobile-bottom-nav .bottom-nav-item svg {
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 1.8;
-    opacity: 1;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+    color: var(--primary-brown);
+    width: 20px;
+    height: 20px;
   }
 
   .mobile-bottom-nav .bottom-nav-item span {
@@ -302,8 +299,7 @@ body {
 
   .bottom-nav-item.active .bottom-nav-icon,
   .mobile-bottom-nav .bottom-nav-item.active svg {
-    stroke: currentColor;
-    stroke-width: 1.8;
+    color: var(--primary-brown);
   }
 
   .bottom-nav-label {

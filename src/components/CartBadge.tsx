@@ -20,7 +20,7 @@ export default function CartBadge({ size = "md" }: { size?: "sm" | "md" }) {
         minWidth: isSmall ? 15 : 20,
         height: isSmall ? 15 : 20,
         borderRadius: isSmall ? 7.5 : 10,
-        background: "#D81B60",
+        background: "#db2777",
         color: "#fff",
         fontSize: isSmall ? 8 : 11,
         fontWeight: 600,
