@@ -79,7 +79,7 @@ export default function GlobalToast() {
         style={{
           backgroundColor: "#ffffff",
           color: textColor,
-          padding: "10px 20px",
+          padding: "12px 24px",
           borderRadius: "9999px",
           boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
           border: "1px solid #e6ded4",
@@ -87,14 +87,15 @@ export default function GlobalToast() {
           fontWeight: 600,
           display: "flex",
           alignItems: "center",
-          gap: "8px",
-          whiteSpace: "normal",
+          justifyContent: "center",
+          gap: "10px",
+          width: "max-content",
           maxWidth: "90vw",
           textAlign: "center"
         }}
       >
         {icon}
-        {message}
+        <span style={{ wordBreak: 'break-word', lineHeight: '1.4' }}>{message}</span>
       </div>
     </div>
   );
