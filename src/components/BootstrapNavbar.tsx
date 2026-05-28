@@ -115,7 +115,7 @@ export default function BootstrapNavbar() {
 
         <Link href="/cart" className={`bottom-nav-item cart-bottom ${isActive("/cart") ? "active" : ""}`} title="Cart">
           <div className="cart-wrapper">
-            <Image src={isActive("/cart") ? "/nav-icons/bag-filled.png" : "/nav-icons/bag-unfilled.png"} alt="Cart" width={24} height={24} className="bottom-nav-icon" />
+            <Image src={isActive("/cart") ? "/nav-icons/bag-filled.png" : "/nav-icons/bag-unfilled.png"} alt="Cart" width={24} height={24} className="bottom-nav-icon" style={{ transform: "scale(1.2)" }} />
             <CartBadge size="sm" />
           </div>
           <span className="bottom-nav-label">Cart</span>
