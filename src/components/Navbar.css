@@ -302,7 +302,9 @@ body {
 
   .bottom-nav-item.active .bottom-nav-icon,
   .mobile-bottom-nav .bottom-nav-item.active svg {
-    color: var(--primary-brown);
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2.2;
   }
 
   .bottom-nav-label {
