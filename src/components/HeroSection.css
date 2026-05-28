@@ -247,7 +247,7 @@
     min-height: auto;
     grid-template-columns: 1fr;
     gap: 8px;
-    padding: 24px 12px 12px; /* Reduced top padding to fit screen */
+    padding: 32px 12px 12px; /* Slight bump in top padding for breathing room */
     align-content: center;
   }
 
@@ -256,8 +256,8 @@
   }
 
   .hero-slide__image {
-    max-height: 280px; /* Slightly reduced so everything fits with bottom nav */
-    margin-top: -10px;
+    max-height: 280px;
+    margin-top: 0;
   }
 
   .hero-slide__eyebrow {
