@@ -157,7 +157,7 @@ function AccountSettingsContent() {
         }
       `}} />
 
-      <div className="px-4" style={{ width: '100%', maxWidth: '768px', margin: '0 auto' }}>
+      <div className="w-full mx-auto" style={{ maxWidth: '768px' }}>
         
         <div className="flex items-center justify-between mt-8 mb-6">
           <button
@@ -175,7 +175,7 @@ function AccountSettingsContent() {
 
         <div className="flex flex-col" style={{ gap: '1.5rem' }}>
           {/* Email Update Card */}
-          <section className="checkout-card p-6 shadow-sm">
+          <section className="checkout-card p-5 sm:p-6 shadow-sm">
             <div className="border-b pb-3 mb-5">
               <h2 className="text-lg font-bold" style={{ color: "var(--text)" }}>Email Authentication</h2>
               <p className="text-stone-500 text-sm mt-1">Update your primary login address.</p>
@@ -255,7 +255,7 @@ function AccountSettingsContent() {
           </section>
 
           {/* Password Update Card */}
-          <section id="password-section" className="checkout-card p-6 shadow-sm transition-all duration-500">
+          <section id="password-section" className="checkout-card p-5 sm:p-6 shadow-sm transition-all duration-500">
             <div className="border-b pb-3 mb-5">
               <h2 className="text-lg font-bold" style={{ color: "var(--text)" }}>Security & Password</h2>
               <p className="text-stone-500 text-sm mt-1">Ensure your account remains securely locked.</p>

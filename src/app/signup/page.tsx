@@ -159,7 +159,7 @@ export default function SignupPage() {
             box-shadow: 0 0 0 1px var(--brand);
           }
         `}} />
-        <div className="px-4 sm:px-6 md:px-0 mx-auto w-full mt-10" style={{ maxWidth: '460px' }}>
+        <div className="w-full mx-auto mt-6 sm:mt-10" style={{ maxWidth: '460px' }}>
           <div className="text-center mb-8">
             <img src="/uploads/hero/logo.png" alt="Logo" className="mx-auto mb-4" style={{ height: '110px', width: 'auto', mixBlendMode: 'multiply' }} />
             <h1 className="text-2xl font-bold" style={{ color: "var(--brand)" }}>
@@ -167,7 +167,7 @@ export default function SignupPage() {
             </h1>
           </div>
 
-          <div className="checkout-card p-6 bg-[#f3ede6] rounded-2xl shadow-sm border border-[#e6ded4]">
+          <div className="checkout-card p-5 sm:p-6 bg-[#f3ede6] rounded-2xl shadow-sm border border-[#e6ded4]">
             <form onSubmit={handleAuthAction} className="flex flex-col gap-4">
               <label className="checkout-field">
                 <span>Email Address</span>
