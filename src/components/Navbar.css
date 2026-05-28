@@ -151,6 +151,8 @@
   color: var(--brand);
   text-decoration: none;
   transition: color 0.2s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mobile-top-search .search-icon {
@@ -266,6 +268,8 @@ body {
     font-weight: 500;
     position: relative;
     transition: color 0.2s ease, opacity 0.2s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .bottom-nav-icon {
