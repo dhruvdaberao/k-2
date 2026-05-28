@@ -580,19 +580,19 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-3 md:px-8 md:py-0 text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md hover:opacity-90 rounded-lg md:h-[50px] text-sm md:text-base"
-              style={{ backgroundColor: '#4A3219', color: '#ffffff', flexGrow: 1, flexBasis: 'auto', maxWidth: '200px' }}
+              className="btn-primary"
+              style={{ flexGrow: 1, flexBasis: 'auto', maxWidth: '200px', border: 'none', minHeight: '50px' }}
             >
-              <span style={{ color: '#ffffff' }}>{saving ? 'Saving...' : 'Save Slide'}</span>
+              {saving ? 'Saving...' : 'Save Slide'}
             </button>
 
             <button
               type="button"
               onClick={() => router.push("/admin/carousels")}
-              className="px-6 py-3 md:px-8 md:py-0 text-white font-bold transition-colors flex items-center justify-center shadow-md hover:opacity-90 rounded-lg md:h-[50px] text-sm md:text-base"
-              style={{ backgroundColor: '#4A3219', color: '#ffffff', flexGrow: 1, flexBasis: 'auto', maxWidth: '200px' }}
+              className="btn-secondary"
+              style={{ flexGrow: 1, flexBasis: 'auto', maxWidth: '200px', border: '1px solid #E6DCCF', minHeight: '50px', backgroundColor: '#FDFBF7', color: '#4A3219' }}
             >
-              <span style={{ color: '#ffffff' }}>Cancel</span>
+              Cancel
             </button>
 
             {!isNew && (
@@ -600,10 +600,10 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
                 type="button"
                 onClick={handleDelete}
                 disabled={saving}
-                className="px-6 py-3 md:px-8 md:py-0 text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-md hover:opacity-90 rounded-lg md:h-[50px] text-sm md:text-base md:ml-auto"
-                style={{ backgroundColor: '#4A3219', color: '#ffffff', flexGrow: 1, flexBasis: 'auto', maxWidth: '200px' }}
+                className="btn-outline md:ml-auto"
+                style={{ flexGrow: 1, flexBasis: 'auto', maxWidth: '200px', border: '1px solid #dc2626', color: '#dc2626', minHeight: '50px' }}
               >
-                <span style={{ color: '#ffffff' }}>Delete Slide</span>
+                Delete Slide
               </button>
             )}
           </div>

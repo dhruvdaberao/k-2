@@ -3242,3 +3242,16 @@ svg[stroke="red"] {
     transform: translateY(0);
   }
 }
+
+/* Universal button click effect */
+body .btn-primary:active, 
+body .btn-secondary:active, 
+body .btn-luxe:active, 
+body .btn-outline:active,
+body button[type="submit"]:active,
+body .checkout-button:active,
+body button:active {
+  transform: scale(0.96) !important;
+  opacity: 0.9 !important;
+  transition: transform 0.1s ease, opacity 0.1s ease !important;
+}
