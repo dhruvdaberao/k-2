@@ -58,16 +58,16 @@
 }
 
 .logo-img {
-  width: auto;
+  width: 160px;
   height: 56px;
   object-fit: contain;
+  object-position: left center;
   display: flex;
   align-items: center;
   justify-content: center;
-  mix-blend-mode: multiply; /* Fixes the white box issue by blending with the background */
+  mix-blend-mode: multiply;
   border: none !important;
   outline: none !important;
-  text-indent: -9999px; /* Hide alt text when broken */
   color: transparent;
 }
 
