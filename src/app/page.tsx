@@ -77,7 +77,7 @@ export default async function Home() {
       {/* Hero Section */}
       <HeroSection slides={heroSlides} autoPlayMs={carouselDelay} />
 
-      <div className="container py-40 mt-10">
+      <div className="container pb-40 pt-16 md:pt-24 mt-12 md:mt-16">
       
         {/* Section 1: Popular Handmade Picks */}
         {section1.length > 0 && (

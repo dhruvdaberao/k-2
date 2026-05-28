@@ -163,7 +163,7 @@ export default function AdminCarousels() {
                     <th className="p-2 md:p-5 font-semibold text-center w-[40px] md:w-[60px]">Order</th>
                     <th className="p-2 md:p-5 font-semibold text-center w-[60px] md:w-[100px]">Image</th>
                     <th className="p-2 md:p-5 font-semibold md:w-[220px]">Details</th>
-                    <th className="p-2 md:p-5 font-semibold text-center w-[70px] md:w-[140px]">Actions</th>
+                    <th className="p-2 md:p-5 font-semibold text-center w-[85px] md:w-[140px]">Actions</th>
                     <th className="hidden md:table-cell p-4 md:p-5 font-semibold w-[100px] text-center">Status</th>
                   </tr>
                 </thead>
@@ -218,7 +218,7 @@ export default function AdminCarousels() {
                           <div className="flex justify-center gap-2">
                             <Link 
                               href={`/admin/carousels/${slide.id}`} 
-                              className="btn-primary text-sm font-bold transition-transform active:scale-95 flex items-center justify-center px-4 py-2"
+                              className="btn-primary text-xs md:text-sm font-bold transition-transform active:scale-95 flex items-center justify-center px-3 py-1.5 md:px-4 md:py-2"
                             >
                               <span style={{ color: '#ffffff' }}>Edit</span>
                             </Link>
