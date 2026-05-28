@@ -3255,3 +3255,38 @@ body button:active {
   opacity: 0.9 !important;
   transition: transform 0.1s ease, opacity 0.1s ease !important;
 }
+/* ========================================= */
+/* MAJOR STYLING UPDATE: CARDS & BUTTONS     */
+/* ========================================= */
+
+/* Update Button Border Radius globally */
+body .btn-primary, 
+body .btn-secondary, 
+body .btn-luxe, 
+body .btn-outline,
+body .checkout-button,
+body .checkout-link-button,
+body .cm-btn {
+  border-radius: 20px !important; /* Huge curve as requested */
+}
+
+@media (max-width: 767px) {
+  body .btn-sm-mobile,
+  body .btn-primary.btn-sm-mobile {
+    border-radius: 16px !important;
+  }
+}
+
+/* Update remaining card classes to match the beige modal styling */
+.checkout-card,
+.empty-cart-card,
+.plp-card,
+.order-summary-card {
+  background-color: #F5EFE6 !important;
+  border-radius: 24px !important;
+}
+
+.checkout-card.p-5 {
+  padding: 1.5rem !important; /* normalize padding for new radius */
+}
+

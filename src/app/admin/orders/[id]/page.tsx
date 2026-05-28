@@ -211,7 +211,7 @@ export default function OrderDetails() {
         </div>
 
         {/* MAIN COMPACT CARD */}
-        <div className="bg-white rounded-xl shadow-sm border border-[#E6DCCF] overflow-hidden">
+        <div className="bg-[#F5EFE6] rounded-[24px] shadow-sm border border-[#E6DCCF] overflow-hidden">
           
           {/* TOP STATUS BANNER */}
           <div 

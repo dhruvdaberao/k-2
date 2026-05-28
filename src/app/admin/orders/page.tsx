@@ -171,7 +171,7 @@ export default function AdminOrders() {
 
         {/* LIST */}
         {filteredOrders.length === 0 ? (
-          <div className="bg-white rounded-2xl text-center shadow-sm" style={{ padding: '48px', border: '1px solid #E6DCCF' }}>
+          <div className="bg-[#F5EFE6]-[24px] text-center shadow-sm" style={{ padding: '48px', border: '1px solid #E6DCCF' }}>
             <div style={{ marginBottom: '24px' }}>
               <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#5A3E2B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto' }}>
                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>

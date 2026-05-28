@@ -395,7 +395,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 md:space-y-8 bg-white p-3 md:p-8 rounded-2xl border border-[#E6DCCF] shadow-sm">
+    <form onSubmit={handleSubmit} className="space-y-4 md:space-y-8 bg-[#F5EFE6]-[24px] border border-[#E6DCCF] shadow-sm">
       {loading && <GlobalLoader message="Saving Product..." />}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {/* Left Column: Details */}

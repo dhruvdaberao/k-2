@@ -61,7 +61,7 @@ export default function CheckoutAddons({ currentCartSlugs, onAdded }: CheckoutAd
     };
 
     return (
-        <div className="add-ons bg-white p-4 rounded-2xl shadow-sm mb-8" style={{ border: "1px solid var(--brand)" }}>
+        <div className="add-ons bg-[#F5EFE6]-[24px] shadow-sm mb-8" style={{ border: "1px solid var(--brand)" }}>
             <h3 className="text-base font-bold text-[#2f2a26] mb-0.5">
                 Add a little something?
             </h3>

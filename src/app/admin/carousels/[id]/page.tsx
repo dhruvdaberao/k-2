@@ -272,7 +272,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
           </div>
         </header>
 
-        <form onSubmit={handleSubmit} noValidate className="bg-white rounded-2xl border border-[#E6DCCF] p-4 md:p-6 shadow-sm">
+        <form onSubmit={handleSubmit} noValidate className="bg-[#F5EFE6]-[24px] border border-[#E6DCCF] p-4 md:p-6 shadow-sm">
           {/* Image Upload */}
           <div className="mb-8">
             <h3 className="font-bold text-[#4A3219] mb-2 text-lg md:text-xl border-b border-[#E6DCCF] pb-2">Carousel Image</h3>
