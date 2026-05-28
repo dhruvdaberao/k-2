@@ -284,9 +284,12 @@ body {
   }
 
   .mobile-bottom-nav .bottom-nav-item svg {
-    color: var(--primary-brown);
-    width: 20px;
-    height: 20px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.8;
+    opacity: 1;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   .mobile-bottom-nav .bottom-nav-item span {
