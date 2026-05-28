@@ -77,7 +77,7 @@ export default async function Home() {
       {/* Hero Section */}
       <HeroSection slides={heroSlides} autoPlayMs={carouselDelay} />
 
-      <div className="container" style={{ paddingBottom: '160px', paddingTop: '80px', marginTop: '20px' }}>
+      <div className="container" style={{ paddingBottom: '40px', paddingTop: '80px', marginTop: '20px' }}>
       
         {/* Section 1: Popular Handmade Picks */}
         {section1.length > 0 && (
