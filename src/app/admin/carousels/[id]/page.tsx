@@ -275,7 +275,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
         <form onSubmit={handleSubmit} noValidate className="">
           {/* Image Upload */}
           <div className="mb-8">
-            <h3 className="font-bold text-[#4A3219] mb-2 text-lg md:text-xl border-b border-[#E6DCCF] pb-2">Carousel Image</h3>
+            <h3 className="font-bold text-[#4A3219] mb-2 text-lg md:text-xl border-b border-[#C4A484] pb-2">Carousel Image</h3>
             <p className="text-xs text-[#8B7355] mb-4">Recommended size: 1440x720px (2:1 ratio). Uploaded in original quality.</p>
             
             <div className="flex flex-wrap justify-center gap-6 items-center mt-4">
@@ -385,7 +385,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             {/* Status */}
-            <div className="md:col-span-2 flex items-center justify-between p-4 md:p-5 rounded-xl border border-[#E6DCCF] shadow-sm" style={{ gridColumn: '1 / -1' }}>
+            <div className="md:col-span-2 flex items-center justify-between p-4 md:p-5 rounded-xl border border-[#C4A484] shadow-sm" style={{ gridColumn: '1 / -1' }}>
               <div>
                 <div className="font-bold text-sm md:text-base text-[#4A3219] mb-1">Carousel Visibility</div>
                 <p className="text-[11px] md:text-xs text-[#8B7355]">When active, this slide will be shown on the homepage.</p>
@@ -443,8 +443,8 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
             </div>
 
             {/* Buttons Setup */}
-            <div className="p-4 md:p-5 rounded-xl border border-[#E6DCCF] shadow-sm">
-              <h3 className="text-base md:text-lg font-bold text-[#4A3219] mb-4 border-b border-[#E6DCCF] pb-2">Primary Button</h3>
+            <div className="p-4 md:p-5 rounded-xl border border-[#C4A484] shadow-sm">
+              <h3 className="text-base md:text-lg font-bold text-[#4A3219] mb-4 border-b border-[#C4A484] pb-2">Primary Button</h3>
               
               <div className="mb-4">
                 <label className="block text-xs md:text-sm font-bold text-stone-600 mb-1">Button Text</label>
@@ -476,7 +476,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
                   {primaryDropdownOpen && (
                     <>
                       <div className="fixed inset-0 z-10" onClick={() => setPrimaryDropdownOpen(false)}></div>
-                      <div className="absolute z-20 w-full mt-2 bg-white border border-[#E6DCCF] rounded-xl shadow-lg max-h-60 overflow-y-auto" style={{ top: '100%' }}>
+                      <div className="absolute z-20 w-full mt-2 bg-white border border-[#C4A484] rounded-xl shadow-lg max-h-60 overflow-y-auto" style={{ top: '100%' }}>
                         <div 
                           className="px-4 py-3 hover:bg-[#F5EFE6] cursor-pointer text-[#3E2C1C] transition-colors text-sm"
                           style={{ backgroundColor: formData.primary_cta_href === "/collections" ? '#FDFBF7' : 'transparent', fontWeight: formData.primary_cta_href === "/collections" ? 'bold' : 'normal' }}
@@ -507,8 +507,8 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
               </div>
             </div>
 
-            <div className="p-4 md:p-5 rounded-xl border border-[#E6DCCF] shadow-sm">
-              <div className="flex items-center justify-between mb-4 border-b border-[#E6DCCF] pb-2">
+            <div className="p-4 md:p-5 rounded-xl border border-[#C4A484] shadow-sm">
+              <div className="flex items-center justify-between mb-4 border-b border-[#C4A484] pb-2">
                 <h3 className="text-base md:text-lg font-bold text-[#4A3219]">Secondary Button</h3>
                 <span className="text-[11px] md:text-xs text-stone-500 bg-[#F5EFE6] px-2 py-1 rounded-full">Optional</span>
               </div>
@@ -544,7 +544,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
                   {secondaryDropdownOpen && (
                     <>
                       <div className="fixed inset-0 z-10" onClick={() => setSecondaryDropdownOpen(false)}></div>
-                      <div className="absolute z-20 w-full mt-2 bg-white border border-[#E6DCCF] rounded-xl shadow-lg max-h-60 overflow-y-auto" style={{ top: '100%' }}>
+                      <div className="absolute z-20 w-full mt-2 bg-white border border-[#C4A484] rounded-xl shadow-lg max-h-60 overflow-y-auto" style={{ top: '100%' }}>
                         <div 
                           className="px-4 py-3 hover:bg-[#F5EFE6] cursor-pointer text-[#3E2C1C] transition-colors text-sm"
                           style={{ backgroundColor: formData.secondary_cta_href === "/collections" ? '#FDFBF7' : 'transparent', fontWeight: formData.secondary_cta_href === "/collections" ? 'bold' : 'normal' }}
@@ -576,7 +576,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 pt-8 border-t border-[#E6DCCF] w-full">
+          <div className="flex flex-col gap-4 pt-8 border-t border-[#C4A484] w-full">
             <div className="flex gap-4 w-full justify-center">
               <button
                 type="submit"

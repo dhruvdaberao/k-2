@@ -400,23 +400,23 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         {/* Left Column: Details */}
         <div className="space-y-4">
-          <h2 className="text-base md:text-xl font-bold text-[#4A3219] mb-2 md:mb-4 border-b border-[#E6DCCF] pb-1 md:pb-2">Product Details</h2>
+          <h2 className="text-base md:text-xl font-bold text-[#4A3219] mb-2 md:mb-4 border-b border-[#C4A484] pb-1 md:pb-2">Product Details</h2>
           
           <div>
             <label className="block text-sm font-semibold text-[#8B7355] mb-1">Product Title</label>
-            <input type="text" name="title" required value={formData.title} onChange={handleInputChange} className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" placeholder="e.g. Handmade Crochet Tulip" />
+            <input type="text" name="title" required value={formData.title} onChange={handleInputChange} className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" placeholder="e.g. Handmade Crochet Tulip" />
           </div>
 
           <div className="grid grid-cols-2 gap-3 md:gap-4">
             <div>
               <label className="block text-sm font-semibold text-[#8B7355] mb-1">Product ID (Slug)</label>
-              <input type="text" name="id" required value={formData.id} onChange={handleInputChange} disabled={isEdit} className={`w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#E6DCCF] ${isEdit ? 'bg-gray-100' : 'focus:outline-none focus:ring-2 focus:ring-[#8B7355]'}`} />
+              <input type="text" name="id" required value={formData.id} onChange={handleInputChange} disabled={isEdit} className={`w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#C4A484] ${isEdit ? 'bg-gray-100' : 'focus:outline-none focus:ring-2 focus:ring-[#8B7355]'}`} />
             </div>
             <div>
               <label className="block text-sm font-semibold text-[#8B7355] mb-1">Category</label>
               <div className="relative">
                 <div 
-                  className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#E6DCCF] bg-white cursor-pointer flex justify-between items-center text-[#3E2C1C]"
+                  className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#C4A484] bg-white cursor-pointer flex justify-between items-center text-[#3E2C1C]"
                   style={{ outline: dropdownOpen ? '2px solid #8B7355' : 'none', minHeight: '42px' }}
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                 >
@@ -429,7 +429,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                 {dropdownOpen && (
                   <>
                     <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(false)}></div>
-                    <div className="absolute z-20 w-full mt-2 bg-white border border-[#E6DCCF] rounded-xl shadow-lg max-h-60 overflow-y-auto" style={{ top: '100%' }}>
+                    <div className="absolute z-20 w-full mt-2 bg-white border border-[#C4A484] rounded-xl shadow-lg max-h-60 overflow-y-auto" style={{ top: '100%' }}>
                       {categories.map(c => (
                         <div 
                           key={c.id} 
@@ -464,7 +464,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                   e.target.style.height = 'auto';
                   e.target.style.height = `${e.target.scrollHeight}px`;
                 }} 
-                className="w-full p-3 rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355] bg-white resize-none overflow-hidden" 
+                className="w-full p-3 rounded-xl border border-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355] bg-white resize-none overflow-hidden" 
                 rows={3}
                 style={{ minHeight: '80px' }}
                 placeholder="Describe your product..."
@@ -480,7 +480,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-[#8B7355] mb-1">Price (₹)</label>
-              <input type="number" name="price" required min="0" value={formData.price} onChange={handleInputChange} className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" />
+              <input type="number" name="price" required min="0" value={formData.price} onChange={handleInputChange} className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" />
             </div>
             <div>
               <label className="block text-sm font-semibold text-[#8B7355] mb-2">Stock Status</label>
@@ -549,12 +549,12 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyDown={handleAddTag}
-                className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355] mb-2" 
+                className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355] mb-2" 
                 placeholder="e.g. handmade, valentine" 
               />
               <div className="flex flex-wrap gap-2">
                 {formData.tags?.map((tag: string) => (
-                  <span key={tag} className="inline-flex flex-row flex-nowrap items-center whitespace-nowrap gap-1.5 px-3 py-1.5 bg-[#FDFBF7] text-[#4A3219] text-sm font-semibold rounded-lg border border-[#E6DCCF] shadow-sm max-w-full">
+                  <span key={tag} className="inline-flex flex-row flex-nowrap items-center whitespace-nowrap gap-1.5 px-3 py-1.5 bg-[#FDFBF7] text-[#4A3219] text-sm font-semibold rounded-lg border border-[#C4A484] shadow-sm max-w-full">
                     <span className="text-[#8B7355] opacity-70 shrink-0">#</span>
                     <span className="truncate">{tag}</span>
                     <button 
@@ -580,7 +580,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
         {/* Right Column: Images */}
         <div className="space-y-4">
-          <h2 className="text-base md:text-xl font-bold text-[#4A3219] mb-2 md:mb-4 border-b border-[#E6DCCF] pb-1 md:pb-2">Images</h2>
+          <h2 className="text-base md:text-xl font-bold text-[#4A3219] mb-2 md:mb-4 border-b border-[#C4A484] pb-1 md:pb-2">Images</h2>
           
           {(!hasVariants || images.length === 0) && (
             <div 
@@ -624,7 +624,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
           )}
 
           {uploadingImages === true && (
-            <div className="mt-4 p-4 rounded-xl border border-[#E6DCCF] bg-[#FDFBF7]">
+            <div className="mt-4 p-4 rounded-xl border border-[#C4A484] bg-[#FDFBF7]">
               <div className="flex justify-between text-sm font-semibold text-[#4A3219] mb-2">
                 <span>Uploading images...</span>
                 <span className="animate-pulse text-[#8B7355]">Processing</span>
@@ -774,7 +774,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
       </div>
 
       {/* Variants Section */}
-      <div className="pt-6 mt-6 border-t border-[#E6DCCF]">
+      <div className="pt-6 mt-6 border-t border-[#C4A484]">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl md:text-2xl font-bold text-[#4A3219]">Product Variants</h2>
           <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '12px' }}>
@@ -795,7 +795,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
         {hasVariants && (
           <div className="space-y-6">
             {variants.map((variant, vIdx) => (
-               <div key={vIdx} className="p-4 md:p-6 bg-[#FDFBF7] border border-[#E6DCCF] rounded-2xl relative shadow-sm hover:shadow-md transition-shadow">
+               <div key={vIdx} className="p-4 md:p-6 bg-[#FDFBF7] border border-[#C4A484] rounded-2xl relative shadow-sm hover:shadow-md transition-shadow">
                   <button type="button" onClick={() => removeVariant(vIdx)} className="absolute top-4 right-4 transition-colors" style={{ background: 'none', border: 'none', padding: '0', color: '#ef4444', cursor: 'pointer' }} title="Remove Variant">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                   </button>
@@ -803,11 +803,11 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
                     <div>
                       <label className="block text-xs font-semibold text-[#8B7355] mb-1">Variant Name</label>
-                      <input type="text" required value={variant.name} onChange={(e) => handleVariantChange(vIdx, 'name', e.target.value)} className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355] bg-white" placeholder="e.g. Red Rose" />
+                      <input type="text" required value={variant.name} onChange={(e) => handleVariantChange(vIdx, 'name', e.target.value)} className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355] bg-white" placeholder="e.g. Red Rose" />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-[#8B7355] mb-1">Price (₹)</label>
-                      <input type="number" required min="0" value={variant.price} onChange={(e) => handleVariantChange(vIdx, 'price', parseFloat(e.target.value) || 0)} className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#E6DCCF] focus:outline-none focus:ring-2 focus:ring-[#8B7355] bg-white" />
+                      <input type="number" required min="0" value={variant.price} onChange={(e) => handleVariantChange(vIdx, 'price', parseFloat(e.target.value) || 0)} className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355] bg-white" />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-[#8B7355] mb-1">Stock</label>
@@ -865,7 +865,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                       </label>
                     </div>
                     {uploadingImages === vIdx && (
-                      <div className="mt-4 p-4 rounded-xl border border-[#E6DCCF] bg-[#FDFBF7]">
+                      <div className="mt-4 p-4 rounded-xl border border-[#C4A484] bg-[#FDFBF7]">
                         <div className="flex justify-between text-sm font-semibold text-[#4A3219] mb-2">
                           <span>Uploading images...</span>
                           <span className="animate-pulse text-[#8B7355]">Processing</span>
@@ -978,7 +978,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
         )}
       </div>
 
-      <div className="flex flex-col gap-4 pt-4 md:pt-8 mt-4 md:mt-8 border-t border-[#E6DCCF] w-full">
+      <div className="flex flex-col gap-4 pt-4 md:pt-8 mt-4 md:mt-8 border-t border-[#C4A484] w-full">
         <div className="flex gap-4 w-full justify-center">
           <button type="submit" disabled={loading} className="btn-primary" style={{ flexGrow: 1, flexBasis: 'auto', maxWidth: '200px', border: 'none', minHeight: '50px' }}>
             {isEdit ? "Update Product" : "Save New Product"}
