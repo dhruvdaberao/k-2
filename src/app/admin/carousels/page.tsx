@@ -69,7 +69,7 @@ export default function AdminCarousels() {
       showToast("Order updated!");
     } catch (err) {
       console.error(err);
-      showToast("Failed to update order", "error");
+      showToast("Failed to update order");
       fetchData(); // revert
     }
   };
@@ -94,7 +94,7 @@ export default function AdminCarousels() {
       showToast("Slide deleted!");
     } catch (err) {
       console.error(err);
-      showToast("Failed to delete slide", "error");
+      showToast("Failed to delete slide");
     }
   };
 
@@ -249,14 +249,7 @@ export default function AdminCarousels() {
 
 
 
-        {/* Toast */}
-        {toast.show && (
-          <div className={`fixed bottom-6 right-6 px-6 py-3 rounded-xl shadow-lg text-sm font-bold flex items-center gap-2 z-50 ${
-            toast.type === "success" ? "bg-green-600 text-white" : "bg-red-600 text-white"
-          }`}>
-            {toast.msg}
-          </div>
-        )}
+        
       </div>
     </main>
   );

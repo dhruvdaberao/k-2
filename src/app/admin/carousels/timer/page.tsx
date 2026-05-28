@@ -40,7 +40,7 @@ export default function EditTimerPage() {
     try {
       const sec = parseInt(timerValue);
       if (isNaN(sec) || sec < 1 || sec > 60) {
-        showToast("Please enter a time between 1 and 60 seconds", "error");
+        showToast("Please enter a time between 1 and 60 seconds");
         setSavingTimer(false);
         return;
       }
@@ -57,7 +57,7 @@ export default function EditTimerPage() {
       }, 1000);
     } catch (err) {
       console.error(err);
-      showToast("Failed to update timer", "error");
+      showToast("Failed to update timer");
     } finally {
       setSavingTimer(false);
     }
@@ -122,27 +122,7 @@ export default function EditTimerPage() {
           )}
         </div>
 
-        {/* Toast */}
-        {toast.show && (
-          <div 
-            style={{
-              position: 'fixed',
-              top: '24px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              backgroundColor: toast.type === "success" ? '#16a34a' : '#dc2626',
-              color: '#ffffff',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-              zIndex: 9999,
-              fontWeight: 'bold',
-              fontSize: '14px'
-            }}
-          >
-            {toast.msg}
-          </div>
-        )}
+        
       </div>
     </main>
   );

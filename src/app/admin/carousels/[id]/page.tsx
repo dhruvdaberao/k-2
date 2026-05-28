@@ -54,7 +54,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
       }
     } catch (err) {
       console.error(err);
-      showToast("Failed to load slide", "error");
+      showToast("Failed to load slide");
     } finally {
       setLoading(false);
     }
@@ -76,37 +76,37 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
     e.preventDefault();
     
     if (!imageFile && !formData.image_url) {
-      showToast("Please upload a Carousel Image", "error");
+      showToast("Please upload a Carousel Image");
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
     if (!formData.title) {
-      showToast("Please fill in the Main Heading", "error");
+      showToast("Please fill in the Main Heading");
       document.getElementById("title")?.focus();
       return;
     }
     if (!formData.subtitle) {
-      showToast("Please fill in the Subheading", "error");
+      showToast("Please fill in the Subheading");
       document.getElementById("subtitle")?.focus();
       return;
     }
     if (!formData.primary_cta_label) {
-      showToast("Please fill in the Primary Button Text", "error");
+      showToast("Please fill in the Primary Button Text");
       document.getElementById("primary_cta_label")?.focus();
       return;
     }
     if (!formData.primary_cta_href) {
-      showToast("Please select a Primary Link to Category", "error");
+      showToast("Please select a Primary Link to Category");
       document.getElementById("primary_cta_href")?.focus();
       return;
     }
     if (!formData.secondary_cta_label) {
-      showToast("Please fill in the Secondary Button Text", "error");
+      showToast("Please fill in the Secondary Button Text");
       document.getElementById("secondary_cta_label")?.focus();
       return;
     }
     if (!formData.secondary_cta_href) {
-      showToast("Please select a Secondary Link to Category", "error");
+      showToast("Please select a Secondary Link to Category");
       document.getElementById("secondary_cta_href")?.focus();
       return;
     }
@@ -188,9 +188,9 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
     } catch (err: any) {
       console.error(err);
       if (err.message === 'timeout') {
-        showToast("Upload timed out. Please try saving again.", "error");
+        showToast("Upload timed out. Please try saving again.");
       } else {
-        showToast(err.message || "Failed to save slide", "error");
+        showToast(err.message || "Failed to save slide");
       }
       setSaving(false);
     }
@@ -220,9 +220,9 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
     } catch (err: any) {
       console.error(err);
       if (err.message === 'timeout') {
-        showToast("Action timed out. Please try again.", "error");
+        showToast("Action timed out. Please try again.");
       } else {
-        showToast(err.message || "Failed to delete slide", "error");
+        showToast(err.message || "Failed to delete slide");
       }
       setSaving(false);
     }
@@ -613,14 +613,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
           </div>
         </form>
 
-        {/* Toast */}
-        {toast.show && (
-          <div className={`fixed top-6 left-1/2 -translate-x-1/2 px-8 py-4 rounded-xl shadow-2xl text-base font-bold flex items-center gap-3 z-50 ${
-            toast.type === "success" ? "bg-green-600 text-white" : "bg-red-600 text-white"
-          }`}>
-            {toast.msg}
-          </div>
-        )}
+        
       </div>
     </main>
   );
