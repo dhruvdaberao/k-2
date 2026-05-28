@@ -11,7 +11,7 @@ type P = any;
 import { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 
-export const revalidate = 3600;
+export const revalidate = 0;
 
 export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
   const liveProducts = await getLiveProducts();
