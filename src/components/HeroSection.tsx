@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import "./HeroSection.css";
@@ -49,6 +49,8 @@ const defaultSlides = [
 export default function HeroSection({ slides, autoPlayMs }: { slides?: any[], autoPlayMs?: number }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
 
   const displaySlides = slides && slides.length > 0 ? slides : defaultSlides;
   const currentAutoPlayMs = autoPlayMs || DEFAULT_AUTO_PLAY_MS;
@@ -75,6 +77,32 @@ export default function HeroSection({ slides, autoPlayMs }: { slides?: any[], au
     setActiveIndex((current) => (current + 1) % displaySlides.length);
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchEndX.current = 0; // reset end on new touch
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return;
+    
+    const distance = touchStartX.current - touchEndX.current;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      goToNext();
+    } else if (isRightSwipe) {
+      goToPrevious();
+    }
+
+    touchStartX.current = 0;
+    touchEndX.current = 0;
+  };
+
   return (
     <section className="hero-carousel" aria-label="Featured collections">
       <div
@@ -83,6 +111,9 @@ export default function HeroSection({ slides, autoPlayMs }: { slides?: any[], au
         onMouseLeave={() => setIsPaused(false)}
         onFocusCapture={() => setIsPaused(true)}
         onBlurCapture={() => setIsPaused(false)}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         <div
           className="hero-carousel__track"
