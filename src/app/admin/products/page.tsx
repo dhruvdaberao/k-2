@@ -17,20 +17,27 @@ export default function AdminProducts() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        // Auth check
-        const { data: authData } = await supabase.auth.getSession();
+        // Auth check with timeout fail-safe
+        const { data: authData } = await Promise.race([
+          supabase.auth.getSession(),
+          new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000))
+        ]).catch(() => ({ data: null }));
+
         if (!authData?.session?.user || authData.session.user.email !== "keshvicrafts@gmail.com") {
           router.push("/");
           return;
         }
 
-        const { data, error } = await supabase
-          .from("products")
-          .select("*")
-          .order("priority", { ascending: false });
+        const { data, error } = await Promise.race([
+          supabase.from("products").select("*").order("priority", { ascending: false }),
+          new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 15000))
+        ]).catch(err => ({ error: err }));
 
         if (error) {
           console.error("Error fetching products:", error);
+          if (error.message === 'timeout') {
+            showToast("Network timeout. Please refresh the page.", "error");
+          }
         } else {
           setProducts(data || []);
         }
@@ -192,19 +199,12 @@ export default function AdminProducts() {
         </div>
 
         {/* Products Grid */}
-        {loading ? (
-          <div className="flex flex-col justify-center items-center py-20 w-full">
-            <div className="w-10 h-10 rounded-full border-4 border-[#4A3219] border-t-transparent animate-spin mb-4"></div>
-            <div className="text-[#4A3219] font-bold text-xl text-center">Loading products...</div>
-          </div>
-        ) : (
-          <>
-            <div className="md:hidden text-sm text-[#8B7355] mb-2 flex items-center justify-end gap-1">
-              Swipe to see more <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
-            </div>
-            <div className="bg-white rounded-2xl border border-[#E6DCCF] shadow-sm overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full md:min-w-[1000px] text-left border-collapse">
+        <div className="md:hidden text-sm text-[#8B7355] mb-2 flex items-center justify-end gap-1">
+          Swipe to see more <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+        </div>
+        <div className="bg-white rounded-2xl border border-[#E6DCCF] shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full md:min-w-[1000px] text-left border-collapse">
               <thead>
                 <tr className="bg-[#F5EFE6] text-[#8B7355] text-[10px] md:text-sm uppercase tracking-wider">
                   <th className="p-2 md:p-5 font-semibold text-center w-[40px] md:w-[60px]">Order</th>
@@ -217,7 +217,14 @@ export default function AdminProducts() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E6DCCF]">
-                {filteredProducts.length === 0 ? (
+                {loading ? (
+                  <tr>
+                    <td colSpan={7} className="p-16 text-center">
+                      <div className="w-10 h-10 rounded-full border-4 border-[#4A3219] border-t-transparent animate-spin mx-auto mb-4"></div>
+                      <div className="text-[#8B7355] font-semibold text-lg">Loading catalog...</div>
+                    </td>
+                  </tr>
+                ) : filteredProducts.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="p-12 text-center">
                       <div className="text-[#8B7355] font-semibold text-lg">
@@ -342,8 +349,6 @@ export default function AdminProducts() {
             </table>
           </div>
         </div>
-        </>
-        )}
       </div>
     </main>
   );
