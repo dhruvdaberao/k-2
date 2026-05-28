@@ -78,7 +78,7 @@ export default function BootstrapNavbar() {
               aria-label="Open search"
               title="Search"
             >
-              <Image src={isActive("/search") ? "/nav-icons/search-filled.png" : "/nav-icons/search-unfilled.png"} alt="Search" width={22} height={22} className="search-icon" />
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={isActive("/search") ? "2.5" : "1.8"} strokeLinecap="round" strokeLinejoin="round" className="search-icon"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             </Link>
             
             <Link
