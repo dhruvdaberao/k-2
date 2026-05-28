@@ -8,7 +8,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabaseClient";
 import CartBadge from "@/components/CartBadge";
 import WishlistBadge from "@/components/WishlistBadge";
-import { HomeIcon, CollectionIcon, HeartIcon, CartIcon } from "@/components/NavIcons";
 import "./Navbar.css";
 
 export default function BootstrapNavbar() {
@@ -97,18 +96,18 @@ export default function BootstrapNavbar() {
 
       <div className="mobile-bottom-nav">
         <Link href="/" className={`bottom-nav-item ${isActive("/") ? "active" : ""}`} title="Home">
-          <HomeIcon active={isActive("/")} />
+          <Image src={isActive("/") ? "/nav-icons/home-filled.png" : "/nav-icons/home-unfilled.png"} alt="Home" width={24} height={24} className="bottom-nav-icon" />
           <span className="bottom-nav-label">Home</span>
         </Link>
 
         <Link href="/collections" className={`bottom-nav-item ${isActive("/collections") ? "active" : ""}`} title="Collections">
-          <CollectionIcon active={isActive("/collections")} />
+          <Image src={isActive("/collections") ? "/nav-icons/category-filled.png" : "/nav-icons/category-unfilled.png"} alt="Collections" width={24} height={24} className="bottom-nav-icon" />
           <span className="bottom-nav-label">Collections</span>
         </Link>
 
         <Link href="/wishlist" className={`bottom-nav-item ${isActive("/wishlist") ? "active" : ""}`} title="Wishlist">
           <div className="wishlist-wrapper" style={{ position: "relative" }}>
-            <HeartIcon active={isActive("/wishlist")} />
+            <Image src={isActive("/wishlist") ? "/nav-icons/heart-filled.png" : "/nav-icons/heart-unfilled.png"} alt="Wishlist" width={24} height={24} className="bottom-nav-icon" />
             <WishlistBadge size="sm" />
           </div>
           <span className="bottom-nav-label bottom-nav-label--wishlist">Wishlist</span>
@@ -116,7 +115,7 @@ export default function BootstrapNavbar() {
 
         <Link href="/cart" className={`bottom-nav-item cart-bottom ${isActive("/cart") ? "active" : ""}`} title="Cart">
           <div className="cart-wrapper">
-            <CartIcon active={isActive("/cart")} />
+            <Image src={isActive("/cart") ? "/nav-icons/cart-filled.png" : "/nav-icons/cart-unfilled.png"} alt="Cart" width={24} height={24} className="bottom-nav-icon" />
             <CartBadge size="sm" />
           </div>
           <span className="bottom-nav-label">Cart</span>
