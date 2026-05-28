@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { revalidateStorefront } from "@/actions/revalidate";
+import { showToast } from "@/components/Toast";
 
 export default function EditCarousel({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -13,7 +14,6 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
 
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
-  const [toast, setToast] = useState({ show: false, msg: "", type: "success" });
 
   const [formData, setFormData] = useState({
     title: "",
@@ -60,10 +60,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
     }
   };
 
-  const showToast = (msg: string, type: "success" | "error" = "success") => {
-    setToast({ show: true, msg, type });
-    setTimeout(() => setToast({ show: false, msg: "", type: "success" }), 3000);
-  };
+
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;

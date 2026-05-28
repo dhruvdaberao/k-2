@@ -5,13 +5,13 @@ import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { revalidateStorefront } from "@/actions/revalidate";
+import { showToast } from "@/components/Toast";
 
 export default function EditTimerPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [savingTimer, setSavingTimer] = useState(false);
   const [timerValue, setTimerValue] = useState("4");
-  const [toast, setToast] = useState({ show: false, msg: "", type: "success" });
 
   useEffect(() => {
     const fetchTimer = async () => {
@@ -30,10 +30,7 @@ export default function EditTimerPage() {
     fetchTimer();
   }, []);
 
-  const showToast = (msg: string, type: "success" | "error" = "success") => {
-    setToast({ show: true, msg, type });
-    setTimeout(() => setToast({ show: false, msg: "", type: "success" }), 3000);
-  };
+
 
   const saveTimer = async () => {
     setSavingTimer(true);

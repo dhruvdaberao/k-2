@@ -6,13 +6,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { revalidateStorefront } from "@/actions/revalidate";
+import { showToast } from "@/components/Toast";
 
 export default function AdminCarousels() {
   const router = useRouter();
   const [slides, setSlides] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [savingTimer, setSavingTimer] = useState(false);
-  const [toast, setToast] = useState({ show: false, msg: "", type: "success" });
 
   useEffect(() => {
     fetchData();
@@ -33,10 +32,7 @@ export default function AdminCarousels() {
     }
   };
 
-  const showToast = (msg: string, type: "success" | "error" = "success") => {
-    setToast({ show: true, msg, type });
-    setTimeout(() => setToast({ show: false, msg: "", type: "success" }), 3000);
-  };
+
 
 
 
