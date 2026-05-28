@@ -303,7 +303,6 @@ body {
   .bottom-nav-item.active .bottom-nav-icon,
   .mobile-bottom-nav .bottom-nav-item.active svg {
     stroke: currentColor;
-    fill: currentColor;
     stroke-width: 1.8;
   }
 
