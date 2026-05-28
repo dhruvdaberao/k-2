@@ -65,7 +65,7 @@
 
 /* FORCE CONSISTENT TYPOGRAPHY / OVERRIDE BOOTSTRAP */
 html, body, p, a, span, button, input, textarea {
-  font-family: var(--font-inter, 'Inter'), -apple-system, system-ui, sans-serif !important;
+  font-family: var(--font-quicksand, 'Quicksand'), -apple-system, system-ui, sans-serif !important;
 }
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {

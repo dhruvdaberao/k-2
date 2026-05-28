@@ -75,7 +75,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Quicksand:wght@300;400;500;600;700&display=swap"
         />
         <link rel="icon" href="/favicon.ico?v=4" sizes="any" />
         <link rel="icon" type="image/png" href="/pwa-icon.png?v=4" />
