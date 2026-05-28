@@ -66,13 +66,7 @@ export default function AdminDashboard() {
           </div>
         </header>
 
-        {loading ? (
-          <div className="flex flex-col justify-center items-center py-20 w-full">
-            <div className="w-10 h-10 rounded-full border-4 border-[#4A3219] border-t-transparent animate-spin mb-4"></div>
-            <div className="text-[#4A3219] font-bold text-xl text-center">Loading dashboard...</div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
           <div className="bg-[#F5EFE6] rounded-2xl border border-[#E6DCCF] shadow-sm hover:shadow-md transition-shadow flex flex-col" style={{ padding: '32px' }}>
             <div className="mb-6 opacity-80">
@@ -140,7 +134,6 @@ export default function AdminDashboard() {
           </div>
 
         </div>
-        )}
       </div>
     </main>
   );

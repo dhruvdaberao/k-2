@@ -92,22 +92,43 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     if (!e.target.files || e.target.files.length === 0) return;
     
     const files = Array.from(e.target.files);
+    const localPreviews = files.map(f => URL.createObjectURL(f));
+
+    // 1. Instant UI Preview
+    if (typeof variantIndex === 'number') {
+      setVariants(prev => {
+        const newVariants = [...prev];
+        newVariants[variantIndex] = {
+          ...newVariants[variantIndex],
+          images: [...(newVariants[variantIndex].images || []), ...localPreviews]
+        };
+        return newVariants;
+      });
+    } else {
+      if (hasVariants) {
+        setImages(prev => prev.length === 0 ? [localPreviews[0]] : prev);
+      } else {
+        setImages(prev => [...prev, ...localPreviews]);
+      }
+    }
+
     setUploadingImages(typeof variantIndex === 'number' ? variantIndex : true);
 
     try {
       const productId = formData.id || 'temp_' + Date.now();
 
-      // Process images sequentially to prevent mobile memory overload and crashes
-      const uploadedUrls: string[] = [];
-      for (const file of files) {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const localPreviewUrl = localPreviews[i];
+        
         let compressedFile = file;
         try {
           const options = {
             maxSizeMB: 0.4,
             maxWidthOrHeight: 1000,
-            useWebWorker: false, // Prevents worker spin-up overhead and mobile crashes
+            useWebWorker: false, 
             initialQuality: 0.7,
-            maxIteration: 2 // Prevent slow binary search loops
+            maxIteration: 2
           };
           compressedFile = await imageCompression(file, options);
         } catch (error) {
@@ -117,13 +138,24 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
         const fileExt = compressedFile.name.split('.').pop() || 'jpg';
         const fileName = `${productId}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
         
-        const { error: uploadError } = await supabase.storage
-          .from('product-images')
-          .upload(fileName, compressedFile);
+        const { error: uploadError } = await Promise.race([
+          supabase.storage.from('product-images').upload(fileName, compressedFile),
+          new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 20000))
+        ]).catch(err => ({ error: err }));
 
         if (uploadError) {
           console.error("Upload error:", uploadError);
           showToast(`Failed to upload ${file.name}`);
+          // Remove failed local preview
+          if (typeof variantIndex === 'number') {
+            setVariants(prev => {
+              const newVariants = [...prev];
+              newVariants[variantIndex].images = newVariants[variantIndex].images.filter((url: string) => url !== localPreviewUrl);
+              return newVariants;
+            });
+          } else {
+            setImages(prev => prev.filter(url => url !== localPreviewUrl));
+          }
           continue;
         }
 
@@ -131,23 +163,15 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
           .from('product-images')
           .getPublicUrl(fileName);
         
-        uploadedUrls.push(publicUrl);
-      }
-
-      if (typeof variantIndex === 'number') {
-        setVariants(prev => {
-          const newVariants = [...prev];
-          newVariants[variantIndex] = {
-            ...newVariants[variantIndex],
-            images: [...(newVariants[variantIndex].images || []), ...uploadedUrls]
-          };
-          return newVariants;
-        });
-      } else {
-        if (hasVariants) {
-          setImages(prev => prev.length === 0 ? [uploadedUrls[0]] : prev);
+        // Swap local preview with real URL silently
+        if (typeof variantIndex === 'number') {
+          setVariants(prev => {
+            const newVariants = [...prev];
+            newVariants[variantIndex].images = newVariants[variantIndex].images.map((url: string) => url === localPreviewUrl ? publicUrl : url);
+            return newVariants;
+          });
         } else {
-          setImages(prev => [...prev, ...uploadedUrls]);
+          setImages(prev => prev.map(url => url === localPreviewUrl ? publicUrl : url));
         }
       }
     } catch (err) {
@@ -261,9 +285,22 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
       status: 'live'
     };
 
-    const { error } = await supabase
-      .from('products')
-      .upsert(productPayload);
+    let error = null;
+    try {
+      const { error: upsertError } = await Promise.race([
+        supabase.from('products').upsert(productPayload),
+        new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 15000))
+      ]);
+      error = upsertError;
+    } catch (err: any) {
+      if (err.message === 'timeout') {
+        showToast("Upload timed out. Please try saving again.");
+      } else {
+        showToast("Network error: " + err.message);
+      }
+      setLoading(false);
+      return;
+    }
 
     if (!error && isEdit && initialData) {
       // Clean up orphaned images from storage
@@ -303,7 +340,22 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   const executeDelete = async () => {
     setShowDeleteModal(false);
     setLoading(true);
-    const { error } = await supabase.from('products').delete().eq('id', formData.id);
+    let error = null;
+    try {
+      const { error: deleteError } = await Promise.race([
+        supabase.from('products').delete().eq('id', formData.id),
+        new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 15000))
+      ]);
+      error = deleteError;
+    } catch (err: any) {
+      if (err.message === 'timeout') {
+        showToast("Action timed out. Please try again.");
+      } else {
+        showToast("Network error: " + err.message);
+      }
+      setLoading(false);
+      return;
+    }
     
     if (!error && isEdit && initialData) {
       // Clean delete: wipe all images from storage
@@ -499,13 +551,13 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
               />
               <div className="flex flex-wrap gap-2">
                 {formData.tags?.map((tag: string) => (
-                  <span key={tag} className="inline-flex flex-row items-center whitespace-nowrap gap-1.5 px-3 py-1.5 bg-[#FDFBF7] text-[#4A3219] text-sm font-semibold rounded-lg border border-[#E6DCCF] shadow-sm">
-                    <span className="text-[#8B7355] opacity-70">#</span>
-                    <span>{tag}</span>
+                  <span key={tag} className="inline-flex flex-row flex-nowrap items-center whitespace-nowrap gap-1.5 px-3 py-1.5 bg-[#FDFBF7] text-[#4A3219] text-sm font-semibold rounded-lg border border-[#E6DCCF] shadow-sm max-w-full">
+                    <span className="text-[#8B7355] opacity-70 shrink-0">#</span>
+                    <span className="truncate">{tag}</span>
                     <button 
                       type="button" 
                       onClick={() => removeTag(tag)} 
-                      className="ml-1 text-[#8B7355] hover:text-[#ef4444] transition-colors flex items-center justify-center"
+                      className="ml-1 text-[#ef4444] hover:text-red-700 transition-colors flex items-center justify-center shrink-0"
                       style={{ background: 'transparent', border: 'none', padding: 0, outline: 'none', cursor: 'pointer', display: 'flex' }}
                       title="Remove tag"
                     >
@@ -653,6 +705,17 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                         fontSize: '10px', fontWeight: 'bold', textAlign: 'center', padding: '4px 0', zIndex: 10
                       }}>
                         NOT IN USE
+                      </div>
+                    )}
+
+                    {img.startsWith('blob:') && (
+                      <div style={{
+                        position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 15
+                      }}>
+                        <div className="w-6 h-6 rounded-full border-2 border-[#4A3219] border-t-transparent animate-spin mb-1"></div>
+                        <span className="text-[10px] font-bold text-[#4A3219]">Uploading...</span>
                       </div>
                     )}
                     
@@ -827,6 +890,16 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                             }}
                           >
                             <ImageWithFallback src={img} alt={`Preview ${iIdx}`} fill style={{ objectFit: 'cover' }} />
+                            
+                            {img.startsWith('blob:') && (
+                              <div style={{
+                                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                                backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 15
+                              }}>
+                                <div className="w-6 h-6 rounded-full border-2 border-[#4A3219] border-t-transparent animate-spin mb-1"></div>
+                              </div>
+                            )}
                             
                             <div style={{ 
                               position: 'absolute', top: '6px', left: '6px', 

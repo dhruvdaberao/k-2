@@ -128,13 +128,15 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
         const ext = imageFile.name.split(".").pop();
         const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${ext}`;
         
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from("carousel-images")
-          .upload(fileName, imageFile, {
-            cacheControl: "3600",
-            upsert: false,
-            // NO COMPRESSION (removed transform options used in product images)
-          });
+        const { data: uploadData, error: uploadError } = await Promise.race([
+          supabase.storage
+            .from("carousel-images")
+            .upload(fileName, imageFile, {
+              cacheControl: "3600",
+              upsert: false,
+            }),
+          new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 15000))
+        ]).catch(err => ({ error: err }));
 
         if (uploadError) throw uploadError;
 
@@ -165,10 +167,16 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
         const { data: posData } = await supabase.from("hero_slides").select("position").order("position", { ascending: false }).limit(1);
         const nextPos = posData && posData.length > 0 ? posData[0].position + 1 : 0;
         
-        const { error } = await supabase.from("hero_slides").insert({ ...slideData, position: nextPos });
+        const { error } = await Promise.race([
+          supabase.from("hero_slides").insert({ ...slideData, position: nextPos }),
+          new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 15000))
+        ]).catch(err => ({ error: err }));
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("hero_slides").update(slideData).eq("id", params.id);
+        const { error } = await Promise.race([
+          supabase.from("hero_slides").update(slideData).eq("id", params.id),
+          new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 15000))
+        ]).catch(err => ({ error: err }));
         if (error) throw error;
       }
 
@@ -177,7 +185,11 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
       
     } catch (err: any) {
       console.error(err);
-      showToast(err.message || "Failed to save slide", "error");
+      if (err.message === 'timeout') {
+        showToast("Upload timed out. Please try saving again.", "error");
+      } else {
+        showToast(err.message || "Failed to save slide", "error");
+      }
       setSaving(false);
     }
   };
@@ -186,7 +198,10 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
     if (isNew || !window.confirm("Are you sure you want to delete this slide?")) return;
     setSaving(true);
     try {
-      const { error } = await supabase.from("hero_slides").delete().eq("id", params.id);
+      const { error } = await Promise.race([
+        supabase.from("hero_slides").delete().eq("id", params.id),
+        new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 15000))
+      ]).catch(err => ({ error: err }));
       if (error) throw error;
 
       if (formData.image_url && !formData.image_url.startsWith("/uploads")) {
@@ -201,7 +216,11 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
       setTimeout(() => router.push("/admin/carousels"), 1000);
     } catch (err: any) {
       console.error(err);
-      showToast(err.message || "Failed to delete slide", "error");
+      if (err.message === 'timeout') {
+        showToast("Action timed out. Please try again.", "error");
+      } else {
+        showToast(err.message || "Failed to delete slide", "error");
+      }
       setSaving(false);
     }
   };
