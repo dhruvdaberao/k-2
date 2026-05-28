@@ -3290,3 +3290,41 @@ body .cm-btn {
   padding: 1.5rem !important; /* normalize padding for new radius */
 }
 
+
+/* Apply curve to qty pills */
+body .qty-pill-brand,
+body .qty-pill-brand-mini,
+body .inline-counter-container {
+  border-radius: 20px !important;
+}
+
+@media (max-width: 767px) {
+  body .qty-pill-brand,
+  body .qty-pill-brand-mini,
+  body .inline-counter-container {
+    border-radius: 16px !important;
+  }
+}
+
+/* FINAL FORCE CURVE FIX FOR ALL ADD TO CART AND QTY BUTTONS */
+body .plp-card .btn-primary,
+body .plp-card-mobile .btn-primary,
+body .qty-pill-brand,
+body .qty-pill-brand-mini,
+body .inline-counter-container,
+body button.btn-primary,
+body a.btn-primary {
+  border-radius: 20px !important;
+}
+
+@media (max-width: 767px) {
+  body .plp-card .btn-primary,
+  body .plp-card-mobile .btn-primary,
+  body .qty-pill-brand,
+  body .qty-pill-brand-mini,
+  body .inline-counter-container,
+  body button.btn-primary,
+  body a.btn-primary {
+    border-radius: 20px !important;
+  }
+}
