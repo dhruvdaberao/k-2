@@ -47,7 +47,7 @@
 .hero-slide__image-shell {
   height: 300px; /* Fixed base height */
   display: flex;
-  align-items: center;
+  align-items: flex-end; /* Anchor to bottom */
   justify-content: center;
   padding-top: 0;
   margin-top: -8px;
@@ -59,7 +59,7 @@
   height: 100%;
   max-height: 300px;
   object-fit: contain;
-  object-position: center;
+  object-position: bottom; /* Anchor to bottom */
   transform: scale(1.08);
   margin-bottom: 12px;
 }

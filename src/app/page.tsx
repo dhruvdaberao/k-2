@@ -12,7 +12,7 @@ export const metadata = {
   description: "Limited-run artisanal crochet pieces.",
 };
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const liveProducts = await getLiveProducts();
@@ -77,7 +77,7 @@ export default async function Home() {
       {/* Hero Section */}
       <HeroSection slides={heroSlides} autoPlayMs={carouselDelay} />
 
-      <div className="container pb-40 pt-16 md:pt-24 mt-12 md:mt-16">
+      <div className="container" style={{ paddingBottom: '160px', paddingTop: '80px', marginTop: '20px' }}>
       
         {/* Section 1: Popular Handmade Picks */}
         {section1.length > 0 && (
