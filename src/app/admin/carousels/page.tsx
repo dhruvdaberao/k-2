@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { revalidateStorefront } from "@/actions/revalidate";
 
 export default function AdminCarousels() {
   const router = useRouter();
@@ -64,6 +65,7 @@ export default function AdminCarousels() {
           supabase.from("hero_slides").update({ position: s.position }).eq("id", s.id)
         )
       );
+      await revalidateStorefront();
       showToast("Order updated!");
     } catch (err) {
       console.error(err);
@@ -87,6 +89,7 @@ export default function AdminCarousels() {
         }
       }
 
+      await revalidateStorefront();
       setSlides((prev) => prev.filter((s) => s.id !== id));
       showToast("Slide deleted!");
     } catch (err) {

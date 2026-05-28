@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { revalidateStorefront } from "@/actions/revalidate";
 
 export default function EditTimerPage() {
   const router = useRouter();
@@ -43,13 +44,13 @@ export default function EditTimerPage() {
         setSavingTimer(false);
         return;
       }
-      const ms = sec * 1000;
       const { error } = await supabase
         .from("site_settings")
-        .update({ setting_value: { ms } })
-        .eq("setting_key", "carousel_delay");
+        .upsert({ setting_key: "carousel_delay", setting_value: { ms: sec * 1000 } });
 
       if (error) throw error;
+      
+      await revalidateStorefront();
       showToast("Timer updated successfully!");
       setTimeout(() => {
         router.push("/admin/carousels");

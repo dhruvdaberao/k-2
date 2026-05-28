@@ -36,7 +36,7 @@ export default function AdminProducts() {
         if (error) {
           console.error("Error fetching products:", error);
           if (error.message === 'timeout') {
-            showToast("Network timeout. Please refresh the page.", "error");
+            showToast("Network timeout. Please refresh the page.");
           }
         } else {
           setProducts(data || []);

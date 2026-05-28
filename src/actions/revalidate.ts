@@ -6,4 +6,5 @@ export async function revalidateStorefront() {
   revalidatePath("/");
   revalidatePath("/collections");
   revalidatePath("/collections/[slug]", "page");
+  revalidatePath("/products/[slug]", "page");
 }

@@ -9,6 +9,7 @@ import ConfirmModal from "@/components/ui/ConfirmModal";
 import { showToast } from "@/components/Toast";
 import { getLiveCategories, Category } from "@/lib/categoriesApi";
 import imageCompression from "browser-image-compression";
+import { revalidateStorefront } from "@/actions/revalidate";
 
 interface ProductFormProps {
   initialData?: any;
@@ -331,6 +332,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
       console.error(error);
       showToast("Failed to save product: " + error.message);
     } else {
+      await revalidateStorefront();
       showToast(isEdit ? "Product updated successfully ✓" : "Product added successfully ✓");
       router.push("/admin/products");
       router.refresh();
@@ -381,6 +383,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
       console.error(error);
       showToast("Failed to delete product: " + error.message);
     } else {
+      await revalidateStorefront();
       showToast("Product deleted successfully");
       router.push("/admin/products");
       router.refresh();
