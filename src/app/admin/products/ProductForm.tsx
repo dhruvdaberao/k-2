@@ -33,6 +33,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     badges: initialData?.badges || [],
     badge: initialData?.badge || "",
     tags: initialData?.tags || ["handmade"],
+    type: initialData?.type || "direct-purchase",
   });
   
   const [tagInput, setTagInput] = useState("");
@@ -428,7 +429,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
             </div>
             <div>
               <label className="block text-sm font-semibold text-[#8B7355] mb-2">Stock Status</label>
-              <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '12px' }}>
+              <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '12px', marginBottom: '16px' }}>
                 <div style={{ position: 'relative', width: '56px', height: '32px' }}>
                   <input
                     type="checkbox"
@@ -452,6 +453,34 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                 </div>
                 <div style={{ fontWeight: '600', color: formData.stock > 0 ? '#4A3219' : '#8B7355' }}>
                   {formData.stock > 0 ? 'In Stock' : 'Out of Stock'}
+                </div>
+              </label>
+
+              <label className="block text-sm font-semibold text-[#8B7355] mb-2">Purchase Mode</label>
+              <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '12px' }}>
+                <div style={{ position: 'relative', width: '56px', height: '32px' }}>
+                  <input
+                    type="checkbox"
+                    style={{ opacity: 0, width: 0, height: 0, position: 'absolute' }}
+                    checked={formData.type === 'custom-order'}
+                    onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.checked ? 'custom-order' : 'direct-purchase' }))}
+                  />
+                  {/* Track */}
+                  <div style={{ 
+                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, 
+                    borderRadius: '34px', transition: 'background-color 0.3s',
+                    backgroundColor: formData.type === 'custom-order' ? '#4A3219' : '#E6DCCF'
+                  }}></div>
+                  {/* Thumb */}
+                  <div style={{
+                    position: 'absolute', top: '4px', left: '4px', 
+                    width: '24px', height: '24px', borderRadius: '50%', 
+                    backgroundColor: 'white', transition: 'transform 0.3s',
+                    transform: formData.type === 'custom-order' ? 'translateX(24px)' : 'translateX(0)'
+                  }}></div>
+                </div>
+                <div style={{ fontWeight: '600', color: formData.type === 'custom-order' ? '#4A3219' : '#8B7355' }}>
+                  {formData.type === 'custom-order' ? 'Enquire Only' : 'Buy / Add to Cart'}
                 </div>
               </label>
             </div>
