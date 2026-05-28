@@ -47,7 +47,7 @@
 .hero-slide__image-shell {
   min-height: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-end; /* Align to bottom */
   justify-content: center;
   padding-top: 0;
   margin-top: -8px;
@@ -59,7 +59,7 @@
   max-height: 300px;
   height: auto;
   object-fit: contain;
-  object-position: center;
+  object-position: bottom; /* Anchor images to the bottom baseline */
   transform: scale(1.08);
   margin-bottom: 12px;
 }
@@ -241,12 +241,12 @@
     min-height: auto;
     grid-template-columns: 1fr;
     gap: 8px;
-    padding: 64px 12px 12px;
+    padding: 24px 12px 12px; /* Reduced top padding to fit screen */
     align-content: center;
   }
 
   .hero-slide__image {
-    max-height: 340px;
+    max-height: 280px; /* Slightly reduced so everything fits with bottom nav */
     margin-top: -10px;
   }
 
