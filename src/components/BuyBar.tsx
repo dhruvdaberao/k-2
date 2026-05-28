@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { handleAddToCart, loadCart, updateQty, removeFromCart } from "@/lib/bags";
+import { useCart } from "@/hooks/useCart";
 import { trackEvent } from "@/lib/analytics";
 import { setDirectCheckoutItem } from "@/lib/directCheckout";
 
@@ -12,41 +12,31 @@ export default function BuyBar({
   checkoutUrl?: string; disabled?: boolean; productSlug: string;
 }) {
   const router = useRouter();
-  const [cartQuantity, setCartQuantity] = useState(0);
+  const { cartItems, addToCart, updateQuantity, removeFromCart } = useCart();
+  const cartItem = cartItems.find((x) => x.id === slug);
+  const cartQuantity = cartItem?.quantity || 0;
+
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showQtyModal, setShowQtyModal] = useState(false);
   const [buyQty, setBuyQty] = useState(1);
   const [showOutOfStockModal, setShowOutOfStockModal] = useState(false);
-
-  // Sync cart qty on mount and on bag:changed events
-  const syncQty = async () => {
-    const list = await loadCart();
-    const item = list.find((x: any) => x.id === slug);
-    setCartQuantity(item?.quantity ?? 0);
-  };
-
-  useEffect(() => {
-    syncQty();
-    window.addEventListener("bag:changed", syncQty);
-    return () => window.removeEventListener("bag:changed", syncQty);
-  }, [slug]);
 
   async function onAddToCart() {
     if (disabled) {
       setShowOutOfStockModal(true);
       return;
     }
-    await handleAddToCart({ id: slug, slug, title, price, image: image || "/placeholder.png" });
+    await addToCart({ id: slug, slug, title, price, image: image || "/placeholder.png" });
     trackEvent({ action: "add_to_cart", category: "Ecommerce", label: title, value: price });
   }
 
   async function handleIncrease() {
-    await updateQty(slug, cartQuantity + 1);
+    await updateQuantity(slug, cartQuantity + 1);
   }
 
   async function handleDecrease() {
     if (cartQuantity <= 1) await removeFromCart(slug);
-    else await updateQty(slug, cartQuantity - 1);
+    else await updateQuantity(slug, cartQuantity - 1);
   }
 
   // ── Buy Now flow ────────────────────────────────────────────────────────
@@ -61,7 +51,7 @@ export default function BuyBar({
   // User chose "No" → old behavior (add to cart → go to cart)
   async function handleBuyViaCart() {
     setShowConfirmModal(false);
-    await handleAddToCart({ id: slug, slug, title, price, image: image || "/placeholder.png" });
+    await addToCart({ id: slug, slug, title, price, image: image || "/placeholder.png" });
     trackEvent({ action: "begin_checkout", category: "Ecommerce", label: title, value: price });
     setTimeout(() => router.push("/cart"), 100);
   }
@@ -98,7 +88,7 @@ export default function BuyBar({
               style={{
                 flex: "1 1 auto",
                 width: "100%",
-                borderRadius: "30px",
+                borderRadius: "12px",
                 height: "48px",
                 opacity: 0.6,
                 backgroundColor: "#8B7355",
@@ -116,7 +106,7 @@ export default function BuyBar({
               <button
                 className="btn-primary"
                 onClick={onBuyNowClick}
-                style={{ flex: "1 1 auto", minWidth: "140px", borderRadius: "30px", height: "48px" }}
+                style={{ flex: "1 1 auto", minWidth: "140px", borderRadius: "12px", height: "48px" }}
               >
                 Buy Now
               </button>
@@ -131,7 +121,7 @@ export default function BuyBar({
                   justifyContent: "center",
                   gap: "0",
                   background: "#2f2a26",
-                  borderRadius: "30px",
+                  borderRadius: "12px",
                   overflow: "hidden",
                   height: "48px",
                 }}>
@@ -198,7 +188,7 @@ export default function BuyBar({
                 <button
                   className="btn-secondary"
                   onClick={onAddToCart}
-                  style={{ flex: "1 1 auto", minWidth: "140px", borderRadius: "30px", height: "48px" }}
+                  style={{ flex: "1 1 auto", minWidth: "140px", borderRadius: "12px", height: "48px" }}
                 >
                   Add to Cart
                 </button>
