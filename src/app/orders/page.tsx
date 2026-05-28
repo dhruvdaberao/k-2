@@ -55,18 +55,38 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const isInitialLoad = useRef(true);
+  const hasFetched = useRef(false);
 
+  // Phase 1: Instantly show cached orders on mount (before auth resolves)
+  useEffect(() => {
+    // Try to load ANY cached orders immediately for instant display
+    try {
+      const allKeys = Object.keys(localStorage);
+      const cacheKey = allKeys.find(k => k.startsWith("orders_cache_"));
+      if (cacheKey) {
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setOrders(parsed);
+            setLoading(false);
+          }
+        }
+      }
+    } catch {}
+  }, []);
+
+  // Phase 2: Fetch fresh data once auth resolves
   useEffect(() => {
     if (authLoading) return;
+    if (hasFetched.current) return;
 
     const init = async () => {
       try {
         if (!user) {
           console.warn("⚠️ [ORDERS] No session found");
-          if (isInitialLoad.current) {
-            setLoading(false);
-            isInitialLoad.current = false;
-          }
+          setLoading(false);
+          isInitialLoad.current = false;
           return;
         }
 
@@ -78,12 +98,11 @@ export default function OrdersPage() {
           const cached = localStorage.getItem(cacheKey);
           if (cached) {
             setOrders(JSON.parse(cached));
-            setLoading(false); // Instantly show cached orders
-          } else {
-            setLoading(true);
+            setLoading(false);
           }
         }
 
+        hasFetched.current = true;
         const res = await fetch(`/api/user/orders?t=${Date.now()}`, {
           headers: {
             Authorization: `Bearer ${token}`
@@ -111,17 +130,35 @@ export default function OrdersPage() {
     init();
   }, [user, authLoading]);
 
-  // Refined loading state: show the basic page structure instead of a full-screen skeleton flash
+  // Rich skeleton that mirrors real order card structure with shimmer
   const loadingView = (
     <div className="orders-list">
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes ordersShimmer {
+          0% { background-position: -400px 0; }
+          100% { background-position: 400px 0; }
+        }
+        .order-skeleton-bar {
+          background: linear-gradient(90deg, #e8dfd4 25%, #f5efe6 37%, #e8dfd4 63%);
+          background-size: 800px 100%;
+          animation: ordersShimmer 1.6s ease-in-out infinite;
+          border-radius: 8px;
+        }
+      `}} />
       {[1, 2, 3].map(i => (
-        <div key={i} className="order-card animate-pulse opacity-40">
+        <div key={i} className="order-card" style={{ opacity: 1 - (i - 1) * 0.15, pointerEvents: 'none' }}>
           <div className="order-card__body">
-            <div className="order-card__info gap-2">
-               <div className="h-4 w-24 bg-stone-200 rounded" />
-               <div className="h-3 w-32 bg-stone-200 rounded mt-2" />
+            {/* Left side — mimics ID, date, and price */}
+            <div className="order-card__info" style={{ gap: '6px' }}>
+              <div className="order-skeleton-bar" style={{ width: '110px', height: '14px' }} />
+              <div className="order-skeleton-bar" style={{ width: '80px', height: '12px', animationDelay: '0.1s' }} />
+              <div className="order-skeleton-bar" style={{ width: '70px', height: '20px', marginTop: '4px', animationDelay: '0.2s' }} />
             </div>
-            <div className="h-6 w-20 bg-stone-200 rounded-lg" />
+            {/* Right side — mimics badge + chevron */}
+            <div className="order-card__actions">
+              <div className="order-skeleton-bar" style={{ width: '72px', height: '26px', borderRadius: '999px', animationDelay: '0.15s' }} />
+              <div className="order-skeleton-bar" style={{ width: '20px', height: '20px', borderRadius: '50%', animationDelay: '0.25s' }} />
+            </div>
           </div>
         </div>
       ))}

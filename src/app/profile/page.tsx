@@ -89,9 +89,11 @@ function ProfileContent() {
   }, [user, loading]); // run when user/loading state resolves
 
   // Sync details when 'profile' from useAuth changes
+  // Falls back to locally saved checkout details if profile fields are empty
   useEffect(() => {
     if (user && !isEditing) {
-      setDetails({
+      // Start with what we have from Supabase profile
+      const fromProfile: CheckoutCustomerDetails = {
         fullName: profile?.name || "",
         email: user.email || "",
         phoneNumber: profile?.phone || "",
@@ -100,7 +102,36 @@ function ProfileContent() {
         pincode: profile?.pincode || "",
         state: profile?.state || "",
         country: profile?.country || "",
-      });
+      };
+
+      // If key fields are empty, try to fill from localStorage checkout details
+      const hasEmpty = !fromProfile.fullName || !fromProfile.phoneNumber || !fromProfile.address;
+      if (hasEmpty) {
+        try {
+          const stored = localStorage.getItem("checkout:details:v1") || localStorage.getItem("customer_details");
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            // customer_details uses different key names
+            const localName = parsed.fullName || parsed.name || "";
+            const localPhone = parsed.phoneNumber || parsed.phone || "";
+            const localAddress = parsed.address || "";
+            const localCity = parsed.city || "";
+            const localPincode = parsed.pincode || "";
+            const localState = parsed.state || "";
+            const localCountry = parsed.country || "";
+
+            fromProfile.fullName = fromProfile.fullName || localName;
+            fromProfile.phoneNumber = fromProfile.phoneNumber || localPhone;
+            fromProfile.address = fromProfile.address || localAddress;
+            fromProfile.city = fromProfile.city || localCity;
+            fromProfile.pincode = fromProfile.pincode || localPincode;
+            fromProfile.state = fromProfile.state || localState;
+            fromProfile.country = fromProfile.country || localCountry;
+          }
+        } catch {}
+      }
+
+      setDetails(fromProfile);
     }
   }, [profile, user, isEditing]);
 
@@ -283,9 +314,42 @@ function ProfileContent() {
     }
   };
 
-  // Step 3-4: Loading Guards
+  // Step 3-4: Loading Guards — show inline skeleton instead of full-screen loader
   if (loading || !hydrated) {
-    return <GlobalLoader message="Loading your profile..." />;
+    return (
+      <main className="checkout-page checkout-container pb-20 profile-page-styles">
+        <style dangerouslySetInnerHTML={{ __html: `
+          @keyframes profileShimmer {
+            0% { background-position: -400px 0; }
+            100% { background-position: 400px 0; }
+          }
+          .profile-skeleton-bar {
+            background: linear-gradient(90deg, #e8dfd4 25%, #f5efe6 37%, #e8dfd4 63%);
+            background-size: 800px 100%;
+            animation: profileShimmer 1.6s ease-in-out infinite;
+            border-radius: 8px;
+          }
+        `}} />
+        <header className="mb-8 text-center" style={{ marginTop: '40px' }}>
+          <h1 className="text-3xl font-serif font-bold text-[#2f2a26]">Your Profile</h1>
+        </header>
+        <section className="checkout-card rounded-2xl shadow-sm" style={{ maxWidth: '900px', width: '92%', margin: '0 auto', border: '1px solid rgba(139, 94, 60, 0.4)', padding: '28px 24px' }}>
+          <div className="profile-skeleton-bar" style={{ width: '180px', height: '22px', marginBottom: '24px' }} />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+            {[1, 2, 3, 4, 5, 6].map(i => (
+              <div key={i}>
+                <div className="profile-skeleton-bar" style={{ width: '80px', height: '14px', marginBottom: '8px' }} />
+                <div className="profile-skeleton-bar" style={{ width: '100%', height: '44px', borderRadius: '10px' }} />
+              </div>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: '12px', marginTop: '28px' }}>
+            <div className="profile-skeleton-bar" style={{ flex: 1, height: '48px', borderRadius: '12px' }} />
+            <div className="profile-skeleton-bar" style={{ flex: 1, height: '48px', borderRadius: '12px' }} />
+          </div>
+        </section>
+      </main>
+    );
   }
 
   if (!user && !loading) return null; // Let the redirect effect handle it

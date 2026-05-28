@@ -3312,6 +3312,8 @@ body .plp-card-mobile .btn-primary,
 body .qty-pill-brand,
 body .qty-pill-brand-mini,
 body .inline-counter-container,
+body .interactive-qty-pill,
+body .add-to-cart-overlay,
 body button.btn-primary,
 body a.btn-primary {
   border-radius: 20px !important;
@@ -3323,6 +3325,8 @@ body a.btn-primary {
   body .qty-pill-brand,
   body .qty-pill-brand-mini,
   body .inline-counter-container,
+  body .interactive-qty-pill,
+  body .add-to-cart-overlay,
   body button.btn-primary,
   body a.btn-primary {
     border-radius: 20px !important;

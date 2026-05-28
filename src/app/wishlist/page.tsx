@@ -70,7 +70,7 @@ export default function WishlistPage() {
         <h1 className="text-3xl font-serif font-bold text-[#2f2a26] mb-8 text-center">Wishlist</h1>
         <div className="plp-grid-mobile">
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className="bg-[#F5EFE6] rounded-[24px] overflow-hidden border border-stone-100 shadow-sm animate-pulse">
+            <div key={i} className="overflow-hidden border border-stone-100 shadow-sm animate-pulse" style={{ backgroundColor: '#F5EFE6', borderRadius: '24px' }}>
               <div className="w-full aspect-square bg-stone-200" />
               <div className="p-3">
                 <div className="h-4 w-3/4 bg-stone-200 rounded mb-2"></div>
@@ -112,7 +112,7 @@ export default function WishlistPage() {
         /* Items exist in wishlist but products haven't loaded from server yet — show skeleton cards */
         <div className="plp-grid-mobile">
           {items.map((id, i) => (
-            <div key={id} className="bg-[#F5EFE6] rounded-[24px] overflow-hidden border border-stone-100 shadow-sm animate-pulse">
+            <div key={id} className="overflow-hidden border border-stone-100 shadow-sm animate-pulse" style={{ backgroundColor: '#F5EFE6', borderRadius: '24px' }}>
               <div className="w-full aspect-square bg-stone-200" />
               <div className="p-3">
                 <div className="h-4 w-3/4 bg-stone-200 rounded mb-2"></div>
