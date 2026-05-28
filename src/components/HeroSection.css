@@ -247,7 +247,7 @@
     min-height: auto;
     grid-template-columns: 1fr;
     gap: 8px;
-    padding: 60px 12px 12px; /* Increased top padding to prevent touching navbar */
+    padding: 46px 12px 12px; /* Perfect middle ground padding */
     align-content: center;
   }
 
