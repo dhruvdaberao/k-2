@@ -137,15 +137,13 @@ export default function AdminCarousels() {
           <div className="flex justify-center gap-4 flex-wrap">
             <Link 
               href="/admin/carousels/timer"
-              className="text-sm font-bold transition-transform active:scale-95 flex items-center justify-center text-white hover:text-white"
-              style={{ background: '#4A3219', color: '#ffffff', padding: '12px 24px', borderRadius: '8px', border: 'none', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', textDecoration: 'none' }}
+              className="btn-primary text-sm font-bold transition-transform active:scale-95 flex items-center justify-center"
             >
               <span style={{ color: '#ffffff' }}>Edit Auto-Play Timer</span>
             </Link>
             <Link 
               href="/admin/carousels/new" 
-              className="text-sm font-bold transition-transform active:scale-95 flex items-center justify-center text-white hover:text-white"
-              style={{ background: '#4A3219', color: '#ffffff', padding: '12px 24px', borderRadius: '8px', border: 'none', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', textDecoration: 'none' }}
+              className="btn-primary text-sm font-bold transition-transform active:scale-95 flex items-center justify-center"
             >
               <span style={{ color: '#ffffff' }}>+ Add New Slide</span>
             </Link>
@@ -157,7 +155,7 @@ export default function AdminCarousels() {
             <div className="w-12 h-12 rounded-full border-4 border-stone-200 border-t-[#4A3219] animate-spin"></div>
           </div>
         ) : (
-          <div className="bg-[#F5EFE6]-[24px] border border-[#E6DCCF] overflow-hidden shadow-sm">
+          <div className="bg-[#F5EFE6] rounded-[24px] border border-[#E6DCCF] overflow-hidden shadow-sm">
             <div className="overflow-x-auto custom-scrollbar">
               <table className="w-full md:min-w-[800px] text-left border-collapse">
                 <thead>
@@ -220,8 +218,7 @@ export default function AdminCarousels() {
                           <div className="flex justify-center gap-2">
                             <Link 
                               href={`/admin/carousels/${slide.id}`} 
-                              className="text-sm font-bold transition-transform active:scale-95 flex items-center justify-center text-white hover:text-white"
-                              style={{ background: '#4A3219', color: '#ffffff', padding: '8px 16px', borderRadius: '8px', border: 'none', textDecoration: 'none' }}
+                              className="btn-primary text-sm font-bold transition-transform active:scale-95 flex items-center justify-center px-4 py-2"
                             >
                               <span style={{ color: '#ffffff' }}>Edit</span>
                             </Link>

@@ -173,7 +173,7 @@ export default function AdminCategories() {
         </div>
 
         {/* Add Category Form */}
-        <div className="bg-[#F5EFE6]-[24px] border border-[#E6DCCF] shadow-sm mb-4 md:mb-8">
+        <div className="bg-[#F5EFE6] rounded-[24px] border border-[#E6DCCF] shadow-sm mb-4 md:mb-8">
           <h2 className="text-base md:text-xl font-bold text-[#4A3219] mb-3 md:mb-4">Add New Category</h2>
           <form onSubmit={handleAddCategory} className="flex flex-col gap-2">
             <label className="block text-sm font-semibold text-[#8B7355]">Category Name</label>
@@ -207,7 +207,7 @@ export default function AdminCategories() {
           </div>
         ) : (
           <>
-            <div className="bg-[#F5EFE6]-[24px] border border-[#E6DCCF] shadow-sm" style={{ overflow: 'hidden' }}>
+            <div className="bg-[#F5EFE6] rounded-[24px] border border-[#E6DCCF] shadow-sm" style={{ overflow: 'hidden' }}>
               <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
                 <table className="w-full text-left border-collapse min-w-full">
               <thead>
@@ -329,7 +329,7 @@ export default function AdminCategories() {
       {/* Delete Confirmation Modal */}
       {categoryToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50" style={{ backdropFilter: 'blur(2px)' }}>
-          <div className="bg-[#F5EFE6]-[24px] p-6 md:p-8 max-w-sm w-full shadow-xl" style={{ border: '1px solid #E6DCCF' }}>
+          <div className="bg-[#F5EFE6] rounded-[24px] p-6 md:p-8 max-w-sm w-full shadow-xl" style={{ border: '1px solid #E6DCCF' }}>
             <div className="flex flex-col items-center text-center">
               <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

@@ -170,7 +170,7 @@ export default function CollectionsContent({ serverCategory, liveProducts = [], 
       </div>
 
       {sorted.length === 0 ? (
-        <div className="collections-empty py-20 text-center bg-[#F5EFE6]-[24px] border border-stone-100 shadow-sm">
+        <div className="collections-empty py-20 text-center bg-[#F5EFE6] rounded-[24px] border border-stone-100 shadow-sm">
           <div className="text-5xl mb-4 flex justify-center text-[#6b4226]">
             <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <circle cx="11" cy="11" r="8" />
