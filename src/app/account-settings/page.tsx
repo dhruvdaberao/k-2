@@ -175,14 +175,14 @@ function AccountSettingsContent() {
 
         <div className="flex flex-col" style={{ gap: '1.5rem' }}>
           {/* Email Update Card */}
-          <section className="checkout-card p-5 sm:p-6 shadow-sm">
-            <div className="border-b pb-3 mb-5">
+          <section className="checkout-card px-5 py-4 sm:px-6 sm:py-5 shadow-sm">
+            <div className="border-b pb-3 mb-4">
               <h2 className="text-lg font-bold" style={{ color: "var(--text)" }}>Email Authentication</h2>
               <p className="text-stone-500 text-sm mt-1">Update your primary login address.</p>
             </div>
             
             {emailOtpState === "idle" ? (
-              <form onSubmit={handleUpdateEmailRequest} className="flex flex-col gap-4">
+              <form onSubmit={handleUpdateEmailRequest} className="flex flex-col gap-3">
                 <label className="checkout-field">
                   <span>Current Email</span>
                   <input
@@ -205,18 +205,18 @@ function AccountSettingsContent() {
                   />
                 </label>
 
-                <div className="flex justify-end mt-2">
+                <div className="flex justify-center mt-3">
                   <button 
                     type="submit" 
-                    className="btn-primary py-2 px-6 rounded-lg text-sm md:text-base font-medium shadow-sm transition-transform active:scale-95" 
+                    className="btn-primary py-2 px-8 rounded-lg text-sm md:text-base font-medium shadow-sm transition-transform active:scale-95" 
                     disabled={isUpdatingEmail}
                   >
-                    {isUpdatingEmail ? "Processing..." : "Request OTP to Update Email"}
+                    {isUpdatingEmail ? "Processing..." : "Request OTP"}
                   </button>
                 </div>
               </form>
             ) : (
-              <form onSubmit={handleVerifyEmailOtp} className="flex flex-col gap-4">
+              <form onSubmit={handleVerifyEmailOtp} className="flex flex-col gap-3">
                 <label className="checkout-field">
                   <span>Enter OTP Code</span>
                   <p className="text-sm text-stone-500 mb-2">Check your email for the 6-digit confirmation code.</p>
@@ -230,7 +230,7 @@ function AccountSettingsContent() {
                   />
                 </label>
 
-                <div className="flex justify-end mt-2 gap-3">
+                <div className="flex justify-center mt-3 gap-3">
                   <button 
                     type="button" 
                     onClick={() => {
@@ -255,13 +255,13 @@ function AccountSettingsContent() {
           </section>
 
           {/* Password Update Card */}
-          <section id="password-section" className="checkout-card p-5 sm:p-6 shadow-sm transition-all duration-500">
-            <div className="border-b pb-3 mb-5">
+          <section id="password-section" className="checkout-card px-5 py-4 sm:px-6 sm:py-5 shadow-sm transition-all duration-500">
+            <div className="border-b pb-3 mb-4">
               <h2 className="text-lg font-bold" style={{ color: "var(--text)" }}>Security & Password</h2>
               <p className="text-stone-500 text-sm mt-1">Ensure your account remains securely locked.</p>
             </div>
 
-            <form onSubmit={handleUpdatePassword} className="flex flex-col gap-4">
+            <form onSubmit={handleUpdatePassword} className="flex flex-col gap-3">
               <label className="checkout-field" style={{ position: 'relative' }}>
                 <span>New Password</span>
                 <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
@@ -320,10 +320,10 @@ function AccountSettingsContent() {
                 </div>
               </label>
 
-              <div className="flex justify-end mt-2">
+              <div className="flex justify-center mt-3">
                 <button 
                   type="submit" 
-                  className="btn-primary py-2 px-6 rounded-lg text-sm md:text-base font-medium shadow-sm transition-transform active:scale-95" 
+                  className="btn-primary py-2 px-8 rounded-lg text-sm md:text-base font-medium shadow-sm transition-transform active:scale-95" 
                   disabled={isUpdatingPassword}
                   style={{ background: 'var(--text)', borderColor: 'var(--text)' }}
                 >

@@ -18,7 +18,6 @@
   background: var(--bg-nav);
   border-bottom: none !important;
   box-shadow: none !important;
-  backdrop-filter: blur(8px);
   padding: env(safe-area-inset-top) 16px 0;
 }
 
@@ -68,7 +67,6 @@
   mix-blend-mode: multiply;
   border: none !important;
   outline: none !important;
-  color: transparent;
 }
 
 .logo {
