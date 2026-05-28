@@ -96,18 +96,18 @@ export default function BootstrapNavbar() {
 
       <div className="mobile-bottom-nav">
         <Link href="/" className={`bottom-nav-item ${isActive("/") ? "active" : ""}`} title="Home">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <Image src={isActive("/") ? "/nav-icons/home-filled.png" : "/nav-icons/home-unfilled.png"} alt="Home" width={24} height={24} className="bottom-nav-icon" />
           <span className="bottom-nav-label">Home</span>
         </Link>
 
         <Link href="/collections" className={`bottom-nav-item ${isActive("/collections") ? "active" : ""}`} title="Collections">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+          <Image src={isActive("/collections") ? "/nav-icons/collection-filled.png" : "/nav-icons/collection-unfilled.png"} alt="Collections" width={24} height={24} className="bottom-nav-icon" />
           <span className="bottom-nav-label">Collections</span>
         </Link>
 
         <Link href="/wishlist" className={`bottom-nav-item ${isActive("/wishlist") ? "active" : ""}`} title="Wishlist">
           <div className="wishlist-wrapper" style={{ position: "relative" }}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+            <Image src={isActive("/wishlist") ? "/nav-icons/heart-filled.png" : "/nav-icons/heart-unfilled.png"} alt="Wishlist" width={24} height={24} className="bottom-nav-icon" />
             <WishlistBadge size="sm" />
           </div>
           <span className="bottom-nav-label bottom-nav-label--wishlist">Wishlist</span>
@@ -115,7 +115,7 @@ export default function BootstrapNavbar() {
 
         <Link href="/cart" className={`bottom-nav-item cart-bottom ${isActive("/cart") ? "active" : ""}`} title="Cart">
           <div className="cart-wrapper">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <Image src={isActive("/cart") ? "/nav-icons/cart-filled.png" : "/nav-icons/cart-unfilled.png"} alt="Cart" width={24} height={24} className="bottom-nav-icon" />
             <CartBadge size="sm" />
           </div>
           <span className="bottom-nav-label">Cart</span>
