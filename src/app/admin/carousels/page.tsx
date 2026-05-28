@@ -155,7 +155,7 @@ export default function AdminCarousels() {
             <div className="w-12 h-12 rounded-full border-4 border-stone-200 border-t-[#4A3219] animate-spin"></div>
           </div>
         ) : (
-          <div className="bg-[#F5EFE6] rounded-[24px] border border-[#E6DCCF] overflow-hidden shadow-sm">
+          <div className="">
             <div className="overflow-x-auto custom-scrollbar">
               <table className="w-full md:min-w-[800px] text-left border-collapse">
                 <thead>

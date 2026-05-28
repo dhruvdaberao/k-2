@@ -173,7 +173,7 @@ export default function AdminCategories() {
         </div>
 
         {/* Add Category Form */}
-        <div className="bg-[#F5EFE6] rounded-[24px] border border-[#E6DCCF] shadow-sm mb-4 md:mb-8">
+        <div className="mb-4 md:mb-8">
           <h2 className="text-base md:text-xl font-bold text-[#4A3219] mb-3 md:mb-4">Add New Category</h2>
           <form onSubmit={handleAddCategory} className="flex flex-col gap-2">
             <label className="block text-sm font-semibold text-[#8B7355]">Category Name</label>
@@ -207,7 +207,7 @@ export default function AdminCategories() {
           </div>
         ) : (
           <>
-            <div className="bg-[#F5EFE6] rounded-[24px] border border-[#E6DCCF] shadow-sm" style={{ overflow: 'hidden' }}>
+            <div className="">
               <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
                 <table className="w-full text-left border-collapse min-w-full">
               <thead>
