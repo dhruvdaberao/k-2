@@ -576,35 +576,39 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4 pt-8 border-t border-[#E6DCCF] w-full">
-            <button
-              type="submit"
-              disabled={saving}
-              className="btn-primary"
-              style={{ flexGrow: 1, flexBasis: 'auto', maxWidth: '200px', border: 'none', minHeight: '50px' }}
-            >
-              {saving ? 'Saving...' : 'Save Slide'}
-            </button>
+          <div className="flex flex-col gap-4 pt-8 border-t border-[#E6DCCF] w-full">
+            <div className="flex gap-4 w-full justify-center">
+              <button
+                type="submit"
+                disabled={saving}
+                className="btn-primary"
+                style={{ flexGrow: 1, flexBasis: 'auto', maxWidth: '200px', border: 'none', minHeight: '50px' }}
+              >
+                {saving ? 'Saving...' : 'Save Slide'}
+              </button>
 
-            <button
-              type="button"
-              onClick={() => router.push("/admin/carousels")}
-              className="btn-secondary"
-              style={{ flexGrow: 1, flexBasis: 'auto', maxWidth: '200px', border: '1px solid #E6DCCF', minHeight: '50px', backgroundColor: '#FDFBF7', color: '#4A3219' }}
-            >
-              Cancel
-            </button>
-
-            {!isNew && (
               <button
                 type="button"
-                onClick={handleDelete}
-                disabled={saving}
-                className="btn-outline md:ml-auto"
-                style={{ flexGrow: 1, flexBasis: 'auto', maxWidth: '200px', border: '1px solid #dc2626', color: '#dc2626', minHeight: '50px' }}
+                onClick={() => router.push("/admin/carousels")}
+                className="btn-secondary"
+                style={{ flexGrow: 1, flexBasis: 'auto', maxWidth: '200px', border: '1px solid #E6DCCF', minHeight: '50px', backgroundColor: '#FDFBF7', color: '#4A3219' }}
               >
-                Delete Slide
+                Cancel
               </button>
+            </div>
+
+            {!isNew && (
+              <div className="flex w-full justify-center">
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  disabled={saving}
+                  className="btn-outline"
+                  style={{ width: '100%', maxWidth: '416px', border: '1px solid #dc2626', color: '#dc2626', minHeight: '50px' }}
+                >
+                  Delete Slide
+                </button>
+              </div>
             )}
           </div>
         </form>

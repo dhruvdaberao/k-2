@@ -978,24 +978,29 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
         )}
       </div>
 
-      <div className="pt-4 md:pt-8 mt-4 md:mt-8 border-t border-[#E6DCCF] flex flex-wrap gap-3 md:gap-4">
-        <button type="submit" className="btn-primary px-5 py-2 md:px-8 md:py-3 rounded-xl text-sm md:text-base font-bold text-white shadow-sm transition-transform active:scale-95" style={{ background: "var(--brand)" }}>
-          {isEdit ? "Update Product" : "Save New Product"}
-        </button>
-        
-        <button type="button" onClick={() => router.back()} className="btn-primary px-5 py-2 md:px-8 md:py-3 rounded-xl text-sm md:text-base font-bold text-white shadow-sm transition-transform active:scale-95" style={{ background: "var(--brand)" }}>
-          Cancel
-        </button>
+      <div className="flex flex-col gap-4 pt-4 md:pt-8 mt-4 md:mt-8 border-t border-[#E6DCCF] w-full">
+        <div className="flex gap-4 w-full justify-center">
+          <button type="submit" disabled={loading} className="btn-primary" style={{ flexGrow: 1, flexBasis: 'auto', maxWidth: '200px', border: 'none', minHeight: '50px' }}>
+            {isEdit ? "Update Product" : "Save New Product"}
+          </button>
+          
+          <button type="button" onClick={() => router.back()} className="btn-secondary" style={{ flexGrow: 1, flexBasis: 'auto', maxWidth: '200px', border: '1px solid #E6DCCF', minHeight: '50px', backgroundColor: '#FDFBF7', color: '#4A3219' }}>
+            Cancel
+          </button>
+        </div>
 
         {isEdit && (
-          <button 
-            type="button" 
-            onClick={handleDelete} 
-            className="btn px-5 py-2 md:px-8 md:py-3 rounded-xl text-sm md:text-base font-bold text-white shadow-sm transition-transform active:scale-95" 
-            style={{ backgroundColor: "#ef4444", color: "#ffffff", border: "none" }}
-          >
-            Delete Product
-          </button>
+          <div className="flex w-full justify-center">
+            <button 
+              type="button" 
+              onClick={handleDelete} 
+              disabled={loading}
+              className="btn-outline" 
+              style={{ width: '100%', maxWidth: '416px', border: '1px solid #dc2626', color: '#dc2626', minHeight: '50px' }}
+            >
+              Delete Product
+            </button>
+          </div>
         )}
       </div>
 
