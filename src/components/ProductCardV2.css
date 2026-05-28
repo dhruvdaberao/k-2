@@ -191,7 +191,7 @@
   align-items: center;
   justify-content: center;
   background: var(--brand);
-  border-radius: 12px;
+  border-radius: 30px;
   color: white;
   height: 48px;
   min-height: 48px;
@@ -218,7 +218,7 @@
   cursor: pointer;
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 2;
-  border-radius: 12px;
+  border-radius: 30px;
 }
 
 .add-to-cart-overlay:hover {
@@ -316,7 +316,7 @@
   .interactive-qty-pill {
     height: 42px;
     min-height: 42px;
-    border-radius: 10px;
+    border-radius: 30px;
   }
   
   .add-to-cart-overlay {
@@ -324,7 +324,7 @@
     text-transform: none;
     letter-spacing: 0.2px;
     font-weight: 700;
-    border-radius: 10px;
+    border-radius: 30px;
   }
   
   .qty-controls button {

@@ -98,7 +98,7 @@ export default function BuyBar({
               style={{
                 flex: "1 1 auto",
                 width: "100%",
-                borderRadius: "12px",
+                borderRadius: "30px",
                 height: "48px",
                 opacity: 0.6,
                 backgroundColor: "#8B7355",
@@ -116,7 +116,7 @@ export default function BuyBar({
               <button
                 className="btn-primary"
                 onClick={onBuyNowClick}
-                style={{ flex: "1 1 auto", minWidth: "140px", borderRadius: "12px", height: "48px" }}
+                style={{ flex: "1 1 auto", minWidth: "140px", borderRadius: "30px", height: "48px" }}
               >
                 Buy Now
               </button>
@@ -131,7 +131,7 @@ export default function BuyBar({
                   justifyContent: "center",
                   gap: "0",
                   background: "#2f2a26",
-                  borderRadius: "12px",
+                  borderRadius: "30px",
                   overflow: "hidden",
                   height: "48px",
                 }}>
@@ -198,7 +198,7 @@ export default function BuyBar({
                 <button
                   className="btn-secondary"
                   onClick={onAddToCart}
-                  style={{ flex: "1 1 auto", minWidth: "140px", borderRadius: "12px", height: "48px" }}
+                  style={{ flex: "1 1 auto", minWidth: "140px", borderRadius: "30px", height: "48px" }}
                 >
                   Add to Cart
                 </button>
@@ -339,7 +339,7 @@ export default function BuyBar({
           padding: 13px 20px;
           font-size: 14px;
           font-weight: 600;
-          border-radius: 14px;
+          border-radius: 30px;
           border: none;
           cursor: pointer;
           transition: all 0.2s ease;
@@ -378,7 +378,7 @@ export default function BuyBar({
           gap: 0;
           margin: 0 auto 12px;
           background: #2f2a26;
-          border-radius: 14px;
+          border-radius: 30px;
           overflow: hidden;
           max-width: 180px;
           height: 48px;
