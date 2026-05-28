@@ -424,20 +424,28 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
                 required
                 value={formData.title}
                 onChange={(e) => setFormData({...formData, title: e.target.value})}
-                className="w-full border border-stone-300 p-2 md:p-3 text-sm md:text-base rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                className="w-full border border-stone-300 p-2 md:p-3 text-sm md:text-base rounded-xl focus:outline-none focus:border-[#4A3219] focus:ring-1 focus:ring-[#4A3219] transition-colors"
                 placeholder="e.g., Soft Switch"
               />
             </div>
             
             <div className="md:col-span-2" style={{ gridColumn: '1 / -1' }}>
               <label className="block text-xs md:text-sm font-bold text-[#3E2C1C] mb-2">Subheading</label>
-              <input
+              <textarea
                 id="subtitle"
-                type="text"
                 required
                 value={formData.subtitle}
-                onChange={(e) => setFormData({...formData, subtitle: e.target.value})}
-                className="w-full border border-stone-300 p-2 md:p-3 text-sm md:text-base rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
+                onChange={(e) => {
+                  setFormData({...formData, subtitle: e.target.value});
+                  e.target.style.height = 'auto';
+                  e.target.style.height = e.target.scrollHeight + 'px';
+                }}
+                onFocus={(e) => {
+                  e.target.style.height = 'auto';
+                  e.target.style.height = e.target.scrollHeight + 'px';
+                }}
+                rows={2}
+                className="w-full border border-stone-300 p-2 md:p-3 text-sm md:text-base rounded-xl focus:outline-none focus:border-[#4A3219] focus:ring-1 focus:ring-[#4A3219] resize-none overflow-hidden transition-colors"
                 placeholder="e.g., Discover comfortable and stylish clothing..."
               />
             </div>
