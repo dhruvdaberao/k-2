@@ -375,11 +375,11 @@ function ProfileContent() {
         </div>
       </section>
 
-      <section className="mx-auto flex flex-wrap justify-center gap-4 mt-8 px-4 md:px-0" style={{ maxWidth: '900px' }}>
-        <button onClick={() => router.push("/orders")} className="btn-primary py-3 px-6 text-sm md:text-base shadow-sm rounded-lg whitespace-nowrap" style={{ minWidth: '140px', flex: '0 1 auto' }}>Your Orders</button>
-        <button onClick={() => router.push("/my-reviews")} className="btn-primary py-3 px-6 text-sm md:text-base shadow-sm rounded-lg whitespace-nowrap" style={{ minWidth: '140px', flex: '0 1 auto' }}>Your Reviews</button>
-        <button onClick={() => router.push('/account-settings')} className="btn-primary py-3 px-6 text-sm md:text-base shadow-sm rounded-lg whitespace-nowrap" style={{ background: 'var(--bg-main)', color: 'var(--brand)', border: '1px solid var(--brand)', minWidth: '140px', flex: '0 1 auto' }}>Settings</button>
-        {isAdmin(user) && (<button onClick={() => router.push('/admin')} className="btn-primary py-3 px-6 text-sm md:text-base shadow-sm rounded-lg whitespace-nowrap" style={{ background: 'var(--brand)', color: 'white', minWidth: '140px', flex: '0 1 auto' }}>Admin</button>)}
+      <section className="mx-auto flex flex-wrap justify-center gap-3 mt-8 px-4 md:px-0 w-full" style={{ maxWidth: '900px' }}>
+        <button onClick={() => router.push("/orders")} className="btn-primary py-3 text-sm md:text-base shadow-sm rounded-lg whitespace-nowrap px-2" style={{ flex: '1 1 calc(50% - 12px)', minWidth: '130px', maxWidth: '200px' }}>Your Orders</button>
+        <button onClick={() => router.push("/my-reviews")} className="btn-primary py-3 text-sm md:text-base shadow-sm rounded-lg whitespace-nowrap px-2" style={{ flex: '1 1 calc(50% - 12px)', minWidth: '130px', maxWidth: '200px' }}>Your Reviews</button>
+        <button onClick={() => router.push('/account-settings')} className="btn-primary py-3 text-sm md:text-base shadow-sm rounded-lg whitespace-nowrap px-2" style={{ background: 'var(--bg-main)', color: 'var(--brand)', border: '1px solid var(--brand)', flex: '1 1 calc(50% - 12px)', minWidth: '130px', maxWidth: '200px' }}>Settings</button>
+        {isAdmin(user) && (<button onClick={() => router.push('/admin')} className="btn-primary py-3 text-sm md:text-base shadow-sm rounded-lg whitespace-nowrap px-2" style={{ background: 'var(--brand)', color: 'white', flex: '1 1 calc(50% - 12px)', minWidth: '130px', maxWidth: '200px' }}>Admin</button>)}
       </section>
       {profileModalHTML}
       <ConfirmModal isOpen={showLogoutConfirm} title="Confirm Logout" message="Are you sure you want to log out?" confirmLabel="Log Out" onConfirm={executeLogout} onCancel={() => setShowLogoutConfirm(false)} />
