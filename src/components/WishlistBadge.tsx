@@ -18,7 +18,7 @@ export default function WishlistBadge({ size = "md" }: { size?: "sm" | "md" }) {
         minWidth: isSmall ? 15 : 20,
         height: isSmall ? 15 : 20,
         borderRadius: isSmall ? 7.5 : 10,
-        background: "#C2410C",
+        background: "#8C5A35",
         color: "#fff",
         fontSize: isSmall ? 8 : 11,
         fontWeight: 600,
