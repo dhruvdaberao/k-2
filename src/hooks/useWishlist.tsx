@@ -5,6 +5,7 @@ import {
   ItemSnapshot, 
   loadWishlist as loadWishlistLib, 
   toggleWishlist as toggleWishlistLib,
+  removeFromWishlist as removeFromWishlistLib,
   syncLocalWishlistToDB,
   getWishlist 
 } from "@/lib/bags";
@@ -15,6 +16,7 @@ type WishlistContextType = {
   loading: boolean;
   loadWishlist: () => Promise<void>;
   toggleWishlist: (product: any) => Promise<void>;
+  removeWishlistItems: (ids: string[]) => Promise<void>;
   isWishlisted: (productId: string) => boolean;
   itemCount: number;
 };
@@ -30,7 +32,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const hadCacheAtInit = useRef(false);
 
   const filterValidIds = useCallback((ids: string[]) => {
-    const validIds = ids.filter(id => id && id !== "undefined");
+    const validIds = ids.filter(id => id && id !== "undefined" && id !== "null" && id !== "[object Object]");
     return Array.from(new Set(validIds));
   }, []);
 
@@ -39,7 +41,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   useLayoutEffect(() => {
     const cached = getWishlist();
     if (cached.length > 0) {
-      const ids = cached.map(i => String(i.id)).filter(id => id && id !== "undefined");
+      const ids = cached.map(i => String(i.id)).filter(id => id && id !== "undefined" && id !== "null" && id !== "[object Object]");
       const valid = Array.from(new Set(ids));
       if (valid.length > 0) {
         setWishlist(valid);
@@ -88,7 +90,25 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       console.error("WISHLIST TOGGLE ERROR:", err);
       await loadWishlist(); // Revert on failure
     }
-  }, [wishlist, user, loadWishlist]);
+  }, [wishlist, user, loadWishlist, filterValidIds]);
+
+  const removeWishlistItems = useCallback(async (ids: string[]) => {
+    if (!ids || ids.length === 0) return;
+    
+    // Optimistic Update
+    setWishlist(prev => filterValidIds(prev.filter(id => !ids.includes(id))));
+
+    try {
+      for (const id of ids) {
+        await removeFromWishlistLib(id, user);
+      }
+      const updated = await loadWishlistLib(user);
+      setWishlist(filterValidIds(updated.map(i => String(i.id))));
+    } catch (err) {
+      console.error("WISHLIST REMOVE ERROR:", err);
+      await loadWishlist(); // Revert on failure
+    }
+  }, [user, loadWishlist, filterValidIds]);
 
   const isWishlisted = useCallback((productId: string) => {
     return wishlist.includes(String(productId));
@@ -136,9 +156,10 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     loading,
     loadWishlist,
     toggleWishlist,
+    removeWishlistItems,
     isWishlisted,
     itemCount
-  }), [wishlist, loading, loadWishlist, toggleWishlist, isWishlisted, itemCount]);
+  }), [wishlist, loading, loadWishlist, toggleWishlist, removeWishlistItems, isWishlisted, itemCount]);
 
   return <WishlistContext.Provider value={value}>{children}</WishlistContext.Provider>;
 }

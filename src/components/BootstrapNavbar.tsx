@@ -41,17 +41,18 @@ export default function BootstrapNavbar() {
 
           <div className="nav-icons header-right">
             <div className="desktop-links">
-              <Link href="/" className={`nav-item ${isActive("/") ? "active" : ""}`} title="Home">
+              <Link href="/" prefetch={true} className={`nav-item ${isActive("/") ? "active" : ""}`} title="Home">
                 <span className="nav-label">Home</span>
               </Link>
-              <Link href="/search" className={`nav-item ${isActive("/search") ? "active" : ""}`} title="Search">
+              <Link href="/search" prefetch={true} className={`nav-item ${isActive("/search") ? "active" : ""}`} title="Search">
                 <span className="nav-label">Search</span>
               </Link>
-              <Link href="/collections" className={`nav-item ${isActive("/collections") ? "active" : ""}`} title="Collections">
+              <Link href="/collections" prefetch={true} className={`nav-item ${isActive("/collections") ? "active" : ""}`} title="Collections">
                 <span className="nav-label">Collections</span>
               </Link>
               <Link
                 href="/wishlist"
+                prefetch={true}
                 className={`nav-item ${isActive("/wishlist") ? "active" : ""}`}
                 title="Wishlist"
                 aria-label={wishlistAriaLabel}
@@ -61,19 +62,20 @@ export default function BootstrapNavbar() {
                   <WishlistBadge />
                 </div>
               </Link>
-              <Link href="/cart" className={`nav-item ${isActive("/cart") ? "active" : ""}`} title="Cart">
+              <Link href="/cart" prefetch={true} className={`nav-item ${isActive("/cart") ? "active" : ""}`} title="Cart">
                 <div className="cart-wrapper-text">
                   <span className="nav-label">Cart</span>
                   <CartBadge />
                 </div>
               </Link>
-              <Link href={authLink} className={`nav-item ${isActive(authLink) ? "active" : ""}`} title={user ? "Profile" : "Login"}>
+              <Link href={authLink} prefetch={true} className={`nav-item ${isActive(authLink) ? "active" : ""}`} title={user ? "Profile" : "Login"}>
                 <span className="nav-label">{user ? "Profile" : "Login"}</span>
               </Link>
             </div>
 
             <Link
               href="/search"
+              prefetch={true}
               className={`mobile-top-search ${isActive("/search") ? "active" : ""}`}
               aria-label="Open search"
               title="Search"
@@ -83,6 +85,7 @@ export default function BootstrapNavbar() {
             
             <Link
               href={authLink}
+              prefetch={true}
               className={`mobile-top-profile ${isActive(authLink) ? "active" : ""}`}
               aria-label={user ? "User Profile" : "Login"}
               title={user ? "Profile" : "Login"}
@@ -95,19 +98,19 @@ export default function BootstrapNavbar() {
       </nav>
 
       <div className="mobile-bottom-nav">
-        <Link href="/" className={`bottom-nav-item ${isActive("/") ? "active" : ""}`} title="Home">
+        <Link href="/" prefetch={true} className={`bottom-nav-item ${isActive("/") ? "active" : ""}`} title="Home">
           <Image src="/nav-icons/home-filled.png" alt="Home" width={24} height={24} className="bottom-nav-icon" priority style={{ display: isActive("/") ? "block" : "none" }} />
           <Image src="/nav-icons/home-unfilled.png" alt="Home" width={24} height={24} className="bottom-nav-icon" priority style={{ display: isActive("/") ? "none" : "block" }} />
           <span className="bottom-nav-label">Home</span>
         </Link>
 
-        <Link href="/collections" className={`bottom-nav-item ${isActive("/collections") ? "active" : ""}`} title="Collections">
+        <Link href="/collections" prefetch={true} className={`bottom-nav-item ${isActive("/collections") ? "active" : ""}`} title="Collections">
           <Image src="/nav-icons/category-filled.png" alt="Collections" width={24} height={24} className="bottom-nav-icon" priority style={{ display: isActive("/collections") ? "block" : "none" }} />
           <Image src="/nav-icons/category-unfilled.png" alt="Collections" width={24} height={24} className="bottom-nav-icon" priority style={{ display: isActive("/collections") ? "none" : "block" }} />
           <span className="bottom-nav-label">Collections</span>
         </Link>
 
-        <Link href="/wishlist" className={`bottom-nav-item ${isActive("/wishlist") ? "active" : ""}`} title="Wishlist">
+        <Link href="/wishlist" prefetch={true} className={`bottom-nav-item ${isActive("/wishlist") ? "active" : ""}`} title="Wishlist">
           <div className="wishlist-wrapper" style={{ position: "relative" }}>
             <Image src="/nav-icons/heart-filled.png" alt="Wishlist" width={24} height={24} className="bottom-nav-icon" priority style={{ display: isActive("/wishlist") ? "block" : "none" }} />
             <Image src="/nav-icons/heart-unfilled.png" alt="Wishlist" width={24} height={24} className="bottom-nav-icon" priority style={{ display: isActive("/wishlist") ? "none" : "block" }} />
@@ -116,7 +119,7 @@ export default function BootstrapNavbar() {
           <span className="bottom-nav-label bottom-nav-label--wishlist">Wishlist</span>
         </Link>
 
-        <Link href="/cart" className={`bottom-nav-item cart-bottom ${isActive("/cart") ? "active" : ""}`} title="Cart">
+        <Link href="/cart" prefetch={true} className={`bottom-nav-item cart-bottom ${isActive("/cart") ? "active" : ""}`} title="Cart">
           <div className="cart-wrapper">
             <Image src="/nav-icons/bag-filled.png" alt="Cart" width={24} height={24} className="bottom-nav-icon" priority style={{ transform: "scale(1.2)", display: isActive("/cart") ? "block" : "none" }} />
             <Image src="/nav-icons/bag-unfilled.png" alt="Cart" width={24} height={24} className="bottom-nav-icon" priority style={{ transform: "scale(1.2)", display: isActive("/cart") ? "none" : "block" }} />

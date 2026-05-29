@@ -311,17 +311,29 @@ export default function OrderDetailPage() {
               <Link href={`/products/${item.product_id || item.id}`} key={item.id} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div className="od-item">
                   <div className="od-item__img">
-                    {item.image ? (
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        width={64}
-                        height={64}
-                        style={{ objectFit: "cover", borderRadius: "12px" }}
-                      />
-                    ) : (
-                      <div className="od-item__placeholder" />
-                    )}
+                    {(() => {
+                      let imageUrl = item.image;
+                      if (typeof imageUrl === 'string') {
+                        try {
+                          const parsed = JSON.parse(imageUrl);
+                          if (Array.isArray(parsed) && parsed.length > 0) imageUrl = parsed[0];
+                        } catch (e) { /* ignore */ }
+                      } else if (Array.isArray(imageUrl) && imageUrl.length > 0) {
+                        imageUrl = imageUrl[0];
+                      }
+                      
+                      return imageUrl ? (
+                        <Image
+                          src={imageUrl}
+                          alt={item.name}
+                          width={64}
+                          height={64}
+                          style={{ objectFit: "cover", borderRadius: "12px" }}
+                        />
+                      ) : (
+                        <div className="od-item__placeholder" />
+                      );
+                    })()}
                   </div>
                   <div className="od-item__info">
                     <span className="od-item__name">{item.name}</span>

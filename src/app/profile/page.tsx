@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabaseClient";
 
 import { useEffect, useState, Suspense, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { showToast } from "@/components/Toast";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import type { CheckoutCustomerDetails } from "@/lib/checkout";
@@ -440,10 +441,10 @@ function ProfileContent() {
       </section>
 
       <section className="mx-auto flex flex-wrap justify-center gap-3 mt-8 px-4 md:px-0 w-full" style={{ maxWidth: '900px' }}>
-        <button onClick={() => router.push("/orders")} className="btn-primary py-3 text-sm md:text-base shadow-sm rounded-lg whitespace-nowrap px-2" style={{ flex: '1 1 calc(50% - 12px)', minWidth: '130px', maxWidth: '200px' }}>Your Orders</button>
-        <button onClick={() => router.push("/my-reviews")} className="btn-primary py-3 text-sm md:text-base shadow-sm rounded-lg whitespace-nowrap px-2" style={{ flex: '1 1 calc(50% - 12px)', minWidth: '130px', maxWidth: '200px' }}>Your Reviews</button>
-        <button onClick={() => router.push('/account-settings')} className="btn-primary py-3 text-sm md:text-base shadow-sm rounded-lg whitespace-nowrap px-2" style={{ background: 'var(--bg-main)', color: 'var(--brand)', border: '1px solid var(--brand)', flex: '1 1 calc(50% - 12px)', minWidth: '130px', maxWidth: '200px' }}>Settings</button>
-        {isAdmin(user) && (<button onClick={() => router.push('/admin')} className="btn-primary py-3 text-sm md:text-base shadow-sm rounded-lg whitespace-nowrap px-2" style={{ background: 'var(--brand)', color: 'white', flex: '1 1 calc(50% - 12px)', minWidth: '130px', maxWidth: '200px' }}>Admin</button>)}
+        <Link href="/orders" prefetch={true} className="btn-primary py-3 text-sm md:text-base shadow-sm rounded-lg whitespace-nowrap px-2 text-center" style={{ flex: '1 1 calc(50% - 12px)', minWidth: '130px', maxWidth: '200px', display: 'inline-block' }}>Your Orders</Link>
+        <Link href="/my-reviews" prefetch={true} className="btn-primary py-3 text-sm md:text-base shadow-sm rounded-lg whitespace-nowrap px-2 text-center" style={{ flex: '1 1 calc(50% - 12px)', minWidth: '130px', maxWidth: '200px', display: 'inline-block' }}>Your Reviews</Link>
+        <Link href="/account-settings" prefetch={true} className="btn-primary py-3 text-sm md:text-base shadow-sm rounded-lg whitespace-nowrap px-2 text-center" style={{ background: 'var(--bg-main)', color: 'var(--brand)', border: '1px solid var(--brand)', flex: '1 1 calc(50% - 12px)', minWidth: '130px', maxWidth: '200px', display: 'inline-block' }}>Account</Link>
+        {isAdmin(user) && (<Link href="/admin" prefetch={true} className="btn-primary py-3 text-sm md:text-base shadow-sm rounded-lg whitespace-nowrap px-2 text-center" style={{ background: 'var(--brand)', color: 'white', flex: '1 1 calc(50% - 12px)', minWidth: '130px', maxWidth: '200px', display: 'inline-block' }}>Admin</Link>)}
       </section>
       {profileModalHTML}
       <ConfirmModal isOpen={showLogoutConfirm} title="Confirm Logout" message="Are you sure you want to log out?" confirmLabel="Log Out" onConfirm={executeLogout} onCancel={() => setShowLogoutConfirm(false)} />

@@ -8,13 +8,21 @@ import Link from "next/link";
 import ProductCard from "@/components/ProductCardV2";
 import { supabase } from "@/lib/supabaseClient";
 
-export default function WishlistPage() {
-  const { wishlist: items, loading } = useWishlist();
-  const [products, setProducts] = useState<any[]>([]);
-  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
-  const fetchControllerRef = useRef(0);
+let globalWishlistProductsCache: any[] = [];
+let globalWishlistIdsCache: string = "";
 
+export default function WishlistPage() {
+  const { wishlist: items, loading, removeWishlistItems } = useWishlist();
   const itemsStr = items.sort().join(',');
+
+  const [products, setProducts] = useState<any[]>(() => {
+    return itemsStr === globalWishlistIdsCache ? globalWishlistProductsCache : [];
+  });
+  const [isLoadingProducts, setIsLoadingProducts] = useState(() => {
+    return itemsStr !== globalWishlistIdsCache && itemsStr !== "";
+  });
+  const [showRetryDelay, setShowRetryDelay] = useState(false);
+  const fetchControllerRef = useRef(0);
 
   const fetchProducts = useCallback((ids: string[]) => {
     const reqId = ++fetchControllerRef.current;
@@ -24,14 +32,25 @@ export default function WishlistPage() {
       .or(`id.in.(${ids.join(',')}),slug.in.(${ids.join(',')})`)
       .then(({ data }: { data: any }) => {
         if (reqId !== fetchControllerRef.current) return;
-        if (data) setProducts(data);
+        if (data) {
+          setProducts(data);
+          globalWishlistProductsCache = data;
+          globalWishlistIdsCache = ids.join(',');
+          // Check for ghost items (IDs in wishlist that don't match any fetched product)
+          const validIds = new Set(data.map((p: any) => p.id).concat(data.map((p: any) => p.slug)));
+          const ghostIds = ids.filter(id => !validIds.has(id));
+          if (ghostIds.length > 0 && removeWishlistItems) {
+            console.log("Removing ghost wishlist items:", ghostIds);
+            removeWishlistItems(ghostIds);
+          }
+        }
         setIsLoadingProducts(false);
       })
       .catch((err: any) => {
         console.error("Wishlist product fetch error:", err);
         setIsLoadingProducts(false);
       });
-  }, []);
+  }, [removeWishlistItems]);
 
   // Fetch products when wishlist IDs change
   useEffect(() => {
@@ -45,6 +64,16 @@ export default function WishlistPage() {
 
     fetchProducts(itemsStr.split(','));
   }, [loading, itemsStr, fetchProducts]);
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    if (!isLoadingProducts && items.length > 0 && wishlistProducts.length === 0) {
+      timer = setTimeout(() => setShowRetryDelay(true), 2000);
+    } else {
+      setShowRetryDelay(false);
+    }
+    return () => clearTimeout(timer);
+  }, [isLoadingProducts, items.length, wishlistProducts.length]);
 
   // Auto-retry fetch when user returns to the tab (PWA background resume fix)
   useEffect(() => {
@@ -108,8 +137,19 @@ export default function WishlistPage() {
             <ProductCard key={p.id || p.slug} p={p} />
           ))}
         </div>
+      ) : showRetryDelay ? (
+        <div className="flex flex-col items-center justify-center min-h-[30vh] text-center px-4 max-w-md mx-auto">
+          <p className="text-stone-500 mb-4 text-sm">We couldn't load your wishlist products right now.</p>
+          <button onClick={() => {
+            setIsLoadingProducts(true);
+            setShowRetryDelay(false);
+            fetchProducts(itemsStr.split(','));
+          }} className="btn-primary px-8 py-2 rounded-full font-bold text-sm">
+            Retry
+          </button>
+        </div>
       ) : (
-        /* Items exist in wishlist but products haven't loaded from server yet — show skeleton cards */
+        /* Show skeleton cards while waiting for retry delay */
         <div className="plp-grid-mobile">
           {items.map((id, i) => (
             <div key={id} className="overflow-hidden border border-stone-100 shadow-sm animate-pulse" style={{ backgroundColor: '#F5EFE6', borderRadius: '24px' }}>
