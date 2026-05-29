@@ -1365,10 +1365,10 @@ summary::-webkit-details-marker {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: white;
+  background: #F5EFE6 !important;
   padding: 8px;
   border-radius: 12px;
-  border: 1px solid var(--brand);
+  border: 1px solid rgba(139, 94, 60, 0.4) !important;
 }
 
 .checkout-item-summary-thumb {
@@ -2713,8 +2713,8 @@ body {
 }
 
 .checkout-card {
-  background: white;
-  border: 1px solid var(--brand);
+  background: #F5EFE6 !important;
+  border: 1px solid rgba(139, 94, 60, 0.4) !important;
   border-radius: 18px;
   padding: 1.5rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
