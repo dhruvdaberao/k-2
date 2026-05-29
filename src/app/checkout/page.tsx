@@ -547,7 +547,7 @@ function CheckoutContent() {
   // Exception: If we just placed an order, don't show the empty cart screen (allow redirect to success page)
   if (finalItems.length === 0 && !isOrderPlaced) {
     return (
-      <main className="checkout-page checkout-container checkout-flow py-20 text-center">
+      <main className="checkout-page checkout-container checkout-flow py-20 text-center" style={{ maxWidth: '800px', margin: '0 auto' }}>
         <div className="mb-6 opacity-30">
           <svg style={{ margin: '0 auto' }} xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="8" cy="21" r="1" /><circle cx="19" cy="21" r="1" />
@@ -595,7 +595,7 @@ function CheckoutContent() {
   );
 
 return (
-    <main className="checkout-page checkout-container checkout-flow">
+    <main className="checkout-page checkout-container checkout-flow" style={{ maxWidth: '800px', margin: '0 auto' }}>
       <meta name="robots" content="noindex" />
 
       <div className="checkout-header">
