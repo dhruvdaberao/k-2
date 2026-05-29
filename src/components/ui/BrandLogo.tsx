@@ -12,14 +12,14 @@ export default function BrandLogo({ className = "", size = 48 }: { className?: s
       style={{ flexShrink: 0, display: 'block' }}
     >
       <defs>
-        {/* A mathematically perfect vertical cut down the exact middle of the flower */}
+        {/* A mathematically perfect vertical cut down the exact middle of the flower, keeping the LEFT half */}
         <clipPath id="vertical-half">
-          <rect x="0" y="-50" width="50" height="100" />
+          <rect x="-50" y="-50" width="50" height="100" />
         </clipPath>
       </defs>
 
-      {/* Flower is shifted to the left edge and clipped to only show its right half */}
-      <g transform="translate(0,50)" clipPath="url(#vertical-half)">
+      {/* Flower is shifted to x=50, showing only the left half. The flat edge is at x=50 facing the text */}
+      <g transform="translate(50,50)" clipPath="url(#vertical-half)">
         {/* 16 Alternating Petals */}
         {[...Array(16)].map((_, i) => (
           <ellipse 
