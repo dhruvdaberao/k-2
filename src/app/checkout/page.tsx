@@ -74,23 +74,7 @@ function CheckoutContent() {
     });
   }, []);
 
-  // Auto-remove deleted items from cart
-  useEffect(() => {
-    if (products.length === 0 || cartItems.length === 0) return;
-    
-    // Only run if not a direct checkout (Buy Now) for safety, though Buy Now clears on empty anyway
-    if (isDirectCheckout) return;
-
-    const invalidItems = cartItems.filter(item => {
-      return !products.some(p => p.slug === item.id || p.id === item.id);
-    });
-
-    if (invalidItems.length > 0) {
-      invalidItems.forEach(item => {
-        removeFromCart(item.id);
-      });
-    }
-  }, [products, cartItems, removeFromCart, isDirectCheckout]);
+  // Removed dangerous auto-remove cart logic that was deleting items randomly
 
   useEffect(() => {
     if (!loading && !user) {
