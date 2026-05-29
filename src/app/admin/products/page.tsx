@@ -203,37 +203,33 @@ export default function AdminProducts() {
           Swipe to see more <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
         </div>
         <div className="">
-          <div className="overflow-x-auto">
-            <table className="w-full md:min-w-[1000px] text-left border-collapse">
-              <thead>
-                <tr className="bg-[#F5EFE6] text-[#8B7355] text-[10px] md:text-sm uppercase tracking-wider">
-                  <th className="p-2 md:p-5 font-semibold text-center w-[40px] md:w-[60px]">Order</th>
-                  <th className="p-2 md:p-5 font-semibold w-[50px] md:w-[80px]">Image</th>
-                  <th className="p-2 md:p-5 font-semibold md:w-[220px]">Product Details</th>
-                  <th className="p-2 md:p-5 font-semibold text-center w-[70px] md:w-[140px]">Actions</th>
-                  <th className="hidden md:table-cell p-4 md:p-5 font-semibold w-[140px]">Category</th>
-                  <th className="hidden md:table-cell p-4 md:p-5 font-semibold w-[100px]">Price</th>
-                  <th className="hidden md:table-cell p-4 md:p-5 font-semibold text-center w-[100px]">Stock</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#E6DCCF]">
-                {loading ? (
-                  <tr>
-                    <td colSpan={7} className="p-16 text-center">
-                      <div className="w-10 h-10 rounded-full border-4 border-[#4A3219] border-t-transparent animate-spin mx-auto mb-4"></div>
-                      <div className="text-[#8B7355] font-semibold text-lg">Loading catalog...</div>
-                    </td>
+          {loading ? (
+            <div className="py-24 text-center flex flex-col items-center justify-center bg-[#FDFBF7] rounded-xl">
+              <div className="w-10 h-10 rounded-full border-4 border-[#4A3219] border-t-transparent animate-spin mx-auto mb-4"></div>
+              <div className="text-[#8B7355] font-semibold text-lg">Loading catalog...</div>
+            </div>
+          ) : filteredProducts.length === 0 ? (
+            <div className="py-24 text-center bg-[#F5EFE6] rounded-2xl border border-[#E6DCCF]">
+              <div className="text-[#8B7355] font-semibold text-lg">
+                {search ? "No products match your search." : "No products found. Add one above!"}
+              </div>
+            </div>
+          ) : (
+            <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-[#E6DCCF]">
+              <table className="w-full md:min-w-[1000px] text-left border-collapse">
+                <thead>
+                  <tr className="bg-[#F5EFE6] text-[#8B7355] text-[10px] md:text-sm uppercase tracking-wider">
+                    <th className="p-2 md:p-5 font-semibold text-center w-[40px] md:w-[60px]">Order</th>
+                    <th className="p-2 md:p-5 font-semibold w-[50px] md:w-[80px]">Image</th>
+                    <th className="p-2 md:p-5 font-semibold md:w-[220px]">Product Details</th>
+                    <th className="p-2 md:p-5 font-semibold text-center w-[70px] md:w-[140px]">Actions</th>
+                    <th className="hidden md:table-cell p-4 md:p-5 font-semibold w-[140px]">Category</th>
+                    <th className="hidden md:table-cell p-4 md:p-5 font-semibold w-[100px]">Price</th>
+                    <th className="hidden md:table-cell p-4 md:p-5 font-semibold text-center w-[100px]">Stock</th>
                   </tr>
-                ) : filteredProducts.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="p-12 text-center">
-                      <div className="text-[#8B7355] font-semibold text-lg">
-                        {search ? "No products match your search." : "No products found. Add one above!"}
-                      </div>
-                    </td>
-                  </tr>
-                ) : (
-                  filteredProducts.map((product, idx) => {
+                </thead>
+                <tbody className="divide-y divide-[#E6DCCF]">
+                  {filteredProducts.map((product, idx) => {
                     const actualIndex = search ? -1 : idx;
                     const isFirst = actualIndex === 0;
                     const isLast = actualIndex === products.length - 1;
@@ -343,11 +339,11 @@ export default function AdminProducts() {
                       </td>
                     </tr>
                     );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
     </main>

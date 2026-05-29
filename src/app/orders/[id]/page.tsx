@@ -312,7 +312,7 @@ export default function OrderDetailPage() {
                 <div className="od-item">
                   <div className="od-item__img">
                     {(() => {
-                      let imageUrl = item.image;
+                      let imageUrl: any = item.image;
                       if (typeof imageUrl === 'string') {
                         try {
                           const parsed = JSON.parse(imageUrl);
