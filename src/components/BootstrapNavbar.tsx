@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import BrandLogo from "@/components/ui/BrandLogo";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
@@ -27,16 +28,8 @@ export default function BootstrapNavbar() {
     <>
       <nav className="keshvi-nav top-navbar">
         <div className="nav-inner">
-          <Link href="/" className="brand header-left logo" aria-label="Keshvi Crafts — Home">
-            <Image
-              src="/uploads/hero/logo.png"
-              alt="Keshvi Crafts Logo"
-              width={160}
-              height={56}
-              className="logo-img"
-              priority={true}
-              style={{ objectFit: "contain" }}
-            />
+          <Link href="/" className="brand header-left logo" aria-label="Keshvi Crafts — Home" style={{ textDecoration: 'none' }}>
+            <BrandLogo size={46} />
           </Link>
 
           <div className="nav-icons header-right">

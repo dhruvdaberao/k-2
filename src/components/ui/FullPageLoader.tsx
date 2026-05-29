@@ -1,4 +1,5 @@
 import React from 'react';
+import BrandLogo from '@/components/ui/BrandLogo';
 
 export default function FullPageLoader() {
   return (
@@ -15,11 +16,7 @@ export default function FullPageLoader() {
         gap: 20,
       }}
     >
-      <img
-        src="/uploads/hero/logo.png"
-        alt="Keshvi Crafts"
-        style={{ height: 90, width: 'auto', mixBlendMode: 'multiply' }}
-      />
+      <BrandLogo size={64} />
       <div
         style={{
           width: 36,
