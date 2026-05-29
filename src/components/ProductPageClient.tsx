@@ -114,11 +114,11 @@ export default function ProductPageClient({
                     width="24" 
                     height="24" 
                     viewBox="0 0 24 24" 
-                    fill={isHearted ? "#E91E63" : "none"}
+                    fill={isHearted ? "#8C2633" : "none"}
                     strokeWidth="1.5" 
                     strokeLinecap="round" 
                     strokeLinejoin="round" 
-                    stroke="#E91E63"
+                    stroke="#8C2633"
                     className={`transition-transform duration-200 ${isPopping ? 'animate-heart-pop' : ''} hover:scale-110 active:scale-95`}
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21.19 5.01a5.72 5.72 0 0 0-8.09 0L12 6.12l-1.1-1.1a5.72 5.72 0 0 0-8.09 8.09l1.1 1.1L9.92 20.22a2.94 2.94 0 0 0 4.16 0L20.09 14.21l1.1-1.1a5.72 5.72 0 0 0 0-8.1z" />

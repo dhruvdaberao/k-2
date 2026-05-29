@@ -369,15 +369,15 @@ export default function CartPage() {
               <div className="p-0">
                 <h3 className="h5 fw-bold text-[#2f2a26] mb-4 pb-3 border-bottom border-light">Order Summary</h3>
                 
-                <div className="vstack gap-3 small text-secondary">
-                  <div className="d-flex justify-content-between text-dark">
+                <div className="vstack gap-3 text-sm">
+                  <div className="d-flex justify-content-between text-[#2f2a26] font-bold">
                     <span>Subtotal ({itemCount} item{itemCount !== 1 ? "s" : ""})</span>
-                    <span className="fw-bold">₹{subtotal}</span>
+                    <span>₹{subtotal}</span>
                   </div>
                   
-                  <div className="d-flex justify-content-between text-dark">
+                  <div className="d-flex justify-content-between text-[#2f2a26] font-bold">
                     <span>Shipping Fee</span>
-                    <span className="fw-bold">₹{baseShipping}</span>
+                    <span>₹{baseShipping}</span>
                   </div>
 
                   {shippingDiscount < 0 && (
@@ -394,11 +394,11 @@ export default function CartPage() {
                     </div>
                   )}
                   
-                  <hr className="my-2 border-light" />
+                  <hr className="my-2 border-stone-300" />
                   
-                  <div className="d-flex justify-content-between align-items-end">
-                    <span className="text-lg font-bold text-neutral-900 font-sans mb-0">Total</span>
-                    <span className="text-2xl font-bold font-sans mb-0" style={{ color: "var(--brand)" }}>₹{grandTotal}</span>
+                  <div className="d-flex justify-content-between align-items-center mt-1">
+                    <span className="text-xl font-bold text-[#2f2a26] font-sans mb-0">Total</span>
+                    <span className="text-xl font-bold font-sans mb-0" style={{ color: "var(--brand)" }}>₹{grandTotal}</span>
                   </div>
                 </div>
 

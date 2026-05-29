@@ -970,22 +970,22 @@ return (
             </div>
 
             <div className="checkout-summary-panel">
-              <div className="checkout-summary-panel__row">
+              <div className="checkout-summary-panel__row font-bold text-[#2f2a26]">
                 <span>Subtotal</span>
                 <span>{formatCurrency(subtotal)}</span>
               </div>
-              <div className="checkout-summary-panel__row">
+              <div className="checkout-summary-panel__row font-bold text-[#2f2a26]">
                 <span>Shipping Fee</span>
                 <span>{formatCurrency(baseShipping)}</span>
               </div>
               {shippingDiscount < 0 && (
-                <div className="checkout-summary-panel__row text-[#0F766E] font-medium">
+                <div className="checkout-summary-panel__row text-[#0F766E] font-bold">
                   <span>Shipping Discount</span>
                   <span>-₹{Math.abs(shippingDiscount)}</span>
                 </div>
               )}
               {discountAmount > 0 && (
-                <div className="checkout-summary-panel__row text-[#C2410C] font-medium">
+                <div className="checkout-summary-panel__row text-[#C2410C] font-bold">
                   <span>Order Discount ({discountPercent}%)</span>
                   <span>-₹{discountAmount}</span>
                 </div>
@@ -993,13 +993,13 @@ return (
 
               <div className="h-px bg-[#e5e7eb] mt-10 mb-6" />
 
-              <div className="checkout-summary-panel__row">
+              <div className="checkout-summary-panel__row font-bold text-[#2f2a26]">
                 <span>Payment</span>
                 <span>{getPaymentMethodLabel(paymentMethod)}</span>
               </div>
-              <div className="checkout-summary-panel__row checkout-summary-panel__row--total">
+              <div className="checkout-summary-panel__row checkout-summary-panel__row--total font-bold text-[#2f2a26] text-xl mt-1">
                 <span>Total</span>
-                <span>{formatCurrency(total)}</span>
+                <span style={{ color: "var(--brand)" }}>{formatCurrency(total)}</span>
               </div>
             </div>
 
