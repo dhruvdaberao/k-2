@@ -225,23 +225,25 @@ export default function AdminManageReviewsPage() {
             <p className="text-center text-gray-500 mt-10 italic">{search ? "No reviews found matching your search" : "No reviews found"}</p>
           ) : (
             filteredReviews.map((review) => (
-              <div key={review.id} className="bg-[#f8f4ef] rounded-2xl p-5 shadow-sm border border-[#f1ebe6]">
+              <div key={review.id} style={{ background: '#F5EFE6', borderRadius: '20px', padding: '20px', boxShadow: '0 1px 3px rgba(74, 50, 25, 0.05)', border: '1px solid #E6DCCF', height: 'fit-content' }}>
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-4">
                     <div style={{ width: '60px', height: '60px', flexShrink: 0, borderRadius: '12px', overflow: 'hidden', border: '2px solid white', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
                       <img src={review.product_image} alt="product" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
                     <div>
-                      <h3 className="text-base font-bold text-[#1a1a1a]">{review.product_name}</h3>
-                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">{new Date(review.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
+                      <h3 className="text-base font-bold text-[#1a1a1a] leading-tight">{review.product_name}</h3>
+                      <p className="text-[11px] text-[#8B7355] font-semibold uppercase tracking-wider mt-1">{new Date(review.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
                     </div>
                   </div>
                   <p className="text-xs text-[#5a3e2b] opacity-70 font-semibold italic">– {review.reviewer_name}</p>
                 </div>
+
                 {review.review && (
-                  <p className="mt-4 text-[15px] text-[#333] leading-relaxed">"{review.review}"</p>
+                  <p className="mt-3 text-[14px] text-[#3E2C1C] leading-relaxed italic">"{review.review}"</p>
                 )}
-                <div className="mt-4 flex justify-between items-center">
+
+                <div className="mt-3 flex flex-wrap justify-between items-center gap-4">
                   <div className="flex gap-1">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <StarIcon key={i} filled={i < review.rating} size={18} />
@@ -249,7 +251,7 @@ export default function AdminManageReviewsPage() {
                   </div>
                   <button
                     onClick={() => setDeleteConfirm({ show: true, id: review.id })}
-                    style={{ backgroundColor: '#5a3e2b', color: 'white', border: 'none', padding: '8px 20px', borderRadius: '10px', fontSize: '11px', fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 10px rgba(90, 62, 43, 0.2)', transition: 'all 0.2s ease' }}
+                    style={{ backgroundColor: '#5a3e2b', color: 'white', border: 'none', padding: '8px 20px', borderRadius: '10px', fontSize: '11px', fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 10px rgba(90, 62, 43, 0.2)' }}
                   >
                     DELETE
                   </button>
