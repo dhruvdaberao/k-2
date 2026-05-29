@@ -925,15 +925,18 @@ return (
 
               <button
                 type="button"
-                className={`checkout-payment-card ${paymentMethod === "cod" ? "is-selected" : ""}`}
-                onClick={() => setPaymentMethod("cod")}
-                style={{ display: "flex", flexDirection: "column", padding: "20px", height: "auto", gap: "12px", alignItems: "flex-start" }}
+                className="checkout-payment-card opacity-60 cursor-not-allowed pointer-events-none"
+                disabled
+                style={{ display: "flex", flexDirection: "column", padding: "20px", height: "auto", gap: "12px", alignItems: "flex-start", filter: "grayscale(100%) blur(0.5px)" }}
               >
                 <div className="flex flex-row items-start w-full justify-between gap-3">
                   <div className="flex items-start gap-4">
                     <span className="checkout-payment-card__radio flex-shrink-0" aria-hidden="true" style={{ margin: 0, marginTop: "2px" }} />
                     <div className="flex flex-col text-left">
-                      <span className="checkout-payment-card__title text-lg font-bold text-[#2f2a26]" style={{ margin: 0 }}>Cash on Delivery</span>
+                      <div className="flex items-center flex-wrap gap-2">
+                        <span className="checkout-payment-card__title text-lg font-bold text-[#2f2a26]" style={{ margin: 0 }}>Cash on Delivery</span>
+                        <span className="bg-red-100 text-red-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider whitespace-nowrap">Currently Unavailable</span>
+                      </div>
                       <span className="text-xs text-[#8c8273] mt-1">Pay with cash when your order arrives</span>
                     </div>
                   </div>
