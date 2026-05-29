@@ -127,9 +127,9 @@ export default function BootstrapNavbar() {
         <Link href="/wishlist" prefetch={true} className={`bottom-nav-item ${isActive("/wishlist") ? "active" : ""}`} title="Wishlist">
           <div className="wishlist-wrapper" style={{ position: "relative" }}>
             {isActive("/wishlist") ? (
-              <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><path d="M12,21.07a2,2,0,0,1-1.42-.59C5.12,15.05,2,11.89,2,8.25A5.75,5.75,0,0,1,7.75,2.5,5.54,5.54,0,0,1,12,4.9a5.54,5.54,0,0,1,4.25-2.4A5.75,5.75,0,0,1,22,8.25c0,3.64-3.12,6.8-8.58,12.23A2,2,0,0,1,12,21.07Z"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L11 20.23a1.41 1.41 0 0 0 2 0L20.84 12.39a5.5 5.5 0 0 0 0-7.78z"/></svg>
             ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><path d="M12,21.07a2,2,0,0,1-1.42-.59C5.12,15.05,2,11.89,2,8.25A5.75,5.75,0,0,1,7.75,2.5,5.54,5.54,0,0,1,12,4.9a5.54,5.54,0,0,1,4.25-2.4A5.75,5.75,0,0,1,22,8.25c0,3.64-3.12,6.8-8.58,12.23A2,2,0,0,1,12,21.07Z"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L11 20.23a1.41 1.41 0 0 0 2 0L20.84 12.39a5.5 5.5 0 0 0 0-7.78z"/></svg>
             )}
             <WishlistBadge size="sm" />
           </div>
