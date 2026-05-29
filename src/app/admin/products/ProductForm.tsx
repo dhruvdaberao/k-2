@@ -561,14 +561,14 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
               />
               <div className="flex flex-wrap gap-2">
                 {formData.tags?.map((tag: string) => (
-                  <span key={tag} className="inline-flex flex-row flex-nowrap items-center whitespace-nowrap gap-1.5 px-3 py-1.5 bg-[#FDFBF7] text-[#4A3219] text-sm font-semibold rounded-lg border border-[#C4A484] shadow-sm max-w-full">
+                  <div key={tag} className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#FDFBF7] text-[#4A3219] text-sm font-semibold rounded-lg border border-[#C4A484] shadow-sm max-w-full">
                     <span className="text-[#8B7355] opacity-70 shrink-0">#</span>
-                    <span className="truncate">{tag}</span>
+                    <span className="truncate shrink">{tag}</span>
                     <button 
                       type="button" 
                       onClick={() => removeTag(tag)} 
                       className="ml-1 text-[#ef4444] hover:text-red-700 transition-colors flex items-center justify-center shrink-0"
-                      style={{ background: 'transparent', border: 'none', padding: 0, outline: 'none', cursor: 'pointer', display: 'flex' }}
+                      style={{ background: 'transparent', border: 'none', padding: 0, outline: 'none', cursor: 'pointer' }}
                       title="Remove tag"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -578,7 +578,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                         <line x1="14" y1="11" x2="14" y2="17"></line>
                       </svg>
                     </button>
-                  </span>
+                  </div>
                 ))}
               </div>
             </div>
