@@ -793,7 +793,7 @@ return (
               </div>
             </section>
           ) : (
-            <section className="checkout-details-summary">
+            <section className="checkout-details-summary" style={{ backgroundColor: '#F5EFE6', border: '1px solid rgba(139, 94, 60, 0.4)' }}>
               <div className="summary-data-grid">
                 <div className="summary-item">
                   <span className="summary-label">Full Name</span>

@@ -1472,9 +1472,9 @@ summary::-webkit-details-marker {
 
 /* Checkout Summary Card (Image 3 Fix) */
 .checkout-details-summary {
-  background: white;
+  background: #F5EFE6 !important;
   border-radius: 16px;
-  border: 1px solid var(--brand);
+  border: 1px solid rgba(139, 94, 60, 0.4) !important;
   padding: 24px;
   margin-bottom: 24px;
   width: 100%;
