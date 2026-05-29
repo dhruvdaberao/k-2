@@ -17,7 +17,7 @@ export default function SearchPageContent() {
   useEffect(() => {
     supabase.from("products").select("*").then(({ data }: { data: any }) => {
       if (data) setProducts(data as Product[]);
-    }).catch(err => console.error("Search fetch error:", err))
+    }).catch((err: any) => console.error("Search fetch error:", err))
       .finally(() => setLoading(false));
   }, []);
 
