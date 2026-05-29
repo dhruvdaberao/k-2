@@ -256,8 +256,8 @@ export default function CartPage() {
           <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4 max-w-md mx-auto">
             <div className="mb-8 opacity-30">
               <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/>
-                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.56-7.43H5.12"/>
+                <rect x="2" y="8" width="20" height="14" rx="2" ry="2"/>
+                <path d="M7 11V6a5 5 0 0 1 10 0v5"/>
               </svg>
             </div>
             
