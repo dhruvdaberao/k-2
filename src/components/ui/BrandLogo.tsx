@@ -11,22 +11,25 @@ export default function BrandLogo({ className = "", size = 48 }: { className?: s
         style={{ flexShrink: 0 }}
       >
         <g transform="translate(50,50)">
-          {/* Alternating Petals */}
-          <ellipse cx="0" cy="-22" rx="8" ry="22" fill="#E88C31" />
-          <ellipse cx="0" cy="-22" rx="8" ry="22" fill="#F4B41A" transform="rotate(45)" />
-          <ellipse cx="0" cy="-22" rx="8" ry="22" fill="#E88C31" transform="rotate(90)" />
-          <ellipse cx="0" cy="-22" rx="8" ry="22" fill="#F4B41A" transform="rotate(135)" />
-          <ellipse cx="0" cy="-22" rx="8" ry="22" fill="#E88C31" transform="rotate(180)" />
-          <ellipse cx="0" cy="-22" rx="8" ry="22" fill="#F4B41A" transform="rotate(225)" />
-          <ellipse cx="0" cy="-22" rx="8" ry="22" fill="#E88C31" transform="rotate(270)" />
-          <ellipse cx="0" cy="-22" rx="8" ry="22" fill="#F4B41A" transform="rotate(315)" />
+          {/* 16 Alternating Petals */}
+          {[...Array(16)].map((_, i) => (
+            <ellipse 
+              key={i}
+              cx="0" 
+              cy="-26" 
+              rx="7" 
+              ry="24" 
+              fill={i % 2 === 0 ? "#E88C31" : "#F4B41A"} 
+              transform={`rotate(${i * 22.5})`} 
+            />
+          ))}
           
-          {/* Floral Center */}
-          <circle cx="0" cy="0" r="15" fill="#4A3324" />
+          {/* Floral Center (Larger for Sunflower) */}
+          <circle cx="0" cy="0" r="21" fill="#4A3324" />
           
           {/* Subtle Crochet/Woven Inner Details */}
-          <circle cx="0" cy="0" r="10" fill="none" stroke="#F5EFE6" strokeWidth="1.5" strokeDasharray="3 3" opacity={0.6} />
-          <circle cx="0" cy="0" r="5" fill="none" stroke="#F5EFE6" strokeWidth="1.5" strokeDasharray="2 2" opacity={0.4} />
+          <circle cx="0" cy="0" r="14" fill="none" stroke="#F5EFE6" strokeWidth="1.5" strokeDasharray="3 3" opacity={0.6} />
+          <circle cx="0" cy="0" r="7" fill="none" stroke="#F5EFE6" strokeWidth="1.5" strokeDasharray="2 2" opacity={0.4} />
         </g>
       </svg>
       
