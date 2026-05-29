@@ -298,7 +298,7 @@ function CheckoutContent() {
     console.log("🚀 Placing order started");
 
     if (finalItems.length === 0) {
-      showToast("Your cart is empty.");
+      showToast("Your bag is empty.");
       return;
     }
 
@@ -554,7 +554,7 @@ function CheckoutContent() {
             <path d="M7 11V6a5 5 0 0 1 10 0v5"/>
           </svg>
         </div>
-        <h2 className="text-2xl font-serif font-bold text-[#2f2a26] mb-3">Your cart is empty</h2>
+        <h2 className="text-2xl font-serif font-bold text-[#2f2a26] mb-3">Your bag is empty</h2>
         <p className="text-stone-500 mb-10 text-sm italic">You don't have any items to checkout.</p>
         <button onClick={() => router.push('/collections')} className="btn btn-primary px-10 py-3 rounded-full font-bold shadow-sm">
           Browse Collections

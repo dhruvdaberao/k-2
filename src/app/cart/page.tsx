@@ -57,7 +57,7 @@ export default function CartPage() {
       if (reqId !== fetchControllerRef.current) return;
       if (data) setProducts(data as Product[]);
     } catch (err: any) {
-      console.error("Cart product fetch error:", err);
+      console.error("Bag product fetch error:", err);
       // Even if fetch fails, we keep the UI working with local cache
     }
   }, []);
@@ -218,7 +218,7 @@ export default function CartPage() {
       <main className="cart-page py-4 py-md-5 px-3 bg-[#FAF7F2] min-h-screen">
         <div className="container" style={{ maxWidth: '900px' }}>
           <header className="mb-8 text-center pt-2">
-            <h1 className="text-3xl font-serif font-bold text-[#2f2a26]">Cart</h1>
+            <h1 className="text-3xl font-serif font-bold text-[#2f2a26]">Bag</h1>
           </header>
           <div className="row g-4 items-start">
             <div className="col-12 col-lg-7">
@@ -248,7 +248,7 @@ export default function CartPage() {
       <div className="container">
         {/* Header - centered matching Collections */}
         <header className="mb-8 text-center pt-2">
-          <h1 className="text-3xl font-serif font-bold text-[#2f2a26]">Cart</h1>
+          <h1 className="text-3xl font-serif font-bold text-[#2f2a26]">Bag</h1>
         </header>
 
         {cartItems.length === 0 ? (
@@ -261,7 +261,7 @@ export default function CartPage() {
               </svg>
             </div>
             
-            <h2 className="text-2xl font-serif font-bold text-[#2f2a26] mb-3">Your cart is empty</h2>
+            <h2 className="text-2xl font-serif font-bold text-[#2f2a26] mb-3">Your bag is empty</h2>
             
             <p className="text-stone-500 mb-10 text-sm italic">
               Looks like you haven't found your perfect piece yet.
@@ -471,7 +471,7 @@ export default function CartPage() {
         destructive
         onConfirm={() => {
           clearCart();
-          showToast("Cart cleared successfully.");
+          showToast("Bag cleared successfully.");
           setShowClearAll(false);
         }}
         onCancel={() => setShowClearAll(false)}
@@ -481,7 +481,7 @@ export default function CartPage() {
       <ConfirmModal
         isOpen={showOutOfStockCartModal}
         title="Out of Stock Items"
-        message="Some items in your cart are out of stock. Please untick or remove them before checkout."
+        message="Some items in your bag are out of stock. Please untick or remove them before checkout."
         confirmLabel="Okay"
         cancelLabel=""
         onConfirm={() => setShowOutOfStockCartModal(false)}

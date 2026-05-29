@@ -98,7 +98,7 @@
 
 //       <div className="mt-3 flex items-center gap-3">
 //         <button onClick={onAdd} className="btn-luxe" disabled={adding}>
-//           {adding ? "Adding…" : "Add to Cart"}
+//           {adding ? "Adding…" : "Add to Bag"}
 //         </button>
 //         <button onClick={() => addToCollection(product)} className="btn-outline">
 //           + Collection

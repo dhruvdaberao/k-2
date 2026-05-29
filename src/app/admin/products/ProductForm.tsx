@@ -535,7 +535,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                   }}></div>
                 </div>
                 <div style={{ fontWeight: '600', color: formData.type === 'custom-order' ? '#4A3219' : '#8B7355' }}>
-                  {formData.type === 'custom-order' ? 'Enquire Only' : 'Buy / Add to Cart'}
+                  {formData.type === 'custom-order' ? 'Enquire Only' : 'Buy / Add to Bag'}
                 </div>
               </label>
             </div>

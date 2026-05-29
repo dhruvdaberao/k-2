@@ -33,7 +33,7 @@ function PaymentFailureContent() {
           Retry Payment
         </Link>
         <Link href="/cart" className="btn-secondary px-8 py-3 rounded-full font-bold shadow-sm min-w-[200px] border border-[#d4c5b3] text-[#5a4a42]">
-          Back to Cart
+          Back to Bag
         </Link>
       </div>
     </div>

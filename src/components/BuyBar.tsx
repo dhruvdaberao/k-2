@@ -224,7 +224,7 @@ export default function BuyBar({
             </p>
             <div className="bnm-actions">
               <button className="bnm-btn bnm-btn--secondary" onClick={handleBuyViaCart}>
-                No, Add to Cart
+                No, Add to Bag
               </button>
               <button className="bnm-btn bnm-btn--primary" onClick={handleBuyDirect}>
                 Yes, Buy Now

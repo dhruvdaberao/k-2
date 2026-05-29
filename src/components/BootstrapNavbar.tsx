@@ -62,9 +62,9 @@ export default function BootstrapNavbar() {
                   <WishlistBadge />
                 </div>
               </Link>
-              <Link href="/cart" prefetch={true} className={`nav-item ${isActive("/cart") ? "active" : ""}`} title="Cart">
+              <Link href="/cart" prefetch={true} className={`nav-item ${isActive("/cart") ? "active" : ""}`} title="Bag">
                 <div className="cart-wrapper-text">
-                  <span className="nav-label">Cart</span>
+                  <span className="nav-label">Bag</span>
                   <CartBadge />
                 </div>
               </Link>
@@ -136,7 +136,7 @@ export default function BootstrapNavbar() {
           <span className="bottom-nav-label bottom-nav-label--wishlist">Wishlist</span>
         </Link>
 
-        <Link href="/cart" prefetch={true} className={`bottom-nav-item cart-bottom ${isActive("/cart") ? "active" : ""}`} title="Cart">
+        <Link href="/cart" prefetch={true} className={`bottom-nav-item cart-bottom ${isActive("/cart") ? "active" : ""}`} title="Bag">
           <div className="cart-wrapper">
             {isActive("/cart") ? (
               <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="#5a3e2b"/><path d="M7 8V6a5 5 0 0 1 10 0v2" fill="none"/></svg>
@@ -145,7 +145,7 @@ export default function BootstrapNavbar() {
             )}
             <CartBadge size="sm" />
           </div>
-          <span className="bottom-nav-label">Cart</span>
+          <span className="bottom-nav-label">Bag</span>
         </Link>
       </div>
     </>

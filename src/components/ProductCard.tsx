@@ -81,7 +81,7 @@ export default function ProductCard({ p }: { p: Product }) {
   const getButtonLabel = () => {
     if (!inStock && !isCustomOrder) return "Out of Stock";
     if (isCustomOrder) return "Enquire";
-    return "Add to Cart";
+    return "Add to Bag";
   };
 
   const cartItem = cartItems.find((it) => it.id === p.id);

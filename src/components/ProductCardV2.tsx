@@ -91,7 +91,7 @@ export default function ProductCardV2({ p, priority = false }: { p: Product, pri
     const getButtonLabel = () => {
         if (!inStock) return "Out of Stock";
         if (isCustomOrder) return "Enquire";
-        return "Add to Cart";
+        return "Add to Bag";
     };
 
     const visibleBadges = badges.slice(0, 2);
