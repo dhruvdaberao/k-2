@@ -125,11 +125,11 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
         let compressedFile = file;
         try {
           const options = {
-            maxSizeMB: 0.4,
-            maxWidthOrHeight: 1000,
-            useWebWorker: false, 
-            initialQuality: 0.7,
-            maxIteration: 2
+            maxSizeMB: 1.5,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true, 
+            initialQuality: 0.9,
+            maxIteration: 10
           };
           compressedFile = await imageCompression(file, options);
         } catch (error) {
