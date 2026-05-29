@@ -29,7 +29,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     description: initialData?.description || "",
     price: initialData?.price !== undefined ? (initialData.price === 0 && !isEdit ? "" : initialData.price) : "",
     category: initialData?.category || "",
-    stock: initialData?.stock || 0,
+    stock: initialData?.stock !== undefined ? initialData.stock : 999,
     variants: initialData?.variants || null,
     badges: initialData?.badges || [],
     badge: initialData?.badge || "",
