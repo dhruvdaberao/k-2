@@ -15,6 +15,15 @@ export default function AdminProducts() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
+    // Check cache first for instant load
+    try {
+      const cached = localStorage.getItem("admin_products_cache");
+      if (cached) {
+        setProducts(JSON.parse(cached));
+        setLoading(false); // Instantly hide loader if cache exists
+      }
+    } catch (e) { /* ignore */ }
+
     const fetchProducts = async () => {
       try {
         // Auth check with timeout fail-safe
@@ -40,6 +49,9 @@ export default function AdminProducts() {
           }
         } else {
           setProducts(data || []);
+          try {
+            if (data) localStorage.setItem("admin_products_cache", JSON.stringify(data));
+          } catch (e) { /* ignore */ }
         }
       } catch (err) {
         console.error("Products fetch failed:", err);

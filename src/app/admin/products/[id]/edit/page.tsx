@@ -16,9 +16,9 @@ export default function EditProductPage() {
   const [initialData, setInitialData] = useState<any>(null);
   const isMounted = useRef(true);
 
-  const fetchData = async () => {
+  const fetchData = async (isBackground = false) => {
     if (!id) return;
-    setLoading(true);
+    if (!isBackground) setLoading(true);
     try {
       // Auth check
       const { data: authData } = await supabase.auth.getSession();
@@ -54,8 +54,24 @@ export default function EditProductPage() {
 
   useEffect(() => {
     isMounted.current = true;
+    let loadedFromCache = false;
+    
     if (id) {
-      fetchData();
+      try {
+        const cached = localStorage.getItem("admin_products_cache");
+        if (cached) {
+          const parsedCache = JSON.parse(cached);
+          // try to match id as string or number
+          const found = parsedCache.find((p: any) => String(p.id) === String(id));
+          if (found) {
+            setInitialData(found);
+            setLoading(false);
+            loadedFromCache = true;
+          }
+        }
+      } catch (e) { /* ignore */ }
+
+      fetchData(loadedFromCache);
     }
 
     // Safety: never show loading for more than 5 seconds
@@ -73,7 +89,29 @@ export default function EditProductPage() {
 
   if (!id) return null;
 
-  if (loading) return <GlobalLoader message="Loading product data..." />;
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-[#FDFBF7] py-10 md:py-20 px-3 md:px-4">
+        <div className="max-w-4xl mx-auto" style={{ paddingTop: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+            <div className="w-10 h-10 bg-[#E6DCCF] rounded-full animate-pulse" />
+            <div className="h-10 w-48 bg-[#E6DCCF] rounded-xl animate-pulse" />
+          </div>
+          <div className="h-5 w-64 bg-[#E6DCCF] rounded-lg animate-pulse mb-8 ml-[44px]" />
+          
+          <div className="bg-white rounded-2xl p-6 border border-[#E6DCCF] space-y-6 animate-pulse">
+            <div className="h-12 w-full bg-[#F5EFE6] rounded-xl" />
+            <div className="h-32 w-full bg-[#F5EFE6] rounded-xl" />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="h-12 w-full bg-[#F5EFE6] rounded-xl" />
+              <div className="h-12 w-full bg-[#F5EFE6] rounded-xl" />
+            </div>
+            <div className="h-48 w-full bg-[#F5EFE6] rounded-xl" />
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   if (!initialData) {
     return (

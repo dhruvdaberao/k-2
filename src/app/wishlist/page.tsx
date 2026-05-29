@@ -65,6 +65,9 @@ export default function WishlistPage() {
     fetchProducts(itemsStr.split(','));
   }, [loading, itemsStr, fetchProducts]);
 
+  // Resolve IDs to full product objects
+  const wishlistProducts = items.map(id => products.find(p => p.id === id || p.slug === id)).filter(Boolean);
+
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
     if (!isLoadingProducts && items.length > 0 && wishlistProducts.length === 0) {
@@ -86,8 +89,6 @@ export default function WishlistPage() {
     return () => document.removeEventListener('visibilitychange', onVisible);
   }, [itemsStr, fetchProducts]);
 
-  // Resolve IDs to full product objects
-  const wishlistProducts = items.map(id => products.find(p => p.id === id || p.slug === id)).filter(Boolean);
 
   // Show skeleton only while the useWishlist hook itself is loading (first paint)
   // OR while we have items but products haven't loaded yet for the first time
