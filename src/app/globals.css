@@ -2747,8 +2747,8 @@ body {
 
 .checkout-field span {
   font-size: 0.88rem;
-  font-weight: 500;
-  color: var(--text);
+  font-weight: 700;
+  color: #2F2A26;
 }
 
 .checkout-field input,
@@ -2759,8 +2759,9 @@ body {
   border-radius: 10px;
   border: 1px solid rgba(74, 50, 25, 0.12);
   background: #fff;
-  color: var(--text);
+  color: #2F2A26;
   font: inherit;
+  font-weight: 600;
   outline: none;
   transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
