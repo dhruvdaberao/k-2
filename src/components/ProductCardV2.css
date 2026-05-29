@@ -1,7 +1,7 @@
 /* --- CARD MICRO-INTERACTIONS --- */
 .plp-card {
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  background: #fcfbf9 !important;
+  background: #F5EFE6 !important;
   border: 1px solid rgba(120, 88, 58, 0.22) !important; 
   border-radius: 18px !important;
   overflow: hidden;
