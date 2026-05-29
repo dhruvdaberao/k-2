@@ -27,7 +27,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     slug: initialData?.slug || "",
     title: initialData?.title || "",
     description: initialData?.description || "",
-    price: initialData?.price || 0,
+    price: initialData?.price !== undefined ? (initialData.price === 0 && !isEdit ? "" : initialData.price) : "",
     category: initialData?.category || "",
     stock: initialData?.stock || 0,
     variants: initialData?.variants || null,
@@ -75,7 +75,9 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     let finalValue: string | number = value;
-    if (type === "number") finalValue = parseFloat(value) || 0;
+    if (type === "number") {
+      finalValue = value === "" ? "" : (parseFloat(value) || 0);
+    }
     
     setFormData(prev => {
       const updated = { ...prev, [name]: finalValue };
@@ -272,8 +274,13 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.id || !formData.title) {
-      showToast("ID and Title are required.");
+    if (!formData.title?.trim() || !formData.description?.trim() || formData.price === "" || formData.price === undefined) {
+      showToast("Please complete all required fields (Title, Description, and Price).");
+      return;
+    }
+    
+    if (!formData.id) {
+      showToast("Product ID (Slug) is required.");
       return;
     }
 

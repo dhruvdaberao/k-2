@@ -73,38 +73,12 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
     e.preventDefault();
     
     if (!imageFile && !formData.image_url) {
-      showToast("Please upload a Carousel Image");
+      showToast("Please complete all required fields (Image is missing)");
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-    if (!formData.title) {
-      showToast("Please fill in the Main Heading");
-      document.getElementById("title")?.focus();
-      return;
-    }
-    if (!formData.subtitle) {
-      showToast("Please fill in the Subheading");
-      document.getElementById("subtitle")?.focus();
-      return;
-    }
-    if (!formData.primary_cta_label) {
-      showToast("Please fill in the Primary Button Text");
-      document.getElementById("primary_cta_label")?.focus();
-      return;
-    }
-    if (!formData.primary_cta_href) {
-      showToast("Please select a Primary Link to Category");
-      document.getElementById("primary_cta_href")?.focus();
-      return;
-    }
-    if (!formData.secondary_cta_label) {
-      showToast("Please fill in the Secondary Button Text");
-      document.getElementById("secondary_cta_label")?.focus();
-      return;
-    }
-    if (!formData.secondary_cta_href) {
-      showToast("Please select a Secondary Link to Category");
-      document.getElementById("secondary_cta_href")?.focus();
+    if (!formData.title || !formData.subtitle || !formData.primary_cta_label || !formData.primary_cta_href || !formData.secondary_cta_label || !formData.secondary_cta_href) {
+      showToast("Please complete all required fields");
       return;
     }
 
