@@ -13,10 +13,12 @@ export default function EditProductPage() {
   const params = useParams();
   const id = params?.id as string;
   const [loading, setLoading] = useState(true);
+  const [showReload, setShowReload] = useState(false);
   const [initialData, setInitialData] = useState<any>(null);
   const isMounted = useRef(true);
 
   const fetchData = async (isBackground = false) => {
+    let isRedirecting = false;
     if (!id) return;
     if (!isBackground) setLoading(true);
     try {
@@ -24,6 +26,7 @@ export default function EditProductPage() {
       const { data: authData } = await supabase.auth.getSession();
       if (!isMounted.current) return;
       if (!authData?.session?.user || authData.session.user.email !== "keshvicrafts@gmail.com") {
+        isRedirecting = true;
         router.push("/");
         return;
       }
@@ -48,7 +51,7 @@ export default function EditProductPage() {
       console.error("Edit product fetch failed:", err);
       if (isMounted.current) setInitialData(null);
     } finally {
-      if (isMounted.current) setLoading(false);
+      if (isMounted.current && !isRedirecting) setLoading(false);
     }
   };
 
@@ -74,6 +77,11 @@ export default function EditProductPage() {
       fetchData(loadedFromCache);
     }
 
+    // Show reload button after 3 seconds if still loading
+    const reloadTimer = setTimeout(() => {
+      if (isMounted.current) setShowReload(true);
+    }, 3000);
+
     // Safety: never show loading for more than 5 seconds
     const safety = setTimeout(() => {
       if (isMounted.current) {
@@ -83,6 +91,7 @@ export default function EditProductPage() {
     
     return () => {
       isMounted.current = false;
+      clearTimeout(reloadTimer);
       clearTimeout(safety);
     };
   }, [id]);
@@ -107,6 +116,17 @@ export default function EditProductPage() {
               <div className="h-12 w-full bg-[#F5EFE6] rounded-xl" />
             </div>
             <div className="h-48 w-full bg-[#F5EFE6] rounded-xl" />
+            
+            {showReload && (
+              <div className="flex justify-center mt-8">
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="px-6 py-2 bg-[#4A3219] text-white rounded-xl font-bold transition-all active:scale-95 hover:bg-[#2C1810]"
+                >
+                  Reload Page
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </main>

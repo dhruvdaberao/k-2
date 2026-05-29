@@ -10,29 +10,85 @@ import BackButton from "@/components/BackButton";
 export default function NewProductPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [showReload, setShowReload] = useState(false);
 
   useEffect(() => {
+    let isRedirecting = false;
+    let isMounted = true;
+    
     const checkAuth = async () => {
       try {
         const { data: authData } = await supabase.auth.getSession();
+        if (!isMounted) return;
+        
         if (!authData?.session?.user || authData.session.user.email !== "keshvicrafts@gmail.com") {
+          isRedirecting = true;
           router.push("/");
           return;
         }
       } catch (err) {
         console.error("Auth check failed:", err);
       } finally {
-        setLoading(false);
+        if (isMounted && !isRedirecting) {
+          setLoading(false);
+        }
       }
     };
     checkAuth();
 
-    // Safety: never show loading for more than 5 seconds
-    const safety = setTimeout(() => setLoading(false), 5000);
-    return () => clearTimeout(safety);
-  }, []);
+    // Show reload button after 3 seconds if still loading
+    const reloadTimer = setTimeout(() => {
+      if (isMounted) setShowReload(true);
+    }, 3000);
 
-  if (loading) return <GlobalLoader message="Authenticating..." />;
+    // Safety timeout
+    const safety = setTimeout(() => {
+      if (isMounted && !isRedirecting) {
+        setLoading(false);
+      }
+    }, 5000);
+    
+    return () => {
+      isMounted = false;
+      clearTimeout(reloadTimer);
+      clearTimeout(safety);
+    };
+  }, [router]);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-[#FDFBF7] py-10 md:py-20 px-3 md:px-4">
+        <div className="max-w-4xl mx-auto" style={{ paddingTop: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+            <div className="w-10 h-10 bg-[#E6DCCF] rounded-full animate-pulse" />
+            <div className="h-10 w-48 bg-[#E6DCCF] rounded-xl animate-pulse" />
+          </div>
+          <div className="h-5 w-64 bg-[#E6DCCF] rounded-lg animate-pulse mb-8 ml-[44px]" />
+          
+          <div className="bg-white rounded-2xl p-6 border border-[#E6DCCF] space-y-6 animate-pulse">
+            <div className="h-12 w-full bg-[#F5EFE6] rounded-xl" />
+            <div className="h-32 w-full bg-[#F5EFE6] rounded-xl" />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="h-12 w-full bg-[#F5EFE6] rounded-xl" />
+              <div className="h-12 w-full bg-[#F5EFE6] rounded-xl" />
+            </div>
+            <div className="h-48 w-full bg-[#F5EFE6] rounded-xl" />
+            
+            {showReload && (
+              <div className="flex justify-center mt-8">
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="px-6 py-2 bg-[#4A3219] text-white rounded-xl font-bold transition-all active:scale-95 hover:bg-[#2C1810]"
+                >
+                  Reload Page
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#FDFBF7] py-10 md:py-20 px-3 md:px-4">
