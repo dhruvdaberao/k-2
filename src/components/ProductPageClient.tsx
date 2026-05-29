@@ -217,34 +217,36 @@ export default function ProductPageClient({
               })}
             </div>
 
-            <div
-              style={{ pointerEvents: "auto" }}
-              className="flex items-center gap-2 cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                router.push(`/reviews/${product.id || product.slug}`);
-              }}
-            >
-              <div className="flex items-center gap-2 text-[#5a3e2b]">
-                {ratingData.count === 0 ? (
-                  <div className="flex items-center gap-2 text-sm text-gray-400 font-medium italic">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                    </svg>
-                    No reviews yet
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                    </svg>
-                    <span className="font-bold text-lg">
-                      {ratingData.avg} <span className="text-gray-400 font-normal text-sm">({ratingData.count})</span>
-                    </span>
-                  </div>
-                )}
+            {product.type !== "custom-order" && (
+              <div
+                style={{ pointerEvents: "auto" }}
+                className="flex items-center gap-2 cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push(`/reviews/${product.id || product.slug}`);
+                }}
+              >
+                <div className="flex items-center gap-2 text-[#5a3e2b]">
+                  {ratingData.count === 0 ? (
+                    <div className="flex items-center gap-2 text-sm text-gray-400 font-medium italic">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                      </svg>
+                      No reviews yet
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                      </svg>
+                      <span className="font-bold text-lg">
+                        {ratingData.avg} <span className="text-gray-400 font-normal text-sm">({ratingData.count})</span>
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Emotional Description */}
@@ -337,16 +339,18 @@ export default function ProductPageClient({
           </div>
 
           {/* Read Reviews CTA */}
-          <div className="flex justify-center mt-6">
-            <button 
-              id="reviews-anchor"
-              onClick={() => router.push(`/reviews/${product.id || product.slug}`)}
-              className="px-8 py-3 text-white rounded-full text-sm font-medium hover:opacity-90 transition-opacity border-0 cursor-pointer"
-              style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
-            >
-              {ratingData.count === 0 ? "Be the first to review →" : "Read all reviews →"}
-            </button>
-          </div>
+          {product.type !== "custom-order" && (
+            <div className="flex justify-center mt-6">
+              <button 
+                id="reviews-anchor"
+                onClick={() => router.push(`/reviews/${product.id || product.slug}`)}
+                className="px-8 py-3 text-white rounded-full text-sm font-medium hover:opacity-90 transition-opacity border-0 cursor-pointer"
+                style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
+              >
+                {ratingData.count === 0 ? "Be the first to review →" : "Read all reviews →"}
+              </button>
+            </div>
+          )}
 
           {/* Product Details */}
           <div style={{ marginTop: "2rem", paddingTop: "2rem", borderTop: "1px solid var(--border)" }}>

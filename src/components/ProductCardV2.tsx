@@ -165,33 +165,35 @@ export default function ProductCardV2({ p, priority = false }: { p: Product, pri
 
                     <div className="flex items-center justify-between mb-2">
                         <span className="text-base md:text-lg font-bold text-neutral-900">{priceDisplay}</span>
-                        <Link 
-                            href={`/reviews/${p.id || p.slug}`}
-                            className="flex items-center gap-1 cursor-pointer hover:opacity-80 transition-all active:scale-95"
-                        >
-                        {ratingData.count === -1 ? (
-                            /* Loading — show subtle placeholder, not "No reviews" */
-                            <div className="flex items-center gap-1 text-xs text-gray-300 font-medium whitespace-nowrap">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#ddd" stroke="#ddd" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                                </svg>
-                            </div>
-                        ) : ratingData.count === 0 ? (
-                                <div className="flex items-center gap-1 text-xs text-gray-400 font-medium whitespace-nowrap">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#aaa" stroke="#aaa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        {!isCustomOrder && (
+                            <Link 
+                                href={`/reviews/${p.id || p.slug}`} 
+                                className="flex items-center gap-1 cursor-pointer hover:opacity-80 transition-all active:scale-95"
+                            >
+                            {ratingData.count === -1 ? (
+                                /* Loading — show subtle placeholder, not "No reviews" */
+                                <div className="flex items-center gap-1 text-xs text-gray-300 font-medium whitespace-nowrap">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#ddd" stroke="#ddd" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                                     </svg>
-                                    No reviews
                                 </div>
-                            ) : (
-                                <div className="flex items-center gap-1 text-[#5a3e2b] whitespace-nowrap">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                                    </svg>
-                                    <span className="font-bold text-base">{ratingData.avg}</span>
-                                </div>
-                            )}
-                        </Link>
+                            ) : ratingData.count === 0 ? (
+                                    <div className="flex items-center gap-1 text-xs text-gray-400 font-medium whitespace-nowrap">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#aaa" stroke="#aaa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                        </svg>
+                                        No reviews
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center gap-1 text-[#5a3e2b] whitespace-nowrap">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                        </svg>
+                                        <span className="font-bold text-base">{ratingData.avg}</span>
+                                    </div>
+                                )}
+                            </Link>
+                        )}
                     </div>
 
                     {(!inStock && !isCustomOrder) ? (
