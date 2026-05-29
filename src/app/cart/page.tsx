@@ -342,7 +342,7 @@ export default function CartPage() {
                           disabled={p && typeof p.stock === "number" && p.stock <= 0 && p.type !== "custom-order"}
                           className="cart-checkbox"
                         />
-                        <div className="cart-item-price-main font-serif">₹{it.price * it.quantity}</div>
+                        <div className="cart-item-price-main font-sans">₹{it.price * it.quantity}</div>
                       </div>
                       <div className="cart-item-bottom-actions">
                         <button onClick={() => setRemoveTarget({ id: it.id, name: it.name })} className="cart-remove-btn">Remove</button>
@@ -397,8 +397,8 @@ export default function CartPage() {
                   <hr className="my-2 border-light" />
                   
                   <div className="d-flex justify-content-between align-items-end">
-                    <span className="h6 fw-bold text-dark mb-0">Total</span>
-                    <span className="h4 fw-bold text-brown mb-0" style={{ color: "var(--brand)" }}>₹{grandTotal}</span>
+                    <span className="text-lg font-bold text-neutral-900 font-sans mb-0">Total</span>
+                    <span className="text-2xl font-bold font-sans mb-0" style={{ color: "var(--brand)" }}>₹{grandTotal}</span>
                   </div>
                 </div>
 
