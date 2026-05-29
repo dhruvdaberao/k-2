@@ -925,19 +925,20 @@ return (
 
               <button
                 type="button"
-                className="checkout-payment-card opacity-60 cursor-not-allowed pointer-events-none"
+                className="checkout-payment-card cursor-not-allowed pointer-events-none"
                 disabled
-                style={{ display: "flex", flexDirection: "column", padding: "20px", height: "auto", gap: "12px", alignItems: "flex-start", filter: "grayscale(100%) blur(0.5px)" }}
+                style={{ display: "flex", flexDirection: "column", padding: "20px", height: "auto", gap: "12px", alignItems: "flex-start", backgroundColor: '#f9f9f9', border: '1px dashed #ccc' }}
               >
                 <div className="flex flex-row items-start w-full justify-between gap-3">
                   <div className="flex items-start gap-4">
-                    <span className="checkout-payment-card__radio flex-shrink-0" aria-hidden="true" style={{ margin: 0, marginTop: "2px" }} />
+                    <span className="checkout-payment-card__radio flex-shrink-0 opacity-40" aria-hidden="true" style={{ margin: 0, marginTop: "2px", filter: "grayscale(100%)" }} />
                     <div className="flex flex-col text-left">
-                      <div className="flex items-center flex-wrap gap-2">
-                        <span className="checkout-payment-card__title text-lg font-bold text-[#2f2a26]" style={{ margin: 0 }}>Cash on Delivery</span>
-                        <span className="bg-red-100 text-red-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider whitespace-nowrap">Currently Unavailable</span>
+                      <span className="checkout-payment-card__title text-lg font-bold text-[#2f2a26] opacity-40" style={{ margin: 0 }}>Cash on Delivery</span>
+                      <div className="flex items-center gap-1.5 mt-1.5 text-red-600 font-bold">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        <span className="text-sm">Currently Unavailable</span>
                       </div>
-                      <span className="text-xs text-[#8c8273] mt-1">Pay with cash when your order arrives</span>
+                      <span className="text-xs text-[#8c8273] mt-1.5 opacity-60">Pay with cash when your order arrives</span>
                     </div>
                   </div>
                 </div>
