@@ -1,17 +1,25 @@
 import React from 'react';
 
 export default function BrandLogo({ className = "", size = 48 }: { className?: string, size?: number }) {
-  // viewBox width is 500, height is 100. So width is 5x height.
+  // viewBox width is 220, height is 100. So width is 2.2x height.
   return (
     <svg 
       xmlns="http://www.w3.org/2000/svg" 
-      viewBox="0 0 500 100" 
-      width={size * 5} 
+      viewBox="0 0 220 100" 
+      width={size * 2.2} 
       height={size}
       className={className}
       style={{ flexShrink: 0, display: 'block' }}
     >
-      <g transform="translate(50,50)">
+      <defs>
+        {/* A mathematically perfect vertical cut down the exact middle of the flower */}
+        <clipPath id="vertical-half">
+          <rect x="0" y="-50" width="50" height="100" />
+        </clipPath>
+      </defs>
+
+      {/* Flower is shifted to the left edge and clipped to only show its right half */}
+      <g transform="translate(0,50)" clipPath="url(#vertical-half)">
         {/* 16 Alternating Petals */}
         {[...Array(16)].map((_, i) => (
           <ellipse 
@@ -25,25 +33,33 @@ export default function BrandLogo({ className = "", size = 48 }: { className?: s
           />
         ))}
         
-        {/* Floral Center (Larger for Sunflower) */}
         <circle cx="0" cy="0" r="21" fill="#4A3324" />
-        
-        {/* Subtle Crochet/Woven Inner Details */}
         <circle cx="0" cy="0" r="14" fill="none" stroke="#F5EFE6" strokeWidth="1.5" strokeDasharray="3 3" opacity={0.6} />
         <circle cx="0" cy="0" r="7" fill="none" stroke="#F5EFE6" strokeWidth="1.5" strokeDasharray="2 2" opacity={0.4} />
       </g>
       
-      {/* Text embedded directly inside the SVG */}
+      {/* Stacked Text */}
       <text 
-        x="115" 
-        y="65" 
+        x="60" 
+        y="42" 
         fontFamily="'Playfair Display', serif" 
-        fontSize="54" 
+        fontSize="44" 
         fontWeight="500" 
         fill="#1a1a1a"
         letterSpacing="-0.02em"
       >
-        Keshvi Crafts
+        Keshvi
+      </text>
+      <text 
+        x="60" 
+        y="86" 
+        fontFamily="'Playfair Display', serif" 
+        fontSize="44" 
+        fontWeight="500" 
+        fill="#1a1a1a"
+        letterSpacing="-0.02em"
+      >
+        Crafts
       </text>
     </svg>
   );
