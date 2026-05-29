@@ -135,7 +135,7 @@ export default function ProductCard({ p }: { p: Product }) {
             stroke={isHearted ? "#E91E63" : "#E91E63"}
             className={`w-6 h-6 transition-all duration-200 hover:scale-110 active:scale-95 ${isPopping ? 'animate-heart-pop' : ''}`}
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.015-4.5-4.5-4.5-1.74 0-3.255 1.007-4.5 2.09-1.245-1.083-2.76-2.09-4.5-2.09C5.015 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L10 19.23A2.83 2.83 0 0 0 14 19.23L19.78 13.45l1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
           </svg>
         </div>
 

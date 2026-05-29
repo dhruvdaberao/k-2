@@ -121,7 +121,7 @@ export default function ProductPageClient({
                     stroke="#E91E63"
                     className={`transition-transform duration-200 ${isPopping ? 'animate-heart-pop' : ''} hover:scale-110 active:scale-95`}
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.015-4.5-4.5-4.5-1.74 0-3.255 1.007-4.5 2.09-1.245-1.083-2.76-2.09-4.5-2.09C5.015 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L10 19.23A2.83 2.83 0 0 0 14 19.23L19.78 13.45l1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                   </svg>
                 </div>
                 
@@ -137,8 +137,8 @@ export default function ProductPageClient({
                     padding: 0
                   }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <circle cx={18} cy={5} r={3}/><circle cx={6} cy={12} r={3}/><circle cx={18} cy={19} r={3}/><line x1={8.59} y1={13.51} x2={15.42} y2={17.49}/><line x1={15.41} y1={6.51} x2={8.59} y2={10.49}/>
+                  <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx={18} cy={5} r={3} fill="#5a3e2b" /><circle cx={6} cy={12} r={3} fill="#5a3e2b" /><circle cx={18} cy={19} r={3} fill="#5a3e2b" /><line x1={8.59} y1={13.51} x2={15.42} y2={17.49}/><line x1={15.41} y1={6.51} x2={8.59} y2={10.49}/>
                   </svg>
                 </button>
               </div>
