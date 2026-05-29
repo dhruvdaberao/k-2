@@ -308,30 +308,32 @@ export default function OrderDetailPage() {
           </h3>
           <div className="od-items">
             {items.map((item) => (
-              <div className="od-item" key={item.id}>
-                <div className="od-item__img">
-                  {item.image ? (
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      width={64}
-                      height={64}
-                      style={{ objectFit: "cover", borderRadius: "12px" }}
-                    />
-                  ) : (
-                    <div className="od-item__placeholder" />
-                  )}
-                </div>
-                <div className="od-item__info">
-                  <span className="od-item__name">{item.name}</span>
-                  <span className="od-item__meta">
-                    ₹{item.price.toLocaleString("en-IN")} × {item.quantity}
+              <Link href={`/products/${item.product_id || item.id}`} key={item.id} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div className="od-item">
+                  <div className="od-item__img">
+                    {item.image ? (
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        width={64}
+                        height={64}
+                        style={{ objectFit: "cover", borderRadius: "12px" }}
+                      />
+                    ) : (
+                      <div className="od-item__placeholder" />
+                    )}
+                  </div>
+                  <div className="od-item__info">
+                    <span className="od-item__name">{item.name}</span>
+                    <span className="od-item__meta">
+                      ₹{item.price.toLocaleString("en-IN")} × {item.quantity}
+                    </span>
+                  </div>
+                  <span className="od-item__total">
+                    ₹{(item.price * item.quantity).toLocaleString("en-IN")}
                   </span>
                 </div>
-                <span className="od-item__total">
-                  ₹{(item.price * item.quantity).toLocaleString("en-IN")}
-                </span>
-              </div>
+              </Link>
             ))}
           </div>
 

@@ -306,16 +306,11 @@ export default function ReviewPage() {
         return;
       }
 
-      // 🔒 2. Check delivered orders
-      const { data: orderChecks, error: orderError } = await supabase
-        .from("order_items")
-        .select("order_id, orders!inner(id, status, user_id)")
-        .eq("product_id", pId)
-        .eq("orders.user_id", user.id)
-        .eq("orders.status", "delivered");
+      // 🔒 2. Check delivered orders via API (bypasses RLS issues)
+      const eligRes = await fetch(`/api/reviews/check-eligibility?productId=${pId}&userId=${user.id}`);
+      const eligData = await eligRes.json();
 
-      if (orderError || !orderChecks || orderChecks.length === 0) {
-        if (orderError) console.error("Order check error:", orderError);
+      if (!eligData.eligible) {
         setIneligibleModal(true);
         return;
       }
@@ -362,17 +357,11 @@ export default function ReviewPage() {
         return;
       }
 
-      // 🔒 Check delivered order
-      // We check order_items and join with orders to verify status and ownership
-      const { data: orderChecks, error: orderError } = await supabase
-        .from("order_items")
-        .select("order_id, orders!inner(id, status, user_id)")
-        .eq("product_id", pId)
-        .eq("orders.user_id", user.id)
-        .eq("orders.status", "delivered");
+      // 🔒 Check delivered order via API (bypasses RLS issues)
+      const eligRes = await fetch(`/api/reviews/check-eligibility?productId=${pId}&userId=${user.id}`);
+      const eligData = await eligRes.json();
 
-      if (orderError || !orderChecks || orderChecks.length === 0) {
-        if (orderError) console.error("Order check error:", orderError);
+      if (!eligData.eligible) {
         showToast("You can only review delivered items");
         return;
       }
