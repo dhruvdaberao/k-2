@@ -169,6 +169,7 @@ export default function ProductPageClient({
           {/* Badge */}
           <div className="flex items-center justify-between gap-2 mb-3 mt-2">
             <div className="flex flex-wrap gap-2">
+              {/* 1. Render Badges (e.g. Bestseller) */}
               {Array.isArray(product.badges) && product.badges.length > 0 ? (
                 product.badges.map((b: string) => (
                   <span key={b} className="product-badge" style={{
@@ -195,19 +196,25 @@ export default function ProductPageClient({
                 }}>
                   {product.badge}
                 </span>
-              ) : (
-                <span className="product-badge" style={{
-                  display: "inline-block",
-                  padding: "0.3rem 0.8rem",
-                  background: "#e8d8c3",
-                  color: "#5a3e2b",
-                  borderRadius: "6px",
-                  fontSize: "0.85rem",
-                  fontWeight: 600,
-                }}>
-                  Handmade
-                </span>
-              )}
+              ) : null}
+
+              {/* 2. Render Tags (e.g. handmade, spiritual) */}
+              {Array.isArray(product.tags) && product.tags.map((tag: string) => {
+                const displayTag = tag.startsWith('#') ? tag : `#${tag}`;
+                return (
+                  <span key={tag} className="product-badge" style={{
+                    display: "inline-block",
+                    padding: "0.3rem 0.8rem",
+                    background: "#e8d8c3",
+                    color: "#5a3e2b",
+                    borderRadius: "6px",
+                    fontSize: "0.85rem",
+                    fontWeight: 600,
+                  }}>
+                    {displayTag}
+                  </span>
+                );
+              })}
             </div>
 
             <div
