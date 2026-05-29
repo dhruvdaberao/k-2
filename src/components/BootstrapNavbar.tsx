@@ -108,9 +108,9 @@ export default function BootstrapNavbar() {
       <div className="mobile-bottom-nav">
         <Link href="/" prefetch={true} className={`bottom-nav-item ${isActive("/") ? "active" : ""}`} title="Home">
           {isActive("/") ? (
-            <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><path d="M2 12q0-1.5 1.5-3l6-6q2.5-2.5 5 0l6 6q1.5 1.5 1.5 3v8q0 2-2 2H17q-2 0-2-2v-6a3 3 0 0 0-6 0v6q0 2-2 2H4q-2 0-2-2Z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><path d="M2 12q0-1.5 1.5-3l6-6q2.5-2.5 5 0l6 6q1.5 1.5 1.5 3v8q0 2-2 2h-2.5q-1.5 0-1.5-1.5v-4.5a4 4 0 0 0-8 0v4.5q0 1.5-1.5 1.5H4q-2 0-2-2Z"/></svg>
           ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><path d="M2 12q0-1.5 1.5-3l6-6q2.5-2.5 5 0l6 6q1.5 1.5 1.5 3v8q0 2-2 2H17q-2 0-2-2v-6a3 3 0 0 0-6 0v6q0 2-2 2H4q-2 0-2-2Z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><path d="M2 12q0-1.5 1.5-3l6-6q2.5-2.5 5 0l6 6q1.5 1.5 1.5 3v8q0 2-2 2h-2.5q-1.5 0-1.5-1.5v-4.5a4 4 0 0 0-8 0v4.5q0 1.5-1.5 1.5H4q-2 0-2-2Z"/></svg>
           )}
           <span className="bottom-nav-label">Home</span>
         </Link>
