@@ -16,7 +16,11 @@ export default function FullPageLoader() {
         gap: 20,
       }}
     >
-      <BrandLogo size={64} />
+      <img
+        src="/uploads/hero/logo.png"
+        alt="Keshvi Crafts"
+        style={{ height: 90, width: 'auto', mixBlendMode: 'multiply' }}
+      />
       <div
         style={{
           width: 36,

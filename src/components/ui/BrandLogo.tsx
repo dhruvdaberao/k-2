@@ -13,28 +13,23 @@ export default function BrandLogo({ className = "", size = 48 }: { className?: s
     >
       {/* Full flower centered at x=50, y=50 */}
       <g transform="translate(50,50)">
-        {/* 16 Alternating Petals drawn as Yarn Loops (No fill, thick round strokes) */}
+        {/* 16 Alternating Petals in bright Yellow and Orange */}
         {[...Array(16)].map((_, i) => (
           <ellipse 
             key={i}
             cx="0" 
-            cy="-31"  // Positioned so the bottom of the loop touches the center circle exactly
-            rx="5" 
-            ry="12" 
-            fill="none" 
-            stroke={i % 2 === 0 ? "#E88C31" : "#F4B41A"} 
-            strokeWidth="3"
-            strokeLinecap="round"
+            cy="-28" 
+            rx="7" 
+            ry="24" 
+            fill={i % 2 === 0 ? "#E88C31" : "#F4B41A"} 
             transform={`rotate(${i * 22.5})`} 
           />
         ))}
         
-        {/* Floral Center (Yarn Outline) */}
-        <circle cx="0" cy="0" r="19" fill="none" stroke="#4A3324" strokeWidth="3" />
-        
-        {/* Yarn/Crochet inner spiral details */}
-        <circle cx="0" cy="0" r="12" fill="none" stroke="#4A3324" strokeWidth="2.5" strokeDasharray="4 4" opacity={0.8} />
-        <circle cx="0" cy="0" r="5" fill="none" stroke="#4A3324" strokeWidth="2" strokeDasharray="2 3" opacity={0.6} />
+        {/* Floral Center (Made larger) */}
+        <circle cx="0" cy="0" r="24" fill="#4A3324" />
+        <circle cx="0" cy="0" r="16" fill="none" stroke="#F5EFE6" strokeWidth="1.5" strokeDasharray="3 3" opacity={0.6} />
+        <circle cx="0" cy="0" r="8" fill="none" stroke="#F5EFE6" strokeWidth="1.5" strokeDasharray="2 2" opacity={0.4} />
       </g>
       
       {/* Stacked Text */}
