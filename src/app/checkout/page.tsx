@@ -926,7 +926,7 @@ return (
               <button
                 type="button"
                 className="checkout-payment-card cursor-not-allowed pointer-events-none"
-                style={{ display: "flex", flexDirection: "column", padding: "20px", height: "auto", gap: "12px", alignItems: "flex-start", backgroundColor: '#f9f9f9', border: '1px dashed #ccc' }}
+                style={{ display: "flex", flexDirection: "column", padding: "20px", height: "auto", gap: "12px", alignItems: "flex-start", backgroundColor: '#f9f9f9', border: '1px solid rgba(139, 94, 60, 0.4)' }}
               >
                 <div className="flex flex-row items-start w-full justify-between gap-3">
                   <div className="flex items-start gap-4">
