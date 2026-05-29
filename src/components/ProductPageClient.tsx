@@ -114,12 +114,12 @@ export default function ProductPageClient({
                     width="24" 
                     height="24" 
                     viewBox="0 0 24 24" 
-                    fill={isHearted ? "#C84C35" : "none"}
+                    fill={isHearted ? "#C84C35" : "rgba(0,0,0,0.15)"}
                     strokeWidth="1.5" 
                     strokeLinecap="round" 
                     strokeLinejoin="round" 
-                    stroke="#C84C35"
-                    className={`transition-transform duration-200 ${isPopping ? 'animate-heart-pop' : ''} hover:scale-110 active:scale-95`}
+                    stroke={isHearted ? "#C84C35" : "white"}
+                    className={`transition-transform duration-200 ${isPopping ? 'animate-heart-pop' : ''} hover:scale-110 active:scale-95 drop-shadow-md`}
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21.19 5.01a5.72 5.72 0 0 0-8.09 0L12 6.12l-1.1-1.1a5.72 5.72 0 0 0-8.09 8.09l1.1 1.1L9.92 20.22a2.94 2.94 0 0 0 4.16 0L20.09 14.21l1.1-1.1a5.72 5.72 0 0 0 0-8.1z" />
                   </svg>
@@ -137,8 +137,8 @@ export default function ProductPageClient({
                     padding: 0
                   }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <circle cx={18} cy={5} r={3} fill="#5a3e2b" /><circle cx={6} cy={12} r={3} fill="#5a3e2b" /><circle cx={18} cy={19} r={3} fill="#5a3e2b" /><line x1={8.59} y1={13.51} x2={15.42} y2={17.49}/><line x1={15.41} y1={6.51} x2={8.59} y2={10.49}/>
+                  <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="drop-shadow-md">
+                    <circle cx={18} cy={5} r={3} fill="white" /><circle cx={6} cy={12} r={3} fill="white" /><circle cx={18} cy={19} r={3} fill="white" /><line x1={8.59} y1={13.51} x2={15.42} y2={17.49}/><line x1={15.41} y1={6.51} x2={8.59} y2={10.49}/>
                   </svg>
                 </button>
               </div>
