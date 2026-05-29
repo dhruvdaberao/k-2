@@ -119,7 +119,7 @@ export default function EditProductPage() {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-[#4A3219] mb-2">Product Not Found</h1>
           <p className="text-[#8B7355] mb-6">The product could not be loaded. It may have been deleted or there was a network issue.</p>
-          <button type="button" onClick={fetchData} className="btn-primary px-8 py-3 rounded-xl font-bold shadow-sm">
+          <button type="button" onClick={() => fetchData(false)} className="btn-primary px-8 py-3 rounded-xl font-bold shadow-sm">
             Retry Loading
           </button>
         </div>
