@@ -183,8 +183,9 @@
 .mobile-top-profile:hover .profile-icon,
 .mobile-top-profile:active .profile-icon,
 .mobile-top-profile.active .profile-icon {
-  color: var(--brand);
-  stroke: var(--brand);
+  color: #5a3e2b;
+  stroke: #5a3e2b;
+  fill: #5a3e2b;
 }
 
 .cart-wrapper,
