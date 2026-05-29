@@ -129,10 +129,10 @@ export default function ProductCard({ p }: { p: Product }) {
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"
-            fill={isHearted ? "#8C2633" : "none"}
+            fill={isHearted ? "#C84C35" : "none"}
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke={isHearted ? "#8C2633" : "#8C2633"}
+            stroke={isHearted ? "#C84C35" : "#C84C35"}
             className={`w-6 h-6 transition-all duration-200 hover:scale-110 active:scale-95 ${isPopping ? 'animate-heart-pop' : ''}`}
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M21.19 5.01a5.72 5.72 0 0 0-8.09 0L12 6.12l-1.1-1.1a5.72 5.72 0 0 0-8.09 8.09l1.1 1.1L9.92 20.22a2.94 2.94 0 0 0 4.16 0L20.09 14.21l1.1-1.1a5.72 5.72 0 0 0 0-8.1z" />
