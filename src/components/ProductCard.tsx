@@ -90,7 +90,7 @@ export default function ProductCard({ p }: { p: Product }) {
   const overflowCount = badges.length - 2;
 
   return (
-    <article className="relative plp-card plp-card-mobile h-full flex flex-col group overflow-hidden transition-all duration-300">
+    <article className="relative plp-card plp-card-mobile h-full flex flex-col group overflow-hidden transition-all duration-300 bg-[#F5EFE6]">
 
       {/* MEDIA WRAPPER */}
       <div className="relative w-full bg-stone-100 overflow-hidden">

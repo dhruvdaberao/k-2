@@ -98,7 +98,7 @@ export default function ProductCardV2({ p, priority = false }: { p: Product, pri
     const overflowCount = badges.length - 2;
 
     return (
-        <article className="relative plp-card-mobile plp-card h-full flex flex-col group overflow-hidden transition-all duration-300">
+        <article className="relative plp-card-mobile plp-card h-full flex flex-col group overflow-hidden transition-all duration-300 bg-[#F5EFE6]">
 
             {/* MEDIA WRAPPER - Relative container for Image + Badges + Heart */}
             <div className="relative w-full bg-stone-100 overflow-hidden">
