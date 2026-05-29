@@ -139,9 +139,9 @@ export default function BootstrapNavbar() {
         <Link href="/cart" prefetch={true} className={`bottom-nav-item cart-bottom ${isActive("/cart") ? "active" : ""}`} title="Cart">
           <div className="cart-wrapper">
             {isActive("/cart") ? (
-              <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><rect x="3" y="8" width="18" height="13" rx="2" ry="2" fill="#5a3e2b"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><rect x="3" y="8" width="18" height="13" rx="2" ry="2" fill="#5a3e2b"/><path d="M8 8V6a4 4 0 0 1 8 0v2" fill="none"/></svg>
             ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><rect x="3" y="8" width="18" height="13" rx="2" ry="2"/><path d="M8 11V6a4 4 0 0 1 8 0v5"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><rect x="3" y="8" width="18" height="13" rx="2" ry="2" fill="none"/><path d="M8 11V6a4 4 0 0 1 8 0v5" fill="none"/></svg>
             )}
             <CartBadge size="sm" />
           </div>
