@@ -131,6 +131,7 @@ export default function HeroSection({ slides, autoPlayMs }: { slides?: any[], au
                       height={720}
                       className="hero-slide__image"
                       priority={index === 0}
+                      unoptimized
                     />
                   </div>
                 </div>
