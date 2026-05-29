@@ -129,7 +129,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
           const options = {
             maxSizeMB: 1.5,
             maxWidthOrHeight: 1920,
-            useWebWorker: true, 
+            useWebWorker: false, 
             initialQuality: 0.9,
             maxIteration: 10
           };
@@ -143,7 +143,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
         
         const { error: uploadError } = await Promise.race([
           supabase.storage.from('product-images').upload(fileName, compressedFile),
-          new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 20000))
+          new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 60000))
         ]).catch(err => ({ error: err }));
 
         if (uploadError) {

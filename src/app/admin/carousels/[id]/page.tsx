@@ -107,7 +107,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
               cacheControl: "3600",
               upsert: false,
             }),
-          new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 15000))
+          new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 60000))
         ]).catch(err => ({ error: err }));
 
         if (uploadError) throw uploadError;
@@ -141,13 +141,13 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
         
         const { error } = await Promise.race([
           supabase.from("hero_slides").insert({ ...slideData, position: nextPos }),
-          new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 15000))
+          new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 60000))
         ]).catch(err => ({ error: err }));
         if (error) throw error;
       } else {
         const { error } = await Promise.race([
           supabase.from("hero_slides").update(slideData).eq("id", params.id),
-          new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 15000))
+          new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 60000))
         ]).catch(err => ({ error: err }));
         if (error) throw error;
       }
@@ -173,7 +173,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
     try {
       const { error } = await Promise.race([
         supabase.from("hero_slides").delete().eq("id", params.id),
-        new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 15000))
+        new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 60000))
       ]).catch(err => ({ error: err }));
       if (error) throw error;
 
