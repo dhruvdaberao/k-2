@@ -647,7 +647,7 @@ return (
         <div className="checkout-item-summary-strip">
           <div className="checkout-item-summary-strip__inner">
             {enrichedItems.map((item, i) => (
-              <div className="checkout-item-summary-row" key={`thumb-${item.id}-${i}`}>
+              <div className="checkout-item-summary-row" key={`thumb-${item.id}-${i}`} style={{ backgroundColor: '#F5EFE6', border: '1px solid rgba(139, 94, 60, 0.4)' }}>
                 <div className="checkout-item-summary-thumb relative">
                   <ImageWithFallback src={item.product?.images?.[0] || item.image || "/placeholder.png"} alt={item.name} fill style={{ objectFit: 'cover' }} sizes="56px" />
                 </div>
@@ -664,7 +664,7 @@ return (
       <div className="checkout-shell">
         {step === 1 && (
           isGuest ? (
-            <section className="checkout-card checkout-section">
+            <section className="checkout-card checkout-section" style={{ backgroundColor: '#F5EFE6', border: '1px solid rgba(139, 94, 60, 0.4)' }}>
               <div className="checkout-form-grid">
                 <label className="checkout-field">
                   <span>Full Name</span>
@@ -868,7 +868,7 @@ return (
         )}
 
         {step === 2 && (
-          <section className="checkout-card checkout-section">
+          <section className="checkout-card checkout-section" style={{ backgroundColor: '#F5EFE6', border: '1px solid rgba(139, 94, 60, 0.4)' }}>
             <div className="checkout-payment-grid">
               <button
                 type="button"
@@ -956,7 +956,7 @@ return (
         )}
 
         {step === 3 && (
-          <section className="checkout-card checkout-card--summary checkout-section order-summary">
+          <section className="checkout-card checkout-card--summary checkout-section order-summary" style={{ backgroundColor: '#F5EFE6', border: '1px solid rgba(139, 94, 60, 0.4)' }}>
             <div className="checkout-summary-list checkout-items">
               {enrichedItems.map((it) => (
                 <div className="flex justify-between items-start" key={it.id}>
