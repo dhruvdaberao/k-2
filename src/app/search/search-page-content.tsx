@@ -12,11 +12,13 @@ export default function SearchPageContent() {
   const [query, setQuery] = useState("");
 
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     supabase.from("products").select("*").then(({ data }: { data: any }) => {
       if (data) setProducts(data as Product[]);
-    });
+    }).catch(err => console.error("Search fetch error:", err))
+      .finally(() => setLoading(false));
   }, []);
 
   const liveProducts = useMemo(
@@ -68,7 +70,9 @@ export default function SearchPageContent() {
       </header>
 
       <section className="search-page__results" aria-live="polite">
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="search-page__empty">Loading products...</div>
+        ) : filtered.length === 0 ? (
           <div className="search-page__empty">No matching products found.</div>
         ) : (
           <div className="plp-grid-mobile">
