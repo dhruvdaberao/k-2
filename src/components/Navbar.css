@@ -127,7 +127,8 @@
   left: 12px;
   right: 12px;
   height: 2px;
-  background: #2F2A26;
+  background: var(--brand);
+  border-radius: 2px;
   transform: scaleX(0);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin: center;
