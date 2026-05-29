@@ -7,6 +7,8 @@ import Image from "next/image";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCardV2";
 import { supabase } from "@/lib/supabaseClient";
+import ConfirmModal from "@/components/ui/ConfirmModal";
+import { showToast } from "@/components/Toast";
 
 let globalWishlistProductsCache: any[] = [];
 let globalWishlistIdsCache: string = "";
@@ -22,14 +24,25 @@ export default function WishlistPage() {
     return itemsStr !== globalWishlistIdsCache && itemsStr !== "";
   });
   const [showRetryDelay, setShowRetryDelay] = useState(false);
+  const [showClearAll, setShowClearAll] = useState(false);
   const fetchControllerRef = useRef(0);
 
   const fetchProducts = useCallback((ids: string[]) => {
     const reqId = ++fetchControllerRef.current;
-    supabase
-      .from("products")
-      .select("*")
-      .or(`id.in.(${ids.join(',')}),slug.in.(${ids.join(',')})`)
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      const uuids = ids.filter(id => uuidRegex.test(id));
+      const slugs = ids.filter(id => !uuidRegex.test(id));
+
+      let orFilters = [];
+      if (uuids.length > 0) orFilters.push(`id.in.(${uuids.join(',')})`);
+      if (slugs.length > 0) orFilters.push(`slug.in.(${slugs.join(',')})`);
+
+      if (orFilters.length === 0) return;
+
+      supabase
+        .from("products")
+        .select("*")
+        .or(orFilters.join(','))
       .then(({ data }: { data: any }) => {
         if (reqId !== fetchControllerRef.current) return;
         if (data) {
@@ -115,7 +128,18 @@ export default function WishlistPage() {
 
   return (
     <div className="container py-8">
-      <h1 className="text-3xl font-serif font-bold text-[#2f2a26] mb-8 text-center">Wishlist</h1>
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-serif font-bold text-[#2f2a26]">Wishlist</h1>
+        {items.length > 0 && (
+          <button 
+            onClick={() => setShowClearAll(true)}
+            className="btn-clear-pill mt-3 inline-block"
+            style={{ fontSize: '12px', padding: '6px 16px' }}
+          >
+            Clear All Items
+          </button>
+        )}
+      </div>
 
       {items.length === 0 ? (
         <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4 max-w-md mx-auto">
@@ -163,6 +187,24 @@ export default function WishlistPage() {
           ))}
         </div>
       )}
+
+      {/* ── Clear All Confirmation ── */}
+      <ConfirmModal
+        isOpen={showClearAll}
+        title="Clear wishlist?"
+        message="This will remove all items from your wishlist. This action cannot be undone."
+        confirmLabel="Clear All"
+        cancelLabel="Cancel"
+        destructive
+        onConfirm={() => {
+          if (items.length > 0) {
+            removeWishlistItems(items);
+            showToast("Wishlist cleared successfully.");
+          }
+          setShowClearAll(false);
+        }}
+        onCancel={() => setShowClearAll(false)}
+      />
     </div>
   );
 }

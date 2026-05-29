@@ -36,10 +36,20 @@ export default function CartPage() {
         setTimeout(() => reject(new Error("Timeout")), 5000)
       );
       
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      const uuids = ids.filter(id => uuidRegex.test(id));
+      const slugs = ids.filter(id => !uuidRegex.test(id));
+
+      let orFilters = [];
+      if (uuids.length > 0) orFilters.push(`id.in.(${uuids.join(',')})`);
+      if (slugs.length > 0) orFilters.push(`slug.in.(${slugs.join(',')})`);
+
+      if (orFilters.length === 0) return;
+
       const fetchPromise = supabase
         .from("products")
         .select("*")
-        .or(`id.in.(${ids.join(',')}),slug.in.(${ids.join(',')})`);
+        .or(orFilters.join(','));
 
       const { data } = await Promise.race([fetchPromise, timeoutPromise]) as any;
 
