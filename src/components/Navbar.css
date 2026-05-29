@@ -156,12 +156,13 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-.mobile-top-search .search-icon {
+.mobile-top-search .search-icon,
+.mobile-top-profile .profile-icon {
   color: var(--brand);
   stroke: var(--brand);
   width: 22px;
   height: 22px;
-  stroke-width: 1.8;
+  stroke-width: 1.64;
   display: flex;
   align-items: center;
   justify-content: center;
