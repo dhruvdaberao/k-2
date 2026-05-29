@@ -103,6 +103,7 @@ export async function loadCart(passedUser?: any): Promise<CartItem[]> {
   // This is a READ-ONLY cache — syncLocalCartToDB clears localStorage BEFORE
   // merging, so this mirror will never cause duplication on re-login.
   write(CART_KEY, items);
+  if (typeof window !== "undefined") localStorage.setItem("cart_is_db_cache", "true");
 
   return items;
 }
@@ -115,6 +116,7 @@ export async function handleAddToCart(product: any, passedUser?: any): Promise<v
   // -------- GUEST --------
   if (!user) {
     console.log("[Cart] Guest AddToCart");
+    if (typeof window !== "undefined") localStorage.removeItem("cart_is_db_cache");
     let cart = read<CartItem[]>(CART_KEY, []);
     const existing = cart.find(i => i.id === item.id);
 
@@ -174,6 +176,7 @@ export async function updateQty(productId: string, quantity: number, passedUser?
 
   // -------- GUEST
   if (!user) {
+    if (typeof window !== "undefined") localStorage.removeItem("cart_is_db_cache");
     let cart = read<CartItem[]>(CART_KEY, []);
     if (quantity <= 0) {
       cart = cart.filter(x => x.id !== productId);
@@ -236,6 +239,12 @@ export async function clearCart(passedUser?: any): Promise<void> {
  */
 export async function syncLocalCartToDB(userId: string): Promise<void> {
   console.log("[Cart] Syncing Guest items to DB for:", userId);
+  
+  if (typeof window !== "undefined" && localStorage.getItem("cart_is_db_cache") === "true") {
+    console.log("[Cart] Local cart is just a DB cache. Skipping sync.");
+    return;
+  }
+
   const localCart = read<CartItem[]>(CART_KEY, []);
   if (localCart.length === 0) return;
 
@@ -306,6 +315,7 @@ export async function loadWishlist(passedUser?: any): Promise<ItemSnapshot[]> {
 
   // Sync local mirror
   write(WISHLIST_KEY, items);
+  if (typeof window !== "undefined") localStorage.setItem("wishlist_is_db_cache", "true");
   return items;
 }
 
@@ -315,6 +325,7 @@ export async function toggleWishlist(product: any, passedUser?: any): Promise<vo
 
   if (!user) {
     // GUEST MODE
+    if (typeof window !== "undefined") localStorage.removeItem("wishlist_is_db_cache");
     let wishlist = read<ItemSnapshot[]>(WISHLIST_KEY, []);
     const existingIndex = wishlist.findIndex(i => i.id === item.id);
 
@@ -363,6 +374,12 @@ export async function toggleWishlist(product: any, passedUser?: any): Promise<vo
 
 export async function syncLocalWishlistToDB(userId: string): Promise<void> {
   console.log("[Wishlist] Starting Sync for user:", userId);
+  
+  if (typeof window !== "undefined" && localStorage.getItem("wishlist_is_db_cache") === "true") {
+    console.log("[Wishlist] Local wishlist is just a DB cache. Skipping sync.");
+    return;
+  }
+
   const local = read<ItemSnapshot[]>(WISHLIST_KEY, []);
   if (local.length === 0) {
     console.log("[Wishlist] No local items to sync.");
@@ -418,6 +435,7 @@ export function wishlistCount(): number {
 export async function removeFromWishlist(id: string, passedUser?: any) {
   const user = passedUser;
   if (!user) {
+    if (typeof window !== "undefined") localStorage.removeItem("wishlist_is_db_cache");
     let wishlist = read<ItemSnapshot[]>(WISHLIST_KEY, []);
     wishlist = wishlist.filter(i => i.id !== id);
     write(WISHLIST_KEY, wishlist);
@@ -469,7 +487,9 @@ export function removeFromCollection(name: string, id: string) {
 export function clearAllLocalData() {
   if (typeof window === "undefined") return;
   localStorage.removeItem(CART_KEY);
+  localStorage.removeItem("cart_is_db_cache");
   localStorage.removeItem(WISHLIST_KEY);
+  localStorage.removeItem("wishlist_is_db_cache");
   localStorage.removeItem(COLLECTIONS_KEY);
   notify();
   console.log("[Bags] All local storage data cleared.");
