@@ -127,9 +127,9 @@ export default function BootstrapNavbar() {
         <Link href="/wishlist" prefetch={true} className={`bottom-nav-item ${isActive("/wishlist") ? "active" : ""}`} title="Wishlist">
           <div className="wishlist-wrapper" style={{ position: "relative" }}>
             {isActive("/wishlist") ? (
-              <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><path d="M21.72 4.47a6.05 6.05 0 0 0 -8.56 0L12 5.64l-1.17-1.17a6.05 6.05 0 0 0 -8.56 8.56l1.17 1.17L9.8 20.55a3.11 3.11 0 0 0 4.4 0L20.56 14.19l1.17-1.17a6.05 6.05 0 0 0 0-8.56z"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><path d="M21.19 5.01a5.72 5.72 0 0 0-8.09 0L12 6.12l-1.1-1.1a5.72 5.72 0 0 0-8.09 8.09l1.1 1.1L9.92 20.22a2.94 2.94 0 0 0 4.16 0L20.09 14.21l1.1-1.1a5.72 5.72 0 0 0 0-8.1z"/></svg>
             ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><path d="M21.72 4.47a6.05 6.05 0 0 0 -8.56 0L12 5.64l-1.17-1.17a6.05 6.05 0 0 0 -8.56 8.56l1.17 1.17L9.8 20.55a3.11 3.11 0 0 0 4.4 0L20.56 14.19l1.17-1.17a6.05 6.05 0 0 0 0-8.56z"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><path d="M21.19 5.01a5.72 5.72 0 0 0-8.09 0L12 6.12l-1.1-1.1a5.72 5.72 0 0 0-8.09 8.09l1.1 1.1L9.92 20.22a2.94 2.94 0 0 0 4.16 0L20.09 14.21l1.1-1.1a5.72 5.72 0 0 0 0-8.1z"/></svg>
             )}
             <WishlistBadge size="sm" />
           </div>
