@@ -33,25 +33,22 @@ export default function BrandLogo({ className = "", size = 48 }: { className?: s
         </g>
       </svg>
       
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', marginTop: '2px', textAlign: 'left' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', marginLeft: '4px', textAlign: 'left' }}>
         <span style={{ 
-          fontFamily: 'var(--font-playfair), serif', 
-          fontSize: `${size * 0.03}rem`, // Scales with size (e.g. 1.44rem for 48px)
-          fontStyle: 'italic', 
+          fontFamily: "'Playfair Display', serif", 
+          fontSize: `${size * 0.026}rem`, 
           fontWeight: 700, 
           color: '#3E2A1E', 
-          lineHeight: 0.9 
+          lineHeight: 1
         }}>
           Keshvi
         </span>
         <span style={{ 
-          fontFamily: 'var(--font-quicksand), sans-serif', 
-          fontSize: `${size * 0.0135}rem`, // Scales with size (e.g. 0.65rem for 48px)
+          fontFamily: "'Playfair Display', serif", 
+          fontSize: `${size * 0.026}rem`, 
           fontWeight: 700, 
-          color: '#6B4C3A', 
-          letterSpacing: '0.2em', 
-          textTransform: 'uppercase', 
-          marginTop: `${size * 0.08}px`
+          color: '#3E2A1E', 
+          lineHeight: 1 
         }}>
           Crafts
         </span>
