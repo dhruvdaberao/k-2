@@ -74,7 +74,7 @@ export function getCart(): CartItem[] {
 
 export async function loadCart(passedUser?: any): Promise<CartItem[]> {
   console.log("[Cart] loadCart triggered");
-  let actualUser = passedUser; if (passedUser === undefined) { try { const { data: sessionData } = await supabase.auth.getSession(); actualUser = sessionData?.session?.user || null; } catch(e) { actualUser = null; } }
+  let actualUser = passedUser; if (passedUser === undefined) { try { const { data: sessionData } = await supabase.auth.getSession(); actualUser = sessionData?.session?.user || null; } catch(e: any) { if (e?.message?.includes('Lock broken')) { console.warn('GoTrue lock broken, skipping session fetch'); } actualUser = null; } }
 
   // GUEST MODE
   if (!actualUser) {
@@ -111,7 +111,7 @@ export async function loadCart(passedUser?: any): Promise<CartItem[]> {
 export async function handleAddToCart(product: any, passedUser?: any): Promise<void> {
   const item = snap(product);
   console.log("[Cart] addToCart intent:", item.id);
-  let user = passedUser; if (passedUser === undefined) { try { const { data: sessionData } = await supabase.auth.getSession(); user = sessionData?.session?.user || null; } catch(e) { user = null; } }
+  let user = passedUser; if (passedUser === undefined) { try { const { data: sessionData } = await supabase.auth.getSession(); user = sessionData?.session?.user || null; } catch(e: any) { if (e?.message?.includes('Lock broken')) { console.warn('GoTrue lock broken, skipping session fetch'); } user = null; } }
 
   // -------- GUEST --------
   if (!user) {
@@ -172,7 +172,7 @@ export const addToCart = handleAddToCart;
 
 export async function updateQty(productId: string, quantity: number, passedUser?: any): Promise<void> {
   console.log(`[Cart] updateQty: ${productId} -> ${quantity}`);
-  let user = passedUser; if (passedUser === undefined) { try { const { data: sessionData } = await supabase.auth.getSession(); user = sessionData?.session?.user || null; } catch(e) { user = null; } }
+  let user = passedUser; if (passedUser === undefined) { try { const { data: sessionData } = await supabase.auth.getSession(); user = sessionData?.session?.user || null; } catch(e: any) { if (e?.message?.includes('Lock broken')) { console.warn('GoTrue lock broken, skipping session fetch'); } user = null; } }
 
   // -------- GUEST
   if (!user) {
@@ -215,7 +215,7 @@ export async function removeFromCart(productId: string, passedUser?: any): Promi
 
 export async function clearCart(passedUser?: any): Promise<void> {
   console.log("[Cart] clearCart intent");
-  let user = passedUser; if (passedUser === undefined) { try { const { data: sessionData } = await supabase.auth.getSession(); user = sessionData?.session?.user || null; } catch(e) { user = null; } }
+  let user = passedUser; if (passedUser === undefined) { try { const { data: sessionData } = await supabase.auth.getSession(); user = sessionData?.session?.user || null; } catch(e: any) { if (e?.message?.includes('Lock broken')) { console.warn('GoTrue lock broken, skipping session fetch'); } user = null; } }
 
   if (!user) {
     write(CART_KEY, []);

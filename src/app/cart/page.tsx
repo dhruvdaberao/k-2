@@ -22,6 +22,7 @@ export default function CartPage() {
   const [removeTarget, setRemoveTarget] = useState<{ id: string; name: string } | null>(null);
   const [showClearAll, setShowClearAll] = useState(false);
   const [showOutOfStockCartModal, setShowOutOfStockCartModal] = useState(false);
+  const [skeletonTimeout, setSkeletonTimeout] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const fetchControllerRef = useRef(0);
 
@@ -191,7 +192,28 @@ export default function CartPage() {
 
   // Only block on the useCart hook loading (instant from localStorage cache)
   // Products fetch is non-blocking — it runs silently for stock validation
+  useEffect(() => {
+    if (loading) {
+      const timer = setTimeout(() => setSkeletonTimeout(true), 3000);
+      return () => clearTimeout(timer);
+    } else {
+      setSkeletonTimeout(false);
+    }
+  }, [loading]);
+
   if (loading) {
+    if (skeletonTimeout) {
+      return (
+        <main className="cart-page py-4 py-md-5 px-3 bg-[#FAF7F2] min-h-screen">
+          <div className="container" style={{ maxWidth: '900px' }}>
+            <div className="text-center min-h-[50vh] flex flex-col items-center justify-center">
+              <p className="text-stone-500 mb-4">Taking too long to load?</p>
+              <button onClick={() => window.location.reload()} className="btn-primary px-8 py-2 rounded-full font-bold">Reload Page</button>
+            </div>
+          </div>
+        </main>
+      );
+    }
     return (
       <main className="cart-page py-4 py-md-5 px-3 bg-[#FAF7F2] min-h-screen">
         <div className="container" style={{ maxWidth: '900px' }}>

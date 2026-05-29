@@ -25,6 +25,7 @@ export default function WishlistPage() {
   });
   const [showRetryDelay, setShowRetryDelay] = useState(false);
   const [showClearAll, setShowClearAll] = useState(false);
+  const [skeletonTimeout, setSkeletonTimeout] = useState(false);
   const fetchControllerRef = useRef(0);
 
   const fetchProducts = useCallback((ids: string[]) => {
@@ -107,7 +108,24 @@ export default function WishlistPage() {
   // OR while we have items but products haven't loaded yet for the first time
   const showSkeleton = loading || (items.length > 0 && isLoadingProducts && products.length === 0);
 
+  useEffect(() => {
+    if (showSkeleton) {
+      const timer = setTimeout(() => setSkeletonTimeout(true), 3000);
+      return () => clearTimeout(timer);
+    } else {
+      setSkeletonTimeout(false);
+    }
+  }, [showSkeleton]);
+
   if (showSkeleton) {
+    if (skeletonTimeout) {
+      return (
+        <div className="container py-8 text-center min-h-[50vh] flex flex-col items-center justify-center">
+          <p className="text-stone-500 mb-4">Taking too long to load?</p>
+          <button onClick={() => window.location.reload()} className="btn-primary px-8 py-2 rounded-full font-bold">Reload Page</button>
+        </div>
+      );
+    }
     return (
       <div className="container py-8">
         <h1 className="text-3xl font-serif font-bold text-[#2f2a26] mb-8 text-center">Wishlist</h1>
