@@ -54,8 +54,7 @@
 //           <div className="svg-container">
 //             <svg className="svg-outline" xmlns="http://www.w3.org/2000/svg" fill="none"
 //                  viewBox="0 0 24 24" strokeWidth={1.5}>
-//               <path strokeLinecap="round" strokeLinejoin="round"
-//                 d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/>
+//               <path strokeLinecap="round" strokeLinejoin="round" d="M21.72 4.47a6.05 6.05 0 0 0 -8.56 0L12 5.64l-1.17-1.17a6.05 6.05 0 0 0 -8.56 8.56l1.17 1.17L9.8 20.55a3.11 3.11 0 0 0 4.4 0L20.56 14.19l1.17-1.17a6.05 6.05 0 0 0 0-8.56z" />
 //             </svg>
 //             <svg className="svg-filled" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
 //               <path fillRule="evenodd" clipRule="evenodd"

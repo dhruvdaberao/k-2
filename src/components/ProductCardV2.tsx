@@ -146,7 +146,7 @@ export default function ProductCardV2({ p, priority = false }: { p: Product, pri
                         stroke="#E91E63"
                         className={`w-6 h-6 transition-all duration-200 hover:scale-110 active:scale-95 ${isPopping ? 'animate-heart-pop' : ''}`}
                     >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L10 19.23A2.83 2.83 0 0 0 14 19.23L19.78 13.45l1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M21.72 4.47a6.05 6.05 0 0 0 -8.56 0L12 5.64l-1.17-1.17a6.05 6.05 0 0 0 -8.56 8.56l1.17 1.17L9.8 20.55a3.11 3.11 0 0 0 4.4 0L20.56 14.19l1.17-1.17a6.05 6.05 0 0 0 0-8.56z" />
                     </svg>
                 </div>
 
