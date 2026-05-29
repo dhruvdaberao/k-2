@@ -90,7 +90,7 @@ export default function ProductCard({ p }: { p: Product }) {
   const overflowCount = badges.length - 2;
 
   return (
-    <article className="relative plp-card plp-card-mobile h-full flex flex-col group overflow-hidden transition-all duration-300 !bg-[#F5EFE6]">
+    <article className="relative plp-card plp-card-mobile h-full flex flex-col group overflow-hidden transition-all duration-300" style={{ backgroundColor: '#F5EFE6' }}>
 
       {/* MEDIA WRAPPER */}
       <div className="relative w-full bg-stone-100 overflow-hidden">
@@ -168,7 +168,7 @@ export default function ProductCard({ p }: { p: Product }) {
       </div>
 
       {/* CONTENT */}
-      <div className="flex flex-col flex-grow p-4">
+      <div className="flex flex-col flex-grow p-4" style={{ backgroundColor: '#F5EFE6' }}>
         <h3 className="text-base font-bold text-[#2F2A26] leading-snug mb-2 line-clamp-2 min-h-[2.5em]">
           <Link href={`/products/${encoded}`} onClick={handleCardClick} className="product-title-link">
             {p.title}
