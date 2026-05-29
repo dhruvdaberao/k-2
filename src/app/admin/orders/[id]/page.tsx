@@ -57,8 +57,11 @@ export default function OrderDetails() {
       try {
         console.log("🚀 [ADMIN-ORDER] Init for:", orderId);
         // Auth check
-        const { data: authData } = await supabase.auth.getSession();
-        if (!authData?.session?.user || authData.session.user.email !== "keshvicrafts@gmail.com") {
+        const { data: authData, error: authError } = await supabase.auth.getSession();
+        
+        if (authError) {
+          console.warn("Auth check error (bypassing strict redirect):", authError);
+        } else if (!authData?.session?.user || authData.session.user.email !== "keshvicrafts@gmail.com") {
           console.warn("⚠️ [ADMIN-ORDER] Unauthorized access");
           router.push("/");
           return;

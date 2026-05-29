@@ -22,10 +22,11 @@ export default function EditProductPage() {
     if (!id) return;
     if (!isBackground) setLoading(true);
     try {
-      // Auth check
-      const { data: authData } = await supabase.auth.getSession();
+      const { data: authData, error: authError } = await supabase.auth.getSession();
       if (!isMounted.current) return;
-      if (!authData?.session?.user || authData.session.user.email !== "keshvicrafts@gmail.com") {
+      if (authError) {
+        console.warn("Auth check error (bypassing strict redirect):", authError);
+      } else if (!authData?.session?.user || authData.session.user.email !== "keshvicrafts@gmail.com") {
         isRedirecting = true;
         router.push("/");
         return;
