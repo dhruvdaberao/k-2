@@ -187,7 +187,7 @@
     min-height: min(85vh, 820px);
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
     gap: clamp(2rem, 5vw, 5rem);
-    padding: 24px 40px;
+    padding: 24px 90px;
   }
 
   .hero-slide__image-shell {
