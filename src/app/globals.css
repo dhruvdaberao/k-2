@@ -1067,6 +1067,14 @@ summary::-webkit-details-marker {
     min-height: 95px !important;
   }
 }
+@media (min-width: 1024px) {
+  .category-circle-fixed {
+    width: 130px !important;
+    height: 130px !important;
+    min-width: 130px !important;
+    min-height: 130px !important;
+  }
+}
 
 /* Compact Cart Row Styles */
 .cart-list-container {
