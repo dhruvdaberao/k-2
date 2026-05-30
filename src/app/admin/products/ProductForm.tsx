@@ -41,6 +41,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   
   const [categories, setCategories] = useState<Category[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [categorySearch, setCategorySearch] = useState("");
 
   useEffect(() => {
     getLiveCategories().then(data => {
@@ -488,23 +489,36 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                 {dropdownOpen && (
                   <>
                     <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(false)}></div>
-                    <div className="absolute z-20 w-full mt-2 bg-white border border-[#C4A484] rounded-xl shadow-lg max-h-60 overflow-y-auto" style={{ top: '100%' }}>
-                      {categories.map(c => (
-                        <div 
-                          key={c.id} 
-                          className="px-4 py-3 hover:bg-[#F5EFE6] cursor-pointer text-[#3E2C1C] transition-colors"
-                          style={{ backgroundColor: formData.category === c.name ? '#FDFBF7' : 'transparent', fontWeight: formData.category === c.name ? 'bold' : 'normal' }}
-                          onClick={() => {
-                            setFormData(prev => ({ ...prev, category: c.name }));
-                            setDropdownOpen(false);
-                          }}
-                        >
-                          {c.name}
-                        </div>
-                      ))}
-                      {categories.length === 0 && (
-                        <div className="px-4 py-3 text-sm text-[#8B7355] italic">No categories found.</div>
-                      )}
+                    <div className="absolute z-20 w-full mt-2 bg-white border border-[#C4A484] rounded-xl shadow-lg max-h-60 overflow-hidden flex flex-col" style={{ top: '100%' }}>
+                      <div className="p-2 border-b border-[#E6DCCF]">
+                        <input
+                          type="text"
+                          placeholder="Search categories..."
+                          value={categorySearch}
+                          onChange={(e) => setCategorySearch(e.target.value)}
+                          className="w-full p-2 text-sm rounded-lg border border-[#E6DCCF] focus:outline-none focus:ring-1 focus:ring-[#8B7355] text-[#4A3219]"
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </div>
+                      <div className="overflow-y-auto">
+                        {categories.filter(c => c.name.toLowerCase().includes(categorySearch.toLowerCase())).map(c => (
+                          <div 
+                            key={c.id} 
+                            className="px-4 py-3 hover:bg-[#F5EFE6] cursor-pointer text-[#3E2C1C] transition-colors"
+                            style={{ backgroundColor: formData.category === c.name ? '#FDFBF7' : 'transparent', fontWeight: formData.category === c.name ? 'bold' : 'normal' }}
+                            onClick={() => {
+                              setFormData(prev => ({ ...prev, category: c.name }));
+                              setDropdownOpen(false);
+                              setCategorySearch("");
+                            }}
+                          >
+                            {c.name}
+                          </div>
+                        ))}
+                        {categories.filter(c => c.name.toLowerCase().includes(categorySearch.toLowerCase())).length === 0 && (
+                          <div className="px-4 py-3 text-sm text-[#8B7355] italic">No categories found.</div>
+                        )}
+                      </div>
                     </div>
                   </>
                 )}
