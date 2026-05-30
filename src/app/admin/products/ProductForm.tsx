@@ -126,10 +126,10 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
         let compressedFile = file;
         try {
           const options = {
-            maxSizeMB: 1.5,
-            maxWidthOrHeight: 1920,
-            useWebWorker: false, 
-            initialQuality: 0.9,
+            maxSizeMB: 0.8,
+            maxWidthOrHeight: 1280,
+            useWebWorker: true, 
+            initialQuality: 0.8,
             maxIteration: 10
           };
           compressedFile = await imageCompression(file, options);
@@ -140,9 +140,19 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
         const fileExt = compressedFile.name.split('.').pop() || 'jpg';
         const fileName = `${productId}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
         
+        const startTime = Date.now();
         const { error: uploadError } = await Promise.race([
           supabase.storage.from('product-images').upload(fileName, compressedFile),
-          new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 60000))
+          new Promise<any>((_, reject) => {
+            const check = () => {
+              if (Date.now() - startTime > 30000) {
+                reject(new Error('timeout'));
+              } else {
+                setTimeout(check, 1000);
+              }
+            };
+            check();
+          })
         ]).catch(err => ({ error: err }));
 
         if (uploadError) {
@@ -334,6 +344,16 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     
     if (!formData.id) {
       showToast("Product ID (Slug) is required.");
+      return;
+    }
+
+    // Prevent saving if there are unresolved local preview blob URLs
+    if (images.some(img => img.startsWith('blob:'))) {
+      showToast("Please wait for images to finish uploading, or remove failed images (the ones with the loading spinner).");
+      return;
+    }
+    if (hasVariants && variants.some(v => v.images && v.images.some((img: string) => img.startsWith('blob:')))) {
+      showToast("Please wait for variant images to finish uploading, or remove failed images.");
       return;
     }
 
