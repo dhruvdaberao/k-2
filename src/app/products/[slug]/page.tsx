@@ -3,6 +3,7 @@ import ProductPageClient from "@/components/ProductPageClient";
 import { getProductRating } from "@/lib/ratingUtils";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import TextBackButton from "@/components/TextBackButton";
 import type { Product } from "@/types";
 
 type P = any;
@@ -115,9 +116,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
       <JsonLd data={jsonLdData} />
       <JsonLd data={breadcrumbData} />
 
-      <Link href="/" className="meta" style={{ display: "inline-block", marginBottom: 16, textDecoration: "none" }}>
-        ← Back to all products
-      </Link>
+      <TextBackButton text="← Go Back" />
 
       <ProductPageClient product={p} relatedProducts={relatedProducts} initialRating={rating} />
     </main>

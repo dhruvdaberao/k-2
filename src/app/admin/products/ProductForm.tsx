@@ -685,10 +685,10 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                 <button 
                    type="button" 
                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); handlePasteClick(); }}
-                   className="text-xs font-bold text-[#4A3219] flex items-center gap-1.5 hover:underline transition-all z-10 bg-transparent border-none p-0"
+                   className="text-xs font-bold text-[#4A3219] flex items-center justify-center gap-1 hover:underline transition-all z-10 p-0"
+                   style={{ border: 'none', background: 'none', outline: 'none' }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                  Paste Image
+                  Click here to paste
                 </button>
               </div>
             </div>
@@ -905,7 +905,8 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                         textAlign: 'center', 
                         transition: 'all 0.3s ease',
                         cursor: 'pointer',
-                        marginBottom: '16px'
+                        marginBottom: '16px',
+                        position: 'relative'
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.backgroundColor = '#FDFBF7';
@@ -932,8 +933,18 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                           </svg>
                         </div>
                         <span style={{ fontWeight: 'bold', color: '#4A3219', fontSize: '1.125rem', marginTop: '4px' }}>Add New Images</span>
-                        <span style={{ fontSize: '0.875rem', color: '#8B7355' }}>PNG, JPG up to 5MB</span>
+                        <span style={{ fontSize: '0.875rem', color: '#8B7355', marginBottom: '8px' }}>PNG, JPG up to 5MB</span>
                       </label>
+                      <div className="absolute bottom-4 w-full flex justify-center">
+                        <button 
+                           type="button" 
+                           onClick={(e) => { e.preventDefault(); e.stopPropagation(); handlePasteClick(vIdx); }}
+                           className="text-xs font-bold text-[#4A3219] flex items-center justify-center gap-1 hover:underline transition-all z-10 p-0"
+                           style={{ border: 'none', background: 'none', outline: 'none' }}
+                        >
+                          Click here to paste
+                        </button>
+                      </div>
                     </div>
                     {uploadingImages === vIdx && (
                       <div className="mt-4 p-4 rounded-xl border border-[#C4A484] bg-[#FDFBF7]">

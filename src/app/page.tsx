@@ -99,8 +99,8 @@ export default async function Home() {
                     <div 
                       className="category-circle-fixed rounded-full flex items-center justify-center transition-all duration-300 group-hover:-translate-y-1 group-hover:drop-shadow-md active:scale-95 shrink-0"
                       style={{ 
-                        border: '2px solid #8B7355', 
-                        padding: '3px',
+                        border: '3px dotted #8B7355', 
+                        padding: '4px',
                       }}
                     >
                       <div 
@@ -142,13 +142,13 @@ export default async function Home() {
                 <div 
                   className="category-circle-fixed rounded-full flex items-center justify-center transition-all duration-300 group-hover:-translate-y-1 group-hover:drop-shadow-md active:scale-95 shrink-0"
                   style={{ 
-                    border: '2px solid #8B7355', 
-                    padding: '3px',
+                    border: '3px dotted #8B7355', 
+                    padding: '4px',
                   }}
                 >
                   <div 
                     className="w-full h-full rounded-full flex items-center justify-center transition-colors"
-                    style={{ backgroundColor: '#FDFBF7', border: '1px dashed #8B7355' }}
+                    style={{ backgroundColor: '#F5EFE6', border: 'none' }}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8B7355" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 md:w-7 md:h-7">
                       <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -161,7 +161,7 @@ export default async function Home() {
                   style={{ 
                     fontSize: '13px', 
                     fontWeight: '700', 
-                    color: '#8B7355',
+                    color: '#2A1A0F',
                     lineHeight: '1.2',
                     marginTop: '2px'
                   }}
