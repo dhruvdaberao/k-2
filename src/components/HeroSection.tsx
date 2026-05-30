@@ -137,7 +137,6 @@ export default function HeroSection({ slides, autoPlayMs }: { slides?: any[], au
                 </div>
 
                 <div className="hero-slide__content">
-                  <p className="hero-slide__eyebrow">Curated for thoughtful gifting</p>
                   <h1>{slide.title}</h1>
                   <p className="hero-slide__subtitle">{slide.subtitle}</p>
 
