@@ -367,12 +367,21 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mb-2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                       <span className="text-xs font-bold text-[#8B7355] mb-2">Change Image</span>
                     </label>
-                    <div className="absolute bottom-2 w-full flex justify-center">
+                    <div style={{ position: 'absolute', bottom: '6px', left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
                       <button 
                          type="button" 
                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); handlePasteClick(); }}
-                         className="text-[10px] font-bold text-[#4A3219] flex items-center justify-center gap-1 hover:underline transition-all z-10 p-0"
-                         style={{ border: 'none', background: 'none', outline: 'none' }}
+                         className="flex items-center justify-center gap-1 hover:scale-105 transition-all z-10"
+                         style={{ 
+                           border: 'none', 
+                           background: 'rgba(139, 115, 85, 0.15)', 
+                           padding: '3px 8px', 
+                           borderRadius: '12px',
+                           color: '#4A3219',
+                           fontSize: '10px',
+                           fontWeight: 'bold',
+                           cursor: 'pointer'
+                         }}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
                         Paste
@@ -426,12 +435,21 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
                     </div>
                   </label>
                   
-                  <div className="absolute bottom-4 w-full flex justify-center">
+                  <div style={{ position: 'absolute', bottom: '12px', left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
                     <button 
                        type="button" 
                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); handlePasteClick(); }}
-                       className="text-xs font-bold text-[#4A3219] flex items-center justify-center gap-1 hover:underline transition-all z-10 p-0"
-                       style={{ border: 'none', background: 'none', outline: 'none' }}
+                       className="flex items-center justify-center gap-1 hover:scale-105 transition-all z-10"
+                       style={{ 
+                         border: 'none', 
+                         background: 'rgba(139, 115, 85, 0.15)', 
+                         padding: '4px 10px', 
+                         borderRadius: '12px',
+                         color: '#4A3219',
+                         fontSize: '11px',
+                         fontWeight: 'bold',
+                         cursor: 'pointer'
+                       }}
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
                       Paste
