@@ -81,9 +81,18 @@ export default async function Home() {
         {/* Shop by Collection Section */}
         {displayCats.length > 0 && (
           <section className="mb-10 mt-4">
-            <h2 className="text-3xl font-bold mb-6" style={{ color: "var(--text)" }}>
-              Shop by Collection
-            </h2>
+            <div className="flex items-end justify-between gap-4 mb-6">
+              <h2 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
+                Shop by Collection
+              </h2>
+              <Link 
+                href="/collections" 
+                className="text-sm font-medium hover:underline transition-colors shrink-0 mb-1" 
+                style={{ color: "var(--text-light)" }}
+              >
+                View All &rarr;
+              </Link>
+            </div>
             <div className="category-chips-scroll mb-8">
               {displayCats.slice(0, 10).map((cat) => {
                 const count = live.filter((p) => (p.category || '') === cat.name).length;
