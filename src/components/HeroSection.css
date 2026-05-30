@@ -227,11 +227,11 @@
   }
 
   .hero-carousel__arrow--prev {
-    left: 20px;
+    left: max(30px, calc(50vw - 600px));
   }
 
   .hero-carousel__arrow--next {
-    right: 20px;
+    right: max(30px, calc(50vw - 600px));
   }
 
   .hero-carousel__arrow svg,
