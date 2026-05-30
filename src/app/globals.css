@@ -1061,10 +1061,10 @@ summary::-webkit-details-marker {
 }
 @media (min-width: 768px) {
   .category-circle-fixed {
-    width: 95px !important;
-    height: 95px !important;
-    min-width: 95px !important;
-    min-height: 95px !important;
+    width: 115px !important;
+    height: 115px !important;
+    min-width: 115px !important;
+    min-height: 115px !important;
   }
 }
 @media (min-width: 1024px) {
