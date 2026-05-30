@@ -1,7 +1,18 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+
 export default function GlobalLoader({ message = "Loading..." }: { message?: string }) {
-  return (
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || typeof document === 'undefined') return null;
+
+  return createPortal(
     <div 
       className="fixed inset-0 flex flex-col items-center justify-center bg-[#FDFBF7]/70 backdrop-blur-[3px] w-full h-full" 
       style={{ zIndex: 99999 }}
@@ -23,6 +34,7 @@ export default function GlobalLoader({ message = "Loading..." }: { message?: str
           {message}
         </p>
       )}
-    </div>
+    </div>,
+    document.body
   );
 }
