@@ -184,7 +184,7 @@
 /* ── Desktop / Laptop enhancements ──────────────────────────── */
 @media (min-width: 769px) {
   .hero-slide__inner {
-    min-height: min(85vh, 820px);
+    min-height: 550px;
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
     gap: clamp(2rem, 5vw, 5rem);
     padding: 24px 90px;
