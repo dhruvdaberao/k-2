@@ -99,7 +99,7 @@ export default async function Home() {
                     <div 
                       className="category-circle-fixed rounded-full flex items-center justify-center transition-all duration-300 group-hover:-translate-y-1 group-hover:drop-shadow-md active:scale-95 shrink-0"
                       style={{ 
-                        border: '3px dotted #8B7355', 
+                        border: '3px dashed #8B7355', 
                         padding: '4px',
                       }}
                     >
@@ -142,7 +142,7 @@ export default async function Home() {
                 <div 
                   className="category-circle-fixed rounded-full flex items-center justify-center transition-all duration-300 group-hover:-translate-y-1 group-hover:drop-shadow-md active:scale-95 shrink-0"
                   style={{ 
-                    border: '3px dotted #8B7355', 
+                    border: '3px dashed #8B7355', 
                     padding: '4px',
                   }}
                 >
