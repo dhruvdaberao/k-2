@@ -1050,6 +1050,11 @@ summary::-webkit-details-marker {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+.rounded-dashed-border {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='none' stroke='%238B7355' stroke-width='2.5' stroke-linecap='round' pathLength='100' stroke-dasharray='2.5 3.75' /%3E%3C/svg%3E");
+  background-size: 100% 100%;
+}
+
 /* === Custom Non-Tailwind Style Palette === */
 .radius-8 { border-radius: 8px !important; }
 
