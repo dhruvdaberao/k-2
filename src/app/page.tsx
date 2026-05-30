@@ -77,11 +77,11 @@ export default async function Home() {
       {/* Hero Section */}
       <HeroSection slides={heroSlides} autoPlayMs={carouselDelay} />
 
-      <div className="container" style={{ paddingBottom: '30px', paddingTop: '10px' }}>
+      <div className="container" style={{ paddingBottom: '30px', paddingTop: '20px' }}>
         {/* Shop by Collection Section */}
         {displayCats.length > 0 && (
-          <section className="mb-10 mt-0">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6" style={{ color: "var(--text)" }}>
+          <section className="mb-10 mt-4">
+            <h2 className="text-3xl font-bold mb-6" style={{ color: "var(--text)" }}>
               Shop by Collection
             </h2>
             <div className="category-chips-scroll mb-8">

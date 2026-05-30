@@ -31,18 +31,37 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
   const [categories, setCategories] = useState<any[]>([]);
   const [primaryDropdownOpen, setPrimaryDropdownOpen] = useState(false);
   const [secondaryDropdownOpen, setSecondaryDropdownOpen] = useState(false);
-
-  useEffect(() => {
-    fetchCategories();
-    if (!isNew) {
-      fetchSlide();
-    }
-  }, []);
+  const [products, setProducts] = useState<any[]>([]);
+  const [productSearch, setProductSearch] = useState("");
+  const [categorySearch, setCategorySearch] = useState("");
 
   const fetchCategories = async () => {
     const { data } = await supabase.from("categories").select("slug, name").order("priority", { ascending: false });
     if (data) setCategories(data);
   };
+
+  const fetchProducts = async () => {
+    const { data } = await supabase.from("products").select("slug, title").order("created_at", { ascending: false });
+    if (data) {
+      setProducts(data);
+      if (isNew && data.length > 0) {
+        setFormData(prev => {
+          if (prev.primary_cta_href === "/collections") {
+            return { ...prev, primary_cta_href: `/products/${data[0].slug}` };
+          }
+          return prev;
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+    fetchProducts();
+    if (!isNew) {
+      fetchSlide();
+    }
+  }, []);
 
   const fetchSlide = async () => {
     try {
@@ -505,16 +524,19 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
               </div>
 
               <div>
-                <label className="block text-xs md:text-sm font-bold text-stone-600 mb-1">Links to Category</label>
+                <label className="block text-xs md:text-sm font-bold text-stone-600 mb-1">Links to Product</label>
                 <div className="relative">
                   <div 
                     id="primary_cta_href"
                     tabIndex={0}
                     className="w-full px-3 py-2 md:px-4 md:py-3 rounded-lg border border-stone-300 bg-white cursor-pointer flex justify-between items-center text-sm md:text-base text-[#3E2C1C] focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
                     style={{ outline: primaryDropdownOpen ? '2px solid #8B7355' : 'none' }}
-                    onClick={() => setPrimaryDropdownOpen(!primaryDropdownOpen)}
+                    onClick={() => {
+                      setPrimaryDropdownOpen(!primaryDropdownOpen);
+                      setProductSearch("");
+                    }}
                   >
-                    <span>{formData.primary_cta_href === "/collections" ? "All Collections" : (categories.find(c => `/collections/${c.slug}` === formData.primary_cta_href)?.name || "All Collections")}</span>
+                    <span>{formData.primary_cta_href === "/products" ? "All Products" : (products.find(p => `/products/${p.slug}` === formData.primary_cta_href)?.title || "All Products")}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: primaryDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
                       <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
@@ -523,30 +545,43 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
                   {primaryDropdownOpen && (
                     <>
                       <div className="fixed inset-0 z-10" onClick={() => setPrimaryDropdownOpen(false)}></div>
-                      <div className="absolute z-20 w-full mt-2 bg-white border border-[#C4A484] rounded-xl shadow-lg max-h-60 overflow-y-auto" style={{ top: '100%' }}>
-                        <div 
-                          className="px-4 py-3 hover:bg-[#F5EFE6] cursor-pointer text-[#3E2C1C] transition-colors text-sm"
-                          style={{ backgroundColor: formData.primary_cta_href === "/collections" ? '#FDFBF7' : 'transparent', fontWeight: formData.primary_cta_href === "/collections" ? 'bold' : 'normal' }}
-                          onClick={() => {
-                            setFormData(prev => ({ ...prev, primary_cta_href: "/collections" }));
-                            setPrimaryDropdownOpen(false);
-                          }}
-                        >
-                          All Collections
+                      <div className="absolute z-20 w-full mt-2 bg-white border border-[#C4A484] rounded-xl shadow-lg max-h-60 flex flex-col" style={{ top: '100%' }}>
+                        <div className="p-2 border-b border-stone-200 sticky top-0 bg-white rounded-t-xl z-30">
+                          <input 
+                            type="text" 
+                            placeholder="Search products..." 
+                            value={productSearch}
+                            onChange={(e) => setProductSearch(e.target.value)}
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-full px-3 py-2 border border-stone-300 rounded-lg text-sm focus:outline-none focus:border-[#8B7355]"
+                            autoFocus
+                          />
                         </div>
-                        {categories.map(c => (
+                        <div className="overflow-y-auto flex-1">
                           <div 
-                            key={c.slug} 
                             className="px-4 py-3 hover:bg-[#F5EFE6] cursor-pointer text-[#3E2C1C] transition-colors text-sm"
-                            style={{ backgroundColor: formData.primary_cta_href === `/collections/${c.slug}` ? '#FDFBF7' : 'transparent', fontWeight: formData.primary_cta_href === `/collections/${c.slug}` ? 'bold' : 'normal' }}
+                            style={{ backgroundColor: formData.primary_cta_href === "/products" ? '#FDFBF7' : 'transparent', fontWeight: formData.primary_cta_href === "/products" ? 'bold' : 'normal', display: "All Products".toLowerCase().includes(productSearch.toLowerCase()) ? 'block' : 'none' }}
                             onClick={() => {
-                              setFormData(prev => ({ ...prev, primary_cta_href: `/collections/${c.slug}` }));
+                              setFormData(prev => ({ ...prev, primary_cta_href: "/products" }));
                               setPrimaryDropdownOpen(false);
                             }}
                           >
-                            {c.name}
+                            All Products
                           </div>
-                        ))}
+                          {products.filter(p => p.title.toLowerCase().includes(productSearch.toLowerCase())).map(p => (
+                            <div 
+                              key={p.slug} 
+                              className="px-4 py-3 hover:bg-[#F5EFE6] cursor-pointer text-[#3E2C1C] transition-colors text-sm"
+                              style={{ backgroundColor: formData.primary_cta_href === `/products/${p.slug}` ? '#FDFBF7' : 'transparent', fontWeight: formData.primary_cta_href === `/products/${p.slug}` ? 'bold' : 'normal' }}
+                              onClick={() => {
+                                setFormData(prev => ({ ...prev, primary_cta_href: `/products/${p.slug}` }));
+                                setPrimaryDropdownOpen(false);
+                              }}
+                            >
+                              {p.title}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </>
                   )}
@@ -580,7 +615,10 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
                     tabIndex={0}
                     className="w-full px-3 py-2 md:px-4 md:py-3 rounded-lg border border-stone-300 bg-white cursor-pointer flex justify-between items-center text-sm md:text-base text-[#3E2C1C] focus:outline-none focus:ring-2 focus:ring-[#8B7355]"
                     style={{ outline: secondaryDropdownOpen ? '2px solid #8B7355' : 'none' }}
-                    onClick={() => setSecondaryDropdownOpen(!secondaryDropdownOpen)}
+                    onClick={() => {
+                      setSecondaryDropdownOpen(!secondaryDropdownOpen);
+                      setCategorySearch("");
+                    }}
                   >
                     <span>{formData.secondary_cta_href === "/collections" ? "All Collections" : (categories.find(c => `/collections/${c.slug}` === formData.secondary_cta_href)?.name || "All Collections")}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: secondaryDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
@@ -591,30 +629,43 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
                   {secondaryDropdownOpen && (
                     <>
                       <div className="fixed inset-0 z-10" onClick={() => setSecondaryDropdownOpen(false)}></div>
-                      <div className="absolute z-20 w-full mt-2 bg-white border border-[#C4A484] rounded-xl shadow-lg max-h-60 overflow-y-auto" style={{ top: '100%' }}>
-                        <div 
-                          className="px-4 py-3 hover:bg-[#F5EFE6] cursor-pointer text-[#3E2C1C] transition-colors text-sm"
-                          style={{ backgroundColor: formData.secondary_cta_href === "/collections" ? '#FDFBF7' : 'transparent', fontWeight: formData.secondary_cta_href === "/collections" ? 'bold' : 'normal' }}
-                          onClick={() => {
-                            setFormData(prev => ({ ...prev, secondary_cta_href: "/collections" }));
-                            setSecondaryDropdownOpen(false);
-                          }}
-                        >
-                          All Collections
+                      <div className="absolute z-20 w-full mt-2 bg-white border border-[#C4A484] rounded-xl shadow-lg max-h-60 flex flex-col" style={{ top: '100%' }}>
+                        <div className="p-2 border-b border-stone-200 sticky top-0 bg-white rounded-t-xl z-30">
+                          <input 
+                            type="text" 
+                            placeholder="Search categories..." 
+                            value={categorySearch}
+                            onChange={(e) => setCategorySearch(e.target.value)}
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-full px-3 py-2 border border-stone-300 rounded-lg text-sm focus:outline-none focus:border-[#8B7355]"
+                            autoFocus
+                          />
                         </div>
-                        {categories.map(c => (
+                        <div className="overflow-y-auto flex-1">
                           <div 
-                            key={c.slug} 
                             className="px-4 py-3 hover:bg-[#F5EFE6] cursor-pointer text-[#3E2C1C] transition-colors text-sm"
-                            style={{ backgroundColor: formData.secondary_cta_href === `/collections/${c.slug}` ? '#FDFBF7' : 'transparent', fontWeight: formData.secondary_cta_href === `/collections/${c.slug}` ? 'bold' : 'normal' }}
+                            style={{ backgroundColor: formData.secondary_cta_href === "/collections" ? '#FDFBF7' : 'transparent', fontWeight: formData.secondary_cta_href === "/collections" ? 'bold' : 'normal', display: "All Collections".toLowerCase().includes(categorySearch.toLowerCase()) ? 'block' : 'none' }}
                             onClick={() => {
-                              setFormData(prev => ({ ...prev, secondary_cta_href: `/collections/${c.slug}` }));
+                              setFormData(prev => ({ ...prev, secondary_cta_href: "/collections" }));
                               setSecondaryDropdownOpen(false);
                             }}
                           >
-                            {c.name}
+                            All Collections
                           </div>
-                        ))}
+                          {categories.filter(c => c.name.toLowerCase().includes(categorySearch.toLowerCase())).map(c => (
+                            <div 
+                              key={c.slug} 
+                              className="px-4 py-3 hover:bg-[#F5EFE6] cursor-pointer text-[#3E2C1C] transition-colors text-sm"
+                              style={{ backgroundColor: formData.secondary_cta_href === `/collections/${c.slug}` ? '#FDFBF7' : 'transparent', fontWeight: formData.secondary_cta_href === `/collections/${c.slug}` ? 'bold' : 'normal' }}
+                              onClick={() => {
+                                setFormData(prev => ({ ...prev, secondary_cta_href: `/collections/${c.slug}` }));
+                                setSecondaryDropdownOpen(false);
+                              }}
+                            >
+                              {c.name}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </>
                   )}
