@@ -324,9 +324,6 @@ export default function ProductPageClient({
             )}
           </div>
 
-            )}
-          </div>
-
           {/* Trust Reassurance */}
           <div style={{
             padding: "0.8rem",
