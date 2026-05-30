@@ -107,9 +107,6 @@ export default async function Home() {
                     {/* Insta-story border wrapper */}
                     <div 
                       className="category-circle-fixed rounded-dashed-border rounded-full flex items-center justify-center transition-all duration-300 group-hover:-translate-y-1 group-hover:drop-shadow-md active:scale-95 shrink-0"
-                      style={{ 
-                        padding: '8px',
-                      }}
                     >
                       <div 
                         className="w-full h-full rounded-full overflow-hidden flex items-center justify-center"
@@ -149,9 +146,6 @@ export default async function Home() {
               >
                 <div 
                   className="category-circle-fixed rounded-dashed-border rounded-full flex items-center justify-center transition-all duration-300 group-hover:-translate-y-1 group-hover:drop-shadow-md active:scale-95 shrink-0"
-                  style={{ 
-                    padding: '8px',
-                  }}
                 >
                   <div 
                     className="w-full h-full rounded-full flex items-center justify-center transition-colors"
