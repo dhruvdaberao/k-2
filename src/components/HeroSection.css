@@ -2,7 +2,10 @@
   position: relative;
   overflow: hidden;
   padding: 0 16px 16px;
-  /* Background moved to .hero-slide to allow mix-blend-mode to work */
+  background:
+    radial-gradient(circle at top left, rgba(178, 149, 123, 0.16), transparent 32%),
+    radial-gradient(circle at right center, rgba(74, 50, 25, 0.08), transparent 26%),
+    linear-gradient(180deg, #fffdf9 0%, var(--bg) 100%);
 }
 
 .carousel-container {
@@ -14,7 +17,6 @@
   max-width: 1320px;
   margin: 0 auto;
   overflow: hidden;
-  border-radius: 20px;
 }
 
 .hero-carousel__track {
@@ -26,10 +28,6 @@
 .hero-slide {
   flex: 0 0 100%;
   min-width: 100%;
-  background:
-    radial-gradient(circle at top left, rgba(178, 149, 123, 0.16), transparent 32%),
-    radial-gradient(circle at right center, rgba(74, 50, 25, 0.08), transparent 26%),
-    linear-gradient(180deg, #fffdf9 0%, var(--bg) 100%);
 }
 
 .hero-slide__inner {
@@ -53,7 +51,6 @@
   justify-content: center;
   padding-top: 0;
   margin-top: -8px;
-  mix-blend-mode: multiply; /* Blends with .hero-slide background */
 }
 
 .hero-slide__image,
