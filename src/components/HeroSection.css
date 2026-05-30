@@ -192,12 +192,15 @@
 
   .hero-slide__image-shell {
     height: 520px;
+    align-items: center;
   }
   
   .hero-slide__image,
   .carousel-image {
     max-height: 520px;
     transform: scale(1.06);
+    object-position: center;
+    margin-bottom: 0;
   }
 
   .hero-slide__content {
