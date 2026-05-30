@@ -62,6 +62,7 @@
   object-position: bottom; /* Anchor to bottom */
   transform: scale(1.08);
   margin-bottom: 12px;
+  mix-blend-mode: multiply;
 }
 
 .hero-slide__content {
