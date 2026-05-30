@@ -119,20 +119,35 @@ export default function HeroSection({ slides, autoPlayMs }: { slides?: any[], au
           className="hero-carousel__track"
           style={{ transform: `translateX(-${activeIndex * 100}%)` }}
         >
-          {displaySlides.map((slide, index) => (
+          {displaySlides.map((slide, index) => {
+            const mediaUrl = slide.image_url || slide.image || "";
+            const isVideo = mediaUrl.toLowerCase().endsWith('.mp4') || mediaUrl.toLowerCase().endsWith('.webm');
+            
+            return (
             <article className="hero-slide" key={slide.title} aria-hidden={activeIndex !== index}>
               <div className="hero-slide__inner">
                 <div className="hero-slide__media">
                   <div className="hero-slide__image-shell">
-                    <Image
-                      src={slide.image_url || slide.image}
-                      alt={slide.title}
-                      width={720}
-                      height={720}
-                      className="hero-slide__image"
-                      priority={index === 0}
-                      unoptimized
-                    />
+                    {isVideo ? (
+                      <video
+                        src={mediaUrl}
+                        className="hero-slide__image"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                      />
+                    ) : (
+                      <Image
+                        src={mediaUrl}
+                        alt={slide.title}
+                        width={720}
+                        height={720}
+                        className="hero-slide__image"
+                        priority={index === 0}
+                        unoptimized
+                      />
+                    )}
                   </div>
                 </div>
 
@@ -151,7 +166,8 @@ export default function HeroSection({ slides, autoPlayMs }: { slides?: any[], au
                 </div>
               </div>
             </article>
-          ))}
+          );
+          })}
         </div>
       </div>
 

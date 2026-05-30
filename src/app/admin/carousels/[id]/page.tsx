@@ -310,8 +310,8 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
         <form onSubmit={handleSubmit} noValidate className="">
           {/* Image Upload */}
           <div className="mb-8">
-            <h3 className="font-bold text-[#4A3219] mb-2 text-lg md:text-xl border-b border-[#C4A484] pb-2">Carousel Image</h3>
-            <p className="text-xs text-[#8B7355] mb-4">Recommended size: 1440x720px (2:1 ratio). Uploaded in original quality.</p>
+            <h3 className="font-bold text-[#4A3219] mb-2 text-lg md:text-xl border-b border-[#C4A484] pb-2">Carousel Media (Image or Video)</h3>
+            <p className="text-xs text-[#8B7355] mb-4">Recommended size: 1440x720px (2:1 ratio). Images up to 5MB, MP4 videos up to 10MB.</p>
             
             <div className="flex flex-wrap justify-center gap-6 items-center mt-4">
               {imagePreview ? (
@@ -321,7 +321,11 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
                     className="relative rounded-xl border border-stone-200 overflow-hidden group shadow-sm flex-shrink-0 bg-white"
                     style={{ width: '128px', height: '128px' }}
                   >
-                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                    {(imagePreview.toLowerCase().includes('.mp4') || imagePreview.toLowerCase().includes('.webm') || (imageFile && imageFile.type.startsWith('video/'))) ? (
+                      <video src={imagePreview} className="w-full h-full object-cover" autoPlay loop muted playsInline />
+                    ) : (
+                      <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                    )}
                     <div className="absolute top-1 right-1">
                       <button type="button" onClick={() => { setImagePreview(null); setImageFile(null); }} className="w-6 h-6 flex items-center justify-center bg-white rounded-full text-red-500 shadow-md hover:bg-red-50 transition-colors border border-red-100">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -359,13 +363,13 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
                     <input
                       type="file"
                       id="imageUploadSmall"
-                      accept="image/png, image/jpeg, image/webp"
+                      accept="image/png, image/jpeg, image/webp, video/mp4, video/webm"
                       onChange={handleImageChange}
                       style={{ display: 'none' }}
                     />
                     <label htmlFor="imageUploadSmall" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mb-2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                      <span className="text-xs font-bold text-[#8B7355] mb-2">Change Image</span>
+                      <span className="text-xs font-bold text-[#8B7355] mb-2">Change Media</span>
                     </label>
                     <div style={{ position: 'absolute', bottom: '6px', left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
                       <button 
@@ -418,7 +422,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
                   <input
                     type="file"
                     id="imageUpload"
-                    accept="image/png, image/jpeg, image/webp"
+                    accept="image/png, image/jpeg, image/webp, video/mp4, video/webm"
                     onChange={handleImageChange}
                     style={{ display: 'none' }}
                   />
@@ -430,8 +434,8 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                     </div>
                     <div>
-                      <p style={{ fontWeight: 'bold', color: '#4A3219', fontSize: '1rem', marginBottom: '4px' }}>Add New Image</p>
-                      <p style={{ fontSize: '0.875rem', color: '#8B7355' }}>PNG, JPG up to 5MB</p>
+                      <p style={{ fontWeight: 'bold', color: '#4A3219', fontSize: '1rem', marginBottom: '4px' }}>Add Image or Video</p>
+                      <p style={{ fontSize: '0.875rem', color: '#8B7355' }}>PNG, JPG, MP4, WEBM up to 10MB</p>
                     </div>
                   </label>
                   
