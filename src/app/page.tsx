@@ -85,7 +85,7 @@ export default async function Home() {
               Shop by Collection
             </h2>
             <div className="category-chips-scroll mb-8">
-              {displayCats.slice(0, 10).map((cat) => {
+              {displayCats.map((cat) => {
                 const count = live.filter((p) => (p.category || '') === cat.name).length;
                 const slug = cat.slug;
                 return (
