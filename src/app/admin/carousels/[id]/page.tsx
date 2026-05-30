@@ -62,11 +62,56 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
 
 
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-    const file = e.target.files[0];
+  const processFile = (file: File) => {
     setImageFile(file);
     setImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    processFile(e.target.files[0]);
+  };
+
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      const activeEl = document.activeElement;
+      if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+        if ((activeEl as HTMLInputElement).type !== 'file') return;
+      }
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      for (const item of items) {
+        if (item.type.indexOf("image") === 0) {
+          const file = item.getAsFile();
+          if (file) {
+            e.preventDefault();
+            processFile(file);
+            break;
+          }
+        }
+      }
+    };
+    window.addEventListener("paste", handlePaste);
+    return () => window.removeEventListener("paste", handlePaste);
+  }, []);
+
+  const handlePasteClick = async () => {
+    try {
+      const items = await navigator.clipboard.read();
+      for (const item of items) {
+        const imageType = item.types.find(type => type.startsWith("image/"));
+        if (imageType) {
+          const blob = await item.getType(imageType);
+          const file = new File([blob], "pasted-image.png", { type: imageType });
+          processFile(file);
+          return;
+        }
+      }
+      showToast("No image found in clipboard");
+    } catch (err) {
+      console.error("Failed to read clipboard:", err);
+      showToast("Please allow clipboard permissions or use Ctrl+V");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -314,7 +359,8 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
                     textAlign: 'center', 
                     transition: 'all 0.3s ease',
                     cursor: 'pointer',
-                    width: '100%'
+                    width: '100%',
+                    position: 'relative'
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = '#FDFBF7';
@@ -348,6 +394,17 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
                       <p style={{ fontSize: '0.875rem', color: '#8B7355' }}>PNG, JPG up to 5MB</p>
                     </div>
                   </label>
+                  
+                  <div className="absolute bottom-4 w-full flex justify-center">
+                    <button 
+                       type="button" 
+                       onClick={(e) => { e.preventDefault(); e.stopPropagation(); handlePasteClick(); }}
+                       className="text-xs font-bold text-[#4A3219] flex items-center gap-1.5 hover:underline transition-all z-10 bg-transparent border-none p-0"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                      Paste Image
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

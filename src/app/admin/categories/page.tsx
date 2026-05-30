@@ -214,8 +214,9 @@ export default function AdminCategories() {
                 <table className="w-full text-left border-collapse min-w-full">
               <thead>
                 <tr className="bg-[#F5EFE6] text-[#8B7355] text-xs md:text-sm uppercase tracking-wider">
-                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '15%' }}>Order</th>
-                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '35%' }}>Category Name</th>
+                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '10%' }}>Order</th>
+                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '10%' }}>Image</th>
+                  <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '30%' }}>Category Name</th>
                   <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '20%' }}>Actions</th>
                   <th className="p-2 md:p-4 font-semibold text-center" style={{ width: '30%' }}>Slug (URL)</th>
                 </tr>
@@ -223,7 +224,7 @@ export default function AdminCategories() {
               <tbody className="divide-y divide-[#E6DCCF]">
                 {categories.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="p-12 text-center">
+                    <td colSpan={5} className="p-12 text-center">
                       <div className="text-[#8B7355] font-semibold text-lg">
                         No categories found. Add one above!
                       </div>
@@ -236,21 +237,21 @@ export default function AdminCategories() {
                     
                     return (
                     <tr key={category.id} className="hover:bg-[#FDFBF7] transition-colors">
-                      <td className="p-2 md:p-4 text-center">
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+                      <td className="p-2 md:p-4 align-middle text-center">
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', gap: '2px' }}>
                           <button 
                             type="button"
                             onClick={() => moveCategory(category, 'up')}
-                            style={{ background: 'none', border: 'none', cursor: isFirst ? 'not-allowed' : 'pointer', opacity: isFirst ? 0.2 : 1 }}
+                            style={{ background: 'none', border: 'none', padding: 0, display: 'flex', justifyContent: 'center', cursor: isFirst ? 'not-allowed' : 'pointer', opacity: isFirst ? 0.2 : 1 }}
                             title="Move Up"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
                           </button>
                           
                           <input 
-                            type="number"
-                            min="1"
-                            max={categories.length}
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
                             onBlur={(e) => {
                               const val = parseInt(e.target.value);
                               if (!isNaN(val) && val !== idx + 1) {
@@ -282,36 +283,44 @@ export default function AdminCategories() {
                           <button 
                             type="button"
                             onClick={() => moveCategory(category, 'down')}
-                            style={{ background: 'none', border: 'none', cursor: isLast ? 'not-allowed' : 'pointer', opacity: isLast ? 0.2 : 1 }}
+                            style={{ background: 'none', border: 'none', padding: 0, display: 'flex', justifyContent: 'center', cursor: isLast ? 'not-allowed' : 'pointer', opacity: isLast ? 0.2 : 1 }}
                             title="Move Down"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                           </button>
                         </div>
                       </td>
-                      <td className="p-2 md:p-4 text-xs md:text-sm font-semibold text-[#3E2C1C] text-center">
+                      <td className="p-2 md:p-4 align-middle text-center">
+                        <div className="flex justify-center">
+                          {category.image_url ? (
+                            <div 
+                              className="rounded-full border border-stone-200 overflow-hidden shadow-sm flex-shrink-0"
+                              style={{ width: '40px', height: '40px', minWidth: '40px', minHeight: '40px' }}
+                            >
+                              <img src={category.image_url} alt={category.name} className="w-full h-full object-cover" />
+                            </div>
+                          ) : (
+                            <div 
+                              className="rounded-full border border-[#C4A484] bg-[#F5EFE6] flex items-center justify-center shadow-sm text-[#4A3219] font-bold text-sm flex-shrink-0"
+                              style={{ width: '40px', height: '40px', minWidth: '40px', minHeight: '40px' }}
+                            >
+                              {category.name.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="p-2 md:p-4 text-xs md:text-sm font-semibold text-[#3E2C1C] text-center align-middle">
                         {category.name}
                       </td>
-                      <td className="p-2 md:p-4 text-center">
-                        <button
-                          onClick={() => {
-                            if ((category.name || "").toLowerCase() === "bags") {
-                              showToast("The 'Bags' category is a default system category and cannot be deleted.");
-                              return;
-                            }
-                            setCategoryToDelete({ id: category.id, name: category.name });
-                          }}
-                          className={`transition-opacity flex items-center justify-center p-2 rounded-lg mx-auto ${(category.name || "").toLowerCase() === 'bags' ? 'opacity-60 cursor-not-allowed' : 'hover:opacity-70 cursor-pointer'}`}
-                          style={{ background: 'transparent', border: 'none', color: (category.name || "").toLowerCase() === 'bags' ? '#9ca3af' : '#ef4444' }}
-                          title={(category.name || "").toLowerCase() === 'bags' ? "Default System Category" : "Delete Category"}
+                      <td className="p-2 md:p-4 text-center align-middle">
+                        <Link
+                          href={`/admin/categories/${category.id}`}
+                          className="inline-flex items-center justify-center rounded-xl transition-transform active:scale-95 text-white"
+                          style={{ background: '#4A3219', color: '#ffffff', textDecoration: 'none', padding: '8px 24px', fontWeight: 'bold' }}
+                          title="Edit Category"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="3 6 5 6 21 6"></polyline>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                            <line x1="10" y1="11" x2="10" y2="17"></line>
-                            <line x1="14" y1="11" x2="14" y2="17"></line>
-                          </svg>
-                        </button>
+                          <span className="text-sm text-white">Edit</span>
+                        </Link>
                       </td>
                       <td className="p-2 md:p-4 text-xs md:text-sm text-[#8B7355] text-center">
                         {category.slug}

@@ -91,10 +91,8 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     });
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, variantIndex?: number) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-    
-    const files = Array.from(e.target.files);
+  const processFiles = async (files: File[], variantIndex?: number) => {
+    if (files.length === 0) return;
     const localPreviews = files.map(f => URL.createObjectURL(f));
 
     // 1. Instant UI Preview
@@ -182,7 +180,61 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
       showToast("An error occurred during upload.");
     } finally {
       setUploadingImages(false);
-      e.target.value = ''; // reset input
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, variantIndex?: number) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    const files = Array.from(e.target.files);
+    await processFiles(files, variantIndex);
+    e.target.value = ''; // reset input
+  };
+
+  // Global Paste Listener
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      const activeEl = document.activeElement;
+      if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+        if ((activeEl as HTMLInputElement).type !== 'file') return;
+      }
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      const files: File[] = [];
+      for (const item of items) {
+        if (item.type.indexOf("image") === 0) {
+          const file = item.getAsFile();
+          if (file) files.push(file);
+        }
+      }
+      if (files.length > 0) {
+        e.preventDefault();
+        processFiles(files);
+      }
+    };
+    window.addEventListener("paste", handlePaste);
+    return () => window.removeEventListener("paste", handlePaste);
+  }, [hasVariants, formData.id, images, variants]);
+
+  const handlePasteClick = async (variantIndex?: number) => {
+    try {
+      const items = await navigator.clipboard.read();
+      const files: File[] = [];
+      for (const item of items) {
+        const imageType = item.types.find(type => type.startsWith("image/"));
+        if (imageType) {
+          const blob = await item.getType(imageType);
+          const file = new File([blob], "pasted-image.png", { type: imageType });
+          files.push(file);
+        }
+      }
+      if (files.length > 0) {
+        processFiles(files, variantIndex);
+      } else {
+        showToast("No image found in clipboard");
+      }
+    } catch (err) {
+      console.error("Failed to read clipboard:", err);
+      showToast("Please allow clipboard permissions or use Ctrl+V");
     }
   };
 
@@ -593,12 +645,13 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
             <div 
               style={{ 
                 backgroundColor: '#F5EFE6', 
-                padding: '20px', 
-                borderRadius: '12px', 
+                padding: '40px', 
+                borderRadius: '16px', 
                 border: '2px dashed #d2c4b3', 
                 textAlign: 'center', 
                 transition: 'all 0.3s ease',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                position: 'relative'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = '#FDFBF7';
@@ -627,6 +680,17 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                 <span style={{ fontWeight: 'bold', color: '#4A3219', fontSize: '1.125rem', marginTop: '4px' }}>Add {hasVariants ? 'Cover Image' : 'New Images'}</span>
                 <span style={{ fontSize: '0.875rem', color: '#8B7355' }}>PNG, JPG up to 5MB</span>
               </label>
+              
+              <div className="absolute bottom-4 w-full flex justify-center">
+                <button 
+                   type="button" 
+                   onClick={(e) => { e.preventDefault(); e.stopPropagation(); handlePasteClick(); }}
+                   className="text-xs font-bold text-[#4A3219] flex items-center gap-1.5 hover:underline transition-all z-10 bg-transparent border-none p-0"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  Paste Image
+                </button>
+              </div>
             </div>
           )}
 

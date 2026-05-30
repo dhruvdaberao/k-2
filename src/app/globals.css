@@ -1053,6 +1053,21 @@ summary::-webkit-details-marker {
 /* === Custom Non-Tailwind Style Palette === */
 .radius-8 { border-radius: 8px !important; }
 
+.category-circle-fixed {
+  width: 75px !important;
+  height: 75px !important;
+  min-width: 75px !important;
+  min-height: 75px !important;
+}
+@media (min-width: 768px) {
+  .category-circle-fixed {
+    width: 95px !important;
+    height: 95px !important;
+    min-width: 95px !important;
+    min-height: 95px !important;
+  }
+}
+
 /* Compact Cart Row Styles */
 .cart-list-container {
   background: white;

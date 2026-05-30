@@ -78,7 +78,101 @@ export default async function Home() {
       <HeroSection slides={heroSlides} autoPlayMs={carouselDelay} />
 
       <div className="container" style={{ paddingBottom: '40px', paddingTop: '40px', marginTop: '10px' }}>
-      
+        {/* Shop by Collection Section */}
+        {displayCats.length > 0 && (
+          <section className="mb-12 mt-4">
+            <h2 className="text-3xl font-bold mb-6" style={{ color: "var(--text)" }}>
+              Shop by Collection
+            </h2>
+            <div className="category-chips-scroll mb-8">
+              {displayCats.slice(0, 10).map((cat) => {
+                const count = live.filter((p) => (p.category || '') === cat.name).length;
+                const slug = cat.slug;
+                return (
+                  <Link
+                    key={cat.id}
+                    href={`/collections/${slug}`}
+                    className="flex flex-col items-center gap-2 group min-w-[80px] md:min-w-[110px] shrink-0"
+                    style={{ textDecoration: 'none' }}
+                  >
+                    {/* Insta-story border wrapper */}
+                    <div 
+                      className="category-circle-fixed rounded-full flex items-center justify-center transition-all duration-300 group-hover:-translate-y-1 group-hover:drop-shadow-md active:scale-95 shrink-0"
+                      style={{ 
+                        border: '2px solid #8B7355', 
+                        padding: '3px',
+                      }}
+                    >
+                      <div 
+                        className="w-full h-full rounded-full overflow-hidden flex items-center justify-center"
+                        style={{ backgroundColor: '#F5EFE6' }}
+                      >
+                        {/* @ts-ignore */}
+                        {cat.image_url ? (
+                          /* @ts-ignore */
+                          <img src={cat.image_url} alt={cat.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-[28px] md:text-[32px] font-bold" style={{ color: '#8B7355', fontFamily: "var(--font-heading)" }}>
+                            {cat.name.substring(0, 1).toUpperCase()}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <span 
+                      className="text-center group-hover:text-[var(--brand)] transition-colors" 
+                      style={{ 
+                        fontSize: '13px', 
+                        fontWeight: '700', 
+                        color: '#2A1A0F',
+                        lineHeight: '1.2',
+                        marginTop: '2px'
+                      }}
+                    >
+                      {cat.name}
+                    </span>
+                  </Link>
+                );
+              })}
+              
+              <Link 
+                href="/collections" 
+                className="flex flex-col items-center gap-2 group min-w-[80px] md:min-w-[110px] shrink-0"
+                style={{ textDecoration: 'none' }}
+              >
+                <div 
+                  className="category-circle-fixed rounded-full flex items-center justify-center transition-all duration-300 group-hover:-translate-y-1 group-hover:drop-shadow-md active:scale-95 shrink-0"
+                  style={{ 
+                    border: '2px solid #8B7355', 
+                    padding: '3px',
+                  }}
+                >
+                  <div 
+                    className="w-full h-full rounded-full flex items-center justify-center transition-colors"
+                    style={{ backgroundColor: '#FDFBF7', border: '1px dashed #8B7355' }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8B7355" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 md:w-7 md:h-7">
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </div>
+                </div>
+                <span 
+                  className="text-center group-hover:text-[var(--brand)] transition-colors" 
+                  style={{ 
+                    fontSize: '13px', 
+                    fontWeight: '700', 
+                    color: '#8B7355',
+                    lineHeight: '1.2',
+                    marginTop: '2px'
+                  }}
+                >
+                  View All
+                </span>
+              </Link>
+            </div>
+          </section>
+        )}
+
         {/* Section 1: Popular Handmade Picks */}
         {section1.length > 0 && (
           <section className="mb-16">
@@ -155,33 +249,7 @@ export default async function Home() {
           </section>
         )}
 
-        {/* Shop by Collection Section */}
-        {displayCats.length > 0 && (
-          <section className="mb-12">
-            <h2 className="text-3xl font-bold mb-6" style={{ color: "var(--text)" }}>
-              Shop by Collection
-            </h2>
-            <div className="flex flex-wrap gap-3 mb-8">
-              {displayCats.slice(0, 6).map((cat) => {
-                const count = live.filter((p) => (p.category || '') === cat.name).length;
-                const slug = cat.slug;
-                return (
-                  <Link
-                    key={cat.id}
-                    href={`/collections/${slug}`}
-                    className="collection-chip"
-                  >
-                    {cat.name}
-                    <span className="meta ml-2">({count})</span>
-                  </Link>
-                );
-              })}
-              <Link href="/collections" className="collection-chip bg-stone-100 border-dashed text-stone-600">
-                View All Collections →
-              </Link>
-            </div>
-          </section>
-        )}
+
 
         {/* Section 3: Trending Now */}
         {section3.length > 0 && (
