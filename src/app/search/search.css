@@ -59,3 +59,29 @@
   text-align: center;
   color: var(--muted);
 }
+
+/* Hide default webkit clear button */
+.search-page__input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  display: none;
+}
+
+/* Custom clear button styling */
+.search-page__clear {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 4px;
+  color: #6b4226; /* Brown to match theme */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-page__clear:hover {
+  opacity: 0.8;
+}
