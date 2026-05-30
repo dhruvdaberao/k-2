@@ -556,7 +556,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
                       setProductSearch("");
                     }}
                   >
-                    <span>{formData.primary_cta_href === "/products" ? "All Products" : (products.find(p => `/products/${p.slug}` === formData.primary_cta_href)?.title || "All Products")}</span>
+                    <span>{formData.primary_cta_href === "/collections" ? "All Products" : (products.find(p => `/products/${p.slug}` === formData.primary_cta_href)?.title || "All Products")}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: primaryDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
                       <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
@@ -580,9 +580,9 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
                         <div className="overflow-y-auto flex-1">
                           <div 
                             className="px-4 py-3 hover:bg-[#F5EFE6] cursor-pointer text-[#3E2C1C] transition-colors text-sm"
-                            style={{ backgroundColor: formData.primary_cta_href === "/products" ? '#FDFBF7' : 'transparent', fontWeight: formData.primary_cta_href === "/products" ? 'bold' : 'normal', display: "All Products".toLowerCase().includes(productSearch.toLowerCase()) ? 'block' : 'none' }}
+                            style={{ backgroundColor: formData.primary_cta_href === "/collections" ? '#FDFBF7' : 'transparent', fontWeight: formData.primary_cta_href === "/collections" ? 'bold' : 'normal', display: "All Products".toLowerCase().includes(productSearch.toLowerCase()) ? 'block' : 'none' }}
                             onClick={() => {
-                              setFormData(prev => ({ ...prev, primary_cta_href: "/products" }));
+                              setFormData(prev => ({ ...prev, primary_cta_href: "/collections" }));
                               setPrimaryDropdownOpen(false);
                             }}
                           >
