@@ -8,14 +8,17 @@ import { useRouter } from "next/navigation";
 import { revalidateStorefront } from "@/actions/revalidate";
 import { showToast } from "@/components/Toast";
 
-export default function AdminCarousels() {
+export default function AdminCarouselsClient({ initialSlides }: { initialSlides: any[] }) {
   const router = useRouter();
-  const [slides, setSlides] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [slides, setSlides] = useState<any[]>(initialSlides || []);
+  const [loading, setLoading] = useState(false);
 
+  // Fallback fetch if initial data is empty or missing
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (!initialSlides || initialSlides.length === 0) {
+      fetchData();
+    }
+  }, [initialSlides]);
 
   const fetchData = async () => {
     setLoading(true);
