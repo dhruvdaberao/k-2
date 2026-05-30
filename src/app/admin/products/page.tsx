@@ -229,7 +229,7 @@ export default function AdminProducts() {
               </div>
             </div>
           ) : (
-            <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-[#E6DCCF]">
+            <div className="overflow-x-auto">
               <table className="w-full md:min-w-[1000px] text-left border-collapse">
                 <thead>
                   <tr className="bg-[#F5EFE6] text-[#8B7355] text-[10px] md:text-sm uppercase tracking-wider">
@@ -249,7 +249,7 @@ export default function AdminProducts() {
                     const isLast = actualIndex === products.length - 1;
                     
                     return (
-                    <tr key={product.id} className="hover:bg-[#FDFBF7] transition-colors">
+                    <tr key={product.id} className="hover:bg-[#FCFAFA] transition-colors">
                       <td className="p-1 md:p-5 text-center">
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', gap: '2px' }}>
                           <button 
