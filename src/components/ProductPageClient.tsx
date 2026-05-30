@@ -166,6 +166,55 @@ export default function ProductPageClient({
             )}
           </div>
 
+          {/* Variant Selector */}
+          {product.variants && product.variants.length > 0 && (
+            <div style={{ marginBottom: "1.5rem" }}>
+              <VariantSelector
+                variants={product.variants}
+                onSelect={setSelectedVariant}
+                selectedVariant={selectedVariant}
+              />
+            </div>
+          )}
+
+          {/* Actions: BuyBar or WhatsApp Enquiry */}
+          <div style={{ marginBottom: "1.5rem" }}>
+            {product.type === "custom-order" ? (
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={() => {
+                    const messageText = `Hi Keshvi Crafts! I would like to enquire about this product: ${product.title} (${window.location.href})`;
+                    
+                    const encodedMessage = encodeURIComponent(messageText);
+                    const url = `https://wa.me/917310045515?text=${encodedMessage}`;
+                    window.open(url, "_blank", "noopener,noreferrer");
+
+                    trackEvent({
+                      action: "click_whatsapp_enquiry",
+                      category: "Ecommerce",
+                      label: product.title,
+                      location: "pdp_primary",
+                      slug: (product.id || product.slug)
+                    });
+                  }}
+                  className="btn-primary w-full text-lg font-bold"
+                >
+                  Enquire
+                </button>
+              </div>
+            ) : (
+              <BuyBar
+                slug={currentSlug}
+                title={currentTitle}
+                price={currentPrice}
+                image={currentImages[0]}
+                checkoutUrl={product.checkoutUrl}
+                disabled={!inStock}
+                productSlug={product.slug}
+              />
+            )}
+          </div>
+
           {/* Badge */}
           <div className="flex items-center justify-between gap-2 mb-3 mt-2">
             <div className="flex flex-wrap gap-2">
@@ -275,54 +324,7 @@ export default function ProductPageClient({
             )}
           </div>
 
-          {/* Variant Selector */}
-          {product.variants && product.variants.length > 0 && (
-            <div style={{ marginBottom: "1.5rem" }}>
-              <VariantSelector
-                variants={product.variants}
-                onSelect={setSelectedVariant}
-                selectedVariant={selectedVariant}
-              />
-            </div>
-          )}
-
-          {/* Actions: BuyBar or WhatsApp Enquiry */}
-          <div style={{ marginBottom: "1.5rem" }}>
-            {product.type === "custom-order" ? (
-              <div className="flex flex-col gap-3">
-                <button
-                  onClick={() => {
-                    const messageText = `Hi Keshvi Crafts! I would like to enquire about this product: ${product.title} (${window.location.href})`;
-                    
-                    const encodedMessage = encodeURIComponent(messageText);
-                    const url = `https://wa.me/917310045515?text=${encodedMessage}`;
-                    window.open(url, "_blank", "noopener,noreferrer");
-
-                    trackEvent({
-                      action: "click_whatsapp_enquiry",
-                      category: "Ecommerce",
-                      label: product.title,
-                      location: "pdp_primary",
-                      slug: (product.id || product.slug)
-                    });
-                  }}
-                  className="btn-primary w-full text-lg font-bold"
-                >
-                  Enquire
-                </button>
-              </div>
-            ) : (
-              <BuyBar
-                slug={currentSlug}
-                title={currentTitle}
-                price={currentPrice}
-                image={currentImages[0]}
-                checkoutUrl={product.checkoutUrl}
-                disabled={!inStock}
-                productSlug={product.slug}
-              />
             )}
-
           </div>
 
           {/* Trust Reassurance */}
