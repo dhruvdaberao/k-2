@@ -408,9 +408,17 @@ function CheckoutContent() {
 
       if (paymentMethod === "online") {
         console.log("💳 Initiating PayU online payment...");
+        
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData?.session?.access_token;
+        const headers: Record<string, string> = { "Content-Type": "application/json" };
+        if (token) {
+          headers["Authorization"] = `Bearer ${token}`;
+        }
+
         const res = await fetch("/api/payments/payu/initiate", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers,
           body: JSON.stringify({
             items: mappedFinalItems,
             deliveryDetails: details,
@@ -490,7 +498,10 @@ function CheckoutContent() {
         })),
       };
 
-      const dynamicPdfUrl = generateDynamicPdfUrl(orderData);
+      let dynamicPdfUrl = generateDynamicPdfUrl(orderData);
+      if (result.accessToken) {
+        dynamicPdfUrl += `&token=${result.accessToken}`;
+      }
 
       localStorage.setItem(
         ORDER_CONFIRMATION_STORAGE_KEY,

@@ -19,10 +19,12 @@ export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: an
 
   try {
     let user = null;
+    let token = null;
     try {
       const { data: sessionData } = await supabase.auth.getSession();
       if (sessionData?.session?.user) {
         user = sessionData.session.user;
+        token = sessionData.session.access_token;
       }
     } catch (e) {
       console.warn("[PlaceOrder] No active session found");
@@ -45,10 +47,15 @@ export async function handlePlaceOrder(customItems?: any[], deliveryDetails?: an
     const finalUserId = explicitUserId || user?.id;
     const finalUserEmail = explicitUserEmail || user?.email || deliveryDetails?.email;
 
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     console.log("🔄 Calling server-side place-order API...");
     const res = await fetch("/api/checkout/place-order", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify({
         items: cartItems,
         deliveryDetails,
