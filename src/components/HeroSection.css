@@ -254,7 +254,7 @@
     min-height: auto;
     grid-template-columns: 1fr;
     gap: 4px;
-    padding: 24px 12px 4px;
+    padding: 4px 12px 4px;
     align-content: center;
   }
 
