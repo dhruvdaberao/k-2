@@ -6,8 +6,8 @@ export default function WhyHandmadeSection() {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <section className="mb-10 md:mb-16 text-center max-w-3xl mx-auto">
-      <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6" style={{ color: "var(--text)" }}>
+    <section className="mb-8 md:mb-12 mt-6 text-center max-w-3xl mx-auto">
+      <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4" style={{ color: "var(--text)" }}>
         Why Handmade?
       </h2>
       <p className="text-lg leading-relaxed" style={{ color: "var(--muted)" }}>
