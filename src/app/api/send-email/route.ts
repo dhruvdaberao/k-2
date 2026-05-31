@@ -7,6 +7,13 @@ export async function POST(req: Request) {
     const body = await req.json();
     console.log("📧 [Email API] Received request:", body);
 
+    const internalSecret = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const providedSecret = req.headers.get("x-internal-secret");
+    if (!providedSecret || providedSecret !== internalSecret) {
+      console.warn("🔴 [Email API] Unauthorized attempt");
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { type, email, userEmail, orderId, trackingLink, customerName, total, items, paymentMethod, invoiceUrl } = body;
     
     // Support both 'email' and 'userEmail'

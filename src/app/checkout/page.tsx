@@ -503,27 +503,7 @@ function CheckoutContent() {
         })
       );
 
-      // Fire-and-forget email
-      const emailPayload = {
-        type: "order_placed",
-        email: details.email || user?.email || "",
-        orderId: orderId,
-        items: finalItems.map(item => ({ name: item.name, quantity: item.quantity, price: item.price })),
-        total: total,
-        subtotal: subtotal,
-        shipping: baseShipping + shippingDiscount,
-        discount: discountAmount,
-        paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online Payment',
-        invoiceUrl: dynamicPdfUrl,
-        customerName: details.fullName || profile?.name || "Customer"
-      };
-
-      console.log("📧 Sending order email...", emailPayload.email);
-      fetch("/api/send-email", { // Use the new consistent API
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(emailPayload)
-      }).catch(e => console.error("Email error:", e));
+      // Email is now securely sent from the backend inside /api/checkout/place-order
 
       // Mark order as placed to prevent empty-cart flicker/redirect
       setIsOrderPlaced(true);

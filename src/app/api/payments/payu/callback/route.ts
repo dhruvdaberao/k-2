@@ -98,7 +98,10 @@ export async function POST(req: Request) {
         try {
            await fetch(`${siteUrl}/api/send-email`, {
              method: "POST",
-             headers: { "Content-Type": "application/json" },
+             headers: { 
+               "Content-Type": "application/json",
+               "x-internal-secret": serviceKey 
+             },
              body: JSON.stringify(emailPayload)
            });
         } catch(e) { console.error("[PayU Callback] Email failed", e) }

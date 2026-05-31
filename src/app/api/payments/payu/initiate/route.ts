@@ -7,18 +7,63 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { items, deliveryDetails, userEmail, userId, calculatedTotal } = body;
+    const { items, deliveryDetails, userEmail } = body;
 
-    const email = userEmail || deliveryDetails?.email || 'guest@keshvicrafts.com';
+    // Secure User Validation via JWT
+    let actualUserId = null;
+    let actualUserEmail = userEmail;
+    
+    const token = req.headers.get("Authorization")?.replace("Bearer ", "");
+    if (token) {
+      const supabaseAuth = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        { global: { headers: { Authorization: `Bearer ${token}` } } }
+      );
+      const { data: { user } } = await supabaseAuth.auth.getUser();
+      if (user) {
+        actualUserId = user.id;
+        actualUserEmail = user.email || actualUserEmail;
+      }
+    }
+
+    const email = actualUserEmail || deliveryDetails?.email || 'guest@keshvicrafts.com';
     const firstname = deliveryDetails?.fullName || 'Guest';
     const phone = deliveryDetails?.phoneNumber || '0000000000';
-    
-    let totalAmount = calculatedTotal;
-    if (!totalAmount) {
-      totalAmount = items.reduce((sum: number, item: any) => sum + (Number(item.price) * Number(item.quantity)), 0);
-    }
-    const amountStr = parseFloat(totalAmount.toString()).toFixed(2);
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabase = createClient(supabaseUrl, serviceKey, {
+      auth: { persistSession: false, autoRefreshToken: false }
+    });
 
+    // --- SECURE PRICE VALIDATION ---
+    const productIds = items.map((i: any) => i.product_id || i.id);
+    const { data: dbProducts, error: prodError } = await supabase
+      .from('products')
+      .select('id, price')
+      .in('id', productIds);
+
+    if (prodError || !dbProducts) {
+      return NextResponse.json({ success: false, error: 'Failed to validate products' }, { status: 500 });
+    }
+
+    let subtotal = 0;
+    const validatedItems = items.map((item: any) => {
+      const dbProd = dbProducts.find(p => p.id === (item.product_id || item.id));
+      if (!dbProd) throw new Error(`Product not found: ${item.name}`);
+      const realPrice = Number(dbProd.price);
+      const qty = Number(item.quantity);
+      subtotal += (realPrice * qty);
+      
+      return {
+        ...item,
+        price: realPrice
+      };
+    });
+
+    const shippingCharge = subtotal >= 650 ? 0 : 40;
+    const totalAmount = subtotal + shippingCharge;
+    const amountStr = parseFloat(totalAmount.toString()).toFixed(2);
     const txnid = `TXN-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
     const productinfo = 'Keshvi Crafts Order';
     
@@ -31,11 +76,6 @@ export async function POST(req: Request) {
     }
 
     // 1. Temporarily store order in DB as "pending_payment"
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-    const supabase = createClient(supabaseUrl, serviceKey, {
-      auth: { persistSession: false, autoRefreshToken: false }
-    });
 
     const displayId = `KC-${Date.now()}`;
     const accessToken = crypto.randomUUID();
@@ -50,7 +90,7 @@ export async function POST(req: Request) {
       access_token: accessToken
     };
 
-    if (userId) orderPayload.user_id = userId;
+    if (actualUserId) orderPayload.user_id = actualUserId;
 
     if (deliveryDetails) {
       orderPayload.delivery_address = {
@@ -75,7 +115,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: insertError.message }, { status: 500 });
     }
 
-    const itemsPayload = items.map((item: any) => ({
+    const itemsPayload = validatedItems.map((item: any) => ({
       order_id: newOrder.id,
       product_id: item.product_id || item.id,
       name: item.name,

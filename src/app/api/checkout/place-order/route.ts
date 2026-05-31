@@ -8,14 +8,32 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { items, deliveryDetails, userId, userEmail } = body;
+    const { items, deliveryDetails, userEmail } = body;
+
+    // Secure User Validation via JWT
+    let actualUserId = null;
+    let actualUserEmail = userEmail;
+    
+    const token = req.headers.get("Authorization")?.replace("Bearer ", "");
+    if (token) {
+      const supabaseAuth = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        { global: { headers: { Authorization: `Bearer ${token}` } } }
+      );
+      const { data: { user } } = await supabaseAuth.auth.getUser();
+      if (user) {
+        actualUserId = user.id;
+        actualUserEmail = user.email || actualUserEmail;
+      }
+    }
 
     // Basic validation
     if (!items || items.length === 0) {
       return NextResponse.json({ success: false, error: 'Cart is empty' }, { status: 400 });
     }
 
-    const email = userEmail || deliveryDetails?.email;
+    const email = actualUserEmail || deliveryDetails?.email;
     if (!email) {
       return NextResponse.json({ success: false, error: 'Email is required' }, { status: 400 });
     }
@@ -33,7 +51,31 @@ export async function POST(req: Request) {
       auth: { persistSession: false, autoRefreshToken: false }
     });
 
-    const subtotal = items.reduce((sum: number, item: any) => sum + (Number(item.price) * Number(item.quantity)), 0);
+    // --- SECURE PRICE VALIDATION ---
+    const productIds = items.map((i: any) => i.product_id || i.id);
+    const { data: dbProducts, error: prodError } = await supabase
+      .from('products')
+      .select('id, price')
+      .in('id', productIds);
+
+    if (prodError || !dbProducts) {
+      return NextResponse.json({ success: false, error: 'Failed to validate products' }, { status: 500 });
+    }
+
+    let subtotal = 0;
+    const validatedItems = items.map((item: any) => {
+      const dbProd = dbProducts.find(p => p.id === (item.product_id || item.id));
+      if (!dbProd) throw new Error(`Product not found: ${item.name}`);
+      const realPrice = Number(dbProd.price);
+      const qty = Number(item.quantity);
+      subtotal += (realPrice * qty);
+      
+      return {
+        ...item,
+        price: realPrice
+      };
+    });
+
     const shippingCharge = subtotal >= 650 ? 0 : 40;
     const grandTotal = subtotal + shippingCharge;
     
@@ -51,7 +93,7 @@ export async function POST(req: Request) {
       access_token: accessToken,
     };
 
-    if (userId) orderPayload.user_id = userId;
+    if (actualUserId) orderPayload.user_id = actualUserId;
 
     if (deliveryDetails) {
       orderPayload.delivery_address = {
@@ -81,9 +123,9 @@ export async function POST(req: Request) {
     const orderId = newOrder?.id;
 
     // 3. Insert Items
-    const itemsPayload = items.map((item: any) => ({
+    const itemsPayload = validatedItems.map((item: any) => ({
       order_id: orderId,
-      product_id: item.product_id,
+      product_id: item.product_id || item.id,
       name: item.name,
       price: Number(item.price),
       quantity: Number(item.quantity),
@@ -96,12 +138,41 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: itemsError.message }, { status: 500 });
     }
 
-    // 4. Cleanup Cart if userId exists
-    if (userId) {
-      await supabase.from("cart").delete().eq("user_id", userId);
+    // 4. Cleanup Cart if actualUserId exists
+    if (actualUserId) {
+      await supabase.from("cart").delete().eq("user_id", actualUserId);
     }
 
     console.log(`✅ [API PlaceOrder] Order Created: ${displayId}`);
+
+    // 5. Send Email securely from backend
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const emailPayload = {
+      type: "order_placed",
+      email: email,
+      orderId: displayId,
+      items: validatedItems.map((item: any) => ({ name: item.name, quantity: item.quantity, price: item.price })),
+      total: grandTotal,
+      subtotal: subtotal,
+      shipping: shippingCharge,
+      discount: 0,
+      paymentMethod: 'Cash on Delivery',
+      invoiceUrl: `${siteUrl}/api/invoice?orderId=${displayId}&token=${accessToken}`,
+      customerName: deliveryDetails?.fullName || "Customer"
+    };
+
+    try {
+      await fetch(`${siteUrl}/api/send-email`, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "x-internal-secret": serviceKey!
+        },
+        body: JSON.stringify(emailPayload)
+      });
+    } catch(e) {
+      console.error("🔴 [API PlaceOrder] Email failed to send", e);
+    }
 
     return NextResponse.json({ 
       success: true, 
