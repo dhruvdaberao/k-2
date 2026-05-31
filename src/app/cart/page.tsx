@@ -306,13 +306,15 @@ export default function CartPage() {
                   return (
                   <div key={it.id} className={`cart-item-row-refined shadow-sm${selectedItems.includes(it.id) ? " cart-item--selected" : ""}`}>
                     {/* Left: Thumbnail */}
-                    <div className="cart-item-thumbnail relative" style={{ width: 72, height: 72 }}>
+                    <NextLink href={`/product/${p?.slug || it.id}`} className="cart-item-thumbnail relative block" style={{ width: 72, height: 72 }}>
                       <ImageWithFallback src={imageUrl} alt={it.name} fill style={{ objectFit: 'cover' }} sizes="72px" />
-                    </div>
+                    </NextLink>
 
                     {/* Center: Details & Picker */}
                     <div className="cart-item-info-center">
-                      <h3 className="cart-item-name">{it.name.split(" - ")[0]}</h3>
+                      <NextLink href={`/product/${p?.slug || it.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <h3 className="cart-item-name font-sans hover:text-[#8B5E3C] transition-colors">{it.name.split(" - ")[0]}</h3>
+                      </NextLink>
                       {p && typeof p.stock === "number" && p.stock <= 0 && p.type !== "custom-order" ? (
                         <div className="w-full text-center py-1.5 px-3 rounded-full text-sm font-bold mt-2 cursor-not-allowed select-none" style={{ backgroundColor: "#F5EFE6", color: "#8B7355", border: "1px solid #E6DCCF" }}>
                           Out of Stock

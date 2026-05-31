@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import NextLink from "next/link";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import { supabase } from "@/lib/supabaseClient";
 import GlobalLoader from "@/components/ui/GlobalLoader";
@@ -648,11 +649,13 @@ return (
           <div className="checkout-item-summary-strip__inner">
             {enrichedItems.map((item, i) => (
               <div className="checkout-item-summary-row" key={`thumb-${item.id}-${i}`} style={{ backgroundColor: '#F5EFE6', border: '1px solid rgba(139, 94, 60, 0.4)' }}>
-                <div className="checkout-item-summary-thumb relative">
+                <NextLink href={`/product/${item.product?.slug || item.id}`} className="checkout-item-summary-thumb relative block">
                   <ImageWithFallback src={item.product?.images?.[0] || item.image || "/placeholder.png"} alt={item.name} fill style={{ objectFit: 'cover' }} sizes="56px" />
-                </div>
+                </NextLink>
                 <div className="checkout-item-summary-content">
-                  <p className="checkout-item-summary-name">{item.name.split(" - ")[0]}</p>
+                  <NextLink href={`/product/${item.product?.slug || item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <p className="checkout-item-summary-name font-sans hover:text-[#8B5E3C] transition-colors">{item.name.split(" - ")[0]}</p>
+                  </NextLink>
                   <p className="checkout-item-summary-meta">Qty {item.quantity} · ₹{item.price * item.quantity}</p>
                 </div>
               </div>
@@ -961,7 +964,9 @@ return (
               {enrichedItems.map((it) => (
                 <div className="flex justify-between items-start" key={it.id}>
                   <div className="min-w-0 flex-1 pr-4">
-                    <p className="font-bold text-[#2f2a26] truncate">{it.name.split(" - ")[0]}</p>
+                    <NextLink href={`/product/${it.product?.slug || it.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <p className="font-bold font-sans text-[#2f2a26] truncate hover:text-[#8B5E3C] transition-colors">{it.name.split(" - ")[0]}</p>
+                    </NextLink>
                     <p className="text-xs text-[#6a6150]">Qty {it.quantity} × ₹{it.price}</p>
                   </div>
                   <span className="font-bold text-[#2f2a26] flex-shrink-0">₹{it.price * it.quantity}</span>
