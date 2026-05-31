@@ -1,7 +1,15 @@
+'use client';
 import React from 'react';
 import BrandLogo from '@/components/ui/BrandLogo';
 
 export default function FullPageLoader() {
+  const [showReload, setShowReload] = React.useState(false);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => setShowReload(true), 4000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div
       style={{
@@ -32,6 +40,24 @@ export default function FullPageLoader() {
         }}
       />
       <style>{`@keyframes fpl-spin { to { transform: rotate(360deg); } }`}</style>
+
+      {showReload && (
+        <button 
+          onClick={() => window.location.reload()} 
+          style={{
+            marginTop: '20px',
+            padding: '8px 16px',
+            backgroundColor: 'transparent',
+            border: '1px solid #5a3e2b',
+            color: '#5a3e2b',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontWeight: 'bold'
+          }}
+        >
+          Taking too long? Reload Page
+        </button>
+      )}
     </div>
   );
 }

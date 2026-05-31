@@ -14,6 +14,15 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
 
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
+  const [showReload, setShowReload] = useState(false);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (loading) {
+      timer = setTimeout(() => setShowReload(true), 4000);
+    }
+    return () => clearTimeout(timer);
+  }, [loading]);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -281,8 +290,35 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
               <h1 className="text-2xl md:text-3xl font-bold text-[#4A3219]">{isNew ? 'Add New Carousel' : 'Edit Carousel'}</h1>
             </div>
           </header>
-          <div className="flex justify-center items-center py-32">
-            <div className="w-12 h-12 rounded-full border-4 border-stone-200 border-t-[#4A3219] animate-spin"></div>
+          <div className="flex flex-col justify-center items-center py-32 gap-6">
+            <div style={{
+              width: 48,
+              height: 48,
+              border: '4px solid #e6ded4',
+              borderTop: '4px solid #4A3219',
+              borderRadius: '50%',
+              animation: 'admin-spin 0.8s linear infinite',
+            }}></div>
+            <style>{`@keyframes admin-spin { to { transform: rotate(360deg); } }`}</style>
+            
+            {showReload && (
+              <button 
+                onClick={() => window.location.reload()} 
+                type="button"
+                style={{
+                  marginTop: '20px',
+                  padding: '8px 16px',
+                  backgroundColor: 'transparent',
+                  border: '1px solid #4A3219',
+                  color: '#4A3219',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold'
+                }}
+              >
+                Taking too long? Reload Page
+              </button>
+            )}
           </div>
         </div>
       </main>
