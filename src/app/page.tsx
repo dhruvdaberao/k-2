@@ -80,7 +80,7 @@ export default async function Home() {
       <div className="container pt-1 md:pt-5" style={{ paddingBottom: '30px' }}>
         {/* Shop by Collection Section */}
         {displayCats.length > 0 && (
-          <section className="mb-6 md:mb-10 mt-1 md:mt-4">
+          <section className="mb-10 md:mb-16 mt-4 md:mt-8">
             <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6" style={{ color: "var(--text)" }}>
               Shop by Collection
             </h2>
@@ -189,8 +189,8 @@ export default async function Home() {
 
         {/* Section 2: Best Sellers (Auto-badged) */}
         {section2.length > 0 && (
-          <section className="mb-12">
-            <div className="flex items-end justify-between gap-4 mb-6">
+          <section className="mb-10 md:mb-16">
+            <div className="flex items-end justify-between gap-4 mb-4 md:mb-6">
               <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)" }}>
                 Best Sellers
               </h2>
@@ -210,8 +210,8 @@ export default async function Home() {
 
         {/* Section 3: Trending Now */}
         {section3.length > 0 && (
-          <section className="mb-12">
-            <div className="flex items-center justify-between mb-6">
+          <section className="mb-10 md:mb-16">
+            <div className="flex items-center justify-between mb-4 md:mb-6">
               <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)" }}>
                 Trending Creations
               </h2>
@@ -229,8 +229,8 @@ export default async function Home() {
 
         {/* Section 4: Featured Collections */}
         {section4.length > 0 && (
-          <section className="mb-6">
-            <div className="flex items-center justify-between mb-6">
+          <section className="mb-10 md:mb-16">
+            <div className="flex items-center justify-between mb-4 md:mb-6">
               <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)" }}>
                 Handmade Collections
               </h2>
@@ -238,9 +238,6 @@ export default async function Home() {
                 View All →
               </Link>
             </div>
-            <p className="meta mb-6">
-              Crafted on request • Ships across India
-            </p>
 
             <div className="plp-grid-mobile">
               {section4.map((p) => (
