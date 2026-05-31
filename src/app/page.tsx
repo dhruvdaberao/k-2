@@ -179,18 +179,12 @@ export default async function Home() {
               </h2>
               <Link 
                 href="/collections" 
-                className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center" 
-                style={{ 
-                  width: '32px', 
-                  height: '32px', 
-                  borderRadius: '50%', 
-                  border: '1px solid rgba(139, 94, 60, 0.3)',
-                  backgroundColor: 'rgba(139, 94, 60, 0.05)',
-                  color: 'var(--brand)'
-                }}
+                className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center gap-1" 
+                style={{ color: 'var(--brand)' }}
                 aria-label="View All Popular Picks"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                <span className="text-[13px] font-semibold">View all</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
               </Link>
             </div>
             <div className="plp-grid-mobile">
@@ -210,18 +204,12 @@ export default async function Home() {
               </h2>
               <Link 
                 href="/collections" 
-                className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center" 
-                style={{ 
-                  width: '32px', 
-                  height: '32px', 
-                  borderRadius: '50%', 
-                  border: '1px solid rgba(139, 94, 60, 0.3)',
-                  backgroundColor: 'rgba(139, 94, 60, 0.05)',
-                  color: 'var(--brand)'
-                }}
+                className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center gap-1" 
+                style={{ color: 'var(--brand)' }}
                 aria-label="View All Best Sellers"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                <span className="text-[13px] font-semibold">View all</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
               </Link>
             </div>
             <div className="plp-grid-mobile">
@@ -243,18 +231,12 @@ export default async function Home() {
               </h2>
               <Link 
                 href="/collections" 
-                className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center" 
-                style={{ 
-                  width: '32px', 
-                  height: '32px', 
-                  borderRadius: '50%', 
-                  border: '1px solid rgba(139, 94, 60, 0.3)',
-                  backgroundColor: 'rgba(139, 94, 60, 0.05)',
-                  color: 'var(--brand)'
-                }}
+                className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center gap-1" 
+                style={{ color: 'var(--brand)' }}
                 aria-label="View All Trending Creations"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                <span className="text-[13px] font-semibold">View all</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
               </Link>
             </div>
             <div className="plp-grid-mobile">
@@ -274,18 +256,12 @@ export default async function Home() {
               </h2>
               <Link 
                 href="/collections" 
-                className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center" 
-                style={{ 
-                  width: '32px', 
-                  height: '32px', 
-                  borderRadius: '50%', 
-                  border: '1px solid rgba(139, 94, 60, 0.3)',
-                  backgroundColor: 'rgba(139, 94, 60, 0.05)',
-                  color: 'var(--brand)'
-                }}
+                className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center gap-1" 
+                style={{ color: 'var(--brand)' }}
                 aria-label="View All Handmade Collections"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                <span className="text-[13px] font-semibold">View all</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
               </Link>
             </div>
 
