@@ -1,7 +1,8 @@
 .hero-carousel {
   position: relative;
   overflow: hidden;
-  padding: 0 16px 16px;
+  padding: 0 16px 8px;
+  max-width: 1400px;
   background:
     radial-gradient(circle at top left, rgba(178, 149, 123, 0.16), transparent 32%),
     radial-gradient(circle at right center, rgba(74, 50, 25, 0.08), transparent 26%),
@@ -259,11 +260,11 @@
   }
 
   .hero-slide__image-shell {
-    height: 190px;
+    height: 170px;
   }
 
   .hero-slide__image {
-    max-height: 190px;
+    max-height: 170px;
     margin-top: 0;
   }
 

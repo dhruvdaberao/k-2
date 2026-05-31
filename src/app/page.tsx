@@ -80,8 +80,8 @@ export default async function Home() {
       <div className="container pt-0 md:pt-5" style={{ paddingBottom: '30px' }}>
         {/* Shop by Collection Section */}
         {displayCats.length > 0 && (
-          <section className="mb-4 md:mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6" style={{ color: "var(--text)" }}>
+          <section className="mb-2 md:mb-10">
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8" style={{ color: "var(--text)" }}>
               Shop by Collection
             </h2>
             <div className="category-chips-scroll mb-0 md:mb-6">
@@ -167,7 +167,7 @@ export default async function Home() {
 
         {/* Section 1: Popular Picks */}
         {section1.length > 0 && (
-          <section className="mb-4 md:mb-12 mt-0 md:mt-6">
+          <section className="mb-2 md:mb-12 mt-0 md:mt-6">
             <div className="flex items-end justify-between gap-4 mb-0 md:mb-4">
               <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)" }}>
                 Popular Picks
@@ -189,7 +189,7 @@ export default async function Home() {
 
         {/* Section 2: Best Sellers (Auto-badged) */}
         {section2.length > 0 && (
-          <section className="mb-4 md:mb-12 mt-0 md:mt-6">
+          <section className="mb-2 md:mb-12 mt-0 md:mt-6">
             <div className="flex items-end justify-between gap-4 mb-0 md:mb-4">
               <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)" }}>
                 Best Sellers
@@ -210,7 +210,7 @@ export default async function Home() {
 
         {/* Section 3: Trending Now */}
         {section3.length > 0 && (
-          <section className="mb-4 md:mb-12 mt-0 md:mt-6">
+          <section className="mb-2 md:mb-12 mt-0 md:mt-6">
             <div className="flex items-center justify-between mb-0 md:mb-4">
               <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)" }}>
                 Trending Creations
@@ -229,7 +229,7 @@ export default async function Home() {
 
         {/* Section 4: Featured Collections */}
         {section4.length > 0 && (
-          <section className="mb-4 md:mb-12 mt-0 md:mt-6">
+          <section className="mb-2 md:mb-12 mt-0 md:mt-6">
             <div className="flex items-center justify-between mb-0 md:mb-4">
               <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)" }}>
                 Handmade Collections
