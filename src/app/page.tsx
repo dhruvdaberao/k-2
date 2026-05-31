@@ -171,12 +171,24 @@ export default async function Home() {
         {/* Section 1: Popular Picks */}
         {section1.length > 0 && (
           <section className="mb-2 md:mb-12 mt-0 md:mt-6">
-            <div className="flex items-end justify-between gap-4 mb-0 md:mb-4">
-              <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)" }}>
+            <div className="flex items-center justify-between gap-2 mb-0 md:mb-4">
+              <h2 className="text-2xl md:text-3xl font-bold truncate" style={{ color: "var(--text)" }}>
                 Popular Picks
               </h2>
-              <Link href="/collections" className="meta hover:underline shrink-0 pb-1" style={{ color: "var(--brand)" }}>
-                View All →
+              <Link 
+                href="/collections" 
+                className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center" 
+                style={{ 
+                  width: '32px', 
+                  height: '32px', 
+                  borderRadius: '50%', 
+                  border: '1px solid rgba(139, 94, 60, 0.3)',
+                  backgroundColor: 'rgba(139, 94, 60, 0.05)',
+                  color: 'var(--brand)'
+                }}
+                aria-label="View All Popular Picks"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
               </Link>
             </div>
             <div className="plp-grid-mobile">
@@ -190,12 +202,24 @@ export default async function Home() {
         {/* Section 2: Best Sellers (Auto-badged) */}
         {section2.length > 0 && (
           <section className="mb-2 md:mb-12 mt-0 md:mt-6">
-            <div className="flex items-end justify-between gap-4 mb-0 md:mb-4">
-              <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)" }}>
+            <div className="flex items-center justify-between gap-2 mb-0 md:mb-4">
+              <h2 className="text-2xl md:text-3xl font-bold truncate" style={{ color: "var(--text)" }}>
                 Best Sellers
               </h2>
-              <Link href="/collections" className="meta hover:underline shrink-0 pb-1" style={{ color: "var(--brand)" }}>
-                View All →
+              <Link 
+                href="/collections" 
+                className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center" 
+                style={{ 
+                  width: '32px', 
+                  height: '32px', 
+                  borderRadius: '50%', 
+                  border: '1px solid rgba(139, 94, 60, 0.3)',
+                  backgroundColor: 'rgba(139, 94, 60, 0.05)',
+                  color: 'var(--brand)'
+                }}
+                aria-label="View All Best Sellers"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
               </Link>
             </div>
             <div className="plp-grid-mobile">
@@ -211,12 +235,24 @@ export default async function Home() {
         {/* Section 3: Trending Now */}
         {section3.length > 0 && (
           <section className="mb-2 md:mb-12 mt-0 md:mt-6">
-            <div className="flex items-end justify-between gap-4 mb-0 md:mb-4">
-              <h2 className="text-2xl md:text-3xl font-bold leading-tight" style={{ color: "var(--text)" }}>
-                Trending<br />Creations
+            <div className="flex items-center justify-between gap-2 mb-0 md:mb-4">
+              <h2 className="text-2xl md:text-3xl font-bold truncate" style={{ color: "var(--text)" }}>
+                Trending Creations
               </h2>
-              <Link href="/collections" className="meta hover:underline shrink-0 pb-1" style={{ color: "var(--brand)" }}>
-                View All →
+              <Link 
+                href="/collections" 
+                className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center" 
+                style={{ 
+                  width: '32px', 
+                  height: '32px', 
+                  borderRadius: '50%', 
+                  border: '1px solid rgba(139, 94, 60, 0.3)',
+                  backgroundColor: 'rgba(139, 94, 60, 0.05)',
+                  color: 'var(--brand)'
+                }}
+                aria-label="View All Trending Creations"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
               </Link>
             </div>
             <div className="plp-grid-mobile">
@@ -230,12 +266,24 @@ export default async function Home() {
         {/* Section 4: Featured Collections */}
         {section4.length > 0 && (
           <section className="mb-2 md:mb-12 mt-0 md:mt-6">
-            <div className="flex items-end justify-between gap-4 mb-0 md:mb-4">
-              <h2 className="text-2xl md:text-3xl font-bold leading-tight" style={{ color: "var(--text)" }}>
-                Handmade<br />Collections
+            <div className="flex items-center justify-between gap-2 mb-0 md:mb-4">
+              <h2 className="text-2xl md:text-3xl font-bold truncate" style={{ color: "var(--text)" }}>
+                Handmade Collections
               </h2>
-              <Link href="/collections" className="meta hover:underline shrink-0 pb-1" style={{ color: "var(--brand)" }}>
-                View All →
+              <Link 
+                href="/collections" 
+                className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center" 
+                style={{ 
+                  width: '32px', 
+                  height: '32px', 
+                  borderRadius: '50%', 
+                  border: '1px solid rgba(139, 94, 60, 0.3)',
+                  backgroundColor: 'rgba(139, 94, 60, 0.05)',
+                  color: 'var(--brand)'
+                }}
+                aria-label="View All Handmade Collections"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
               </Link>
             </div>
 
