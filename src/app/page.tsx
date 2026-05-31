@@ -16,27 +16,31 @@ export const metadata = {
 export const revalidate = 3600;
 
 export default async function Home() {
-  const liveProducts = await getLiveProducts();
-  const live = liveProducts as Product[];
+  // Run ALL database queries concurrently to eliminate waterfall delays
+  const [
+    liveProducts,
+    allLiveCategories,
+    slidesRes,
+    timerRes
+  ] = await Promise.all([
+    getLiveProducts(),
+    getLiveCategories(),
+    supabase.from("hero_slides").select("*").eq("is_active", true).order("position", { ascending: true }),
+    supabase.from("site_settings").select("setting_value").eq("setting_key", "carousel_delay").single()
+  ]);
 
-  // 1. Fetch Dynamic Carousel Data
+  const live = liveProducts as Product[];
+  const displayCats = allLiveCategories;
+
+  // 1. Process Dynamic Carousel Data
   let heroSlides = [];
   let carouselDelay = 4500;
   
-  try {
-    const [slidesRes, timerRes] = await Promise.all([
-      supabase.from("hero_slides").select("*").eq("is_active", true).order("position", { ascending: true }),
-      supabase.from("site_settings").select("setting_value").eq("setting_key", "carousel_delay").single(),
-    ]);
-    
-    if (slidesRes.data && slidesRes.data.length > 0) {
-      heroSlides = slidesRes.data;
-    }
-    if (timerRes.data?.setting_value?.ms) {
-      carouselDelay = timerRes.data.setting_value.ms;
-    }
-  } catch (err) {
-    console.error("Error fetching carousel data:", err);
+  if (slidesRes.data && slidesRes.data.length > 0) {
+    heroSlides = slidesRes.data;
+  }
+  if (timerRes.data?.setting_value?.ms) {
+    carouselDelay = timerRes.data.setting_value.ms;
   }
 
   // 1. Priority Sorting (DESC priority, ASC price)
@@ -69,8 +73,7 @@ export default async function Home() {
   const section4 = sortedProducts.slice(14, 22);
 
   // Categories (Unique Display Categories)
-  const allLiveCategories = await getLiveCategories();
-  const displayCats = allLiveCategories;
+  // (Fetched concurrently above)
 
   return (
     <main>
