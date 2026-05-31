@@ -180,7 +180,7 @@ export default async function Home() {
               <Link 
                 href="/collections" 
                 className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center gap-1" 
-                style={{ color: 'var(--brand)' }}
+                style={{ color: '#8B7355' }}
                 aria-label="View All Popular Picks"
               >
                 <span className="text-[13px] font-semibold">View all</span>
@@ -205,7 +205,7 @@ export default async function Home() {
               <Link 
                 href="/collections" 
                 className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center gap-1" 
-                style={{ color: 'var(--brand)' }}
+                style={{ color: '#8B7355' }}
                 aria-label="View All Best Sellers"
               >
                 <span className="text-[13px] font-semibold">View all</span>
@@ -232,7 +232,7 @@ export default async function Home() {
               <Link 
                 href="/collections" 
                 className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center gap-1" 
-                style={{ color: 'var(--brand)' }}
+                style={{ color: '#8B7355' }}
                 aria-label="View All Trending Creations"
               >
                 <span className="text-[13px] font-semibold">View all</span>
@@ -257,7 +257,7 @@ export default async function Home() {
               <Link 
                 href="/collections" 
                 className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center gap-1" 
-                style={{ color: 'var(--brand)' }}
+                style={{ color: '#8B7355' }}
                 aria-label="View All Handmade Collections"
               >
                 <span className="text-[13px] font-semibold">View all</span>
