@@ -401,7 +401,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
       status: 'live'
     };
 
-    let error = null;
+
     try {
       const { data: authData } = await supabase.auth.getSession();
       const token = authData.session?.access_token || "";
@@ -430,7 +430,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
       return;
     }
 
-    if (!error && isEdit && initialData) {
+    if (isEdit && initialData) {
       // Clean up orphaned images from storage
       const oldImages = initialData.images || [];
       const oldVariantImages = (initialData.variants || []).flatMap((v: any) => v.images || []);
@@ -455,16 +455,11 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
     setLoading(false);
 
-    if (error) {
-      console.error(error);
-      showToast("Failed to save product: " + error.message);
-    } else {
-      await revalidateStorefront();
-      showToast(isEdit ? "Product updated successfully ✓" : "Product added successfully ✓");
-      localStorage.removeItem(`draft_product_${initialData?.id || 'new'}`);
-      router.push("/admin/products");
-      router.refresh();
-    }
+    await revalidateStorefront();
+    showToast(isEdit ? "Product updated successfully ✓" : "Product added successfully ✓");
+    localStorage.removeItem(`draft_product_${initialData?.id || 'new'}`);
+    router.push("/admin/products");
+    router.refresh();
   };
 
   const executeDelete = async () => {
