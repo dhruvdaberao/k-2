@@ -8,18 +8,31 @@ export async function POST(req: Request) {
   
   try {
     const body = await req.json();
-    const { orderId, newStatus, trackingLink, adminEmail } = body;
+    const { orderId, newStatus, trackingLink } = body;
 
-    console.log(`🔄 [Admin Update] Order: ${orderId}, Status: ${newStatus}, Admin: ${adminEmail}`);
+    console.log(`🔄 [Admin Update] Order: ${orderId}, Status: ${newStatus}`);
 
     // Basic validation
     if (!orderId || !newStatus) {
       return NextResponse.json({ success: false, error: 'orderId and newStatus required' }, { status: 400 });
     }
 
-    // Simple admin check
-    if (adminEmail !== 'keshvicrafts@gmail.com') {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 403 });
+    // Verify Admin via JWT token
+    const token = req.headers.get("Authorization")?.replace("Bearer ", "");
+    if (!token) {
+      return NextResponse.json({ success: false, error: 'Unauthorized - No Token' }, { status: 401 });
+    }
+
+    const supabaseAuth = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      { global: { headers: { Authorization: `Bearer ${token}` } } }
+    );
+    
+    const { data: { user } } = await supabaseAuth.auth.getUser();
+
+    if (!user || user.email !== 'keshvicrafts@gmail.com') {
+      return NextResponse.json({ success: false, error: 'Unauthorized - Not Admin' }, { status: 403 });
     }
 
     // Service-role client — bypasses ALL RLS

@@ -153,14 +153,19 @@ export default function OrderDetails() {
     try {
       console.log(`🔄 Calling admin update API: ${order.id} -> ${newStatus}`);
 
+      const { data: sessionData } = await supabase.auth.getSession();
+      const authToken = sessionData?.session?.access_token;
+
       const res = await fetch("/api/admin/update-order", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
+        },
         body: JSON.stringify({
           orderId: order.id,
           newStatus,
-          trackingLink: trackingLink.trim(),
-          adminEmail: "keshvicrafts@gmail.com"
+          trackingLink: trackingLink.trim()
         })
       });
 
