@@ -78,7 +78,7 @@ export default function CheckoutAddons({ currentCartSlugs, onAdded }: CheckoutAd
                     return (
                         <div
                             key={product.id || product.slug}
-                            className="addon-item group bg-[#F5EFE6] rounded-xl p-3 flex items-center gap-3 transition-all hover:shadow-md"
+                            className="addon-item group bg-white rounded-xl p-3 flex items-center gap-3 transition-all hover:shadow-md"
                             style={{ border: "1px solid rgba(139, 94, 60, 0.4)" }}
                         >
                             {/* Image */}
@@ -104,7 +104,7 @@ export default function CheckoutAddons({ currentCartSlugs, onAdded }: CheckoutAd
                                 disabled={isAdded}
                                 className={`px-3 py-2 text-xs font-bold rounded-lg transition-all flex-shrink-0 ${isAdded
                                         ? "bg-green-50 text-green-700 cursor-default border border-green-100"
-                                        : "bg-white text-[#8B5E3C] border border-[#8B5E3C] hover:bg-[#8B5E3C] hover:text-white"
+                                        : "bg-[#4A3219] text-white border border-[#4A3219] hover:opacity-90"
                                     }`}
                             >
                                 {isAdded ? "Added ✓" : "+ Add"}
