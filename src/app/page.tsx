@@ -184,9 +184,6 @@ export default async function Home() {
           </section>
         )}
 
-        {/* About / Why Handmade Section */}
-        <WhyHandmadeSection />
-
         {/* Section 2: Best Sellers (Auto-badged) */}
         {section2.length > 0 && (
           <section className="mb-2 md:mb-12 mt-0 md:mt-6">
@@ -254,6 +251,9 @@ export default async function Home() {
             )}
           </section>
         )}
+
+        {/* About / Why Handmade Section */}
+        <WhyHandmadeSection />
       </div>
     </main>
   );
