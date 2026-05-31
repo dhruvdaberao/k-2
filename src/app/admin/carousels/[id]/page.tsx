@@ -69,7 +69,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
       if (error) throw error;
       if (data) {
         setFormData(data);
-        setImagePreview(data.image_url);
+        setImagePreview(data.image_url || data.image);
       }
     } catch (err) {
       console.error(err);

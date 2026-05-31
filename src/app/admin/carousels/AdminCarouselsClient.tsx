@@ -200,11 +200,11 @@ export default function AdminCarouselsClient({ initialSlides }: { initialSlides:
                         <td className="p-2 md:p-5 text-center">
                           <div className="flex justify-center">
                             <div className="relative bg-stone-100 rounded-lg overflow-hidden border border-stone-200 flex-shrink-0" style={{ width: '44px', height: '44px', minWidth: '44px' }}>
-                              {slide.image_url && (
-                                (slide.image_url.toLowerCase().includes('.mp4') || slide.image_url.toLowerCase().includes('.webm')) ? (
-                                  <video src={slide.image_url} className="absolute inset-0 w-full h-full" style={{ objectFit: 'contain', padding: '2px' }} autoPlay loop muted playsInline />
+                              {(slide.image_url || slide.image) && (
+                                ((slide.image_url || slide.image).toLowerCase().includes('.mp4') || (slide.image_url || slide.image).toLowerCase().includes('.webm')) ? (
+                                  <video src={slide.image_url || slide.image} className="absolute inset-0 w-full h-full" style={{ objectFit: 'contain', padding: '2px' }} autoPlay loop muted playsInline />
                                 ) : (
-                                  <img src={slide.image_url} alt={slide.title} className="absolute inset-0 w-full h-full" style={{ objectFit: 'contain', padding: '2px' }} />
+                                  <img src={slide.image_url || slide.image} alt={slide.title} className="absolute inset-0 w-full h-full" style={{ objectFit: 'contain', padding: '2px' }} />
                                 )
                               )}
                             </div>
