@@ -649,11 +649,11 @@ return (
           <div className="checkout-item-summary-strip__inner">
             {enrichedItems.map((item, i) => (
               <div className="checkout-item-summary-row" key={`thumb-${item.id}-${i}`} style={{ backgroundColor: '#F5EFE6', border: '1px solid rgba(139, 94, 60, 0.4)' }}>
-                <NextLink href={`/product/${item.product?.slug || item.id}`} className="checkout-item-summary-thumb relative block">
+                <NextLink href={`/products/${item.product?.slug || item.id}`} className="checkout-item-summary-thumb relative block">
                   <ImageWithFallback src={item.product?.images?.[0] || item.image || "/placeholder.png"} alt={item.name} fill style={{ objectFit: 'cover' }} sizes="56px" />
                 </NextLink>
                 <div className="checkout-item-summary-content">
-                  <NextLink href={`/product/${item.product?.slug || item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <NextLink href={`/products/${item.product?.slug || item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                     <p className="checkout-item-summary-name font-sans hover:text-[#8B5E3C] transition-colors">{item.name.split(" - ")[0]}</p>
                   </NextLink>
                   <p className="checkout-item-summary-meta">Qty {item.quantity} · ₹{item.price * item.quantity}</p>
@@ -964,7 +964,7 @@ return (
               {enrichedItems.map((it) => (
                 <div className="flex justify-between items-start" key={it.id}>
                   <div className="min-w-0 flex-1 pr-4">
-                    <NextLink href={`/product/${it.product?.slug || it.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <NextLink href={`/products/${it.product?.slug || it.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                       <p className="font-bold font-sans text-[#2f2a26] truncate hover:text-[#8B5E3C] transition-colors">{it.name.split(" - ")[0]}</p>
                     </NextLink>
                     <p className="text-xs text-[#6a6150]">Qty {it.quantity} × ₹{it.price}</p>

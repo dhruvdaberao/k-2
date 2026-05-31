@@ -306,13 +306,13 @@ export default function CartPage() {
                   return (
                   <div key={it.id} className={`cart-item-row-refined shadow-sm${selectedItems.includes(it.id) ? " cart-item--selected" : ""}`}>
                     {/* Left: Thumbnail */}
-                    <NextLink href={`/product/${p?.slug || it.id}`} className="cart-item-thumbnail relative block" style={{ width: 72, height: 72 }}>
+                    <NextLink href={`/products/${p?.slug || it.id}`} className="cart-item-thumbnail relative block" style={{ width: 72, height: 72 }}>
                       <ImageWithFallback src={imageUrl} alt={it.name} fill style={{ objectFit: 'cover' }} sizes="72px" />
                     </NextLink>
 
                     {/* Center: Details & Picker */}
                     <div className="cart-item-info-center">
-                      <NextLink href={`/product/${p?.slug || it.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <NextLink href={`/products/${p?.slug || it.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                         <h3 className="cart-item-name font-sans hover:text-[#8B5E3C] transition-colors">{it.name.split(" - ")[0]}</h3>
                       </NextLink>
                       {p && typeof p.stock === "number" && p.stock <= 0 && p.type !== "custom-order" ? (
