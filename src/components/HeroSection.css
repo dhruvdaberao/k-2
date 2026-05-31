@@ -60,6 +60,7 @@
   max-height: 300px;
   object-fit: contain;
   object-position: bottom; /* Anchor to bottom */
+  transform-origin: bottom center; /* Scale upwards from base */
   transform: scale(1.08);
   margin-bottom: 12px;
 }
@@ -193,7 +194,7 @@
   .hero-slide__image-shell {
     height: auto;
     max-height: 600px;
-    align-items: center;
+    align-items: flex-end;
   }
   
   .hero-slide__image,
@@ -201,7 +202,7 @@
     height: auto;
     max-height: 600px;
     transform: scale(1.15);
-    object-position: center;
+    object-position: bottom;
     margin-bottom: 0;
   }
 
