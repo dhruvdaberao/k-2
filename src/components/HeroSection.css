@@ -2,8 +2,6 @@
   position: relative;
   overflow: hidden;
   padding: 16px 16px 8px;
-  max-width: 1400px;
-  margin: 0 auto;
   background:
     radial-gradient(circle at top left, rgba(178, 149, 123, 0.16), transparent 32%),
     radial-gradient(circle at right center, rgba(74, 50, 25, 0.08), transparent 26%),
@@ -223,10 +221,21 @@
 
 
 
+  .hero-slide h1 {
+    font-size: clamp(3.5rem, 6vw, 6rem);
+    margin-bottom: 12px;
+  }
+
+  .hero-slide__subtitle {
+    font-size: 1.35rem;
+    max-width: 40rem;
+    margin-bottom: 16px;
+  }
+
   .hero-slide__button {
-    min-height: 50px;
-    padding: 14px 28px;
-    font-size: 1rem;
+    min-height: 56px;
+    padding: 16px 36px;
+    font-size: 1.15rem;
     text-align: center;
     justify-content: center;
     align-items: center;
