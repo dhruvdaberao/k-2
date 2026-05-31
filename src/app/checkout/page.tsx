@@ -947,10 +947,10 @@ return (
 
               <button
                 type="button"
-                className="checkout-payment-card cursor-not-allowed pointer-events-none"
-                style={{ display: "flex", flexDirection: "column", padding: "20px", height: "auto", gap: "12px", alignItems: "flex-start", backgroundColor: '#ffffff', border: '1px solid rgba(139, 94, 60, 0.4)' }}
+                className="checkout-payment-card cursor-not-allowed pointer-events-none w-full"
+                style={{ display: "block", padding: "20px", height: "auto", backgroundColor: '#ffffff', border: '1px solid rgba(139, 94, 60, 0.4)' }}
               >
-                <div className="flex flex-row items-start w-full justify-between gap-3">
+                <div className="flex flex-row items-start w-full justify-between gap-3 mb-4">
                   <div className="flex items-start gap-4">
                     <span className="checkout-payment-card__radio flex-shrink-0 opacity-40" aria-hidden="true" style={{ margin: 0, marginTop: "2px", filter: "grayscale(100%)" }} />
                     <div className="flex flex-col text-left">
@@ -959,7 +959,7 @@ return (
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center justify-center w-full gap-2 mt-2 font-bold" style={{ color: '#dc2626', opacity: 1 }}>
+                <div className="flex items-center justify-center w-full gap-2 font-bold" style={{ color: '#dc2626', opacity: 1 }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                   <span className="text-sm">Currently Unavailable</span>
                 </div>
