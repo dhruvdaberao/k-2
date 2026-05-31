@@ -200,7 +200,6 @@ function CheckoutContent() {
     if (missing) {
       const msg = `Please fill ${missing} to continue. You have not provided your ${missing.toLowerCase()}.`;
       setCheckoutError(msg);
-      showToast(msg);
       return;
     }
 
@@ -209,7 +208,6 @@ function CheckoutContent() {
     if (!emailRegex.test(details.email)) {
       const msg = "Invalid Email Address. Please enter a valid email (e.g. name@gmail.com).";
       setCheckoutError(msg);
-      showToast(msg);
       return;
     }
 
@@ -218,7 +216,6 @@ function CheckoutContent() {
     if (!phoneRegex.test(details.phoneNumber)) {
       const msg = "Invalid Phone Number. It must be exactly 10 digits.";
       setCheckoutError(msg);
-      showToast(msg);
       return;
     }
 
@@ -227,14 +224,12 @@ function CheckoutContent() {
     if (!pincodeRegex.test(details.pincode)) {
       const msg = "Invalid Pincode. It must be exactly 6 digits.";
       setCheckoutError(msg);
-      showToast(msg);
       return;
     }
 
     if (!agreedToTerms) {
       const msg = "Please agree to the Terms and Policies to continue.";
       setCheckoutError(msg);
-      showToast(msg);
       return;
     }
 
@@ -269,10 +264,26 @@ function CheckoutContent() {
         showToast(`Please fill ${missing} to continue`);
         return;
       }
+
+      // Basic validations before locking
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(details.email)) {
+        showToast("Invalid Email Address");
+        return;
+      }
+      const phoneRegex = /^\d{10}$/;
+      if (!phoneRegex.test(details.phoneNumber)) {
+        showToast("Invalid Phone Number (10 digits)");
+        return;
+      }
+      const pincodeRegex = /^\d{6}$/;
+      if (!pincodeRegex.test(details.pincode)) {
+        showToast("Invalid Pincode (6 digits)");
+        return;
+      }
+
       setIsGuestLocked(true);
-      setStep(2);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      showToast("Details saved!");
+      showToast("Details saved! Please review and continue.");
     } else {
       setIsGuestLocked(false);
     }
@@ -782,11 +793,19 @@ return (
                   className="btn-primary checkout-button w-full"
                   onClick={handleGuestDetailsToggle}
                 >
-                  {isGuestLocked ? "Edit Details" : "Save & Continue to Payment"}
+                  {isGuestLocked ? "Edit Details" : "Save Details"}
                 </button>
 
                 {isGuestLocked && (
                   <>
+                    {checkoutError && (
+                      <div style={{ color: "#dc2626", fontSize: "14px", marginBottom: "16px", marginTop: "8px", fontWeight: "600", display: "flex", alignItems: "flex-start", justifyContent: "center", gap: "6px", padding: "0 10px" }} className="animate-in fade-in slide-in-from-top-2">
+                        <svg className="flex-shrink-0 mt-[2px]" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                        <span style={{ textAlign: "left" }}>{checkoutError}</span>
+                      </div>
+                    )}
                     {termsCheckboxUI}
                     <button type="button" className="btn-primary checkout-button w-full" onClick={handleDetailsNext} style={{ background: 'transparent', color: 'var(--brand)', border: '2px solid var(--brand)' }}>
                       Select Payment Mode {"\u2192"}
@@ -844,11 +863,11 @@ return (
               </div>
 
               {checkoutError && (
-                <div style={{ color: "#dc2626", fontSize: "14px", marginBottom: "16px", marginTop: "24px", textAlign: "center", fontWeight: "600", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }} className="animate-in fade-in slide-in-from-top-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <div style={{ color: "#dc2626", fontSize: "14px", marginBottom: "16px", marginTop: "24px", fontWeight: "600", display: "flex", alignItems: "flex-start", justifyContent: "center", gap: "6px", padding: "0 10px" }} className="animate-in fade-in slide-in-from-top-2">
+                  <svg className="flex-shrink-0 mt-[2px]" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
                   </svg>
-                  {checkoutError}
+                  <span style={{ textAlign: "left" }}>{checkoutError}</span>
                 </div>
               )}
 
@@ -934,15 +953,15 @@ return (
                 <div className="flex flex-row items-start w-full justify-between gap-3">
                   <div className="flex items-start gap-4">
                     <span className="checkout-payment-card__radio flex-shrink-0 opacity-40" aria-hidden="true" style={{ margin: 0, marginTop: "2px", filter: "grayscale(100%)" }} />
-                      <div className="flex flex-col text-left">
+                    <div className="flex flex-col text-left">
                       <span className="checkout-payment-card__title text-lg font-bold text-[#2f2a26] opacity-40" style={{ margin: 0 }}>Cash on Delivery</span>
                       <span className="text-xs text-[#8c8273] mt-1.5 opacity-60">Pay with cash when your order arrives</span>
-                      <div className="flex items-center justify-center w-full gap-2 mt-4 font-bold" style={{ color: '#dc2626', opacity: 1 }}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                        <span className="text-sm">Currently Unavailable</span>
-                      </div>
                     </div>
                   </div>
+                </div>
+                <div className="flex items-center justify-center w-full gap-2 mt-2 font-bold" style={{ color: '#dc2626', opacity: 1 }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  <span className="text-sm">Currently Unavailable</span>
                 </div>
               </button>
             </div>
