@@ -9,7 +9,7 @@ import { showToast } from "@/components/Toast";
 import GlobalLoader from "@/components/ui/GlobalLoader";
 import PromptModal from "@/components/ui/PromptModal";
 import ConfirmModal from "@/components/ui/ConfirmModal";
-import AdminSidebar from "@/components/admin/AdminSidebar";
+
 
 type OrderItem = {
   id: string;

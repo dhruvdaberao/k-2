@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import AdminSidebar from "@/components/admin/AdminSidebar";
+
 import { isAdmin } from "@/lib/isAdmin";
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
