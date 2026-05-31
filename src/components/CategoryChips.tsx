@@ -1,11 +1,11 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { Category } from "@/lib/categoriesApi";
 
 export default function CategoryChips({ serverCategory, liveCategories = [] }: { serverCategory?: string, liveCategories?: Category[] }) {
-    const router = useRouter();
     const searchParams = useSearchParams();
     const activeCategory = serverCategory || searchParams.get("category");
     const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -18,7 +18,6 @@ export default function CategoryChips({ serverCategory, liveCategories = [] }: {
             if (activeEl) {
                 const container = scrollContainerRef.current;
                 const scrollLeft = activeEl.offsetLeft - (container.clientWidth / 2) + (activeEl.clientWidth / 2);
-                // Use a slight timeout to ensure styles and layout are applied
                 setTimeout(() => {
                     container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
                 }, 50);
@@ -26,31 +25,27 @@ export default function CategoryChips({ serverCategory, liveCategories = [] }: {
         }
     }, [activeCategory]);
 
-    const handleCategoryClick = (category: Category | null) => {
-        if (category) {
-            router.push(`/collections/${category.slug}`);
-        } else {
-            router.push(`/collections`);
-        }
-    };
-
     return (
         <div className="category-chips-container">
             <div className="category-chips-scroll" ref={scrollContainerRef}>
-                <button
-                    onClick={() => handleCategoryClick(null)}
+                <Link
+                    href={`/collections`}
+                    scroll={false}
                     className={`category-chip ${!activeCategory ? "active" : ""}`}
+                    style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}
                 >
                     All
-                </button>
+                </Link>
                 {categories.map((cat) => (
-                    <button
+                    <Link
                         key={cat.id}
-                        onClick={() => handleCategoryClick(cat)}
+                        href={`/collections/${cat.slug}`}
+                        scroll={false}
                         className={`category-chip ${activeCategory === cat.name ? "active" : ""}`}
+                        style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}
                     >
                         {cat.name}
-                    </button>
+                    </Link>
                 ))}
             </div>
             <span className="category-chips-arrow-hint" aria-hidden="true">
