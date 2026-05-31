@@ -2052,7 +2052,7 @@ summary::-webkit-details-marker {
 
 .category-chip.active {
   background: var(--brand);
-  color: white;
+  color: white !important;
   border-color: var(--brand);
 }
 
