@@ -310,4 +310,9 @@
     justify-content: center;
     display: inline-flex;
   }
+
+  /* Hide dots on mobile to save vertical space */
+  .hero-carousel__dots {
+    display: none;
+  }
 }
