@@ -1,15 +1,30 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { getLiveCategories, Category } from "@/lib/categoriesApi";
+import { useEffect, useRef } from "react";
+import { Category } from "@/lib/categoriesApi";
 
 export default function CategoryChips({ serverCategory, liveCategories = [] }: { serverCategory?: string, liveCategories?: Category[] }) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const activeCategory = serverCategory || searchParams.get("category");
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
 
     const categories = liveCategories || [];
+
+    useEffect(() => {
+        if (scrollContainerRef.current) {
+            const activeEl = scrollContainerRef.current.querySelector('.active') as HTMLElement;
+            if (activeEl) {
+                const container = scrollContainerRef.current;
+                const scrollLeft = activeEl.offsetLeft - (container.clientWidth / 2) + (activeEl.clientWidth / 2);
+                // Use a slight timeout to ensure styles and layout are applied
+                setTimeout(() => {
+                    container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+                }, 50);
+            }
+        }
+    }, [activeCategory]);
 
     const handleCategoryClick = (category: Category | null) => {
         if (category) {
@@ -21,7 +36,7 @@ export default function CategoryChips({ serverCategory, liveCategories = [] }: {
 
     return (
         <div className="category-chips-container">
-            <div className="category-chips-scroll">
+            <div className="category-chips-scroll" ref={scrollContainerRef}>
                 <button
                     onClick={() => handleCategoryClick(null)}
                     className={`category-chip ${!activeCategory ? "active" : ""}`}
