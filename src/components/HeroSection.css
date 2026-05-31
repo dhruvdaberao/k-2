@@ -193,15 +193,15 @@
 
   .hero-slide__image-shell {
     height: auto;
-    max-height: 600px;
+    max-height: 720px;
     align-items: flex-end;
   }
   
   .hero-slide__image,
   .carousel-image {
     height: auto;
-    max-height: 600px;
-    transform: scale(1.15);
+    max-height: 720px;
+    transform: none; /* Removes the scale that was causing the top cut-off */
     object-position: bottom;
     margin-bottom: 0;
   }
