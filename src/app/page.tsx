@@ -211,11 +211,11 @@ export default async function Home() {
         {/* Section 3: Trending Now */}
         {section3.length > 0 && (
           <section className="mb-2 md:mb-12 mt-0 md:mt-6">
-            <div className="flex items-center justify-between mb-0 md:mb-4">
-              <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)" }}>
-                Trending Creations
+            <div className="flex items-end justify-between gap-4 mb-0 md:mb-4">
+              <h2 className="text-2xl md:text-3xl font-bold leading-tight" style={{ color: "var(--text)" }}>
+                Trending<br />Creations
               </h2>
-              <Link href="/collections" className="meta hover:underline">
+              <Link href="/collections" className="meta hover:underline shrink-0 pb-1" style={{ color: "var(--brand)" }}>
                 View All →
               </Link>
             </div>
@@ -230,11 +230,11 @@ export default async function Home() {
         {/* Section 4: Featured Collections */}
         {section4.length > 0 && (
           <section className="mb-2 md:mb-12 mt-0 md:mt-6">
-            <div className="flex items-center justify-between mb-0 md:mb-4">
-              <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)" }}>
-                Handmade Collections
+            <div className="flex items-end justify-between gap-4 mb-0 md:mb-4">
+              <h2 className="text-2xl md:text-3xl font-bold leading-tight" style={{ color: "var(--text)" }}>
+                Handmade<br />Collections
               </h2>
-              <Link href="/collections" className="meta hover:underline">
+              <Link href="/collections" className="meta hover:underline shrink-0 pb-1" style={{ color: "var(--brand)" }}>
                 View All →
               </Link>
             </div>
