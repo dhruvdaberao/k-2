@@ -58,6 +58,41 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
   const [draggedOverIdx, setDraggedOverIdx] = useState<number | null>(null);
 
+  const draftKey = `draft_product_${initialData?.id || 'new'}`;
+  const isInitialMount = useRef(true);
+
+  // Restore Draft
+  useEffect(() => {
+    try {
+      const savedDraft = localStorage.getItem(draftKey);
+      if (savedDraft) {
+        const parsed = JSON.parse(savedDraft);
+        if (parsed.formData) setFormData(parsed.formData);
+        if (parsed.variants) setVariants(parsed.variants);
+        if (parsed.images) setImages(parsed.images);
+        if (parsed.hasVariants !== undefined) setHasVariants(parsed.hasVariants);
+        setTimeout(() => showToast("Restored unsaved draft."), 500);
+      }
+    } catch (e) {
+      console.error("Failed to parse draft", e);
+    }
+  }, [draftKey]);
+
+  // Save Draft
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    const safeImages = images.filter(img => !img.startsWith('blob:'));
+    const safeVariants = variants.map(v => ({
+      ...v,
+      images: (v.images || []).filter((img: string) => !img.startsWith('blob:'))
+    }));
+    const draft = { formData, variants: safeVariants, images: safeImages, hasVariants };
+    localStorage.setItem(draftKey, JSON.stringify(draft));
+  }, [formData, variants, images, hasVariants, draftKey]);
+
   const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -414,6 +449,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     } else {
       await revalidateStorefront();
       showToast(isEdit ? "Product updated successfully ✓" : "Product added successfully ✓");
+      localStorage.removeItem(`draft_product_${initialData?.id || 'new'}`);
       router.push("/admin/products");
       router.refresh();
     }
