@@ -1930,7 +1930,7 @@ summary::-webkit-details-marker {
 }
 
 .collections-header {
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 .collections-title {
@@ -1983,7 +1983,7 @@ summary::-webkit-details-marker {
 
 /* ====== Category Chips ====== */
 .category-chips-container {
-  margin-bottom: 20px;
+  margin-bottom: 8px;
   overflow: hidden;
   position: relative;
   padding-right: 16px;

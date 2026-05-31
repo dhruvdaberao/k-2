@@ -123,7 +123,7 @@ export default function CollectionsContent({ serverCategory, liveProducts = [], 
     if (tagParam) return `${tagParam.charAt(0).toUpperCase() + tagParam.slice(1)} Collection`;
     if (maxPriceParam) return `Under ₹${maxPriceParam}`;
     if (category) return `${category} Collection`;
-    return "All Collections";
+    return "Collections";
   }
 
   return (
@@ -132,11 +132,6 @@ export default function CollectionsContent({ serverCategory, liveProducts = [], 
         <h1 className="collections-title">
           {getPageTitle()}
         </h1>
-        {getPageTitle() === "All Collections" && (
-          <p className="text-stone-600 mb-6 italic text-sm md:text-base mt-2">
-            Discover our handcrafted treasures, made with love and tradition in every stitch.
-          </p>
-        )}
         {category && CATEGORY_DESCRIPTIONS[category] && (
           <div className="collections-description-wrap">
             <p className={`text-stone-600 mb-2 text-sm md:text-base mt-4 max-w-4xl leading-relaxed mx-auto text-left ${showFullDescription ? "" : "collections-description-clamped"}`}>
