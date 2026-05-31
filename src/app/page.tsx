@@ -81,7 +81,7 @@ export default async function Home() {
         {/* Shop by Collection Section */}
         {displayCats.length > 0 && (
           <section className="mb-10 mt-4">
-            <h2 className="text-3xl font-bold mb-6" style={{ color: "var(--text)" }}>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6" style={{ color: "var(--text)" }}>
               Shop by Collection
             </h2>
             <div className="category-chips-scroll mb-8">
@@ -169,7 +169,7 @@ export default async function Home() {
         {section1.length > 0 && (
           <section className="mb-16">
             <div className="flex items-end justify-between gap-4 mb-6">
-              <h2 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
+              <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)" }}>
                 Popular Handmade Picks
               </h2>
               <Link href="/collections" className="meta hover:underline shrink-0 pb-1" style={{ color: "var(--brand)" }}>
@@ -191,7 +191,7 @@ export default async function Home() {
         {section2.length > 0 && (
           <section className="mb-12">
             <div className="flex items-end justify-between gap-4 mb-6">
-              <h2 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
+              <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)" }}>
                 Best Sellers
               </h2>
               <Link href="/collections" className="meta hover:underline shrink-0 pb-1" style={{ color: "var(--brand)" }}>
@@ -212,7 +212,7 @@ export default async function Home() {
         {section3.length > 0 && (
           <section className="mb-12">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
+              <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)" }}>
                 Trending Creations
               </h2>
               <Link href="/collections" className="meta hover:underline">
@@ -231,7 +231,7 @@ export default async function Home() {
         {section4.length > 0 && (
           <section className="mb-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-3xl font-bold" style={{ color: "var(--text)" }}>
+              <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)" }}>
                 Handmade Collections
               </h2>
               <Link href="/collections" className="meta hover:underline">
