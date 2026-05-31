@@ -228,7 +228,7 @@ export default function ReviewPage() {
 
     const slug = decodeURIComponent(productId);
     
-    supabase.from("products").select("id, slug, title, description, price, images, category, stock, status, badge, badges, priority, tags, type, priceBucket, minPrice, priceLabel, shippingCharge, deliveryTime, returnPolicy, materials, dimensions, handcraftedHours, checkoutUrl, cta, carts, isVariant, variants, seoContent").or(`slug.eq.${slug},id.eq.${slug}`).single().then(({ data: p }: { data: any }) => {
+    supabase.from("products").select("*").or(`slug.eq.${slug},id.eq.${slug}`).single().then(({ data: p }: { data: any }) => {
       if (!p) {
         setLoading(false);
         return;

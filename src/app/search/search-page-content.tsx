@@ -16,7 +16,7 @@ export default function SearchPageContent() {
 
   useEffect(() => {
     supabase.from("products")
-      .select("id, slug, title, description, price, images, category, stock, status, badge, badges, priority, tags, type, priceBucket, minPrice, priceLabel, shippingCharge, deliveryTime, returnPolicy, materials, dimensions, handcraftedHours, checkoutUrl, cta, carts, isVariant, variants, seoContent")
+      .select("*")
       .eq("status", "live")
       .then(({ data }: { data: any }) => {
         if (data) setProducts(data as Product[]);
