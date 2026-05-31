@@ -937,7 +937,7 @@ return (
                       <div className="flex flex-col text-left">
                       <span className="checkout-payment-card__title text-lg font-bold text-[#2f2a26] opacity-40" style={{ margin: 0 }}>Cash on Delivery</span>
                       <span className="text-xs text-[#8c8273] mt-1.5 opacity-60">Pay with cash when your order arrives</span>
-                      <div className="flex items-center gap-3 mt-4 font-bold" style={{ color: '#dc2626', opacity: 1 }}>
+                      <div className="flex items-center justify-center w-full gap-2 mt-4 font-bold" style={{ color: '#dc2626', opacity: 1 }}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                         <span className="text-sm">Currently Unavailable</span>
                       </div>
