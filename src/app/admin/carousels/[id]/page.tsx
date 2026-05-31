@@ -768,7 +768,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
               <div className="flex w-full justify-center">
                 <button
                   type="button"
-                  onClick={requestDelete}
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowDeleteModal(true); }}
                   disabled={saving}
                   className="btn-outline"
                   style={{ width: '100%', maxWidth: '416px', border: '1px solid #dc2626', color: '#dc2626', minHeight: '50px' }}
@@ -782,7 +782,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
 
         {showDeleteModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(2px)' }}>
-            <div className="bg-[#FDFBF7] rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-[#E6DCCF] animate-in fade-in zoom-in duration-200">
+            <div className="bg-[#FDFBF7] rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-[#E6DCCF]">
               <h3 className="text-xl font-bold text-[#4A3219] mb-2">Delete Slide</h3>
               <p className="text-[#8B7355] text-sm mb-6">Are you sure you want to delete this slide? This action cannot be undone.</p>
               <div className="flex gap-3 justify-end">
