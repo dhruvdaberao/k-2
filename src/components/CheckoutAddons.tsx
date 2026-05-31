@@ -104,7 +104,7 @@ export default function CheckoutAddons({ currentCartSlugs, onAdded }: CheckoutAd
                                 disabled={isAdded}
                                 className={`px-3 py-2 text-xs font-bold rounded-lg transition-all flex-shrink-0 ${isAdded
                                         ? "bg-green-50 text-green-700 cursor-default border border-green-100"
-                                        : "bg-[#4A3219] text-white border border-[#4A3219] hover:opacity-90"
+                                        : "bg-white text-[#8B5E3C] border border-[#8B5E3C] hover:bg-[#8B5E3C] hover:text-white"
                                     }`}
                             >
                                 {isAdded ? "Added ✓" : "+ Add"}
