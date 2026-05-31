@@ -465,7 +465,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   const executeDelete = async () => {
     setShowDeleteModal(false);
     setLoading(true);
-    let error = null;
+
     try {
       const { data: authData } = await supabase.auth.getSession();
       const token = authData.session?.access_token || "";
@@ -493,7 +493,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
       return;
     }
     
-    if (!error && isEdit && initialData) {
+    if (isEdit && initialData) {
       // Clean delete: wipe all images from storage
       const allOldUrls = [
         ...(initialData.images || []), 
@@ -513,15 +513,10 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
     setLoading(false);
     
-    if (error) {
-      console.error(error);
-      showToast("Failed to delete product: " + error.message);
-    } else {
-      await revalidateStorefront();
-      showToast("Product deleted successfully");
-      router.push("/admin/products");
-      router.refresh();
-    }
+    await revalidateStorefront();
+    showToast("Product deleted successfully");
+    router.push("/admin/products");
+    router.refresh();
   };
 
   const handleDelete = () => {
