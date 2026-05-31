@@ -13,6 +13,7 @@ export default function EditCategory({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -412,28 +413,12 @@ export default function EditCategory({ params }: { params: { id: string } }) {
             <div className="flex w-full justify-center mt-2">
               <button
                 type="button"
-                onClick={async () => {
+                onClick={() => {
                   if ((originalName || "").toLowerCase() === "bags") {
                     showToast("The 'Bags' category is a default system category and cannot be deleted.");
                     return;
                   }
-                  if (!window.confirm(`Are you sure you want to delete "${originalName}"?`)) return;
-                  setSaving(true);
-                  try {
-                    const { deleteCategory } = await import("@/lib/categoriesApi");
-                    const success = await deleteCategory(params.id, originalName);
-                    if (success) {
-                      showToast("Category deleted successfully!");
-                      setTimeout(() => router.push("/admin/categories"), 1000);
-                    } else {
-                      showToast("Failed to delete category");
-                      setSaving(false);
-                    }
-                  } catch (e) {
-                    console.error(e);
-                    showToast("Failed to delete category");
-                    setSaving(false);
-                  }
+                  setShowDeleteModal(true);
                 }}
                 disabled={saving}
                 className="btn-outline flex items-center justify-center gap-2"
@@ -450,6 +435,49 @@ export default function EditCategory({ params }: { params: { id: string } }) {
             </div>
           </div>
         </form>
+
+        {showDeleteModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(2px)' }}>
+            <div className="bg-[#FDFBF7] rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-[#E6DCCF] animate-in fade-in zoom-in duration-200">
+              <h3 className="text-xl font-bold text-[#4A3219] mb-2">Delete Category</h3>
+              <p className="text-[#8B7355] text-sm mb-6">Are you sure you want to delete "{originalName}"? This action cannot be undone.</p>
+              <div className="flex gap-3 justify-end">
+                <button 
+                  type="button" 
+                  onClick={() => setShowDeleteModal(false)}
+                  className="px-5 py-2.5 rounded-xl text-sm font-bold text-[#4A3219] bg-[#F5EFE6] hover:bg-[#E6DCCF] transition-colors border border-[#E6DCCF]"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="button" 
+                  onClick={async () => {
+                    setShowDeleteModal(false);
+                    setSaving(true);
+                    try {
+                      const { deleteCategory } = await import("@/lib/categoriesApi");
+                      const success = await deleteCategory(params.id, originalName);
+                      if (success) {
+                        showToast("Category deleted successfully!");
+                        setTimeout(() => router.push("/admin/categories"), 1000);
+                      } else {
+                        showToast("Failed to delete category");
+                        setSaving(false);
+                      }
+                    } catch (e) {
+                      console.error(e);
+                      showToast("Failed to delete category");
+                      setSaving(false);
+                    }
+                  }}
+                  className="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-red-600 hover:bg-red-700 transition-colors shadow-sm flex items-center gap-2"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </main>
   );

@@ -15,6 +15,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
   const [showReload, setShowReload] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -240,8 +241,12 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
     }
   };
 
-  const handleDelete = async () => {
-    if (isNew || !window.confirm("Are you sure you want to delete this slide?")) return;
+  const requestDelete = () => {
+    if (isNew) return;
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
     setSaving(true);
     try {
       const { error } = await Promise.race([
@@ -759,7 +764,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
               <div className="flex w-full justify-center">
                 <button
                   type="button"
-                  onClick={handleDelete}
+                  onClick={requestDelete}
                   disabled={saving}
                   className="btn-outline"
                   style={{ width: '100%', maxWidth: '416px', border: '1px solid #dc2626', color: '#dc2626', minHeight: '50px' }}
@@ -770,6 +775,31 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
             )}
           </div>
         </form>
+
+        {showDeleteModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(2px)' }}>
+            <div className="bg-[#FDFBF7] rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-[#E6DCCF] animate-in fade-in zoom-in duration-200">
+              <h3 className="text-xl font-bold text-[#4A3219] mb-2">Delete Slide</h3>
+              <p className="text-[#8B7355] text-sm mb-6">Are you sure you want to delete this slide? This action cannot be undone.</p>
+              <div className="flex gap-3 justify-end">
+                <button 
+                  type="button" 
+                  onClick={() => setShowDeleteModal(false)}
+                  className="px-5 py-2.5 rounded-xl text-sm font-bold text-[#4A3219] bg-[#F5EFE6] hover:bg-[#E6DCCF] transition-colors border border-[#E6DCCF]"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="button" 
+                  onClick={confirmDelete}
+                  className="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-red-600 hover:bg-red-700 transition-colors shadow-sm"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         
       </div>
