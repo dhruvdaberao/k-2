@@ -83,8 +83,8 @@ export default async function Home() {
       <div className="container pt-0 md:pt-5" style={{ paddingBottom: '30px' }}>
         {/* Shop by Collection Section */}
         {displayCats.length > 0 && (
-          <section style={{ marginTop: '16px', marginBottom: '8px' }}>
-            <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)", marginBottom: '20px' }}>
+          <section className="mb-2 md:mb-12 mt-0 md:mt-6">
+            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-6" style={{ color: "var(--text)" }}>
               Shop by Collection
             </h2>
             <div className="category-chips-scroll mb-0 md:mb-6">

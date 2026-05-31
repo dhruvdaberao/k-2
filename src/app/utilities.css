@@ -525,6 +525,22 @@
         padding-left: 2rem;
         padding-right: 2rem;
     }
+
+    .md\:mb-4 {
+        margin-bottom: 1rem; /* 16px */
+    }
+
+    .md\:mb-6 {
+        margin-bottom: 1.5rem; /* 24px */
+    }
+
+    .md\:mb-12 {
+        margin-bottom: 3rem; /* 48px */
+    }
+
+    .md\:mt-6 {
+        margin-top: 1.5rem; /* 24px */
+    }
 }
 
 @media (min-width: 1024px) {
