@@ -11,7 +11,7 @@ export async function getLiveProducts() {
     console.error("Error fetching live products:", error);
     return [];
   }
-  return (data || []).map(p => ({
+  return (data || []).map((p: any) => ({
     ...p,
     stock: typeof p.stock === 'number' ? (p.stock > 0 ? 1 : 0) : p.stock
   }));
