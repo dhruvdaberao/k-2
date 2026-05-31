@@ -1,7 +1,7 @@
 .hero-carousel {
   position: relative;
   overflow: hidden;
-  padding: 0 16px 8px;
+  padding: 16px 16px 8px;
   max-width: 1400px;
   background:
     radial-gradient(circle at top left, rgba(178, 149, 123, 0.16), transparent 32%),
