@@ -102,7 +102,7 @@ export default function SignupPage() {
         }, 2000);
       } else if (authMode === "forgot") {
         const { error } = await supabase.auth.resetPasswordForEmail(authEmail, {
-          redirectTo: "https://keshvicrafts-2.vercel.app/reset-password"
+          redirectTo: `${window.location.origin}/reset-password`
         });
         if (error) throw error;
         showToast("Check your email for reset link.");
