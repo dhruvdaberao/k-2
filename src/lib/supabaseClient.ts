@@ -52,7 +52,9 @@ function getSupabaseClient() {
       document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') {
           // Ping session to clear dead sockets on wake
-          (window as any).supabaseClient.auth.getSession();
+          (window as any).supabaseClient.auth.getSession().catch(() => {
+            // Ignore auth token errors on wake
+          });
         }
       });
     }

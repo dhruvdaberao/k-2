@@ -15,6 +15,9 @@ export default function SupabaseProvider({
     supabase.auth.getSession().then(({ data }: any) => {
       console.log("HYDRATED SESSION:", data.session);
       setAuthReady(true);
+    }).catch((err: any) => {
+      console.warn("Auth session hydration failed:", err.message);
+      setAuthReady(true);
     });
 
     const { data: listener } = supabase.auth.onAuthStateChange(
