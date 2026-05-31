@@ -7,6 +7,7 @@ import GlobalLoader from "@/components/ui/GlobalLoader";
 import ProductForm from "../../ProductForm";
 import BackButton from "@/components/BackButton";
 import { showToast } from "@/components/Toast";
+import { isAdmin } from "@/lib/isAdmin";
 
 export default function EditProductPage() {
   const router = useRouter();
@@ -26,7 +27,7 @@ export default function EditProductPage() {
       if (!isMounted.current) return;
       if (authError) {
         console.warn("Auth check error (bypassing strict redirect):", authError);
-      } else if (!authData?.session?.user || authData.session.user.email !== "keshvicrafts@gmail.com") {
+      } else if (!authData?.session?.user || !isAdmin(authData.session.user)) {
         isRedirecting = true;
         router.push("/");
         return;

@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { revalidateStorefront } from "@/actions/revalidate";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { isAdmin } from "@/lib/isAdmin";
 import { getLiveCategories, addCategory, deleteCategory, Category } from "@/lib/categoriesApi";
 import { showToast } from "@/components/Toast";
 
@@ -22,7 +23,7 @@ export default function AdminCategories() {
         const { data: authData, error: authError } = await supabase.auth.getSession();
         if (authError) {
           console.warn("Auth check error (bypassing strict redirect):", authError);
-        } else if (!authData?.session?.user || authData.session.user.email !== "keshvicrafts@gmail.com") {
+        } else if (!authData?.session?.user || !isAdmin(authData.session.user)) {
           router.push("/");
           return;
         }

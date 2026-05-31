@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { isAdmin } from '@/lib/isAdmin';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,7 +32,7 @@ export async function POST(req: Request) {
     
     const { data: { user } } = await supabaseAuth.auth.getUser();
 
-    if (!user || user.email !== 'keshvicrafts@gmail.com') {
+    if (!isAdmin(user)) {
       return NextResponse.json({ success: false, error: 'Unauthorized - Not Admin' }, { status: 403 });
     }
 

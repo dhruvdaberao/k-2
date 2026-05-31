@@ -1,11 +1,11 @@
 "use client";
 
-import { isAdmin } from "@/lib/isAdmin";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
 import GlobalLoader from "@/components/ui/GlobalLoader";
+import { isAdmin } from "@/lib/isAdmin";
 
 type Order = {
   id: string;
@@ -42,7 +42,7 @@ export default function AdminOrders() {
 
         if (sessionError) {
           console.warn("Auth check error (bypassing strict redirect):", sessionError);
-        } else if (!sessionData?.session?.user || sessionData.session.user.email !== "keshvicrafts@gmail.com") {
+        } else if (!sessionData?.session?.user || !isAdmin(sessionData.session.user)) {
           router.push("/");
           return;
         }

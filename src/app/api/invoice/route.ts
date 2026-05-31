@@ -12,33 +12,17 @@ export async function GET(req: Request) {
   console.log('[Invoice API] Hit:', req.url);
   try {
     const { searchParams } = new URL(req.url);
-    const dParam = searchParams.get('d');
     const orderId = searchParams.get('orderId');
     const token = searchParams.get('token');
-
-    if (!orderId || !token) {
-      if (!dParam) {
-        return new Response("Missing orderId or token", { status: 400 });
-      }
+    
+    if (!orderId) {
+      return new Response("Missing orderId", { status: 400 });
     }
 
     let orderData: any = null;
 
-    // Phase 1: Try to decode from 'd' parameter (Stateless)
-    if (dParam) {
-      try {
-        console.log('[Invoice API] Attempting to decode d-param...');
-        const decoded = decodeURIComponent(Buffer.from(dParam, 'base64').toString('utf-8'));
-        orderData = JSON.parse(decoded);
-        console.log("[Invoice API] Successfully parsed stateless data for:", orderData.o);
-      } catch (e) {
-        console.error("[Invoice API] Failed to parse 'd' param:", e);
-      }
-    }
-
-    // Phase 2: Fallback to orderId (Requires DB fetch)
-    if (!orderData && orderId) {
-      console.log("[Invoice API] Fallback to DB fetch for:", orderId);
+    if (orderId) {
+      console.log("[Invoice API] Fetching DB for order:", orderId);
       
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
       const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -125,7 +109,7 @@ export async function GET(req: Request) {
     }
 
     if (!orderData) {
-      return new Response("Invoice data not found. Please provide 'd' or 'orderId'.", { status: 400 });
+      return new Response("Invoice data not found.", { status: 404 });
     }
 
     const isOnline = orderData.pm?.toLowerCase() !== 'cod';

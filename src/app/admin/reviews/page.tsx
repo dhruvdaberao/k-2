@@ -99,7 +99,7 @@ export default function AdminManageReviewsPage() {
     const checkAuthAndFetchData = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       const user = session?.user;
-      if (!user || user.email !== "keshvicrafts@gmail.com") {
+      if (!isAdmin(user)) {
         setLoading(false)
         setUser(user || null)
         return

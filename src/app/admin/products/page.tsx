@@ -7,6 +7,7 @@ import Link from "next/link";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import { useRouter } from "next/navigation";
 import { showToast } from "@/components/Toast";
+import { isAdmin } from "@/lib/isAdmin";
 
 export default function AdminProducts() {
   const router = useRouter();
@@ -34,7 +35,7 @@ export default function AdminProducts() {
 
         if (authError) {
           console.warn("Auth check error (bypassing strict redirect):", authError);
-        } else if (!authData?.session?.user || authData.session.user.email !== "keshvicrafts@gmail.com") {
+        } else if (!authData?.session?.user || !isAdmin(authData.session.user)) {
           router.push("/");
           return;
         }

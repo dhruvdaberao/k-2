@@ -1,7 +1,7 @@
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { isAdmin as checkIsAdmin } from "@/lib/isAdmin";
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
@@ -52,7 +52,7 @@ export async function GET(request: Request) {
     // 2. Validate access
     const { data: { user } } = await supabaseAuth.auth.getUser();
     
-    const isAdmin = user && user.email === 'keshvicrafts@gmail.com';
+    const isAdmin = checkIsAdmin(user);
     const isOwner = user && user.id === order.user_id;
     const hasValidToken = token && token === order.access_token;
 

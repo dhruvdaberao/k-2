@@ -62,12 +62,7 @@ export function generateDynamicPdfUrl(data: OrderData): string {
       data.u.co = (data.u.co || "").replace(/[^\x20-\x7E]/g, "");
     }
 
-    const json = JSON.stringify(data);
-    // Base64 encoding that handles unicode
-    const b64 = btoa(encodeURIComponent(json).replace(/%([0-9A-F]{2})/g, (_, p1) => 
-      String.fromCharCode(parseInt(p1, 16))
-    ));
-    return `${API_BASE}/api/invoice?d=${encodeURIComponent(b64)}`;
+    return `${API_BASE}/api/invoice?orderId=${encodeURIComponent(data.o)}`;
   } catch (err) {
     console.error("Failed to generate PDF URL", err);
     return "";

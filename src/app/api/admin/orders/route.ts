@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
+import { isAdmin } from '@/lib/isAdmin';
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
@@ -23,7 +24,7 @@ export async function GET(request: Request) {
     
     const { data: { user } } = await supabaseAuth.auth.getUser();
 
-    if (!user || user.email !== 'keshvicrafts@gmail.com') {
+    if (!isAdmin(user)) {
       return NextResponse.json({ success: false, error: 'Unauthorized - Not Admin' }, { status: 401 });
     }
 

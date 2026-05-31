@@ -1,8 +1,9 @@
 "use client";
 
-import { isAdmin } from "@/lib/isAdmin";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import AdminSidebar from "@/components/admin/AdminSidebar";
+import { isAdmin } from "@/lib/isAdmin";
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -18,7 +19,7 @@ export default function AdminDashboard() {
         const { data: authData, error: authError } = await supabase.auth.getSession();
         if (authError) {
           console.warn("Auth check error (bypassing strict redirect):", authError);
-        } else if (!authData?.session?.user || authData.session.user.email !== "keshvicrafts@gmail.com") {
+        } else if (!authData?.session?.user || !isAdmin(authData.session.user)) {
           router.push("/");
           return;
         }
