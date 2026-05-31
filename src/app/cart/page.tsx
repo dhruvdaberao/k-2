@@ -49,7 +49,7 @@ export default function CartPage() {
 
       const fetchPromise = supabase
         .from("products")
-        .select("*")
+        .select("id, slug, title, description, price, images, category, stock, status, badge, badges, priority, tags, type, priceBucket, minPrice, priceLabel, shippingCharge, deliveryTime, returnPolicy, materials, dimensions, handcraftedHours, checkoutUrl, cta, carts, isVariant, variants, seoContent")
         .or(orFilters.join(','));
 
       const { data } = await Promise.race([fetchPromise, timeoutPromise]) as any;

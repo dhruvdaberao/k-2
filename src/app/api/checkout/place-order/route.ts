@@ -1,10 +1,48 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { Redis } from '@upstash/redis';
+import { Ratelimit } from '@upstash/ratelimit';
 
 export const dynamic = 'force-dynamic';
 
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL || '',
+  token: process.env.UPSTASH_REDIS_REST_KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN || '',
+});
+
+const ratelimit = new Ratelimit({
+  redis: redis,
+  limiter: Ratelimit.slidingWindow(5, "10 m"),
+  analytics: true,
+});
+
 export async function POST(req: Request) {
   console.log('🔄 [API PlaceOrder] Hit');
+
+  // Rate Limiting (5 requests per 10 minutes)
+  const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
+  
+  try {
+    const { success, limit, reset, remaining } = await ratelimit.limit(`rate_limit:checkout:${ip}`);
+    
+    if (!success) {
+      console.warn(`🔴 Rate limit exceeded for IP: ${ip}`);
+      return NextResponse.json(
+        { success: false, error: 'Too many requests. Please try again later.' },
+        { 
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': limit.toString(),
+            'X-RateLimit-Remaining': remaining.toString(),
+            'X-RateLimit-Reset': reset.toString()
+          }
+        }
+      );
+    }
+  } catch (error) {
+    console.error('🔴 [Redis Error] Rate limiting failed:', error);
+    // Proceed without rate limiting if Redis fails (fail-open)
+  }
 
   try {
     const body = await req.json();
@@ -82,6 +120,22 @@ export async function POST(req: Request) {
     const displayId = `KC-${Date.now()}`;
     const accessToken = crypto.randomUUID();
 
+    // --- ATOMIC STOCK DECREMENT ---
+    const stockPayload = validatedItems.map((item: any) => ({
+      product_id: item.product_id || item.id,
+      quantity: Number(item.quantity)
+    }));
+
+    const { error: stockError } = await supabase.rpc('decrement_stock', { items: stockPayload });
+
+    if (stockError) {
+      console.error('🔴 [API PlaceOrder] Stock Error:', stockError);
+      return NextResponse.json({ 
+        success: false, 
+        error: 'One or more items in your cart just went out of stock.' 
+      }, { status: 409 });
+    }
+
     // 1. Build order payload
     const orderPayload: any = {
       email: email,
@@ -117,7 +171,7 @@ export async function POST(req: Request) {
 
     if (insertError) {
       console.error('🔴 [API PlaceOrder] Insert Error:', insertError);
-      return NextResponse.json({ success: false, error: insertError.message }, { status: 500 });
+      return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 });
     }
 
     const orderId = newOrder?.id;
@@ -135,7 +189,7 @@ export async function POST(req: Request) {
     const { error: itemsError } = await supabase.from("order_items").insert(itemsPayload);
     if (itemsError) {
       console.error('🔴 [API PlaceOrder] Items Insert Error:', itemsError);
-      return NextResponse.json({ success: false, error: itemsError.message }, { status: 500 });
+      return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 });
     }
 
     // 4. Cleanup Cart if actualUserId exists
@@ -183,6 +237,6 @@ export async function POST(req: Request) {
 
   } catch (err: any) {
     console.error('🔴 [API PlaceOrder] Critical Error:', err);
-    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 });
   }
 }

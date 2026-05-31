@@ -15,9 +15,12 @@ export default function SearchPageContent() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.from("products").select("*").then(({ data }: { data: any }) => {
-      if (data) setProducts(data as Product[]);
-    }).catch((err: any) => console.error("Search fetch error:", err))
+    supabase.from("products")
+      .select("id, slug, title, description, price, images, category, stock, status, badge, badges, priority, tags, type, priceBucket, minPrice, priceLabel, shippingCharge, deliveryTime, returnPolicy, materials, dimensions, handcraftedHours, checkoutUrl, cta, carts, isVariant, variants, seoContent")
+      .eq("status", "live")
+      .then(({ data }: { data: any }) => {
+        if (data) setProducts(data as Product[]);
+      }).catch((err: any) => console.error("Search fetch error:", err))
       .finally(() => setLoading(false));
   }, []);
 

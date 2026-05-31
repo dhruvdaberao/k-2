@@ -28,16 +28,25 @@ export async function getLiveCategories(): Promise<Category[]> {
  * Update the priority of a single category
  */
 export async function updateCategoryPriority(id: string, priority: number): Promise<boolean> {
-  const { error } = await supabase
-    .from("categories")
-    .update({ priority })
-    .eq("id", id);
+  try {
+    const { data: authData } = await supabase.auth.getSession();
+    const token = authData.session?.access_token || "";
+
+    const response = await fetch('/api/admin/catalog/categories', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({
+        action: 'updatePriority',
+        payload: [{ id, priority }]
+      })
+    });
     
-  if (error) {
+    const result = await response.json();
+    return !!result.success;
+  } catch (error) {
     console.error("Error updating category priority:", error);
     return false;
   }
-  return true;
 }
 
 /**
@@ -46,17 +55,25 @@ export async function updateCategoryPriority(id: string, priority: number): Prom
 export async function addCategory(name: string, image_url?: string): Promise<boolean> {
   const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
   
-  const { error } = await supabase
-    .from("categories")
-    .insert([
-      { name, slug, image_url }
-    ]);
+  try {
+    const { data: authData } = await supabase.auth.getSession();
+    const token = authData.session?.access_token || "";
+
+    const response = await fetch('/api/admin/catalog/categories', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({
+        action: 'insert',
+        payload: { name, slug, image_url }
+      })
+    });
     
-  if (error) {
+    const result = await response.json();
+    return !!result.success;
+  } catch (error) {
     console.error("Error adding category:", error);
     return false;
   }
-  return true;
 }
 
 /**
@@ -71,53 +88,44 @@ export async function updateCategory(id: string, newName: string, newImageUrl?: 
     updateData.image_url = newImageUrl;
   }
 
-  const { error } = await supabase
-    .from("categories")
-    .update(updateData)
-    .eq("id", id);
+  try {
+    const { data: authData } = await supabase.auth.getSession();
+    const token = authData.session?.access_token || "";
+
+    const response = await fetch('/api/admin/catalog/categories', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({
+        action: 'update',
+        payload: { id, data: updateData, oldName }
+      })
+    });
     
-  if (error) {
+    const result = await response.json();
+    return !!result.success;
+  } catch (error) {
     console.error("Error updating category:", error);
     return false;
   }
-
-  // Update associated products if name changed
-  if (oldName && oldName !== newName) {
-    const { error: productsError } = await supabase
-      .from("products")
-      .update({ category: newName })
-      .eq("category", oldName);
-      
-    if (productsError) {
-      console.error("Error updating associated products:", productsError);
-    }
-  }
-
-  return true;
 }
 
 /**
  * Delete a category and fallback its products to 'Bags'
  */
 export async function deleteCategory(id: string, name: string): Promise<boolean> {
-  // Update all products in this category to 'Bags'
-  const { error: updateError } = await supabase
-    .from("products")
-    .update({ category: "Bags" })
-    .eq("category", name);
+  try {
+    const { data: authData } = await supabase.auth.getSession();
+    const token = authData.session?.access_token || "";
 
-  if (updateError) {
-    console.error("Error falling back products to Bags:", updateError);
-  }
-
-  const { error } = await supabase
-    .from("categories")
-    .delete()
-    .eq("id", id);
+    const response = await fetch(`/api/admin/catalog/categories?id=${id}&name=${encodeURIComponent(name)}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
     
-  if (error) {
+    const result = await response.json();
+    return !!result.success;
+  } catch (error) {
     console.error("Error deleting category:", error);
     return false;
   }
-  return true;
 }

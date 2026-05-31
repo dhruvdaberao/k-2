@@ -207,19 +207,40 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
         is_active: formData.is_active,
       };
 
+      const { data: authData } = await supabase.auth.getSession();
+      const token = authData.session?.access_token || "";
+
       if (isNew) {
         // Get highest position
         const { data: posData } = await supabase.from("hero_slides").select("position").order("position", { ascending: false }).limit(1);
         const nextPos = posData && posData.length > 0 ? posData[0].position + 1 : 0;
         
+        const fetchPromise = fetch('/api/admin/catalog/carousels', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ action: 'insert', payload: { ...slideData, position: nextPos } })
+        }).then(async res => {
+          const data = await res.json();
+          if (!data.success) throw new Error(data.error);
+        });
+
         const { error } = await Promise.race([
-          supabase.from("hero_slides").insert({ ...slideData, position: nextPos }),
+          fetchPromise,
           new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 60000))
         ]).catch(err => ({ error: err }));
         if (error) throw error;
       } else {
+        const fetchPromise = fetch('/api/admin/catalog/carousels', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ action: 'update', payload: { id: params.id, data: slideData } })
+        }).then(async res => {
+          const data = await res.json();
+          if (!data.success) throw new Error(data.error);
+        });
+
         const { error } = await Promise.race([
-          supabase.from("hero_slides").update(slideData).eq("id", params.id),
+          fetchPromise,
           new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 60000))
         ]).catch(err => ({ error: err }));
         if (error) throw error;
@@ -246,8 +267,19 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
   const confirmDelete = async () => {
     setSaving(true);
     try {
+      const { data: authData } = await supabase.auth.getSession();
+      const token = authData.session?.access_token || "";
+
+      const fetchPromise = fetch(`/api/admin/catalog/carousels?id=${params.id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      }).then(async res => {
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error);
+      });
+
       const { error } = await Promise.race([
-        supabase.from("hero_slides").delete().eq("id", params.id),
+        fetchPromise,
         new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 60000))
       ]).catch(err => ({ error: err }));
       if (error) throw error;

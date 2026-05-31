@@ -76,6 +76,6 @@ export async function GET(request: Request) {
     return NextResponse.json(structuredOrder);
   } catch (err: any) {
     console.error("[GetOrder API] Error:", err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

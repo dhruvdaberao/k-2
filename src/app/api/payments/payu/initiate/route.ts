@@ -1,10 +1,48 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { createClient } from '@supabase/supabase-js';
+import { Redis } from '@upstash/redis';
+import { Ratelimit } from '@upstash/ratelimit';
 
 export const dynamic = 'force-dynamic';
 
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL || '',
+  token: process.env.UPSTASH_REDIS_REST_KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN || '',
+});
+
+const ratelimit = new Ratelimit({
+  redis: redis,
+  limiter: Ratelimit.slidingWindow(5, "10 m"),
+  analytics: true,
+});
+
 export async function POST(req: Request) {
+  // Rate Limiting (5 requests per 10 minutes)
+  const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
+  
+  try {
+    const { success, limit, reset, remaining } = await ratelimit.limit(`rate_limit:payu:${ip}`);
+    
+    if (!success) {
+      console.warn(`🔴 Rate limit exceeded for IP: ${ip}`);
+      return NextResponse.json(
+        { success: false, error: 'Too many requests. Please try again later.' },
+        { 
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': limit.toString(),
+            'X-RateLimit-Remaining': remaining.toString(),
+            'X-RateLimit-Reset': reset.toString()
+          }
+        }
+      );
+    }
+  } catch (error) {
+    console.error('🔴 [Redis Error] Rate limiting failed:', error);
+    // Proceed without rate limiting if Redis fails (fail-open)
+  }
+
   try {
     const body = await req.json();
     const { items, deliveryDetails, userEmail } = body;
@@ -112,7 +150,7 @@ export async function POST(req: Request) {
       .single();
 
     if (insertError) {
-      return NextResponse.json({ success: false, error: insertError.message }, { status: 500 });
+      return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 });
     }
 
     const itemsPayload = validatedItems.map((item: any) => ({
@@ -158,6 +196,6 @@ export async function POST(req: Request) {
     });
 
   } catch (err: any) {
-    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 });
   }
 }

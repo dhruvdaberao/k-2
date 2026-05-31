@@ -70,7 +70,7 @@ function CheckoutContent() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   useEffect(() => {
-    supabase.from("products").select("*").then(({ data }: { data: any }) => {
+    supabase.from("products").select("id, slug, title, description, price, images, category, stock, status, badge, badges, priority, tags, type, priceBucket, minPrice, priceLabel, shippingCharge, deliveryTime, returnPolicy, materials, dimensions, handcraftedHours, checkoutUrl, cta, carts, isVariant, variants, seoContent").then(({ data }: { data: any }) => {
       if (data) setProducts(data as Product[]);
     });
   }, []);

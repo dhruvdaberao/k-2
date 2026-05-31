@@ -42,7 +42,7 @@ export default function WishlistPage() {
 
       supabase
         .from("products")
-        .select("*")
+        .select("id, slug, title, description, price, images, category, stock, status, badge, badges, priority, tags, type, priceBucket, minPrice, priceLabel, shippingCharge, deliveryTime, returnPolicy, materials, dimensions, handcraftedHours, checkoutUrl, cta, carts, isVariant, variants, seoContent")
         .or(orFilters.join(','))
       .then(({ data }: { data: any }) => {
         if (reqId !== fetchControllerRef.current) return;

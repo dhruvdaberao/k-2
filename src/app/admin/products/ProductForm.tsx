@@ -403,11 +403,23 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
     let error = null;
     try {
-      const { error: upsertError } = await Promise.race([
-        supabase.from('products').upsert(productPayload),
+      const { data: authData } = await supabase.auth.getSession();
+      const token = authData.session?.access_token || "";
+
+      const fetchPromise = fetch('/api/admin/catalog/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify(productPayload)
+      }).then(async res => {
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.error || 'Failed to save product');
+        return data;
+      });
+
+      await Promise.race([
+        fetchPromise,
         new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 15000))
       ]);
-      error = upsertError;
     } catch (err: any) {
       if (err.message === 'timeout') {
         showToast("Upload timed out. Please try saving again.");
@@ -460,11 +472,22 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     setLoading(true);
     let error = null;
     try {
-      const { error: deleteError } = await Promise.race([
-        supabase.from('products').delete().eq('id', formData.id),
+      const { data: authData } = await supabase.auth.getSession();
+      const token = authData.session?.access_token || "";
+
+      const fetchPromise = fetch(`/api/admin/catalog/products?id=${formData.id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      }).then(async res => {
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.error || 'Failed to delete product');
+        return data;
+      });
+
+      await Promise.race([
+        fetchPromise,
         new Promise<any>((_, reject) => setTimeout(() => reject(new Error('timeout')), 15000))
       ]);
-      error = deleteError;
     } catch (err: any) {
       if (err.message === 'timeout') {
         showToast("Action timed out. Please try again.");
@@ -613,32 +636,46 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
             </div>
             <div>
               <label className="block text-sm font-semibold text-[#8B7355] mb-2">Stock Status</label>
-              <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '12px', marginBottom: '16px' }}>
-                <div style={{ position: 'relative', width: '56px', height: '32px' }}>
-                  <input
-                    type="checkbox"
-                    style={{ opacity: 0, width: 0, height: 0, position: 'absolute' }}
-                    checked={formData.stock > 0}
-                    onChange={(e) => setFormData(prev => ({ ...prev, stock: e.target.checked ? 999 : 0 }))}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '16px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '12px' }}>
+                  <div style={{ position: 'relative', width: '56px', height: '32px' }}>
+                    <input
+                      type="checkbox"
+                      style={{ opacity: 0, width: 0, height: 0, position: 'absolute' }}
+                      checked={formData.stock > 0}
+                      onChange={(e) => setFormData(prev => ({ ...prev, stock: e.target.checked ? (prev.stock > 0 ? prev.stock : 1) : 0 }))}
+                    />
+                    {/* Track */}
+                    <div style={{ 
+                      position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, 
+                      borderRadius: '34px', transition: 'background-color 0.3s',
+                      backgroundColor: formData.stock > 0 ? '#4A3219' : '#E6DCCF'
+                    }}></div>
+                    {/* Thumb */}
+                    <div style={{
+                      position: 'absolute', top: '4px', left: '4px', 
+                      width: '24px', height: '24px', borderRadius: '50%', 
+                      backgroundColor: 'white', transition: 'transform 0.3s',
+                      transform: formData.stock > 0 ? 'translateX(24px)' : 'translateX(0)'
+                    }}></div>
+                  </div>
+                  <div style={{ fontWeight: '600', color: formData.stock > 0 ? '#4A3219' : '#8B7355', width: '80px' }}>
+                    {formData.stock > 0 ? 'In Stock' : 'Out of Stock'}
+                  </div>
+                </label>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <label className="text-sm font-semibold text-[#8B7355]">Qty:</label>
+                  <input 
+                    type="number" 
+                    name="stock" 
+                    min="0" 
+                    value={formData.stock} 
+                    onChange={handleInputChange} 
+                    className="w-24 p-2 text-sm md:text-base rounded-xl border border-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" 
                   />
-                  {/* Track */}
-                  <div style={{ 
-                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, 
-                    borderRadius: '34px', transition: 'background-color 0.3s',
-                    backgroundColor: formData.stock > 0 ? '#4A3219' : '#E6DCCF'
-                  }}></div>
-                  {/* Thumb */}
-                  <div style={{
-                    position: 'absolute', top: '4px', left: '4px', 
-                    width: '24px', height: '24px', borderRadius: '50%', 
-                    backgroundColor: 'white', transition: 'transform 0.3s',
-                    transform: formData.stock > 0 ? 'translateX(24px)' : 'translateX(0)'
-                  }}></div>
                 </div>
-                <div style={{ fontWeight: '600', color: formData.stock > 0 ? '#4A3219' : '#8B7355' }}>
-                  {formData.stock > 0 ? 'In Stock' : 'Out of Stock'}
-                </div>
-              </label>
+              </div>
 
               <label className="block text-sm font-semibold text-[#8B7355] mb-2">Purchase Mode</label>
               <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '12px' }}>

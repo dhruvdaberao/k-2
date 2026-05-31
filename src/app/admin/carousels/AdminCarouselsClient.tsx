@@ -59,11 +59,20 @@ export default function AdminCarouselsClient({ initialSlides }: { initialSlides:
 
     // Persist to DB in parallel
     try {
-      await Promise.all(
-        updatedSlides.map((s) =>
-          supabase.from("hero_slides").update({ position: s.position }).eq("id", s.id)
-        )
-      );
+      const { data: authData } = await supabase.auth.getSession();
+      const token = authData.session?.access_token || "";
+
+      const response = await fetch('/api/admin/catalog/carousels', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({
+          action: 'updatePriority',
+          payload: updatedSlides.map(s => ({ id: s.id, position: s.position }))
+        })
+      });
+      const result = await response.json();
+      if (!result.success) throw new Error(result.error);
+
       await revalidateStorefront();
       await revalidateAdmin();
       showToast("Order updated!");
@@ -77,8 +86,15 @@ export default function AdminCarouselsClient({ initialSlides }: { initialSlides:
   const deleteSlide = async (id: string, imageUrl: string) => {
     if (!window.confirm("Are you sure you want to delete this slide?")) return;
     try {
-      const { error } = await supabase.from("hero_slides").delete().eq("id", id);
-      if (error) throw error;
+      const { data: authData } = await supabase.auth.getSession();
+      const token = authData.session?.access_token || "";
+
+      const response = await fetch(`/api/admin/catalog/carousels?id=${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const result = await response.json();
+      if (!result.success) throw new Error(result.error);
 
       // Extract filename from URL to delete from bucket
       if (imageUrl && !imageUrl.startsWith("/uploads")) {

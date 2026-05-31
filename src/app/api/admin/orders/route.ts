@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+
 import { cookies } from 'next/headers';
 import { isAdmin } from '@/lib/isAdmin';
 
@@ -42,12 +42,12 @@ export async function GET(request: Request) {
 
     if (error) {
       console.error('[Admin Orders API] Error:', error);
-      return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+      return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, orders: orders || [] });
   } catch (err: any) {
     console.error('[Admin Orders API] Critical:', err);
-    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 });
   }
 }

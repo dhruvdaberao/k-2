@@ -24,6 +24,37 @@ const nextConfig = {
       },
     ],
   },
+
+  async headers() {
+    const cspHeader = `
+      default-src 'self';
+      script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live https://va.vercel-scripts.com;
+      style-src 'self' 'unsafe-inline';
+      img-src 'self' blob: data: https://jclphocedhteegocjawx.supabase.co https://*.supabase.co;
+      font-src 'self';
+      connect-src 'self' https://jclphocedhteegocjawx.supabase.co https://*.supabase.co https://*.supabase.in https://vitals.vercel-insights.com https://va.vercel-scripts.com;
+      object-src 'none';
+      base-uri 'self';
+      form-action 'self' https://secure.payu.in https://test.payu.in;
+      frame-ancestors 'none';
+      block-all-mixed-content;
+      upgrade-insecure-requests;
+    `;
+
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains; preload' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), browsing-topics=()' },
+          { key: 'Content-Security-Policy', value: cspHeader.replace(/\n/g, '').trim() }
+        ],
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

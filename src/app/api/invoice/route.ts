@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { createServerClient } from '@supabase/ssr';
 import fs from 'fs';
 import path from 'path';
 import { cookies } from 'next/headers';
@@ -53,7 +53,18 @@ export async function GET(req: Request) {
 
       if (order) {
         // SECURITY CHECK
-        const supabaseAuth = createRouteHandlerClient({ cookies });
+        const cookieStore = cookies();
+        const supabaseAuth = createServerClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+          {
+            cookies: {
+              get(name: string) {
+                return cookieStore.get(name)?.value;
+              },
+            },
+          }
+        );
         const { data: { user } } = await supabaseAuth.auth.getUser();
         
         const isOwner = user && user.id === order.user_id;
@@ -308,6 +319,6 @@ export async function GET(req: Request) {
 
   } catch (err: any) {
     console.error("[Invoice API] Critical Error:", err);
-    return new Response("Error generating invoice: " + err.message, { status: 500 });
+    return new Response("Error generating invoice. Internal Server Error.", { status: 500 });
   }
 }

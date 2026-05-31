@@ -87,7 +87,7 @@ export async function POST(req: Request) {
 
     if (updateError) {
       console.error('🔴 [Admin Update] DB update failed:', updateError);
-      return NextResponse.json({ success: false, error: updateError.message }, { status: 500 });
+      return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 });
     }
 
     console.log(`✅ [Admin Update] DB updated: ${orderId} -> ${newStatus}`);
@@ -275,6 +275,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true, emailSent: false });
   } catch (err: any) {
     console.error('🔴 [Admin Update] Critical error:', err);
-    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 });
   }
 }

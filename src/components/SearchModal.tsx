@@ -21,7 +21,10 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    supabase.from("products").select("*").then(({ data }: { data: any }) => {
+    supabase.from("products")
+      .select("id, slug, title, price, images, category, type, tags, status, isVariant")
+      .eq("status", "live")
+      .then(({ data }: { data: any }) => {
       if (data) setProducts(data as Product[]);
     });
   }, []);

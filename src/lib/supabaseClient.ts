@@ -1,16 +1,9 @@
-import { createClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
 
 function getSupabaseClient() {
   if (typeof window === "undefined") {
-    return createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        auth: {
-          persistSession: false,
-        }
-      }
-    );
+    // Return a dummy client on the server (server components shouldn't use this file)
+    return {} as any;
   }
 
   const customFetch = (url: string | Request | URL, options?: RequestInit) => {
@@ -33,15 +26,10 @@ function getSupabaseClient() {
   };
 
   if (!(window as any).supabaseClient) {
-    (window as any).supabaseClient = createClient(
+    (window as any).supabaseClient = createBrowserClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-          detectSessionInUrl: true
-        },
         global: {
           fetch: customFetch
         }

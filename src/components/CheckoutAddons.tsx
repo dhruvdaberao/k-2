@@ -15,7 +15,10 @@ export default function CheckoutAddons({ currentCartSlugs, onAdded }: CheckoutAd
     const [products, setProducts] = useState<Product[]>([]);
 
     useEffect(() => {
-        supabase.from("products").select("*").then(({ data }: { data: any }) => {
+        supabase.from("products")
+            .select("id, slug, title, price, image, category, type, stock")
+            .eq("status", "live")
+            .then(({ data }: { data: any }) => {
             if (data) setProducts(data as Product[]);
         });
     }, []);
