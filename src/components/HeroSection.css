@@ -47,10 +47,10 @@
 .hero-slide__image-shell {
   height: 300px; /* Fixed base height */
   display: flex;
-  align-items: flex-end; /* Anchor to bottom */
+  align-items: center;
   justify-content: center;
   padding-top: 0;
-  margin-top: -8px;
+  margin-top: 0;
 }
 
 .hero-slide__image,
@@ -59,10 +59,9 @@
   height: 100%;
   max-height: 300px;
   object-fit: contain;
-  object-position: bottom; /* Anchor to bottom */
-  transform-origin: bottom center; /* Scale upwards from base */
-  transform: scale(1.08);
-  margin-bottom: 12px;
+  object-position: center;
+  transform: none;
+  margin-bottom: 0;
 }
 
 .hero-slide__content {
@@ -194,7 +193,7 @@
   .hero-slide__image-shell {
     height: auto;
     max-height: 720px;
-    align-items: flex-end;
+    align-items: center;
   }
   
   .hero-slide__image,
@@ -202,7 +201,7 @@
     height: auto;
     max-height: 720px;
     transform: none; /* Removes the scale that was causing the top cut-off */
-    object-position: bottom;
+    object-position: center;
     margin-bottom: 0;
   }
 
