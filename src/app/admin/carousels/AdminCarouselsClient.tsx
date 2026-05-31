@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { revalidateStorefront } from "@/actions/revalidate";
+import { revalidateStorefront, revalidateAdmin } from "@/actions/revalidate";
 import { showToast } from "@/components/Toast";
 
 export default function AdminCarouselsClient({ initialSlides }: { initialSlides: any[] }) {
@@ -65,6 +65,7 @@ export default function AdminCarouselsClient({ initialSlides }: { initialSlides:
         )
       );
       await revalidateStorefront();
+      await revalidateAdmin();
       showToast("Order updated!");
     } catch (err) {
       console.error(err);

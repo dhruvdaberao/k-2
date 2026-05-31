@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { revalidateStorefront } from "@/actions/revalidate";
+import { revalidateStorefront, revalidateAdmin } from "@/actions/revalidate";
 import { showToast } from "@/components/Toast";
 import { updateCategory } from "@/lib/categoriesApi";
 import imageCompression from "browser-image-compression";
@@ -164,7 +164,9 @@ export default function EditCategory({ params }: { params: { id: string } }) {
       }
 
       await revalidateStorefront();
+      await revalidateAdmin();
       showToast(`Category updated successfully!`);
+      router.refresh();
       setTimeout(() => router.push("/admin/categories"), 1000);
       
     } catch (err: any) {
@@ -458,7 +460,10 @@ export default function EditCategory({ params }: { params: { id: string } }) {
                       const { deleteCategory } = await import("@/lib/categoriesApi");
                       const success = await deleteCategory(params.id, originalName);
                       if (success) {
+                        await revalidateStorefront();
+                        await revalidateAdmin();
                         showToast("Category deleted successfully!");
+                        router.refresh();
                         setTimeout(() => router.push("/admin/categories"), 1000);
                       } else {
                         showToast("Failed to delete category");

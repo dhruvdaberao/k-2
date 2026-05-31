@@ -8,3 +8,7 @@ export async function revalidateStorefront() {
   revalidatePath("/collections/[slug]", "page");
   revalidatePath("/products/[slug]", "page");
 }
+
+export async function revalidateAdmin() {
+  revalidatePath("/admin", "layout");
+}

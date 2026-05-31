@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { revalidateStorefront } from "@/actions/revalidate";
+import { revalidateStorefront, revalidateAdmin } from "@/actions/revalidate";
 import { showToast } from "@/components/Toast";
 
 export default function EditCarousel({ params }: { params: { id: string } }) {
@@ -227,7 +227,9 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
       }
 
       await revalidateStorefront();
+      await revalidateAdmin();
       showToast(`Carousel slide ${isNew ? 'added' : 'updated'} successfully!`);
+      router.refresh();
       setTimeout(() => router.push("/admin/carousels"), 1000);
       
     } catch (err: any) {
@@ -264,7 +266,9 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
       }
 
       await revalidateStorefront();
+      await revalidateAdmin();
       showToast("Slide deleted successfully!");
+      router.refresh();
       setTimeout(() => router.push("/admin/carousels"), 1000);
     } catch (err: any) {
       console.error(err);
