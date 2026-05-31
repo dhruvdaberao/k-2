@@ -77,14 +77,14 @@ export default async function Home() {
       {/* Hero Section */}
       <HeroSection slides={heroSlides} autoPlayMs={carouselDelay} />
 
-      <div className="container pt-1 md:pt-5" style={{ paddingBottom: '30px' }}>
+      <div className="container pt-0 md:pt-5" style={{ paddingBottom: '30px' }}>
         {/* Shop by Collection Section */}
         {displayCats.length > 0 && (
-          <section className="mb-6 md:mb-10 mt-2 md:mt-4">
+          <section className="mb-4 md:mb-10">
             <h2 className="text-2xl md:text-3xl font-bold mb-1 md:mb-4" style={{ color: "var(--text)" }}>
               Shop by Collection
             </h2>
-            <div className="category-chips-scroll mb-2 md:mb-6">
+            <div className="category-chips-scroll mb-0 md:mb-6">
               {displayCats.map((cat) => {
                 const count = live.filter((p) => (p.category || '') === cat.name).length;
                 const slug = cat.slug;
@@ -165,12 +165,12 @@ export default async function Home() {
           </section>
         )}
 
-        {/* Section 1: Popular Handmade Picks */}
+        {/* Section 1: Popular Picks */}
         {section1.length > 0 && (
-          <section className="mb-8 md:mb-12 mt-6">
+          <section className="mb-4 md:mb-12 mt-4 md:mt-6">
             <div className="flex items-end justify-between gap-4 mb-2 md:mb-4">
               <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)" }}>
-                Popular Handmade Picks
+                Popular Picks
               </h2>
               <Link href="/collections" className="meta hover:underline shrink-0 pb-1" style={{ color: "var(--brand)" }}>
                 View All →
@@ -189,7 +189,7 @@ export default async function Home() {
 
         {/* Section 2: Best Sellers (Auto-badged) */}
         {section2.length > 0 && (
-          <section className="mb-8 md:mb-12 mt-6">
+          <section className="mb-4 md:mb-12 mt-4 md:mt-6">
             <div className="flex items-end justify-between gap-4 mb-2 md:mb-4">
               <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)" }}>
                 Best Sellers
@@ -210,7 +210,7 @@ export default async function Home() {
 
         {/* Section 3: Trending Now */}
         {section3.length > 0 && (
-          <section className="mb-8 md:mb-12 mt-6">
+          <section className="mb-4 md:mb-12 mt-4 md:mt-6">
             <div className="flex items-center justify-between mb-2 md:mb-4">
               <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)" }}>
                 Trending Creations
@@ -229,7 +229,7 @@ export default async function Home() {
 
         {/* Section 4: Featured Collections */}
         {section4.length > 0 && (
-          <section className="mb-8 md:mb-12 mt-6">
+          <section className="mb-4 md:mb-12 mt-4 md:mt-6">
             <div className="flex items-center justify-between mb-2 md:mb-4">
               <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)" }}>
                 Handmade Collections
