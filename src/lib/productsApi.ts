@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabaseClient";
 export async function getLiveProducts() {
   const { data, error } = await supabase
     .from("products")
-    .select("id, slug, title, description, price, images, category, stock, status, badge, badges, priority, tags, type, priceBucket, minPrice, priceLabel, shippingCharge, deliveryTime, returnPolicy, materials, dimensions, handcraftedHours, checkoutUrl, cta, carts, isVariant, variants, seoContent")
+    .select("*")
     .eq("status", "live")
     .order("priority", { ascending: false });
 
@@ -20,7 +20,7 @@ export async function getLiveProducts() {
 export async function getProductBySlug(slug: string) {
   const { data, error } = await supabase
     .from("products")
-    .select("id, slug, title, description, price, images, category, stock, status, badge, badges, priority, tags, type, priceBucket, minPrice, priceLabel, shippingCharge, deliveryTime, returnPolicy, materials, dimensions, handcraftedHours, checkoutUrl, cta, carts, isVariant, variants, seoContent")
+    .select("*")
     .eq("slug", slug)
     .single();
 
@@ -37,7 +37,7 @@ export async function getProductBySlug(slug: string) {
 export async function getProductById(id: string) {
   const { data, error } = await supabase
     .from("products")
-    .select("id, slug, title, description, price, images, category, stock, status, badge, badges, priority, tags, type, priceBucket, minPrice, priceLabel, shippingCharge, deliveryTime, returnPolicy, materials, dimensions, handcraftedHours, checkoutUrl, cta, carts, isVariant, variants, seoContent")
+    .select("*")
     .eq("id", id)
     .single();
 

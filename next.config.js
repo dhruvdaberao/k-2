@@ -28,11 +28,11 @@ const nextConfig = {
   async headers() {
     const cspHeader = `
       default-src 'self';
-      script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live https://va.vercel-scripts.com;
-      style-src 'self' 'unsafe-inline';
-      img-src 'self' blob: data: https://jclphocedhteegocjawx.supabase.co https://*.supabase.co;
-      font-src 'self';
-      connect-src 'self' https://jclphocedhteegocjawx.supabase.co https://*.supabase.co https://*.supabase.in https://vitals.vercel-insights.com https://va.vercel-scripts.com;
+      script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live https://va.vercel-scripts.com https://cdn.jsdelivr.net;
+      style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com;
+      img-src 'self' blob: data: https://jclphocedhteegocjawx.supabase.co https://*.supabase.co https://www.googletagmanager.com;
+      font-src 'self' https://fonts.gstatic.com;
+      connect-src 'self' https://jclphocedhteegocjawx.supabase.co https://*.supabase.co https://*.supabase.in https://vitals.vercel-insights.com https://va.vercel-scripts.com https://region1.google-analytics.com;
       object-src 'none';
       base-uri 'self';
       form-action 'self' https://secure.payu.in https://test.payu.in;
