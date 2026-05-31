@@ -77,14 +77,14 @@ export default async function Home() {
       {/* Hero Section */}
       <HeroSection slides={heroSlides} autoPlayMs={carouselDelay} />
 
-      <div className="container" style={{ paddingBottom: '30px', paddingTop: '20px' }}>
+      <div className="container pt-1 md:pt-5" style={{ paddingBottom: '30px' }}>
         {/* Shop by Collection Section */}
         {displayCats.length > 0 && (
-          <section className="mb-10 mt-4">
+          <section className="mb-6 md:mb-10 mt-1 md:mt-4">
             <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6" style={{ color: "var(--text)" }}>
               Shop by Collection
             </h2>
-            <div className="category-chips-scroll mb-8">
+            <div className="category-chips-scroll mb-4 md:mb-8">
               {displayCats.map((cat) => {
                 const count = live.filter((p) => (p.category || '') === cat.name).length;
                 const slug = cat.slug;
@@ -167,8 +167,8 @@ export default async function Home() {
 
         {/* Section 1: Popular Handmade Picks */}
         {section1.length > 0 && (
-          <section className="mb-16">
-            <div className="flex items-end justify-between gap-4 mb-6">
+          <section className="mb-10 md:mb-16">
+            <div className="flex items-end justify-between gap-4 mb-4 md:mb-6">
               <h2 className="text-2xl md:text-3xl font-bold" style={{ color: "var(--text)" }}>
                 Popular Handmade Picks
               </h2>
