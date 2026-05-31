@@ -412,40 +412,36 @@ export default function EditCategory({ params }: { params: { id: string } }) {
               </button>
             </div>
             
+            <div className="flex w-full justify-center mt-2">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if ((originalName || "").toLowerCase() === "bags") {
+                    showToast("The 'Bags' category is a default system category and cannot be deleted.");
+                    return;
+                  }
+                  setShowDeleteModal(true);
+                }}
+                disabled={saving}
+                className="btn-outline flex items-center justify-center gap-2"
+                style={{ width: '100%', maxWidth: '416px', border: '1px solid #dc2626', color: '#dc2626', minHeight: '50px' }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+                Delete Category
+              </button>
             </div>
           </div>
         </form>
-        
-        {!isNew && (
-          <div className="flex w-full justify-center mt-4">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if ((originalName || "").toLowerCase() === "bags") {
-                  showToast("The 'Bags' category is a default system category and cannot be deleted.");
-                  return;
-                }
-                setShowDeleteModal(true);
-              }}
-              disabled={saving}
-              className="btn-outline flex items-center justify-center gap-2"
-              style={{ width: '100%', maxWidth: '416px', border: '1px solid #dc2626', color: '#dc2626', minHeight: '50px' }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="3 6 5 6 21 6"></polyline>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                <line x1="10" y1="11" x2="10" y2="17"></line>
-                <line x1="14" y1="11" x2="14" y2="17"></line>
-              </svg>
-              Delete Category
-            </button>
-          </div>
-        )}
 
         {showDeleteModal && (
-          <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}>
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(2px)' }}>
             <div className="bg-[#FDFBF7] rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-[#E6DCCF]">
               <h3 className="text-xl font-bold text-[#4A3219] mb-2">Delete Category</h3>
               <p className="text-[#8B7355] text-sm mb-6">Are you sure you want to delete "{originalName}"? This action cannot be undone.</p>
