@@ -76,7 +76,7 @@ export default function EditTimerPage() {
           <h1 className="text-xl md:text-3xl font-bold text-[#4A3219]">Edit Auto-Play Timer</h1>
         </div>
 
-        <div className="bg-[#F5EFE6] rounded-[24px] border border-[#E6DCCF] shadow-sm p-6 md:p-8">
+        <div className="border shadow-sm p-6 md:p-8" style={{ backgroundColor: '#F5EFE6', borderRadius: '24px', borderColor: '#E6DCCF' }}>
           {loading ? (
             <div className="flex justify-center items-center py-10">
               <div className="w-8 h-8 rounded-full border-4 border-[#4A3219] border-t-transparent animate-spin"></div>
