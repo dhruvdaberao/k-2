@@ -14,19 +14,24 @@ export default function TextBackButton({ text = "← Go Back" }: { text?: string
           router.push("/");
         }
       }}
-      className="meta" 
+      className="flex items-center gap-1.5 transition-opacity hover:opacity-70" 
       style={{ 
-        display: "inline-block", 
         marginBottom: 16, 
         border: "none", 
         background: "transparent", 
         cursor: "pointer", 
         padding: 0,
-        fontFamily: "inherit",
-        fontSize: "inherit"
+        fontFamily: "'Quicksand', sans-serif",
+        fontWeight: 500,
+        fontSize: "15px",
+        color: "#8B7355"
       }}
     >
-      {text}
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      {text.replace("← ", "")}
     </button>
   );
 }
