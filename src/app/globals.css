@@ -68,6 +68,18 @@ html, body, p, a, span, button, input, textarea {
   font-family: var(--font-quicksand, 'Quicksand'), -apple-system, system-ui, sans-serif !important;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+.custom-section-header {
+  margin-bottom: 16px !important;
+}
+
+@media (min-width: 768px) {
+  .custom-section-header {
+    margin-bottom: 32px !important;
+  }
+}
+
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-family: var(--font-playfair, 'Playfair Display'), serif !important;
   color: var(--text);

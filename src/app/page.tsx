@@ -84,9 +84,11 @@ export default async function Home() {
         {/* Shop by Collection Section */}
         {displayCats.length > 0 && (
           <section className="mb-2 md:mb-12 mt-0 md:mt-6">
-            <h2 className="text-2xl md:text-3xl font-bold mb-2 md:mb-6" style={{ color: "var(--text)" }}>
-              Shop by Collection
-            </h2>
+            <div className="flex items-center justify-between gap-2 custom-section-header">
+              <h2 className="text-2xl md:text-3xl font-bold truncate" style={{ color: "var(--text)" }}>
+                Shop by Collection
+              </h2>
+            </div>
             <div className="category-chips-scroll mb-0 md:mb-6">
               {displayCats.map((cat) => {
                 const count = live.filter((p) => (p.category || '') === cat.name).length;
@@ -171,7 +173,7 @@ export default async function Home() {
         {/* Section 1: Popular Picks */}
         {section1.length > 0 && (
           <section className="mb-2 md:mb-12 mt-0 md:mt-6">
-            <div className="flex items-center justify-between gap-2 mb-0 md:mb-4">
+            <div className="flex items-center justify-between gap-2 custom-section-header">
               <h2 className="text-2xl md:text-3xl font-bold truncate" style={{ color: "var(--text)" }}>
                 Popular Picks
               </h2>
@@ -202,7 +204,7 @@ export default async function Home() {
         {/* Section 2: Best Sellers (Auto-badged) */}
         {section2.length > 0 && (
           <section className="mb-2 md:mb-12 mt-0 md:mt-6">
-            <div className="flex items-center justify-between gap-2 mb-0 md:mb-4">
+            <div className="flex items-center justify-between gap-2 custom-section-header">
               <h2 className="text-2xl md:text-3xl font-bold truncate" style={{ color: "var(--text)" }}>
                 Best Sellers
               </h2>
@@ -235,7 +237,7 @@ export default async function Home() {
         {/* Section 3: Trending Now */}
         {section3.length > 0 && (
           <section className="mb-2 md:mb-12 mt-0 md:mt-6">
-            <div className="flex items-center justify-between gap-2 mb-0 md:mb-4">
+            <div className="flex items-center justify-between gap-2 custom-section-header">
               <h2 className="text-2xl md:text-3xl font-bold truncate" style={{ color: "var(--text)" }}>
                 Trending Creations
               </h2>
@@ -266,7 +268,7 @@ export default async function Home() {
         {/* Section 4: Featured Collections */}
         {section4.length > 0 && (
           <section className="mb-2 md:mb-12 mt-0 md:mt-6">
-            <div className="flex items-center justify-between gap-2 mb-0 md:mb-4">
+            <div className="flex items-center justify-between gap-2 custom-section-header">
               <h2 className="text-2xl md:text-3xl font-bold truncate" style={{ color: "var(--text)" }}>
                 Handmade Collections
               </h2>
