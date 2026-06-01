@@ -143,7 +143,7 @@
 }
 
 .mobile-top-search,
-.mobile-top-profile {
+.mobile-top-cart {
   display: none;
   width: 36px;
   height: 36px;
@@ -157,7 +157,7 @@
 }
 
 .mobile-top-search .search-icon,
-.mobile-top-profile .profile-icon {
+.mobile-top-cart .cart-icon {
   color: var(--brand);
   stroke: var(--brand);
   width: 22px;
@@ -172,18 +172,18 @@
 .mobile-top-search:hover,
 .mobile-top-search:active,
 .mobile-top-search.active,
-.mobile-top-profile:hover,
-.mobile-top-profile:active,
-.mobile-top-profile.active {
+.mobile-top-cart:hover,
+.mobile-top-cart:active,
+.mobile-top-cart.active {
   color: var(--icon-color);
 }
 
 .mobile-top-search:hover .search-icon,
 .mobile-top-search:active .search-icon,
 .mobile-top-search.active .search-icon,
-.mobile-top-profile:hover .profile-icon,
-.mobile-top-profile:active .profile-icon,
-.mobile-top-profile.active .profile-icon {
+.mobile-top-cart:hover .cart-icon,
+.mobile-top-cart:active .cart-icon,
+.mobile-top-cart.active .cart-icon {
   color: #5a3e2b;
   stroke: #5a3e2b;
   fill: #5a3e2b;
@@ -228,7 +228,7 @@ body {
   }
 
   .mobile-top-search,
-  .mobile-top-profile {
+  .mobile-top-cart {
     display: inline-flex;
   }
 
