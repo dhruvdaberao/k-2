@@ -35,7 +35,6 @@ const nextConfig = {
       connect-src 'self' https://jclphocedhteegocjawx.supabase.co https://*.supabase.co https://*.supabase.in https://vitals.vercel-insights.com https://va.vercel-scripts.com https://region1.google-analytics.com https://cdn.jsdelivr.net;
       object-src 'none';
       base-uri 'self';
-      form-action 'self' https://secure.payu.in https://test.payu.in;
       frame-ancestors 'none';
       block-all-mixed-content;
       upgrade-insecure-requests;
