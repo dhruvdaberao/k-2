@@ -107,8 +107,8 @@ export async function POST(req: Request) {
       const realPrice = Number(dbProd.price);
       const qty = Number(item.quantity);
       
-      if (!Number.isInteger(qty) || qty <= 0 || qty > 100) {
-        throw new Error(`Invalid quantity for product: ${item.name}`);
+      if (!Number.isInteger(qty) || qty <= 0 || qty > 20) {
+        throw new Error(`Invalid quantity for product: ${item.name}. Maximum 20 per item allowed.`);
       }
 
       subtotal += (realPrice * qty);
