@@ -61,7 +61,7 @@ function OrderSuccessContent() {
   }
 
   return (
-    <main style={{ minHeight: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 16px', background: '#FAF8F5', fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+    <main style={{ minHeight: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px 16px', background: '#FAF8F5' }}>
 
       {/* Card Container */}
       <div style={{ background: '#ffffff', maxWidth: 420, width: '100%', borderRadius: 20, padding: '40px 28px 32px', textAlign: 'center', boxShadow: '0 2px 16px rgba(90,62,43,0.07)', border: '1px solid #f0e6d2' }}>
@@ -74,7 +74,7 @@ function OrderSuccessContent() {
         </div>
 
         {/* Heading */}
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: '#2f2a26', margin: '0 0 6px', fontFamily: 'Georgia, serif' }}>
+        <h1 style={{ fontSize: 22, fontWeight: 700, color: '#2f2a26', margin: '0 0 6px' }} className="font-serif">
           {paymentType === 'online' ? 'Payment Successful!' : 'Order Confirmed'}
         </h1>
         <p style={{ fontSize: 14, color: '#6b7280', margin: '0 0 24px', lineHeight: 1.5 }}>
