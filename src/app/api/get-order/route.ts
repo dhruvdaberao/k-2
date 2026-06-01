@@ -50,7 +50,7 @@ export async function GET(request: Request) {
     }
 
     // 2. Validate access
-    const { data: { user } } = await supabaseAuth.auth.getUser(token);
+    const { data: { user } } = await supabaseAuth.auth.getUser(token || undefined);
     
     const isAdmin = checkIsAdmin(user);
     const isOwner = user && user.id === order.user_id;
