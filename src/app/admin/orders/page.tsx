@@ -160,7 +160,7 @@ export default function AdminOrders() {
                   borderRadius: '999px',
                   border: filter === status ? 'none' : '1px solid #E6DCCF',
                   outline: 'none',
-                  fontWeight: filter === status ? 700 : 500,
+                  fontWeight: filter === status ? 800 : 600,
                   fontSize: '14px',
                   cursor: 'pointer',
                   opacity: 1
@@ -226,8 +226,8 @@ export default function AdminOrders() {
                     </p>
                     <Link 
                       href={`/admin/orders/${order.id}`} 
-                      className="transition text-[13px] font-black uppercase tracking-widest shadow-sm view-order-btn whitespace-nowrap text-center shrink-0"
-                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', textDecoration: 'none', display: 'inline-block', border: 'none', padding: '12px 24px', borderRadius: '999px' }}
+                      className="transition text-[13px] uppercase tracking-widest shadow-sm view-order-btn whitespace-nowrap text-center shrink-0"
+                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', textDecoration: 'none', display: 'inline-block', border: 'none', padding: '12px 24px', borderRadius: '999px', fontWeight: 800 }}
                     >
                       View Order
                     </Link>

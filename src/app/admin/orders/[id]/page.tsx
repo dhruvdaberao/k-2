@@ -280,16 +280,16 @@ export default function OrderDetails() {
                     <button 
                       onClick={() => updateOrderStatus("shipped")}
                       disabled={updating}
-                      className="flex-1 transition rounded-full px-2 py-3 text-[13px] font-black uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
-                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
+                      className="flex-1 transition rounded-full px-2 py-3 text-[13px] uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
+                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none', fontWeight: 800 }}
                     >
                       {updating ? "Processing..." : "Ship Order"}
                     </button>
                     <button 
                       onClick={() => updateOrderStatus("cancelled")}
                       disabled={updating}
-                      className="flex-1 transition rounded-full px-2 py-3 text-[13px] font-black uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
-                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
+                      className="flex-1 transition rounded-full px-2 py-3 text-[13px] uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
+                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none', fontWeight: 800 }}
                     >
                       {updating ? "Processing..." : "Cancel Order"}
                     </button>
@@ -301,8 +301,8 @@ export default function OrderDetails() {
                 <button 
                   onClick={() => updateOrderStatus("delivered")}
                   disabled={updating}
-                  className="w-full transition rounded-full px-4 py-3 text-[13px] font-black uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
-                  style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
+                  className="w-full transition rounded-full px-4 py-3 text-[13px] uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
+                  style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none', fontWeight: 800 }}
                 >
                   {updating ? "Processing..." : "Mark Delivered"}
                 </button>
