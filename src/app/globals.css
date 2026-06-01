@@ -3314,16 +3314,25 @@ svg[stroke="red"] {
 }
 
 /* Universal button click effect */
-body .btn-primary:active, 
-body .btn-secondary:active, 
-body .btn-luxe:active, 
-body .btn-outline:active,
-body button[type="submit"]:active,
-body .checkout-button:active,
-body button:active {
-  transform: scale(0.96) !important;
-  opacity: 0.9 !important;
-  transition: transform 0.1s ease, opacity 0.1s ease !important;
+body .btn-primary, 
+body .btn-secondary, 
+body .btn-luxe, 
+body .btn-outline,
+body button[type="submit"],
+body .checkout-button,
+body button {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+body .btn-primary:not(:disabled):active, 
+body .btn-secondary:not(:disabled):active, 
+body .btn-luxe:not(:disabled):active, 
+body .btn-outline:not(:disabled):active,
+body button[type="submit"]:not(:disabled):active,
+body .checkout-button:not(:disabled):active,
+body button:not(:disabled):active {
+  transform: scale(0.92) !important;
+  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 /* ========================================= */
 /* MAJOR STYLING UPDATE: CARDS & BUTTONS     */
