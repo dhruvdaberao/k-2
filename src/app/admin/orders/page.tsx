@@ -186,7 +186,7 @@ export default function AdminOrders() {
             {filteredOrders.map((order) => {
               const statusColor = getStatusColor(order.status);
               return (
-                <div key={order.id} className="bg-[#F5EFE6] rounded-[24px] p-5 shadow-sm border border-[#E6DCCF] hover:border-[#5A3E2B]/50 transition-all space-y-3">
+                <div key={order.id} className="p-5 shadow-sm border border-[#E6DCCF] transition-all space-y-3" style={{ backgroundColor: '#F5EFE6', borderRadius: '24px' }}>
                   
                   {/* Top Row */}
                   <div className="flex flex-col gap-1">
@@ -216,13 +216,13 @@ export default function AdminOrders() {
                   </div>
 
                   {/* Bottom Row */}
-                  <div className="flex justify-between items-center gap-4 pt-1 border-t border-gray-50 mt-2">
-                    <p className="text-[16px] font-black text-[#5A3E2B]">
+                  <div className="flex justify-between items-center gap-2 pt-1 border-t border-gray-50 mt-2">
+                    <p className="text-[16px] font-black text-[#5A3E2B] m-0">
                       ₹{order.total_amount}
                     </p>
                     <Link 
                       href={`/admin/orders/${order.id}`} 
-                      className="transition rounded-full px-5 py-2.5 text-xs font-black uppercase tracking-widest shadow-sm view-order-btn"
+                      className="transition rounded-full px-5 py-2.5 text-xs font-black uppercase tracking-widest shadow-sm view-order-btn whitespace-nowrap text-center shrink-0"
                       style={{ backgroundColor: '#5a3e2b', color: '#ffffff', textDecoration: 'none', display: 'inline-block', border: 'none' }}
                     >
                       View Order
