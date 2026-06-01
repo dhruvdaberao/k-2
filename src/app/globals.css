@@ -71,7 +71,7 @@ html, body, p, a, span, button, input, textarea {
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 
 .custom-section-header {
-  margin-bottom: 12px !important;
+  margin-bottom: 0px !important;
 }
 
 @media (min-width: 768px) {
@@ -1080,10 +1080,10 @@ summary::-webkit-details-marker {
 .radius-8 { border-radius: 8px !important; }
 
 .category-circle-fixed {
-  width: 86px !important;
-  height: 86px !important;
-  min-width: 86px !important;
-  min-height: 86px !important;
+  width: 75px !important;
+  height: 75px !important;
+  min-width: 75px !important;
+  min-height: 75px !important;
 }
 @media (min-width: 768px) {
   .category-circle-fixed {
@@ -1693,7 +1693,7 @@ summary::-webkit-details-marker {
 .plp-grid-mobile {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
+  gap: 10px;
   padding: 0 0 12px;
   align-items: stretch;
 }
@@ -1701,7 +1701,7 @@ summary::-webkit-details-marker {
 @media (min-width: 768px) {
   .plp-grid-mobile {
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    gap: 16px;
     align-items: stretch;
   }
 }
@@ -2013,7 +2013,7 @@ summary::-webkit-details-marker {
   width: 42px;
   height: 100%;
   pointer-events: none;
-  background: linear-gradient(to right, transparent, var(--bg));
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.92) 70%);
 }
 
 .category-chips-arrow-hint {

@@ -32,8 +32,8 @@ export default function BootstrapNavbar() {
             <Image
               src="/uploads/hero/logo.png"
               alt="Keshvi Crafts Logo"
-              width={120}
-              height={40}
+              width={160}
+              height={56}
               className="logo-img"
               priority={true}
               style={{ objectFit: "contain" }}
