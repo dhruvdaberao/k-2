@@ -25,7 +25,7 @@ export async function GET(request: Request) {
       },
     }
   );
-  const { data: { user } } = await supabaseAuth.auth.getUser(token);
+  const { data: { user } } = await supabaseAuth.auth.getUser();
 
   if (!productId || !user) {
     return NextResponse.json({ error: "Missing productId or unauthorized" }, { status: 400 });
