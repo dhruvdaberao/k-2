@@ -47,6 +47,7 @@ function shortenId(id: string): string {
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useRef } from "react";
+import OrderSkeleton from "@/components/ui/OrderSkeleton";
 
 // ─── Component ─────────────────────────────────────────────────────────────
 export default function OrdersPage() {
@@ -131,39 +132,7 @@ export default function OrdersPage() {
   }, [user, authLoading]);
 
   // Rich skeleton that mirrors real order card structure with shimmer
-  const loadingView = (
-    <div className="orders-list">
-      <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes ordersShimmer {
-          0% { background-position: -400px 0; }
-          100% { background-position: 400px 0; }
-        }
-        .order-skeleton-bar {
-          background: linear-gradient(90deg, #e8dfd4 25%, #f5efe6 37%, #e8dfd4 63%);
-          background-size: 800px 100%;
-          animation: ordersShimmer 1.6s ease-in-out infinite;
-          border-radius: 8px;
-        }
-      `}} />
-      {[1, 2, 3].map(i => (
-        <div key={i} className="order-card" style={{ opacity: 1 - (i - 1) * 0.15, pointerEvents: 'none' }}>
-          <div className="order-card__body">
-            {/* Left side — mimics ID, date, and price */}
-            <div className="order-card__info" style={{ gap: '6px' }}>
-              <div className="order-skeleton-bar" style={{ width: '110px', height: '14px' }} />
-              <div className="order-skeleton-bar" style={{ width: '80px', height: '12px', animationDelay: '0.1s' }} />
-              <div className="order-skeleton-bar" style={{ width: '70px', height: '20px', marginTop: '4px', animationDelay: '0.2s' }} />
-            </div>
-            {/* Right side — mimics badge + chevron */}
-            <div className="order-card__actions">
-              <div className="order-skeleton-bar" style={{ width: '72px', height: '26px', borderRadius: '999px', animationDelay: '0.15s' }} />
-              <div className="order-skeleton-bar" style={{ width: '20px', height: '20px', borderRadius: '50%', animationDelay: '0.25s' }} />
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+  const loadingView = <OrderSkeleton type="list" />;
 
   return (
     <main className="orders-page">

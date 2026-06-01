@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
 import { showToast } from "@/components/Toast";
-import GlobalLoader from "@/components/ui/GlobalLoader";
+import OrderSkeleton from "@/components/ui/OrderSkeleton";
 import PromptModal from "@/components/ui/PromptModal";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 
@@ -124,7 +124,11 @@ export default function OrderDetails() {
   };
 
   if (loading) {
-    return <GlobalLoader message="Loading order details..." />;
+    return (
+      <main className="min-h-screen bg-[#FDFBF7] px-4 md:px-8 py-8">
+        <OrderSkeleton type="detail" />
+      </main>
+    );
   }
 
   const updateOrderStatus = async (newStatus: string) => {

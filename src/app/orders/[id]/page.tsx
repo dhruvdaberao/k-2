@@ -10,6 +10,7 @@ import Image from "next/image";
 import { showToast } from "@/components/Toast";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { generateDynamicPdfUrl } from "@/lib/orderClient";
+import OrderSkeleton from "@/components/ui/OrderSkeleton";
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 type OrderStatus = "placed" | "confirmed" | "shipped" | "delivered";
@@ -183,11 +184,8 @@ export default function OrderDetailPage() {
     return (
       <main className="od-page">
         <style dangerouslySetInnerHTML={{ __html: detailCSS }} />
-        <div className="od-container">
-          <div className="od-header">
-            <h1 className="od-title">Order Details</h1>
-            <p className="od-subtitle">Loading order...</p>
-          </div>
+        <div className="od-container pt-8">
+          <OrderSkeleton type="detail" />
         </div>
       </main>
     );

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
-import GlobalLoader from "@/components/ui/GlobalLoader";
+import OrderSkeleton from "@/components/ui/OrderSkeleton";
 import { isAdmin } from "@/lib/isAdmin";
 
 type Order = {
@@ -76,7 +76,11 @@ export default function AdminOrders() {
   }, []);
 
   if (loading) {
-    return <GlobalLoader message="Loading orders..." />;
+    return (
+      <main className="min-h-screen bg-[#FDFBF7] py-20 px-4 md:px-6" style={{ paddingTop: '5rem', paddingBottom: '5rem' }}>
+        <OrderSkeleton type="list" />
+      </main>
+    );
   }
 
   const filteredOrders = orders.filter((order) => {
