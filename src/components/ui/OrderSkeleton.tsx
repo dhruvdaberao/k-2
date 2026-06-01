@@ -14,23 +14,44 @@ export default function OrderSkeleton({ type = "list" }: { type?: "list" | "deta
 
   return (
     <div className="w-full min-h-[60vh] py-10 px-4 max-w-4xl mx-auto flex flex-col gap-6" style={{ fontFamily: 'Quicksand, sans-serif' }}>
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes orderSkeletonShimmer {
+          0% { background-position: -800px 0; }
+          100% { background-position: 800px 0; }
+        }
+        .os-shimmer {
+          background: linear-gradient(90deg, #e8dfd4 25%, #f5efe6 37%, #e8dfd4 63%);
+          background-size: 800px 100%;
+          animation: orderSkeletonShimmer 2s infinite linear;
+          border-radius: 8px;
+        }
+        .os-card {
+          background-color: #FDFBF7;
+          border: 1px solid #E6DCCF;
+          border-radius: 24px;
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+        }
+      `}} />
+
       {type === "list" ? (
         <>
           {/* Header Skeleton */}
-          <div className="w-48 h-8 bg-[#E6DCCF] rounded-full animate-pulse mx-auto mb-4" />
-          <div className="w-full h-12 bg-[#E6DCCF] rounded-[999px] animate-pulse mb-6" />
+          <div className="os-shimmer mx-auto mb-4" style={{ width: '192px', height: '32px', borderRadius: '999px' }} />
+          <div className="os-shimmer mb-6" style={{ width: '100%', height: '48px', borderRadius: '999px' }} />
           
           {/* List Cards Skeleton */}
           {[1, 2, 3].map(i => (
-            <div key={i} className="w-full h-[140px] bg-[#F5EFE6] rounded-[24px] border border-[#E6DCCF] animate-pulse p-5 flex flex-col justify-between">
-              <div className="flex justify-between items-start">
-                 <div className="w-1/3 h-5 bg-[#E6DCCF] rounded-md" />
-                 <div className="w-1/4 h-5 bg-[#E6DCCF] rounded-full" />
+            <div key={i} className="os-card" style={{ height: '140px', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                 <div className="os-shimmer" style={{ width: '33%', height: '20px' }} />
+                 <div className="os-shimmer" style={{ width: '25%', height: '20px', borderRadius: '999px' }} />
               </div>
-              <div className="w-1/2 h-4 bg-[#E6DCCF] rounded-md mt-2" />
-              <div className="flex justify-between items-center mt-auto border-t border-gray-50 pt-3">
-                 <div className="w-1/4 h-6 bg-[#E6DCCF] rounded-md" />
-                 <div className="w-1/4 h-10 bg-[#E6DCCF] rounded-[14px]" />
+              <div className="os-shimmer" style={{ width: '50%', height: '16px', marginTop: '8px' }} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', borderTop: '1px solid #f9f9f9', paddingTop: '12px' }}>
+                 <div className="os-shimmer" style={{ width: '25%', height: '24px' }} />
+                 <div className="os-shimmer" style={{ width: '25%', height: '40px', borderRadius: '999px' }} />
               </div>
             </div>
           ))}
@@ -38,30 +59,31 @@ export default function OrderSkeleton({ type = "list" }: { type?: "list" | "deta
       ) : (
         <>
            {/* Detail Skeleton */}
-           <div className="w-32 h-6 bg-[#E6DCCF] rounded-full animate-pulse mb-6" />
-           <div className="w-full h-[300px] bg-[#F5EFE6] rounded-[24px] border border-[#E6DCCF] animate-pulse p-5 flex flex-col gap-4">
-              <div className="w-1/2 h-6 bg-[#E6DCCF] rounded-md" />
-              <div className="w-1/3 h-4 bg-[#E6DCCF] rounded-md" />
-              <div className="flex gap-2 mt-4">
-                 <div className="w-1/4 h-6 bg-[#E6DCCF] rounded-full" />
-                 <div className="w-1/4 h-6 bg-[#E6DCCF] rounded-full" />
+           <div className="os-shimmer mb-6" style={{ width: '128px', height: '24px', borderRadius: '999px' }} />
+           <div className="os-card" style={{ height: '300px', gap: '16px' }}>
+              <div className="os-shimmer" style={{ width: '50%', height: '24px' }} />
+              <div className="os-shimmer" style={{ width: '33%', height: '16px' }} />
+              <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
+                 <div className="os-shimmer" style={{ width: '25%', height: '24px', borderRadius: '999px' }} />
+                 <div className="os-shimmer" style={{ width: '25%', height: '24px', borderRadius: '999px' }} />
               </div>
-              <div className="mt-auto flex justify-between gap-4">
-                 <div className="flex-1 h-12 bg-[#E6DCCF] rounded-[14px]" />
-                 <div className="flex-1 h-12 bg-[#E6DCCF] rounded-[14px]" />
+              <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', gap: '16px' }}>
+                 <div className="os-shimmer" style={{ flex: 1, height: '48px', borderRadius: '999px' }} />
+                 <div className="os-shimmer" style={{ flex: 1, height: '48px', borderRadius: '999px' }} />
               </div>
            </div>
-           <div className="w-full h-32 bg-[#F5EFE6] rounded-[24px] border border-[#E6DCCF] animate-pulse mt-4" />
+           <div className="os-card" style={{ height: '128px', marginTop: '16px' }}>
+              <div className="os-shimmer" style={{ width: '100%', height: '100%' }} />
+           </div>
         </>
       )}
 
       {showReload && (
-        <div className="text-center mt-8 animate-fade-in flex flex-col items-center">
-          <p className="text-sm text-[#8B7355] font-bold mb-3">Taking longer than expected...</p>
+        <div className="text-center mt-8" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <p className="text-[#8B7355] font-bold mb-3" style={{ fontSize: '14px' }}>Taking longer than expected...</p>
           <button 
             onClick={() => window.location.reload()}
-            className="px-6 py-2.5 transition shadow-sm font-black uppercase tracking-widest text-xs"
-            style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none', borderRadius: '14px' }}
+            style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none', borderRadius: '999px', padding: '12px 24px', fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em', cursor: 'pointer', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}
           >
             Reload Page
           </button>
