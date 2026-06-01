@@ -220,7 +220,7 @@ export default function OrderDetails() {
         </div>
 
         {/* MAIN COMPACT CARD */}
-        <div className="bg-[#F5EFE6] rounded-[24px] shadow-sm border border-[#E6DCCF] overflow-hidden">
+        <div className="shadow-sm border border-[#E6DCCF] overflow-hidden" style={{ backgroundColor: '#F5EFE6', borderRadius: '24px' }}>
           
           {/* TOP STATUS BANNER */}
           <div 
@@ -235,7 +235,7 @@ export default function OrderDetails() {
             </h2>
           </div>
 
-          <div className="p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+          <div className="p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-5" style={{ fontFamily: 'Quicksand, sans-serif' }}>
             {/* INFO SECTION */}
             <div className="flex-grow flex-1 min-w-0">
               <div className="flex-1 min-w-0">
@@ -269,14 +269,14 @@ export default function OrderDetails() {
                       placeholder="Paste tracking link..."
                       value={trackingLink}
                       onChange={(e) => setTrackingLink(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-full border border-[rgba(139,94,60,0.4)] focus:border-[#5A3E2B] outline-none text-xs font-bold text-[#5A3E2B] transition-all bg-white"
+                      className="w-full px-4 py-3 rounded-[14px] border border-[rgba(139,94,60,0.4)] focus:border-[#5A3E2B] outline-none text-[13px] font-bold text-[#5A3E2B] transition-all bg-white"
                     />
                   </div>
                   <div className="flex gap-2">
                     <button 
                       onClick={() => updateOrderStatus("shipped")}
                       disabled={updating}
-                      className="flex-1 transition rounded-full px-4 py-3 text-[13px] font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
+                      className="flex-1 transition rounded-[14px] px-2 py-3 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
                       style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
                     >
                       {updating ? "Processing..." : "Ship Order"}
@@ -284,7 +284,7 @@ export default function OrderDetails() {
                     <button 
                       onClick={() => updateOrderStatus("cancelled")}
                       disabled={updating}
-                      className="flex-1 transition rounded-full px-4 py-3 text-[13px] font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
+                      className="flex-1 transition rounded-[14px] px-2 py-3 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
                       style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
                     >
                       {updating ? "Processing..." : "Cancel Order"}
@@ -297,7 +297,7 @@ export default function OrderDetails() {
                 <button 
                   onClick={() => updateOrderStatus("delivered")}
                   disabled={updating}
-                  className="w-full transition rounded-full px-4 py-3 text-[13px] font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
+                  className="w-full transition rounded-[14px] px-4 py-3 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
                   style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
                 >
                   {updating ? "Processing..." : "Mark Delivered"}
