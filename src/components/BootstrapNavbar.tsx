@@ -89,21 +89,18 @@ export default function BootstrapNavbar() {
             </Link>
             
             <Link
-              href="/cart"
+              href={authLink}
               prefetch={true}
-              className={`mobile-top-cart ${isActive("/cart") ? "active" : ""}`}
-              aria-label="View Cart"
-              title="Bag"
-              style={{ alignItems: "center", marginLeft: "12px", position: "relative" }}
+              className={`mobile-top-profile ${isActive(authLink) ? "active" : ""}`}
+              aria-label={user ? "User Profile" : "Login"}
+              title={user ? "Profile" : "Login"}
+              style={{ alignItems: "center", marginLeft: "12px" }}
             >
-              <div className="cart-wrapper-text">
-                {isActive("/cart") ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" width={22} height={22} viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="cart-icon"><rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="#5a3e2b"/><path d="M7 8V6a5 5 0 0 1 10 0v2" fill="none"/></svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="cart-icon"><rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="none"/><path d="M7 11V6a5 5 0 0 1 10 0v5" fill="none"/></svg>
-                )}
-                <CartBadge size="sm" />
-              </div>
+              {isActive(authLink) ? (
+                <svg xmlns="http://www.w3.org/2000/svg" width={22} height={22} viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="profile-icon"><path d="M19 21a1 1 0 0 0 1-1v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1a1 1 0 0 0 1 1z"/><circle cx="12" cy="7" r="4"/></svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="profile-icon"><path d="M19 21a1 1 0 0 0 1-1v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1a1 1 0 0 0 1 1z"/><circle cx="12" cy="7" r="4"/></svg>
+              )}
             </Link>
           </div>
         </div>
@@ -140,13 +137,16 @@ export default function BootstrapNavbar() {
           <span className="bottom-nav-label bottom-nav-label--wishlist">Wishlist</span>
         </Link>
 
-        <Link href={authLink} prefetch={true} className={`bottom-nav-item profile-bottom ${isActive(authLink) ? "active" : ""}`} title={user ? "Profile" : "Login"}>
-          {isActive(authLink) ? (
-            <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><path d="M19 21a1 1 0 0 0 1-1v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1a1 1 0 0 0 1 1z"/><circle cx="12" cy="7" r="4"/></svg>
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><path d="M19 21a1 1 0 0 0 1-1v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1a1 1 0 0 0 1 1z"/><circle cx="12" cy="7" r="4"/></svg>
-          )}
-          <span className="bottom-nav-label">{user ? "Profile" : "Login"}</span>
+        <Link href="/cart" prefetch={true} className={`bottom-nav-item cart-bottom ${isActive("/cart") ? "active" : ""}`} title="Bag">
+          <div className="cart-wrapper">
+            {isActive("/cart") ? (
+              <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="#5a3e2b"/><path d="M7 8V6a5 5 0 0 1 10 0v2" fill="none"/></svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="none"/><path d="M7 11V6a5 5 0 0 1 10 0v5" fill="none"/></svg>
+            )}
+            <CartBadge size="sm" />
+          </div>
+          <span className="bottom-nav-label">Bag</span>
         </Link>
       </div>
     </>
