@@ -273,14 +273,14 @@ export default function OrderDetails() {
                       placeholder="Paste tracking link..."
                       value={trackingLink}
                       onChange={(e) => setTrackingLink(e.target.value)}
-                      className="w-full px-4 py-3 rounded-[14px] border border-[rgba(139,94,60,0.4)] focus:border-[#5A3E2B] outline-none text-[13px] font-bold text-[#5A3E2B] transition-all bg-white"
+                      className="w-full px-4 py-3 rounded-full border border-[rgba(139,94,60,0.4)] focus:border-[#5A3E2B] outline-none text-[13px] font-bold text-[#5A3E2B] transition-all bg-white"
                     />
                   </div>
                   <div className="flex gap-2">
                     <button 
                       onClick={() => updateOrderStatus("shipped")}
                       disabled={updating}
-                      className="flex-1 transition rounded-[14px] px-2 py-3 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
+                      className="flex-1 transition rounded-full px-2 py-3 text-[13px] font-black uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
                       style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
                     >
                       {updating ? "Processing..." : "Ship Order"}
@@ -288,7 +288,7 @@ export default function OrderDetails() {
                     <button 
                       onClick={() => updateOrderStatus("cancelled")}
                       disabled={updating}
-                      className="flex-1 transition rounded-[14px] px-2 py-3 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
+                      className="flex-1 transition rounded-full px-2 py-3 text-[13px] font-black uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
                       style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
                     >
                       {updating ? "Processing..." : "Cancel Order"}
@@ -301,7 +301,7 @@ export default function OrderDetails() {
                 <button 
                   onClick={() => updateOrderStatus("delivered")}
                   disabled={updating}
-                  className="w-full transition rounded-[14px] px-4 py-3 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
+                  className="w-full transition rounded-full px-4 py-3 text-[13px] font-black uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
                   style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
                 >
                   {updating ? "Processing..." : "Mark Delivered"}
@@ -321,7 +321,7 @@ export default function OrderDetails() {
               )}
 
               {/* QUICK ADDRESS FOOTER */}
-              <div className="mt-6 p-4 bg-white/70 rounded-[20px] border border-[#E6DCCF] shadow-sm">
+              <div className="mt-6 p-4 bg-white/70 shadow-sm" style={{ border: '1px solid #E6DCCF', borderRadius: '24px' }}>
                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2">Full Delivery Address</label>
                 <p className="text-xs text-[#5A3E2B] font-bold leading-relaxed">
                   {address.address_line || address.address || "No address"}<br/>

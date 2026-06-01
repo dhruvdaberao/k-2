@@ -195,7 +195,7 @@ export default function AdminOrders() {
                   {/* Top Row */}
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-3 flex-wrap">
-                      <p className="text-[14px] font-bold text-[#5A3E2B] tracking-tight m-0">
+                      <p className="text-[14px] font-black text-[#5A3E2B] tracking-tight m-0" style={{ fontFamily: 'Quicksand, sans-serif' }}>
                         {order.display_id || order.id.slice(0, 8)}
                       </p>
                       <span 
@@ -226,8 +226,8 @@ export default function AdminOrders() {
                     </p>
                     <Link 
                       href={`/admin/orders/${order.id}`} 
-                      className="transition text-xs font-black uppercase tracking-widest shadow-sm view-order-btn whitespace-nowrap text-center shrink-0"
-                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', textDecoration: 'none', display: 'inline-block', border: 'none', padding: '12px 24px', borderRadius: '14px' }}
+                      className="transition text-[13px] font-black uppercase tracking-widest shadow-sm view-order-btn whitespace-nowrap text-center shrink-0"
+                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', textDecoration: 'none', display: 'inline-block', border: 'none', padding: '12px 24px', borderRadius: '999px' }}
                     >
                       View Order
                     </Link>
