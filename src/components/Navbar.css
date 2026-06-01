@@ -1,6 +1,6 @@
 :root {
-  --nav-h: 72px;
-  --bottom-nav-h: 60px;
+  --nav-h: 56px;
+  --bottom-nav-h: 56px;
   --bg-main: #f8f5f2;
   --bg-nav: #f1ebe6;
   --primary-brown: #5a3e2b;
@@ -15,18 +15,20 @@
   right: 0;
   z-index: 1400;
   height: calc(var(--nav-h) + env(safe-area-inset-top));
-  background: var(--bg-nav);
-  border-bottom: none !important;
-  box-shadow: none !important;
+  background: rgba(241, 235, 230, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,0,0,0.06) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
   padding: env(safe-area-inset-top) 16px 0;
 }
 
 .top-navbar {
-  height: 72px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 16px;
+  padding: 6px 16px;
   border-bottom: none !important;
   box-shadow: none !important;
 }
@@ -70,11 +72,11 @@
 }
 
 .logo {
-  height: 56px;
+  height: 40px;
 }
 
 .logo img {
-  height: 56px !important;
+  height: 40px !important;
   max-height: 100%;
   object-fit: contain;
 }
@@ -241,7 +243,7 @@ body {
 
   .logo-img {
     width: auto;
-    height: 56px;
+    height: 40px;
   }
 
   .mobile-bottom-nav {
@@ -331,12 +333,6 @@ body {
   }
 
   body {
-    padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + 12px);
-  }
-
-  .main-content,
-  .checkout-flow,
-  .collections-page {
-    padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + 20px);
+    padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + 4px);
   }
 }

@@ -127,7 +127,7 @@
   border-radius: 0;
   background: none !important;
   box-shadow: none;
-  padding: 6px;
+  padding: 12px;
   color: #6b4226;
   display: inline-flex;
   align-items: center;
@@ -139,8 +139,8 @@
 
 .hero-carousel__arrow svg,
 .carousel-arrow svg {
-  width: 20px;
-  height: 20px;
+  width: 28px;
+  height: 28px;
   stroke: #6b4226;
   stroke-width: 2;
 }
@@ -264,17 +264,20 @@
   .hero-slide__inner {
     min-height: auto;
     grid-template-columns: 1fr;
-    gap: 4px;
-    padding: 0 12px 4px;
+    gap: 16px;
+    padding: 12px 12px 16px;
     align-content: center;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
   }
 
   .hero-slide__image-shell {
-    height: 170px;
+    height: 230px;
   }
 
   .hero-slide__image {
-    max-height: 170px;
+    max-height: 230px;
     margin-top: 0;
   }
 
@@ -322,8 +325,17 @@
     display: inline-flex;
   }
 
-  /* Hide dots on mobile to save vertical space */
   .hero-carousel__dots {
-    display: none;
+    display: flex;
+    margin-top: 12px;
+  }
+
+  .hero-carousel__dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .hero-carousel__dot.is-active {
+    width: 24px;
   }
 }
