@@ -10,6 +10,35 @@ import {
   getWishlist 
 } from "@/lib/bags";
 import { useAuth } from "./useAuth";
+import { supabase } from "@/lib/supabaseClient";
+
+export let globalWishlistProductsCache: any[] = [];
+export let globalWishlistIdsCache: string = "";
+
+export function prefetchWishlistProducts(ids: string[]) {
+  if (!ids || ids.length === 0) return;
+  const idsStr = [...ids].sort().join(',');
+  if (idsStr === globalWishlistIdsCache) return;
+
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const uuids = ids.filter(id => uuidRegex.test(id));
+  const slugs = ids.filter(id => !uuidRegex.test(id));
+  
+  let orFilters = [];
+  if (uuids.length > 0) orFilters.push(`id.in.(${uuids.join(',')})`);
+  if (slugs.length > 0) orFilters.push(`slug.in.(${slugs.join(',')})`);
+  
+  if (orFilters.length === 0) return;
+
+  supabase.from("products").select("*").or(orFilters.join(','))
+    .then(({ data }) => {
+      if (data) {
+        globalWishlistProductsCache = data;
+        globalWishlistIdsCache = idsStr;
+      }
+    })
+    .catch(err => console.error("Wishlist Prefetch Error:", err));
+}
 
 type WishlistContextType = {
   wishlist: string[];
@@ -150,6 +179,13 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       syncLocalWishlistToDB(user.id).then(() => loadWishlist());
     }
   }, [user?.id]);
+
+  // Background Prefetching
+  useEffect(() => {
+    if (wishlist.length > 0) {
+      prefetchWishlistProducts(wishlist);
+    }
+  }, [wishlist]);
 
   const value = useMemo(() => ({
     wishlist,

@@ -1,7 +1,7 @@
 // app/wishlist/page.tsx
 "use client";
 
-import { useWishlist } from "@/hooks/useWishlist";
+import { useWishlist, globalWishlistProductsCache, globalWishlistIdsCache } from "@/hooks/useWishlist";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,12 +10,9 @@ import { supabase } from "@/lib/supabaseClient";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { showToast } from "@/components/Toast";
 
-let globalWishlistProductsCache: any[] = [];
-let globalWishlistIdsCache: string = "";
-
 export default function WishlistPage() {
   const { wishlist: items, loading, removeWishlistItems } = useWishlist();
-  const itemsStr = items.sort().join(',');
+  const itemsStr = [...items].sort().join(',');
 
   const [products, setProducts] = useState<any[]>(() => {
     return itemsStr === globalWishlistIdsCache ? globalWishlistProductsCache : [];
@@ -48,8 +45,7 @@ export default function WishlistPage() {
         if (reqId !== fetchControllerRef.current) return;
         if (data) {
           setProducts(data);
-          globalWishlistProductsCache = data;
-          globalWishlistIdsCache = ids.join(',');
+          // Only update local state here, let prefetcher handle the global cache
           // Check for ghost items (IDs in wishlist that don't match any fetched product)
           const validIds = new Set(data.map((p: any) => p.id).concat(data.map((p: any) => p.slug)));
           const ghostIds = ids.filter(id => !validIds.has(id));
