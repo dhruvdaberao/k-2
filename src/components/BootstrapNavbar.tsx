@@ -94,14 +94,14 @@ export default function BootstrapNavbar() {
               className={`mobile-top-cart ${isActive("/cart") ? "active" : ""}`}
               aria-label="Shopping Bag"
               title="Bag"
-              style={{ display: 'flex', alignItems: 'center', marginLeft: "12px", position: 'relative' }}
+              style={{ display: 'flex', alignItems: 'center', marginLeft: "12px" }}
             >
-              {isActive("/cart") ? (
-                <svg xmlns="http://www.w3.org/2000/svg" width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="cart-icon"><rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="#5a3e2b"/><path d="M7 8V6a5 5 0 0 1 10 0v2" fill="none"/></svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="cart-icon"><rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="none"/><path d="M7 11V6a5 5 0 0 1 10 0v5" fill="none"/></svg>
-              )}
-              <div style={{ position: 'absolute', top: -5, right: -8 }}>
+              <div className="cart-wrapper">
+                {isActive("/cart") ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="cart-icon"><rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="#5a3e2b"/><path d="M7 8V6a5 5 0 0 1 10 0v2" fill="none"/></svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="cart-icon"><rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="none"/><path d="M7 11V6a5 5 0 0 1 10 0v5" fill="none"/></svg>
+                )}
                 <CartBadge size="sm" />
               </div>
             </Link>

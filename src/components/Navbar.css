@@ -205,7 +205,8 @@
   margin-left: 6px !important;
 }
 
-/* Mobile badges remain absolute on the icon in bottom nav */
+/* Mobile badges remain absolute on the icon in bottom nav or top right */
+.mobile-top-cart .cart-wrapper .cart-badge,
 .mobile-bottom-nav .cart-wrapper .cart-badge,
 .mobile-bottom-nav .wishlist-wrapper .wishlist-badge {
   position: absolute !important;
