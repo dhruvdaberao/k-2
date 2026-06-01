@@ -91,6 +91,11 @@ export async function POST(req: Request) {
       if (!dbProd) throw new Error(`Product not found: ${item.name}`);
       const realPrice = Number(dbProd.price);
       const qty = Number(item.quantity);
+      
+      if (!Number.isInteger(qty) || qty <= 0 || qty > 100) {
+        throw new Error(`Invalid quantity for product: ${item.name}`);
+      }
+
       subtotal += (realPrice * qty);
       
       return {
