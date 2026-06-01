@@ -108,7 +108,7 @@ export default function AdminOrders() {
   };
 
   return (
-    <main className="min-h-screen bg-[#FDFBF7] py-20 px-4 md:px-6" style={{ paddingTop: '5rem', paddingBottom: '5rem' }}>
+    <main className="min-h-screen bg-[#FDFBF7] pt-8 md:pt-12 pb-20 px-4 md:px-6" style={{ paddingBottom: '5rem' }}>
       <div className="max-w-4xl mx-auto">
         
         {/* Header */}
@@ -190,7 +190,7 @@ export default function AdminOrders() {
             {filteredOrders.map((order) => {
               const statusColor = getStatusColor(order.status);
               return (
-                <div key={order.id} className="p-5 shadow-sm border border-[#E6DCCF] transition-all space-y-3" style={{ backgroundColor: '#F5EFE6', borderRadius: '24px' }}>
+                <div key={order.id} className="p-5 shadow-sm border transition-all space-y-3" style={{ backgroundColor: '#F5EFE6', borderRadius: '24px', borderColor: '#D4C4B0' }}>
                   
                   {/* Top Row */}
                   <div className="flex flex-col gap-1">
