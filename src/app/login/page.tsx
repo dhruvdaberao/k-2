@@ -136,7 +136,7 @@ export default function LoginPage() {
 
         showToast("Logged in successfully");
 
-        if (data.user?.id) {
+        if (data && data.user?.id) {
           await syncLocalCartToDB(data.user.id);
         }
 
@@ -165,7 +165,7 @@ export default function LoginPage() {
         }
 
         showToast("Logged in successfully");
-        if (data.user?.id) {
+        if (data && data.user?.id) {
           await syncLocalCartToDB(data.user.id);
         }
 
