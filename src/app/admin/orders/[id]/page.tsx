@@ -239,13 +239,13 @@ export default function OrderDetails() {
             {/* INFO SECTION */}
             <div className="flex-grow flex-1 min-w-0">
               <div className="flex-1 min-w-0">
-                <h1 className="text-xs font-black text-[#5A3E2B] truncate">{order.display_id}</h1>
-                <p className="text-[10px] text-gray-500 font-medium truncate">{order.email}</p>
+                <h1 className="text-sm font-black text-[#5A3E2B] truncate tracking-wide" style={{ fontFamily: 'Quicksand, sans-serif' }}>{order.display_id}</h1>
+                <p className="text-[11px] text-gray-500 font-medium truncate mt-1">{order.email}</p>
               </div>
               
-              <div className="flex items-center gap-2 text-[10px] text-gray-400 mt-1">
-                <span>{new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
-                <span className="font-bold text-[#5A3E2B]">₹{order.total_amount}</span>
+              <div className="flex items-center gap-8 text-xs text-gray-500 mt-2 font-semibold tracking-wide">
+                <span>{new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                <span className="font-black text-[#5A3E2B] text-sm">₹{order.total_amount}</span>
               </div>
 
               {/* ITEM CHIPS */}
@@ -269,14 +269,14 @@ export default function OrderDetails() {
                       placeholder="Paste tracking link..."
                       value={trackingLink}
                       onChange={(e) => setTrackingLink(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-[#5A3E2B] outline-none text-xs font-bold text-[#5A3E2B] transition-all"
+                      className="w-full px-4 py-2.5 rounded-full border border-[rgba(139,94,60,0.4)] focus:border-[#5A3E2B] outline-none text-xs font-bold text-[#5A3E2B] transition-all bg-white"
                     />
                   </div>
                   <div className="flex gap-2">
                     <button 
                       onClick={() => updateOrderStatus("shipped")}
                       disabled={updating}
-                      className="flex-1 transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
+                      className="flex-1 transition rounded-full px-4 py-3 text-[13px] font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
                       style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
                     >
                       {updating ? "Processing..." : "Ship Order"}
@@ -284,7 +284,7 @@ export default function OrderDetails() {
                     <button 
                       onClick={() => updateOrderStatus("cancelled")}
                       disabled={updating}
-                      className="flex-1 transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
+                      className="flex-1 transition rounded-full px-4 py-3 text-[13px] font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
                       style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
                     >
                       {updating ? "Processing..." : "Cancel Order"}
@@ -297,7 +297,7 @@ export default function OrderDetails() {
                 <button 
                   onClick={() => updateOrderStatus("delivered")}
                   disabled={updating}
-                  className="w-full transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
+                  className="w-full transition rounded-full px-4 py-3 text-[13px] font-black uppercase tracking-widest shadow-sm disabled:opacity-50"
                   style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none' }}
                 >
                   {updating ? "Processing..." : "Mark Delivered"}
@@ -305,25 +305,25 @@ export default function OrderDetails() {
               )}
 
               {order.status === "delivered" && (
-                <div className="px-4 py-2 rounded-lg bg-green-50 text-green-700 text-[10px] font-black uppercase tracking-widest text-center border border-green-200 shadow-sm">
+                <div className="px-4 py-3 rounded-full bg-green-50 text-green-700 text-[11px] font-black uppercase tracking-widest text-center border border-green-200 shadow-sm mt-2">
                   Delivered
                 </div>
               )}
 
               {order.status === "cancelled" && (
-                <div className="px-4 py-2 rounded-lg bg-red-50 text-red-700 text-[10px] font-black uppercase tracking-widest text-center border border-red-200 shadow-sm">
+                <div className="px-4 py-3 rounded-full bg-red-50 text-red-700 text-[11px] font-black uppercase tracking-widest text-center border border-red-200 shadow-sm mt-2">
                   Cancelled
                 </div>
               )}
 
               {/* QUICK ADDRESS FOOTER */}
-              <div className="mt-4 p-3 bg-stone-50 rounded-lg border border-stone-100">
-                <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-1">Full Delivery Address</label>
-                <p className="text-[11px] text-[#5A3E2B] font-bold leading-relaxed">
+              <div className="mt-6 p-4 bg-white/70 rounded-[20px] border border-[#E6DCCF] shadow-sm">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2">Full Delivery Address</label>
+                <p className="text-xs text-[#5A3E2B] font-bold leading-relaxed">
                   {address.address_line || address.address || "No address"}<br/>
                   {[address.city, address.state, address.country].filter(Boolean).join(", ")} {address.pincode ? `- ${address.pincode}` : ""}
                 </p>
-                {address.phone && <p className="text-[10px] text-gray-500 mt-1">Phone: {address.phone}</p>}
+                {address.phone && <p className="text-[11px] text-gray-500 mt-2 font-semibold">Phone: {address.phone}</p>}
               </div>
             </div>
           </div>
