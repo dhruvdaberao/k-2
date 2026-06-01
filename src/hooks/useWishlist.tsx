@@ -31,13 +31,13 @@ export function prefetchWishlistProducts(ids: string[]) {
   if (orFilters.length === 0) return;
 
   supabase.from("products").select("*").or(orFilters.join(','))
-    .then(({ data }) => {
+    .then(({ data }: { data: any }) => {
       if (data) {
         globalWishlistProductsCache = data;
         globalWishlistIdsCache = idsStr;
       }
     })
-    .catch(err => console.error("Wishlist Prefetch Error:", err));
+    .catch((err: any) => console.error("Wishlist Prefetch Error:", err));
 }
 
 type WishlistContextType = {
