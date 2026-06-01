@@ -13,13 +13,15 @@ export async function GET(req: Request) {
 
     const supabase = createClient(supabaseUrl, serviceKey);
     
-    // Test if anyone can read profiles by using the ANON key
-    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-    const anonSupabase = createClient(supabaseUrl, anonKey);
-    const { data: profiles, error: profileError } = await anonSupabase.from('profiles').select('*').limit(5);
+    // Check what happens when we select from orders
+    const { data: orders, error: ordersError } = await supabase
+      .from('orders')
+      .select('id, display_id, email, status, total_amount, created_at, payment_method')
+      .order('created_at', { ascending: false })
+      .limit(1);
 
     return NextResponse.json({ 
-        profilesLeaked: profiles,
-        profileError
+        orders,
+        ordersError
     });
 }
