@@ -243,7 +243,7 @@ export default function OrderDetails() {
             {/* INFO SECTION */}
             <div className="flex-grow flex-1 min-w-0">
               <div className="flex-1 min-w-0">
-                <h1 className="text-sm font-black text-[#5A3E2B] truncate tracking-wide" style={{ fontFamily: 'Quicksand, sans-serif' }}>{order.display_id}</h1>
+                <p className="text-sm font-black text-[#5A3E2B] truncate tracking-wide m-0" style={{ fontFamily: 'Quicksand, sans-serif' }}>{order.display_id}</p>
                 <p className="text-[11px] text-gray-500 font-medium truncate mt-1">{order.email}</p>
               </div>
               
