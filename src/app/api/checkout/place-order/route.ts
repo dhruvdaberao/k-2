@@ -119,6 +119,10 @@ export async function POST(req: Request) {
       };
     });
 
+    if (subtotal <= 0) {
+      return NextResponse.json({ success: false, error: 'Order value must be greater than zero' }, { status: 400 });
+    }
+
     const shippingCharge = subtotal >= 650 ? 0 : 40;
     const grandTotal = subtotal + shippingCharge;
     
