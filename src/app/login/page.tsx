@@ -111,6 +111,7 @@ export default function LoginPage() {
           setSuccessModal(true);
           setTimeout(() => {
             setSuccessModal(false);
+            router.refresh();
             router.replace("/profile");
           }, 2000);
         }
@@ -143,6 +144,7 @@ export default function LoginPage() {
         setSuccessModal(true);
         setTimeout(() => {
           setSuccessModal(false);
+          router.refresh();
           router.replace("/profile");
         }, 2000);
       } else if (authMode === "otp") {
@@ -172,6 +174,7 @@ export default function LoginPage() {
         setSuccessModal(true);
         setTimeout(() => {
           setSuccessModal(false);
+          router.refresh();
           router.replace("/profile");
         }, 2000);
       } else if (authMode === "forgot") {
