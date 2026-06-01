@@ -212,7 +212,7 @@ export default function OrderDetails() {
   const address = order.delivery_address || {};
 
   return (
-    <main className="min-h-screen bg-[#FDFBF7] px-4 md:px-8 py-8">
+    <main className="min-h-screen bg-[#FDFBF7] px-4 md:px-8 pt-24 md:pt-28 pb-8">
       <div className="max-w-3xl mx-auto">
         
         {/* BACK BUTTON */}
@@ -273,23 +273,24 @@ export default function OrderDetails() {
                       placeholder="Paste tracking link..."
                       value={trackingLink}
                       onChange={(e) => setTrackingLink(e.target.value)}
-                      className="w-full px-4 py-3 rounded-full border border-[rgba(139,94,60,0.4)] focus:border-[#5A3E2B] outline-none text-[13px] font-bold text-[#5A3E2B] transition-all bg-white"
+                      className="w-full px-4 py-2.5 rounded-full border border-[rgba(139,94,60,0.4)] focus:border-[#5A3E2B] outline-none text-[13px] font-bold text-[#5A3E2B] transition-all bg-white"
+                      style={{ fontFamily: 'Quicksand, sans-serif' }}
                     />
                   </div>
                   <div className="flex gap-2">
                     <button 
                       onClick={() => updateOrderStatus("shipped")}
                       disabled={updating}
-                      className="flex-1 transition rounded-full px-2 py-3 text-[13px] uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
-                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none', fontWeight: 800 }}
+                      className="flex-1 transition rounded-full px-2 py-2.5 text-[13px] uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
+                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none', fontWeight: 800, fontFamily: 'Quicksand, sans-serif' }}
                     >
                       {updating ? "Processing..." : "Ship Order"}
                     </button>
                     <button 
                       onClick={() => updateOrderStatus("cancelled")}
                       disabled={updating}
-                      className="flex-1 transition rounded-full px-2 py-3 text-[13px] uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
-                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none', fontWeight: 800 }}
+                      className="flex-1 transition rounded-full px-2 py-2.5 text-[13px] uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
+                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none', fontWeight: 800, fontFamily: 'Quicksand, sans-serif' }}
                     >
                       {updating ? "Processing..." : "Cancel Order"}
                     </button>
@@ -301,8 +302,8 @@ export default function OrderDetails() {
                 <button 
                   onClick={() => updateOrderStatus("delivered")}
                   disabled={updating}
-                  className="w-full transition rounded-full px-4 py-3 text-[13px] uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
-                  style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none', fontWeight: 800 }}
+                  className="w-full transition rounded-full px-4 py-2.5 text-[13px] uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
+                  style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none', fontWeight: 800, fontFamily: 'Quicksand, sans-serif' }}
                 >
                   {updating ? "Processing..." : "Mark Delivered"}
                 </button>

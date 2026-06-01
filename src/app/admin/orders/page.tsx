@@ -108,7 +108,7 @@ export default function AdminOrders() {
   };
 
   return (
-    <main className="min-h-screen bg-[#FDFBF7] pt-8 md:pt-12 pb-20 px-4 md:px-6" style={{ paddingBottom: '5rem' }}>
+    <main className="min-h-screen bg-[#FDFBF7] pt-24 md:pt-28 pb-20 px-4 md:px-6" style={{ paddingBottom: '5rem' }}>
       <div className="max-w-4xl mx-auto">
         
         {/* Header */}
@@ -227,7 +227,7 @@ export default function AdminOrders() {
                     <Link 
                       href={`/admin/orders/${order.id}`} 
                       className="transition text-[13px] uppercase tracking-widest shadow-sm view-order-btn whitespace-nowrap text-center shrink-0"
-                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', textDecoration: 'none', display: 'inline-block', border: 'none', padding: '12px 24px', borderRadius: '999px', fontWeight: 800 }}
+                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', textDecoration: 'none', display: 'inline-block', border: 'none', padding: '10px 20px', borderRadius: '999px', fontWeight: 800, fontFamily: 'Quicksand, sans-serif' }}
                     >
                       View Order
                     </Link>
