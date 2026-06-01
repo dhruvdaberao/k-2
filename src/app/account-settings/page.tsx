@@ -86,8 +86,22 @@ function AccountSettingsContent() {
       if (error) throw error;
 
       if (user?.id) {
-        const { error: profileError } = await supabase.from('profiles').update({ email: newEmail }).eq('id', user.id);
-        if (profileError) console.error("Could not sync email to profile table:", profileError.message);
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          const token = session?.access_token;
+          if (token) {
+            await fetch('/api/user/profile', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({ email: newEmail })
+            });
+          }
+        } catch (profileError: any) {
+          console.error("Could not sync email to profile table:", profileError.message);
+        }
       }
 
       setModalContent({ title: "Email Updated", message: "Your email address has been successfully updated securely." });

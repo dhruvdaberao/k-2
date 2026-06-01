@@ -34,16 +34,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Safe wrapper: always resolves, never throws, never hangs
   const fetchProfile = async (uid: string) => {
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) return;
+
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 15000);
-      const { data } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', uid)
-        .single()
-        .abortSignal(controller.signal);
+      const res = await fetch('/api/user/profile', {
+        headers: { Authorization: `Bearer ${token}` },
+        signal: controller.signal
+      });
       clearTimeout(timeout);
-      setProfile(data || null);
+      
+      const json = await res.json();
+      setProfile(json.profile || null);
     } catch (err) {
       console.warn("Auth: fetchProfile failed, continuing without profile:", err);
     }

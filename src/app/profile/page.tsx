@@ -170,19 +170,30 @@ function ProfileContent() {
     try {
       console.log("Saving profile for user:", user.id);
       
-      const { error: profileError } = await supabase.from('profiles').upsert({
-        id: user.id,
-        name: details.fullName,
-        phone: details.phoneNumber,
-        address: details.address,
-        city: details.city,
-        pincode: details.pincode,
-        state: details.state,
-        country: details.country,
-      }, { onConflict: 'id' });
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) throw new Error("No active session token");
 
-      if (profileError) {
-        throw profileError;
+      const res = await fetch('/api/user/profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          name: details.fullName,
+          phone: details.phoneNumber,
+          address: details.address,
+          city: details.city,
+          pincode: details.pincode,
+          state: details.state,
+          country: details.country,
+        })
+      });
+
+      const json = await res.json();
+      if (!json.success) {
+        throw new Error(json.error || "Failed to update profile");
       }
       
       console.log("Profile saved successfully");
