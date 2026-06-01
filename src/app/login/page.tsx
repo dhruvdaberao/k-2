@@ -111,8 +111,7 @@ export default function LoginPage() {
           setSuccessModal(true);
           setTimeout(() => {
             setSuccessModal(false);
-            router.refresh();
-            router.replace("/profile");
+            window.location.href = "/profile";
           }, 2000);
         }
       } else if (authMode === "login") {
@@ -144,8 +143,7 @@ export default function LoginPage() {
         setSuccessModal(true);
         setTimeout(() => {
           setSuccessModal(false);
-          router.refresh();
-          router.replace("/profile");
+          window.location.href = "/profile";
         }, 2000);
       } else if (authMode === "otp") {
         const res = await loginWithOtpAction(cleanEmail);
@@ -174,8 +172,7 @@ export default function LoginPage() {
         setSuccessModal(true);
         setTimeout(() => {
           setSuccessModal(false);
-          router.refresh();
-          router.replace("/profile");
+          window.location.href = "/profile";
         }, 2000);
       } else if (authMode === "forgot") {
         const res = await resetPasswordAction(cleanEmail);
