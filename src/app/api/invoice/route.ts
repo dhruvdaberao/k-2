@@ -65,7 +65,7 @@ export async function GET(req: Request) {
             },
           }
         );
-        const { data: { user } } = await supabaseAuth.auth.getUser(token);
+        const { data: { user } } = await supabaseAuth.auth.getUser();
         
         const isOwner = user && user.id === order.user_id;
         const hasValidToken = token && token === order.access_token;

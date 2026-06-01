@@ -22,7 +22,7 @@ export async function GET(request: Request) {
       { global: { headers: { Authorization: `Bearer ${token}` } } }
     );
     
-    const { data: { user } } = await supabaseAuth.auth.getUser(token);
+    const { data: { user } } = await supabaseAuth.auth.getUser();
 
     if (!isAdmin(user)) {
       return NextResponse.json({ success: false, error: 'Unauthorized - Not Admin' }, { status: 401 });
