@@ -300,8 +300,9 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .btn-primary:not(:disabled):active, .btn-luxe:not(:disabled):active {
-  transform: translateY(0) scale(0.96) !important;
+  transform: translateY(0) scale(0.92) !important;
   box-shadow: 0 2px 4px rgba(74, 50, 25, 0.15) !important;
+  transition-duration: 0.1s !important;
 }
 
 .btn-primary:disabled, .btn-luxe:disabled {
@@ -325,7 +326,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .btn-secondary:not(:disabled):active, .btn-outline:not(:disabled):active {
-  transform: translateY(0) scale(0.96) !important;
+  transform: translateY(0) scale(0.92) !important;
+  transition-duration: 0.1s !important;
 }
 
 .btn-secondary:disabled, .btn-outline:disabled {

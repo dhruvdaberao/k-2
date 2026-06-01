@@ -119,7 +119,7 @@ export default function ProductPageClient({
                     strokeLinecap="round" 
                     strokeLinejoin="round" 
                     stroke={isHearted ? "#C84C35" : "white"}
-                    className={`transition-transform duration-200 ${isPopping ? 'animate-heart-pop' : ''} hover:scale-110 active:scale-95 drop-shadow-md`}
+                    className={`transition-transform duration-200 ${isPopping ? 'animate-heart-pop' : ''} hover:scale-110 active:scale-90 drop-shadow-md`}
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21.19 5.01a5.72 5.72 0 0 0-8.09 0L12 6.12l-1.1-1.1a5.72 5.72 0 0 0-8.09 8.09l1.1 1.1L9.92 20.22a2.94 2.94 0 0 0 4.16 0L20.09 14.21l1.1-1.1a5.72 5.72 0 0 0 0-8.1z" />
                   </svg>
@@ -127,7 +127,7 @@ export default function ProductPageClient({
                 
                 <button
                   onClick={onShareClick}
-                  className="product-page-share flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95"
+                  className="product-page-share flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-90"
                   aria-label="Share product"
                   title="Share product"
                   type="button"
