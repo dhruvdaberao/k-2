@@ -47,6 +47,11 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { items, deliveryDetails, userEmail } = body;
 
+    // Basic validation
+    if (!items || items.length === 0) {
+      return NextResponse.json({ success: false, error: 'Cart is empty' }, { status: 400 });
+    }
+
     // Secure User Validation via JWT
     let actualUserId = null;
     let actualUserEmail = userEmail;
