@@ -16,7 +16,7 @@ export default function CheckoutAddons({ currentCartSlugs, onAdded }: CheckoutAd
 
     useEffect(() => {
         supabase.from("products")
-            .select("id, slug, title, price, image, category, type, stock")
+            .select("id, slug, title, price, images, category, type, stock")
             .eq("status", "live")
             .then(({ data }: { data: any }) => {
             if (data) setProducts(data as Product[]);
