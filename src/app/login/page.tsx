@@ -91,38 +91,29 @@ export default function LoginPage() {
           password: authPassword,
         });
 
-        if (error) {
-          let message = error.message;
-          if (message.includes("already registered")) {
-            message = "Account already exists";
-          }
-          setErrorMsg(message);
-          showToast(message);
+        // 1. Handle genuine errors (e.g., rate limits, weak passwords)
+        // We explicitly swallow "already registered" errors to prevent user enumeration.
+        if (error && !error.message.includes("already registered")) {
+          setErrorMsg(error.message);
+          showToast(error.message);
           setAuthLoading(false);
           return;
         }
 
-        if (data?.user?.identities && data.user.identities.length === 0) {
-          const msg = "This email address is already registered. Please login.";
-          setErrorMsg(msg);
-          showToast(msg);
-          setAuthLoading(false);
-          return;
-        }
-
-        if (data?.user?.id) {
-          if (!data.session) {
-            showToast("Verification email sent. Please check your inbox.");
-            setAuthMode("login");
-          } else {
-            await syncLocalCartToDB(data.user.id);
-            showToast("Account created successfully");
-            setSuccessModal(true);
-            setTimeout(() => {
-              setSuccessModal(false);
-              router.replace("/profile");
-            }, 2000);
-          }
+        // 2. Handle both successful signups AND existing accounts identically
+        if (!data?.session) {
+          // If auto-confirm is OFF, or the account already exists, show a generic success message
+          showToast("If this email is not yet registered, a verification link has been sent to your inbox.");
+          setAuthMode("login");
+        } else if (data.session && data.user) {
+          // If auto-confirm is ON and it's a genuine new account
+          await syncLocalCartToDB(data.user.id);
+          showToast("Account created successfully");
+          setSuccessModal(true);
+          setTimeout(() => {
+            setSuccessModal(false);
+            router.replace("/profile");
+          }, 2000);
         }
       } else if (authMode === "login") {
         const { data, error } = await supabase.auth.signInWithPassword({
