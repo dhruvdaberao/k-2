@@ -166,7 +166,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.2s ease, stroke 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s ease, stroke 0.2s ease;
+}
+
+.mobile-top-search:active .search-icon,
+.mobile-top-cart:active .cart-icon {
+  transform: scale(0.90);
+  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .mobile-top-search:hover,
@@ -284,7 +290,13 @@ body {
     fill: none;
     stroke-width: 1.8;
     opacity: 1;
-    transition: fill 0.2s ease, stroke 0.2s ease, color 0.2s ease;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), fill 0.2s ease, stroke 0.2s ease, color 0.2s ease;
+  }
+
+  .mobile-bottom-nav .bottom-nav-item:active .bottom-nav-icon,
+  .mobile-bottom-nav .bottom-nav-item:active svg {
+    transform: scale(0.90);
+    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .mobile-bottom-nav .bottom-nav-item svg {
