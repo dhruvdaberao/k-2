@@ -1,8 +1,7 @@
 "use client";
 
 import { supabase } from "@/lib/supabaseClient";
-
-import { useEffect, useState, Suspense, useRef } from "react";
+import { logoutAction } from "@/actions/auth";import { useEffect, useState, Suspense, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { showToast } from "@/components/Toast";
@@ -218,8 +217,8 @@ function ProfileContent() {
     showToast("Logging out...");
 
     try {
-      // 1. Sign out from Supabase (with timeout so it never hangs)
-      const signOutPromise = supabase.auth.signOut();
+      // 1. Sign out from Server Action (with timeout so it never hangs)
+      const signOutPromise = logoutAction();
       const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new Error("Timeout")), 3000)
       );

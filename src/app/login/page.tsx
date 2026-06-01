@@ -1,7 +1,7 @@
 "use client";
 
 import { supabase } from "@/lib/supabaseClient";
-
+import { loginAction, signupAction, loginWithOtpAction, verifyOtpAction, resetPasswordAction } from "@/actions/auth";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { showToast } from "@/components/Toast";
@@ -86,10 +86,9 @@ export default function LoginPage() {
           return;
         }
 
-        const { data, error } = await supabase.auth.signUp({
-          email: cleanEmail,
-          password: authPassword,
-        });
+        const res = await signupAction(cleanEmail, authPassword);
+        const error = res.error ? { message: res.error } : null;
+        const data = res.data;
 
         // 1. Handle genuine errors (e.g., rate limits, weak passwords)
         // We explicitly swallow "already registered" errors to prevent user enumeration.
@@ -116,10 +115,9 @@ export default function LoginPage() {
           }, 2000);
         }
       } else if (authMode === "login") {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: cleanEmail,
-          password: authPassword,
-        });
+        const res = await loginAction(cleanEmail, authPassword);
+        const error = res.error ? { message: res.error } : null;
+        const data = res.data;
 
         if (error) {
           let message = "Login failed";
@@ -148,19 +146,16 @@ export default function LoginPage() {
           router.replace("/profile");
         }, 2000);
       } else if (authMode === "otp") {
-        const { error } = await supabase.auth.signInWithOtp({
-          email: cleanEmail,
-        });
+        const res = await loginWithOtpAction(cleanEmail);
+        const error = res.error ? { message: res.error } : null;
         if (error) throw error;
         setSuccessMsg("OTP sent to your email!");
         showToast("OTP sent to your email!");
         setAuthMode("otp_verify");
       } else if (authMode === "otp_verify") {
-        const { data, error } = await supabase.auth.verifyOtp({
-          email: cleanEmail,
-          token: otpCode,
-          type: 'email'
-        });
+        const res = await verifyOtpAction(cleanEmail, otpCode);
+        const error = res.error ? { message: res.error } : null;
+        const data = res.data;
 
         if (error) {
           setErrorMsg("Invalid or expired OTP");
@@ -180,9 +175,8 @@ export default function LoginPage() {
           router.replace("/profile");
         }, 2000);
       } else if (authMode === "forgot") {
-        const { error } = await supabase.auth.resetPasswordForEmail(cleanEmail, {
-          redirectTo: `${window.location.origin}/account-settings?reset=true`
-        });
+        const res = await resetPasswordAction(cleanEmail, `${window.location.origin}/account-settings?reset=true`);
+        const error = res.error ? { message: res.error } : null;
         if (error) throw error;
         setSuccessMsg("Reset link sent your mail successfully");
         showToast("✅ Reset link shared to your mail successfully");

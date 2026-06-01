@@ -1,8 +1,7 @@
 "use client";
 
 import { supabase } from "@/lib/supabaseClient";
-
-import { useEffect, useState } from "react";
+import { logoutAction } from "@/actions/auth";import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { showToast } from "@/components/Toast";
 
@@ -47,7 +46,7 @@ export default function ResetPasswordPage() {
       showToast("Security updated. Please login with your new password.");
 
       // IMPORTANT: Sign out to clear the temporary session
-      await supabase.auth.signOut();
+      await logoutAction();
       
       router.push("/login");
     } catch (err: any) {
