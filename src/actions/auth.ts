@@ -87,11 +87,14 @@ export async function verifyOtpAction(email: string, token: string) {
   return { success: true, data: { user: data.user, session: data.session } };
 }
 
-export async function resetPasswordAction(email: string, redirectTo: string) {
+export async function resetPasswordAction(email: string) {
   if (!(await checkRateLimit())) return { success: false, error: "Too many requests. Please try again later." };
   const supabase = createSupabaseServerClient();
+  
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://keshvicrafts-2.vercel.app';
+  
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo
+    redirectTo: `${siteUrl}/reset-password`
   });
 
   if (error) {

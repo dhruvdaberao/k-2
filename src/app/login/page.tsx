@@ -175,7 +175,7 @@ export default function LoginPage() {
           router.replace("/profile");
         }, 2000);
       } else if (authMode === "forgot") {
-        const res = await resetPasswordAction(cleanEmail, `${window.location.origin}/account-settings?reset=true`);
+        const res = await resetPasswordAction(cleanEmail);
         const error = res.error ? { message: res.error } : null;
         if (error) throw error;
         setSuccessMsg("Reset link sent your mail successfully");
