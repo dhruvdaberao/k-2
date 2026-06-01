@@ -131,12 +131,12 @@ export default function AdminOrders() {
             placeholder="Search by Order ID or Email"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-white transition-colors"
+            className="w-full bg-transparent transition-colors search-input"
             style={{ 
-              height: '44px', 
-              padding: '0 16px', 
-              borderRadius: '8px', 
-              border: '2px solid #5A3E2B', 
+              height: '48px', 
+              padding: '0 24px', 
+              borderRadius: '999px', 
+              border: '1px solid rgba(139, 94, 60, 0.4)', 
               fontSize: '14px', 
               outline: 'none',
               width: '100%'
@@ -150,13 +150,12 @@ export default function AdminOrders() {
                 onClick={() => setFilter(status)}
                 className="capitalize transition-all duration-200"
                 style={{
-                  background: '#5A3E2B',
-                  color: '#FFFFFF',
-                  padding: '8px 16px',
-                  borderRadius: '8px',
-                  border: 'none',
-                  outline: filter === status ? '2px solid #5A3E2B' : 'none',
-                  outlineOffset: '2px',
+                  background: filter === status ? '#5A3E2B' : '#F5EFE6',
+                  color: filter === status ? '#FFFFFF' : '#5A3E2B',
+                  padding: '10px 20px',
+                  borderRadius: '999px',
+                  border: filter === status ? 'none' : '1px solid #E6DCCF',
+                  outline: 'none',
                   fontWeight: filter === status ? 700 : 500,
                   fontSize: '14px',
                   cursor: 'pointer',
@@ -187,7 +186,7 @@ export default function AdminOrders() {
             {filteredOrders.map((order) => {
               const statusColor = getStatusColor(order.status);
               return (
-                <div key={order.id} className="bg-white rounded-xl p-4 shadow-sm border border-[#E6DCCF] hover:border-[#5A3E2B]/30 transition-all space-y-3">
+                <div key={order.id} className="bg-[#F5EFE6] rounded-[24px] p-5 shadow-sm border border-[#E6DCCF] hover:border-[#5A3E2B]/50 transition-all space-y-3">
                   
                   {/* Top Row */}
                   <div className="flex flex-col gap-1">
@@ -196,7 +195,7 @@ export default function AdminOrders() {
                         {order.display_id || order.id.slice(0, 8)}
                       </p>
                       <span 
-                        className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider whitespace-nowrap shadow-sm border"
+                        className="shrink-0 inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider whitespace-nowrap shadow-sm border"
                         style={{ 
                           backgroundColor: statusColor.bg, 
                           color: statusColor.text,
@@ -223,7 +222,7 @@ export default function AdminOrders() {
                     </p>
                     <Link 
                       href={`/admin/orders/${order.id}`} 
-                      className="transition rounded-lg px-4 py-2 text-xs font-black uppercase tracking-widest shadow-sm view-order-btn"
+                      className="transition rounded-full px-5 py-2.5 text-xs font-black uppercase tracking-widest shadow-sm view-order-btn"
                       style={{ backgroundColor: '#5a3e2b', color: '#ffffff', textDecoration: 'none', display: 'inline-block', border: 'none' }}
                     >
                       View Order
@@ -241,6 +240,9 @@ export default function AdminOrders() {
         .view-order-btn, .view-order-btn:hover, .view-order-btn:visited, .view-order-btn:active, .view-order-btn:focus {
           color: #ffffff !important;
           text-decoration: none !important;
+        }
+        .search-input:focus {
+          border-color: #5A3E2B !important;
         }
       `}</style>
     </main>
