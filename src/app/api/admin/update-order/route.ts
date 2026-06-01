@@ -30,7 +30,7 @@ export async function POST(req: Request) {
       { global: { headers: { Authorization: `Bearer ${token}` } } }
     );
     
-    const { data: { user } } = await supabaseAuth.auth.getUser();
+    const { data: { user } } = await supabaseAuth.auth.getUser(token);
 
     if (!isAdmin(user)) {
       return NextResponse.json({ success: false, error: 'Unauthorized - Not Admin' }, { status: 403 });

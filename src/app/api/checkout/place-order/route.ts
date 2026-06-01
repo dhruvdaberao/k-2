@@ -59,7 +59,7 @@ export async function POST(req: Request) {
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
         { global: { headers: { Authorization: `Bearer ${token}` } } }
       );
-      const { data: { user } } = await supabaseAuth.auth.getUser();
+      const { data: { user } } = await supabaseAuth.auth.getUser(token);
       if (user) {
         actualUserId = user.id;
         actualUserEmail = user.email || actualUserEmail;

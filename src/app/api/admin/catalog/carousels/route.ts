@@ -14,7 +14,7 @@ async function verifyAdmin(request: Request) {
     { global: { headers: { Authorization: `Bearer ${token}` } } }
   );
   
-  const { data: { user } } = await supabaseAuth.auth.getUser();
+  const { data: { user } } = await supabaseAuth.auth.getUser(token);
   if (!isAdmin(user)) return null;
 
   const supabaseAdmin = createClient(
