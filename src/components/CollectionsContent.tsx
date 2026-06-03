@@ -177,17 +177,35 @@ export default function CollectionsContent({ serverCategory, liveProducts = [], 
       </div>
 
       {sorted.length === 0 ? (
-        <div className="collections-empty py-20 text-center bg-[#F5EFE6] rounded-[24px] border border-stone-100 shadow-sm">
-          <div className="text-5xl mb-4 flex justify-center text-[#6b4226]">
-            <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.3-4.3" />
-            </svg>
+        <div 
+          className="py-16 px-6 text-center shadow-sm"
+          style={{ backgroundColor: '#F5EFE6', borderRadius: '24px', border: '1px solid #E6DCCF', margin: '2rem 0' }}
+        >
+          <div className="text-5xl mb-5 flex justify-center text-[#8B7355]">
+            {!qParam ? (
+              <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+            )}
           </div>
-          <p className="collections-empty-text text-xl font-bold text-[#2f2a26] mb-2">No products found</p>
-          <p className="text-stone-500 mb-8 px-4">Try searching for something else or browse our full collection.</p>
+          <p className="text-xl md:text-2xl font-bold text-[#4A3219] mb-3">
+            {qParam ? "No products found" : "Currently no products in this category"}
+          </p>
+          <p className="text-[#8B7355] mb-8 max-w-md mx-auto text-sm md:text-base">
+            {qParam 
+              ? "We couldn't find anything matching your search. Try adjusting your keywords or browse our full collection."
+              : "We are currently crafting new items for this collection. Please check back later or explore our other creations."}
+          </p>
           <button
-            className="btn-primary px-10 py-3"
+            className="btn-primary px-8 py-3"
             onClick={handleResetFilters}
           >
             Browse all products
