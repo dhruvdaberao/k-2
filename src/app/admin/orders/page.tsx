@@ -226,8 +226,8 @@ export default function AdminOrders() {
                     </p>
                     <Link 
                       href={`/admin/orders/${order.id}`} 
-                      className="transition text-[12px] uppercase tracking-widest shadow-sm view-order-btn whitespace-nowrap text-center shrink-0 flex items-center justify-center"
-                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', textDecoration: 'none', border: 'none', height: '40px', padding: '0 20px', borderRadius: '8px', fontWeight: 700, fontFamily: 'Quicksand, sans-serif' }}
+                      className="transition text-[12px] uppercase tracking-widest shadow-sm view-order-btn whitespace-nowrap text-center shrink-0 flex items-center justify-center rounded-full"
+                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', textDecoration: 'none', border: 'none', height: '48px', padding: '0 24px', fontWeight: 700, fontFamily: 'Quicksand, sans-serif' }}
                     >
                       View Order
                     </Link>
