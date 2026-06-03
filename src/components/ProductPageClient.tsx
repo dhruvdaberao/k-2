@@ -84,7 +84,12 @@ export default function ProductPageClient({
   return (
     <>
       <div className="product-page-grid">
-        <div className="product-page-media product-image-container">
+        <div className="product-page-media product-image-container relative">
+          {product.discount_badge && (
+            <div className="absolute top-4 left-4 bg-[#C84C35] text-white text-sm font-bold px-3 py-1 rounded-sm z-10 shadow-md uppercase">
+              {product.discount_badge}
+            </div>
+          )}
           <Gallery
             key={currentImages.join(',')}
             images={currentImages}
