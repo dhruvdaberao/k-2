@@ -177,35 +177,32 @@ export default function CollectionsContent({ serverCategory, liveProducts = [], 
       </div>
 
       {sorted.length === 0 ? (
-        <div 
-          className="py-20 px-6 text-center shadow-sm"
-          style={{ backgroundColor: '#F5EFE6', borderRadius: '24px', border: '1px solid #E6DCCF', margin: '2rem 0' }}
-        >
-          <div className="mb-6 opacity-40 flex justify-center">
+        <div className="flex flex-col items-center justify-center py-10 md:py-20 text-center px-4 max-w-md mx-auto">
+          <div className="mb-6 opacity-30 flex justify-center">
             {!qParam ? (
-              <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="1.5 1.5 21 21" fill="none" stroke="#4A3219" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-layout-grid">
-                <rect width="7" height="7" x="3" y="3" rx="1"/>
-                <rect width="7" height="7" x="14" y="3" rx="1"/>
-                <rect width="7" height="7" x="14" y="14" rx="1"/>
-                <rect width="7" height="7" x="3" y="14" rx="1"/>
+              <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="2" width="8" height="8" rx="2.5"/>
+                <rect x="14" y="2" width="8" height="8" rx="2.5"/>
+                <rect x="2" y="14" width="8" height="8" rx="2.5"/>
+                <rect x="14" y="14" width="8" height="8" rx="2.5"/>
               </svg>
             ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8" />
                 <path d="m21 21-4.3-4.3" />
               </svg>
             )}
           </div>
-          <p className="text-xl md:text-2xl font-bold text-[#4A3219] mb-3">
+          <h2 className="text-xl font-serif font-bold text-[#2f2a26] mb-2">
             {qParam ? "No products found" : "Currently no products in this category"}
-          </p>
-          <p className="text-[#8B7355] mb-8 max-w-md mx-auto text-sm md:text-base">
+          </h2>
+          <p className="text-stone-500 mb-8 max-w-md mx-auto text-sm md:text-base italic">
             {qParam 
               ? "We couldn't find anything matching your search. Try adjusting your keywords or browse our full collection."
               : "We are currently crafting new items for this collection. Please check back later or explore our other creations."}
           </p>
           <button
-            className="btn-primary px-8 py-3"
+            className="btn-primary px-10 py-3 rounded-full font-bold"
             onClick={handleResetFilters}
           >
             Browse all products
