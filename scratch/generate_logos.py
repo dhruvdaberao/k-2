@@ -31,21 +31,30 @@ def get_cropped_logo(input_path, thicken=True):
             # Grayscale luminance
             l = 0.299 * r + 0.587 * g + 0.114 * b
             
-            # Watermark area (bottom left):
-            if x < 270 * scale and y > high_res_size[1] - 80 * scale:
+            # 1x coordinates for masking
+            x_1x = x / scale
+            y_1x = y / scale
+            
+            # Safe boundary for the left edge of the "K" tail/loop to completely erase the watercolor smudge
+            # At y=0, boundary_x = 342. At y=483, boundary_x = 300.
+            boundary_x = 342.0 - (y_1x * 42.0 / 483.0)
+            if x_1x < boundary_x:
                 alpha_data.append(0)
                 continue
             
-            # Background detection:
-            # If the pixel is very close to the background color (dist < 22) or very bright (l > 230),
-            # it is 100% transparent background.
+            # Watermark area (bottom left):
+            if x_1x < 270 and y_1x > height - 80:
+                alpha_data.append(0)
+                continue
+            
+            # Background detection
             if dist < 22 or l > 230:
                 alpha_data.append(0)
             else:
-                # Text stroke detection:
+                # Text stroke detection
                 if thicken:
-                    l_bg = 228
-                    l_fg = 185
+                    l_bg = 230
+                    l_fg = 180
                 else:
                     l_bg = 220
                     l_fg = 100
@@ -67,7 +76,10 @@ def get_cropped_logo(input_path, thicken=True):
         # MaxFilter(9) dilates by 4 pixels at 4x resolution, making strokes significantly thicker
         alpha_high = alpha_high.filter(ImageFilter.MaxFilter(9))
         
-    # Smooth the alpha channel slightly
+    # --- Smooth the edges using SDF-like Blur & Threshold technique ---
+    # This removes blockiness/irregularities and creates organic vector-smooth lines.
+    alpha_high = alpha_high.filter(ImageFilter.GaussianBlur(radius=5.0))
+    alpha_high = alpha_high.point(lambda p: 255 if p > 105 else 0)
     alpha_high = alpha_high.filter(ImageFilter.GaussianBlur(radius=2.0))
     
     # Create the high-res text image
@@ -84,7 +96,7 @@ def get_cropped_logo(input_path, thicken=True):
         for x in range(width):
             _, _, _, alpha = text_im.getpixel((x, y))
             if alpha > 80:  # Only count pixels that are clearly part of the text
-                if x < 300:  # Start from 300 to avoid smudge area
+                if x < 300:
                     continue
                 if x < left: left = x
                 if x > right: right = x
@@ -100,7 +112,38 @@ def get_cropped_logo(input_path, thicken=True):
     crop_right = min(width, right + padding)
     crop_bottom = min(height, bottom + padding)
     cropped = text_im.crop((crop_left, crop_top, crop_right, crop_bottom))
-    return cropped
+    
+    # --- Add soft brown drop shadow ---
+    # Pad the cropped image slightly to prevent the shadow from being clipped
+    shadow_padding = 20
+    padded = Image.new("RGBA", (cropped.width + shadow_padding * 2, cropped.height + shadow_padding * 2), (0, 0, 0, 0))
+    padded.paste(cropped, (shadow_padding, shadow_padding), cropped)
+    
+    # Blur the alpha mask of the padded image to create the shadow alpha
+    padded_alpha = padded.split()[3]
+    shadow_mask = padded_alpha.filter(ImageFilter.GaussianBlur(radius=5.5))
+    
+    # Create solid dark-brown shadow image
+    # Shadow color: (35, 18, 8), opacity: soft 24%
+    shadow_color = Image.new("RGBA", padded.size, (35, 18, 8, 0))
+    shadow_alpha_data = [int(a * 0.24) for a in shadow_mask.getdata()]
+    shadow_alpha = Image.new("L", padded.size)
+    shadow_alpha.putdata(shadow_alpha_data)
+    
+    shadow_img = Image.merge("RGBA", (shadow_color.split()[0], shadow_color.split()[1], shadow_color.split()[2], shadow_alpha))
+    
+    # Position shadow with offset (dx=2, dy=3)
+    dx = 2
+    dy = 3
+    final_logo = Image.new("RGBA", padded.size, (0, 0, 0, 0))
+    final_logo.paste(shadow_img, (dx, dy), shadow_img)
+    final_logo.paste(padded, (0, 0), padded)
+    
+    # Crop final logo tightly to its contents (including the shadow)
+    final_bbox = final_logo.getbbox()
+    cropped_final = final_logo.crop(final_bbox)
+    
+    return cropped_final
 
 def fit_to_canvas(cropped_img, output_width, output_height, padding_ratio=0.05, bg_color=(0, 0, 0, 0)):
     canvas = Image.new("RGBA", (output_width, output_height), bg_color)
@@ -128,12 +171,12 @@ def fit_to_canvas(cropped_img, output_width, output_height, padding_ratio=0.05, 
 def main():
     img_path = r"C:\Users\dhruv\.gemini\antigravity-ide\brain\78756275-0122-4fd4-a99a-389c33158b25\media__1780511736311.png"
     
-    print("Generating thicker logo assets with 100% transparent background (Optimized)...")
+    print("Generating ultra-smooth logo assets with soft shadow (Optimized)...")
     
-    # Process the high-res text crop ONCE (takes ~8 seconds)
+    # Process the high-res text crop ONCE
     cropped = get_cropped_logo(img_path, thicken=True)
     
-    # Now generate all variants (takes milliseconds!)
+    # Now generate all variants
     # 1. keshvi-yarn-logo-cropped.png (607 x 392)
     nav_logo = fit_to_canvas(cropped, 607, 392, padding_ratio=0.01)
     nav_logo.save("public/keshvi-yarn-logo-cropped.png", "PNG")
@@ -169,7 +212,7 @@ def main():
     nav_logo.save("public/keshvi-yarn-logo-transparent.png", "PNG")
     print("Created public/keshvi-yarn-logo.png and transparent variant")
     
-    print("All thicker logo assets and icons created successfully with 100% transparent bg!")
+    print("All logo assets and icons created successfully with vector-smooth edges and drop shadow!")
 
 if __name__ == "__main__":
     main()
