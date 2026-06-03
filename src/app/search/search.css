@@ -37,11 +37,16 @@
 .search-page__input {
   width: 100%;
   height: 44px;
-  border-radius: 10px;
-  border: 1px solid #e5e5e5;
-  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #E6DCCF;
+  background: #F5EFE6;
   padding: 0 10px 0 38px;
   font-size: 15px;
+  color: #3E2C1C;
+}
+
+.search-page__input::placeholder {
+  color: #a39281;
 }
 
 .search-page__input:focus {

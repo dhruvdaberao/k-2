@@ -59,8 +59,8 @@ export default function SearchPageContent() {
 
   const trendingProducts = useMemo(() => {
     return [...liveProducts]
-      .sort((a, b) => (b.rating || 0) - (a.rating || 0))
-      .slice(0, 4);
+      .sort((a, b) => (a.priority || 0) - (b.priority || 0))
+      .slice(0, 8);
   }, [liveProducts]);
 
   const filtered = useMemo(() => {
@@ -86,7 +86,7 @@ export default function SearchPageContent() {
           onClick={() => router.back()}
           aria-label="Go back"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
 
         <div className="search-page__input-wrap">
@@ -137,7 +137,7 @@ export default function SearchPageContent() {
 
             {trendingProducts.length > 0 && (
               <>
-                <h3 className="suggestions-title mt-6">Trending Products</h3>
+                <h3 className="suggestions-title mt-6">You'll also like</h3>
                 <div className="plp-grid-mobile">
                   {trendingProducts.map((p) => (
                     <ProductCard key={p.slug} p={p} />
