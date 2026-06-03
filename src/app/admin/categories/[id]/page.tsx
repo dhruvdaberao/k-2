@@ -18,6 +18,8 @@ export default function EditCategory({ params }: { params: { id: string } }) {
   const [formData, setFormData] = useState({
     name: "",
     image_url: "",
+    discount_active: false,
+    discount_percentage: "" as string | number,
   });
   const [originalName, setOriginalName] = useState("");
 
@@ -36,6 +38,8 @@ export default function EditCategory({ params }: { params: { id: string } }) {
         setFormData({
           name: data.name,
           image_url: data.image_url || "",
+          discount_active: data.discount_active || false,
+          discount_percentage: data.discount_percentage || "",
         });
         setOriginalName(data.name);
         setImagePreview(data.image_url || null);
@@ -109,6 +113,14 @@ export default function EditCategory({ params }: { params: { id: string } }) {
       return;
     }
 
+    if (formData.discount_active) {
+      const pct = Number(formData.discount_percentage);
+      if (!pct || pct < 1 || pct > 99) {
+        showToast("Please enter a valid discount percentage (1-99)");
+        return;
+      }
+    }
+
     setSaving(true);
     try {
       let finalImageUrl = formData.image_url;
@@ -156,7 +168,9 @@ export default function EditCategory({ params }: { params: { id: string } }) {
         params.id, 
         formData.name.trim(), 
         finalImageUrl, 
-        originalName
+        originalName,
+        formData.discount_active,
+        formData.discount_active ? Number(formData.discount_percentage) : null
       );
 
       if (!success) {
@@ -389,6 +403,51 @@ export default function EditCategory({ params }: { params: { id: string } }) {
               className="w-full border border-stone-300 p-3 text-base rounded-xl focus:outline-none focus:border-[#4A3219] focus:ring-1 focus:ring-[#4A3219] transition-colors text-center"
               placeholder="e.g., Special Edition"
             />
+          </div>
+
+          {/* Discount Settings */}
+          <div className="mb-8 w-full p-5 rounded-2xl border border-stone-200 bg-white shadow-sm relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-1 h-full bg-[#8B7355]"></div>
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="font-bold text-[#4A3219] text-lg">Category Discount</h3>
+                <p className="text-xs text-stone-500 mt-1">Apply a universal discount to all products in this category.</p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  className="sr-only peer"
+                  checked={formData.discount_active}
+                  onChange={(e) => {
+                    const isActive = e.target.checked;
+                    setFormData({
+                      ...formData, 
+                      discount_active: isActive,
+                      discount_percentage: isActive ? formData.discount_percentage : ""
+                    });
+                  }}
+                />
+                <div className="w-11 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#8B7355]"></div>
+              </label>
+            </div>
+
+            {formData.discount_active && (
+              <div className="mt-4 pt-4 border-t border-stone-100 flex items-center justify-between">
+                <label className="text-sm font-bold text-[#3E2C1C]">Discount Percentage</label>
+                <div className="relative w-32">
+                  <input
+                    type="number"
+                    min="1"
+                    max="99"
+                    value={formData.discount_percentage}
+                    onChange={(e) => setFormData({...formData, discount_percentage: e.target.value})}
+                    className="w-full border border-stone-300 p-2 pr-8 text-base rounded-lg focus:outline-none focus:border-[#4A3219] focus:ring-1 focus:ring-[#4A3219] text-right"
+                    placeholder="10"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 font-bold">%</span>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col gap-4 pt-8 border-t border-[#C4A484] w-full">

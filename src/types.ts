@@ -24,6 +24,12 @@ export type Product = {
   images: string[];
   category?: string;
 
+  // Discounts
+  discount_active?: boolean;
+  discount_percentage?: number;
+  original_price?: number;
+  discount_badge?: string;
+
   // Stock & Status
   stock?: number;
   status?: "live" | "hidden";

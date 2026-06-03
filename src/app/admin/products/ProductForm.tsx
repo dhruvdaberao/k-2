@@ -44,6 +44,8 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     tags: initialData?.tags || ["handmade"],
     type: initialData?.type || "direct-purchase",
     homeSection: initialData?.homeSection || "none",
+    discount_active: initialData?.discount_active || false,
+    discount_percentage: initialData?.discount_percentage || "",
   });
   
   const [tagInput, setTagInput] = useState("");
@@ -440,6 +442,14 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
       return;
     }
 
+    if (formData.discount_active) {
+      const pct = Number(formData.discount_percentage);
+      if (!pct || pct < 1 || pct > 99) {
+        showToast("Please enter a valid personal discount percentage (1-99).");
+        return;
+      }
+    }
+
     setLoading(true);
     
     const productPayload: any = {
@@ -677,7 +687,78 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-[#8B7355] mb-1">Price (₹)</label>
-              <input type="number" name="price" required min="0" value={formData.price} onChange={handleInputChange} className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" />
+              
+              {(() => {
+                const activeCat = categories.find(c => c.name === formData.category);
+                const isCatDiscount = activeCat?.discount_active;
+                const effActive = isCatDiscount || formData.discount_active;
+                const effPct = isCatDiscount ? activeCat?.discount_percentage : formData.discount_percentage;
+                
+                if (effActive) {
+                  const originalPrice = Number(formData.price) || 0;
+                  const discountedPrice = Math.round(originalPrice - (originalPrice * Number(effPct) / 100));
+                  return (
+                    <div className="relative w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-stone-200 bg-stone-50 flex items-center gap-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B7355" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                      <span className="text-stone-400 line-through text-sm">₹{originalPrice}</span>
+                      <span className="font-bold text-[#4A3219]">₹{discountedPrice}</span>
+                      {isCatDiscount && <span className="ml-auto text-xs bg-[#4A3219] text-white px-2 py-0.5 rounded-full">Category Discount</span>}
+                    </div>
+                  );
+                }
+                
+                return (
+                  <input type="number" name="price" required min="0" value={formData.price} onChange={handleInputChange} className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355]" />
+                );
+              })()}
+              
+              {/* Product Discount Toggle */}
+              {(() => {
+                const activeCat = categories.find(c => c.name === formData.category);
+                const isCatDiscount = activeCat?.discount_active;
+                
+                if (isCatDiscount) {
+                  return (
+                    <div className="mt-2 text-xs text-[#8B7355] italic">
+                      Personal discount disabled because category "{formData.category}" has an active discount.
+                    </div>
+                  );
+                }
+                
+                return (
+                  <div className="mt-3 p-3 rounded-xl border border-stone-200 bg-white">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-semibold text-[#4A3219]">Personal Discount</span>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          className="sr-only peer"
+                          checked={formData.discount_active}
+                          onChange={(e) => setFormData(prev => ({...prev, discount_active: e.target.checked}))}
+                        />
+                        <div className="w-9 h-5 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#8B7355]"></div>
+                      </label>
+                    </div>
+                    {formData.discount_active && (
+                      <div className="mt-3 flex items-center justify-between border-t border-stone-100 pt-3">
+                        <span className="text-xs font-semibold text-[#8B7355]">Percentage Off</span>
+                        <div className="relative w-24">
+                          <input
+                            type="number"
+                            min="1"
+                            max="99"
+                            value={formData.discount_percentage}
+                            onChange={(e) => setFormData({...formData, discount_percentage: e.target.value})}
+                            className="w-full border border-stone-300 p-1 pr-6 text-sm rounded-md focus:outline-none focus:border-[#4A3219] text-right"
+                            placeholder="10"
+                          />
+                          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-stone-500 text-xs">%</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
             <div>
               <label className="block text-sm font-semibold text-[#8B7355] mb-2">Stock Status</label>

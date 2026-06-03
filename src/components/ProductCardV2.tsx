@@ -47,6 +47,8 @@ export default function ProductCardV2({ p, priority = false }: { p: Product, pri
         ? (p.priceLabel || `Starts at ₹${p.minPrice || p.price}`)
         : `₹${p.price}`;
 
+    const originalPriceDisplay = p.original_price ? `₹${p.original_price}` : null;
+
 
     const [isPopping, setIsPopping] = useState(false);
 
@@ -150,6 +152,12 @@ export default function ProductCardV2({ p, priority = false }: { p: Product, pri
                     </svg>
                 </div>
 
+                {/* Discount Badge */}
+                {p.discount_badge && (
+                    <div className="absolute top-3 left-3 bg-[#C84C35] text-white text-xs font-bold px-2 py-1 rounded-sm z-10 shadow-sm uppercase">
+                        {p.discount_badge}
+                    </div>
+                )}
 
             </div>
 
@@ -163,8 +171,15 @@ export default function ProductCardV2({ p, priority = false }: { p: Product, pri
 
                 <div className="mt-auto flex flex-col justify-end">
 
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-base md:text-lg font-bold text-neutral-900">{priceDisplay}</span>
+                    <div className="flex items-center justify-between mb-2 flex-wrap gap-1">
+                        <div className="flex items-baseline gap-2">
+                            <span className="text-base md:text-lg font-bold text-neutral-900">{priceDisplay}</span>
+                            {originalPriceDisplay && (
+                                <span className="text-xs md:text-sm text-stone-400 line-through">
+                                    {originalPriceDisplay}
+                                </span>
+                            )}
+                        </div>
                         {!isCustomOrder && (
                             <Link 
                                 href={`/reviews/${p.id || p.slug}`} 

@@ -149,17 +149,25 @@ export default function ProductPageClient({
           <h1 style={{ marginTop: 0, fontSize: "2rem", lineHeight: 1.3, marginBottom: "1rem" }}>{product.title}</h1>
 
           {/* Price */}
-          <div style={{ fontSize: "1.5rem", fontWeight: 700, margin: "1rem 0", color: "var(--brand)" }}>
-            {product.type === "custom-order" ? (
-              product.priceLabel || `Starts at ₹${product.minPrice || product.price}`
-            ) : (
-              `₹${currentPrice}`
+          <div style={{ display: "flex", alignItems: "baseline", gap: "12px", margin: "1rem 0" }}>
+            <div style={{ fontSize: "1.5rem", fontWeight: 700, color: "var(--brand)" }}>
+              {product.type === "custom-order" ? (
+                product.priceLabel || `Starts at ₹${product.minPrice || product.price}`
+              ) : (
+                `₹${currentPrice}`
+              )}
+            </div>
+
+            {product.original_price && product.type !== "custom-order" && (
+              <div style={{ fontSize: "1.1rem", textDecoration: "line-through", color: "#a8a29e" }}>
+                ₹{product.original_price}
+              </div>
             )}
 
             {(typeof currentStock === "number" && product.type !== "custom-order") && (
               <span 
                 className={`px-3 py-1 rounded-full text-xs font-bold align-middle ${inStock ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-red-100 text-red-700 border border-red-200'}`} 
-                style={{ marginLeft: 12 }}
+                style={{ marginLeft: "auto" }}
               >
                 {inStock ? "In Stock" : "Out of Stock"}
               </span>
@@ -218,6 +226,22 @@ export default function ProductPageClient({
           {/* Badge */}
           <div className="flex items-center justify-between gap-2 mb-3 mt-2">
             <div className="flex flex-wrap gap-2">
+              {/* 0. Discount Badge */}
+              {product.discount_badge && (
+                <span className="product-badge" style={{
+                  display: "inline-block",
+                  padding: "0.3rem 0.8rem",
+                  background: "#C84C35",
+                  color: "#fff",
+                  borderRadius: "6px",
+                  fontSize: "0.85rem",
+                  fontWeight: 600,
+                  textTransform: "uppercase"
+                }}>
+                  {product.discount_badge}
+                </span>
+              )}
+
               {/* 1. Render Badges (e.g. Bestseller) */}
               {Array.isArray(product.badges) && product.badges.length > 0 ? (
                 product.badges.map((b: string) => (

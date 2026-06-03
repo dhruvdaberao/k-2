@@ -83,8 +83,12 @@ export async function POST(req: Request) {
     const productIds = items.map((i: any) => i.product_id || i.id);
     const { data: dbProducts, error: prodError } = await supabase
       .from('products')
-      .select('id, price')
+      .select('id, price, category, discount_active, discount_percentage')
       .in('id', productIds);
+
+    const { data: dbCategories, error: catError } = await supabase
+      .from('categories')
+      .select('name, discount_active, discount_percentage');
 
     if (prodError || !dbProducts) {
       return NextResponse.json({ success: false, error: 'Failed to validate products' }, { status: 500 });
@@ -94,7 +98,17 @@ export async function POST(req: Request) {
     const validatedItems = items.map((item: any) => {
       const dbProd = dbProducts.find(p => p.id === (item.product_id || item.id));
       if (!dbProd) throw new Error(`Product not found: ${item.name}`);
-      const realPrice = Number(dbProd.price);
+      
+      let realPrice = Number(dbProd.price);
+      
+      // Calculate effective price based on discounts
+      const dbCat = dbCategories?.find(c => c.name === dbProd.category);
+      if (dbCat?.discount_active && dbCat?.discount_percentage) {
+        realPrice = Math.round(realPrice - (realPrice * Number(dbCat.discount_percentage) / 100));
+      } else if (dbProd.discount_active && dbProd.discount_percentage) {
+        realPrice = Math.round(realPrice - (realPrice * Number(dbProd.discount_percentage) / 100));
+      }
+      
       const qty = Number(item.quantity);
       
       if (!Number.isInteger(qty) || qty <= 0 || qty > 20) {

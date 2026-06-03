@@ -1,13 +1,27 @@
 import { supabase } from "@/lib/supabaseClient";
+import { getLiveCategories, Category } from "./categoriesApi";
+import { calculateDiscountInfo } from "./discounts";
 
-function mapProduct(p: any) {
+export async function mapProduct(p: any, categories?: Category[]) {
   if (!p) return p;
   const homeSectionTag = p.tags?.find((t: string) => t.startsWith('_homeSection:'));
-  return {
+  
+  let mappedProduct = {
     ...p,
     homeSection: p.homeSection || (homeSectionTag ? homeSectionTag.split(':')[1] : 'none'),
     stock: typeof p.stock === 'number' ? (p.stock > 0 ? 1 : 0) : p.stock
   };
+
+  if (categories) {
+    const discountInfo = calculateDiscountInfo(mappedProduct, categories);
+    if (discountInfo.isActive) {
+      mappedProduct.original_price = discountInfo.originalPrice;
+      mappedProduct.price = discountInfo.effectivePrice;
+      mappedProduct.discount_badge = `${discountInfo.discountPercentage}% OFF`;
+    }
+  }
+
+  return mappedProduct;
 }
 
 export async function getLiveProducts() {
@@ -21,7 +35,10 @@ export async function getLiveProducts() {
     console.error("Error fetching live products:", error);
     return [];
   }
-  return (data || []).map(mapProduct);
+  
+  const categories = await getLiveCategories();
+  
+  return Promise.all((data || []).map((p: any) => mapProduct(p, categories)));
 }
 
 export async function getProductBySlug(slug: string) {
@@ -35,7 +52,9 @@ export async function getProductBySlug(slug: string) {
     console.error(`Error fetching product ${slug}:`, error);
     return null;
   }
-  return mapProduct(data);
+  
+  const categories = await getLiveCategories();
+  return mapProduct(data, categories);
 }
 
 export async function getProductById(id: string) {
@@ -49,5 +68,7 @@ export async function getProductById(id: string) {
     console.error(`Error fetching product ${id}:`, error);
     return null;
   }
-  return mapProduct(data);
+  
+  const categories = await getLiveCategories();
+  return mapProduct(data, categories);
 }

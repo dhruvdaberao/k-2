@@ -6,6 +6,8 @@ export interface Category {
   slug: string;
   priority: number;
   image_url?: string;
+  discount_active?: boolean;
+  discount_percentage?: number;
 }
 
 /**
@@ -80,12 +82,23 @@ export async function addCategory(name: string, image_url?: string): Promise<boo
  * Update a category (name and image_url)
  * Also updates associated products if the name changes
  */
-export async function updateCategory(id: string, newName: string, newImageUrl?: string, oldName?: string): Promise<boolean> {
+export async function updateCategory(
+  id: string, 
+  newName: string, 
+  newImageUrl?: string, 
+  oldName?: string,
+  discount_active?: boolean,
+  discount_percentage?: number | null
+): Promise<boolean> {
   const slug = newName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
 
   const updateData: any = { name: newName, slug };
   if (newImageUrl !== undefined) {
     updateData.image_url = newImageUrl;
+  }
+  if (discount_active !== undefined) {
+    updateData.discount_active = discount_active;
+    updateData.discount_percentage = discount_percentage;
   }
 
   try {
