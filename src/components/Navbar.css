@@ -27,8 +27,8 @@
 
 .announcement-banner {
   height: 22px;
-  background: var(--primary-brown);
-  color: #fff;
+  background: #e8dfd6;
+  color: var(--primary-brown);
   font-size: 11px;
   font-weight: 500;
   display: flex;
