@@ -3,7 +3,7 @@
 
 import { supabase } from "@/lib/supabaseClient";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
