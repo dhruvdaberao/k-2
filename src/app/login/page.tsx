@@ -106,6 +106,10 @@ export default function LoginPage() {
           setAuthMode("login");
         } else if (data.session && data.user) {
           // If auto-confirm is ON and it's a genuine new account
+          await supabase.auth.setSession({
+            access_token: data.session.access_token,
+            refresh_token: data.session.refresh_token
+          });
           await syncLocalCartToDB(data.user.id);
           showToast("Account created successfully");
           setSuccessModal(true);
@@ -132,6 +136,13 @@ export default function LoginPage() {
           showToast(message);
           setAuthLoading(false);
           return;
+        }
+
+        if (data && data.session) {
+          await supabase.auth.setSession({
+            access_token: data.session.access_token,
+            refresh_token: data.session.refresh_token
+          });
         }
 
         showToast("Logged in successfully");
@@ -162,6 +173,13 @@ export default function LoginPage() {
           showToast("Invalid or expired OTP");
           setAuthLoading(false);
           return;
+        }
+
+        if (data && data.session) {
+          await supabase.auth.setSession({
+            access_token: data.session.access_token,
+            refresh_token: data.session.refresh_token
+          });
         }
 
         showToast("Logged in successfully");
