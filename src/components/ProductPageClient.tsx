@@ -150,12 +150,6 @@ export default function ProductPageClient({
 
           {/* Price */}
           <div style={{ display: "flex", alignItems: "baseline", gap: "12px", margin: "1rem 0" }}>
-            {product.original_price && product.type !== "custom-order" && (
-              <div style={{ fontSize: "1.5rem", fontWeight: 700, textDecoration: "line-through", color: "#2F2A26" }}>
-                ₹{product.original_price}
-              </div>
-            )}
-
             <div style={{ fontSize: "1.5rem", fontWeight: 700, color: "var(--brand)" }}>
               {product.type === "custom-order" ? (
                 product.priceLabel || `Starts at ₹${product.minPrice || product.price}`
@@ -163,6 +157,12 @@ export default function ProductPageClient({
                 `₹${currentPrice}`
               )}
             </div>
+
+            {product.original_price && product.type !== "custom-order" && (
+              <div style={{ fontSize: "1.1rem", textDecoration: "line-through", color: "#a8a29e" }}>
+                ₹{product.original_price}
+              </div>
+            )}
 
             {(typeof currentStock === "number" && product.type !== "custom-order") && (
               <span 
