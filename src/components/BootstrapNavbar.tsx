@@ -84,7 +84,7 @@ export default function BootstrapNavbar() {
               {isActive("/search") ? (
                 <svg xmlns="http://www.w3.org/2000/svg" width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="search-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="search-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="search-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               )}
             </Link>
             
@@ -100,7 +100,7 @@ export default function BootstrapNavbar() {
                 {isActive("/cart") ? (
                   <svg xmlns="http://www.w3.org/2000/svg" width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="cart-icon"><rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="#5a3e2b"/><path d="M7 8V6a5 5 0 0 1 10 0v2" fill="none"/></svg>
                 ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="cart-icon"><rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="none"/><path d="M7 11V6a5 5 0 0 1 10 0v5" fill="none"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="cart-icon"><rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="none"/><path d="M7 11V6a5 5 0 0 1 10 0v5" fill="none"/></svg>
                 )}
                 <CartBadge size="sm" />
               </div>
@@ -143,9 +143,9 @@ export default function BootstrapNavbar() {
 
         <Link href={authLink} prefetch={true} className={`bottom-nav-item ${isActive(authLink) ? "active" : ""}`} title={user ? "Profile" : "Login"}>
           {isActive(authLink) ? (
-            <svg xmlns="http://www.w3.org/2000/svg" width={26} height={26} viewBox="1.5 1.5 21 21" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon" style={{ strokeWidth: 1.575 }}><path d="M19 21a1 1 0 0 0 1-1v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1a1 1 0 0 0 1 1z"/><circle cx="12" cy="7" r="4"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width={26} height={26} viewBox="1.5 1.5 21 21" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><path d="M19 21a1 1 0 0 0 1-1v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1a1 1 0 0 0 1 1z"/><circle cx="12" cy="7" r="4"/></svg>
           ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" width={26} height={26} viewBox="1.5 1.5 21 21" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon" style={{ strokeWidth: 1.575 }}><path d="M19 21a1 1 0 0 0 1-1v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1a1 1 0 0 0 1 1z"/><circle cx="12" cy="7" r="4"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width={26} height={26} viewBox="1.5 1.5 21 21" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon"><path d="M19 21a1 1 0 0 0 1-1v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1a1 1 0 0 0 1 1z"/><circle cx="12" cy="7" r="4"/></svg>
           )}
           <span className="bottom-nav-label">{user ? "Profile" : "Login"}</span>
         </Link>
