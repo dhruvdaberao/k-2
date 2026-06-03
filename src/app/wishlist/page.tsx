@@ -26,6 +26,7 @@ export default function WishlistPage() {
   const fetchControllerRef = useRef(0);
 
   const fetchProducts = useCallback((ids: string[]) => {
+    setIsLoadingProducts(true);
     const reqId = ++fetchControllerRef.current;
       const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
       const uuids = ids.filter(id => uuidRegex.test(id));

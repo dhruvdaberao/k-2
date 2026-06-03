@@ -11,6 +11,7 @@ import { showToast } from "@/components/Toast";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { generateDynamicPdfUrl } from "@/lib/orderClient";
 import OrderSkeleton from "@/components/ui/OrderSkeleton";
+import { useAuth } from "@/hooks/useAuth";
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 type OrderStatus = "placed" | "confirmed" | "shipped" | "delivered";
@@ -89,6 +90,8 @@ export default function OrderDetailPage() {
   const [notFound, setNotFound] = useState(false);
   const [cancelError, setCancelError] = useState(false);
   const [invoiceUrl, setInvoiceUrl] = useState<string>("#");
+  const { user, loading: authLoading } = useAuth();
+  const hasFetched = useRef(false);
 
 
   useEffect(() => {
@@ -133,6 +136,10 @@ export default function OrderDetailPage() {
   }, [order, orderId]);
 
   useEffect(() => {
+    if (authLoading) return;
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
     const fetchOrder = async () => {
       try {
         const urlParams = new URLSearchParams(window.location.search);
@@ -164,7 +171,7 @@ export default function OrderDetailPage() {
     };
 
     fetchOrder();
-  }, [orderId]);
+  }, [orderId, authLoading]);
 
   // ── Cancel order handler ───────────────────────────────────────────────
   const handleCancelClick = () => {
@@ -200,11 +207,16 @@ export default function OrderDetailPage() {
           <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4 max-w-md mx-auto">
             <h2 className="text-xl font-serif font-bold text-[#2f2a26] mb-2">Order not found</h2>
             <p className="text-stone-500 mb-8 text-sm italic">
-              This order doesn't exist or you don't have access to it.
+              This order doesn't exist, hasn't fully loaded, or you don't have access to it.
             </p>
-            <Link href="/orders" className="btn-primary px-10 py-3 rounded-full font-bold">
-              Back to Orders
-            </Link>
+            <div className="flex gap-4 justify-center">
+              <Link href="/orders" className="btn-secondary px-8 py-3 rounded-full font-bold border border-[#4A3219] text-[#4A3219]">
+                Back to Orders
+              </Link>
+              <button onClick={() => window.location.reload()} className="btn-primary px-8 py-3 rounded-full font-bold">
+                Reload
+              </button>
+            </div>
           </div>
         </div>
       </main>

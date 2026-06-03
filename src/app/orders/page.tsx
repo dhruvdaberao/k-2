@@ -55,6 +55,7 @@ export default function OrdersPage() {
   const { user, loading: authLoading } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
   const isInitialLoad = useRef(true);
   const hasFetched = useRef(false);
 
@@ -93,6 +94,7 @@ export default function OrdersPage() {
 
         const { data: sessionData } = await supabase.auth.getSession();
         const token = sessionData?.session?.access_token;
+        if (!token) throw new Error("No token");
 
         const cacheKey = `orders_cache_${user.id}`;
         if (isInitialLoad.current) {
@@ -114,17 +116,17 @@ export default function OrdersPage() {
 
         if (!result.success) {
           console.error("❌ [ORDERS] Fetch error:", result.error);
+          setFetchError(true);
         } else {
           setOrders(result.orders || []);
           localStorage.setItem(cacheKey, JSON.stringify(result.orders || []));
         }
       } catch (err) {
         console.error("🔥 [ORDERS] Crash:", err);
+        setFetchError(true);
       } finally {
-        if (isInitialLoad.current) {
-          setLoading(false);
-          isInitialLoad.current = false;
-        }
+        setLoading(false);
+        isInitialLoad.current = false;
       }
     };
 
@@ -163,6 +165,16 @@ export default function OrdersPage() {
 
         {loading ? (
           loadingView
+        ) : fetchError ? (
+          <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4 max-w-md mx-auto">
+            <h2 className="text-xl font-serif font-bold text-[#4A3219] mb-2">Something went wrong</h2>
+            <p className="text-[#8B7355] mb-8 text-sm italic">
+              We couldn't load your orders. Please try again.
+            </p>
+            <button onClick={() => window.location.reload()} className="btn-primary px-10 py-3 rounded-full font-bold">
+              Reload Page
+            </button>
+          </div>
         ) : orders.length === 0 ? (
           /* ── Empty State (matches Wishlist empty state) ── */
           <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4 max-w-md mx-auto">

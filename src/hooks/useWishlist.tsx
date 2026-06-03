@@ -56,7 +56,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   // Start with empty state to match server render (avoids hydration mismatch)
   const [wishlist, setWishlist] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [internalLoading, setInternalLoading] = useState(true);
   const isInitialLoad = useRef(true);
   const hadCacheAtInit = useRef(false);
 
@@ -74,7 +74,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       const valid = Array.from(new Set(ids));
       if (valid.length > 0) {
         setWishlist(valid);
-        setLoading(false);
+        setInternalLoading(false);
         hadCacheAtInit.current = true;
       }
     }
@@ -83,7 +83,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const loadWishlist = useCallback(async () => {
     try {
       if (isInitialLoad.current && !hadCacheAtInit.current) {
-        setLoading(true);
+        setInternalLoading(true);
       }
       const items = await loadWishlistLib(user);
       setWishlist(filterValidIds(items.map(i => String(i.id))));
@@ -91,11 +91,11 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       console.error("WISHLIST LOAD ERROR:", err);
     } finally {
       if (isInitialLoad.current) {
-        setLoading(false);
+        setInternalLoading(false);
         isInitialLoad.current = false;
       }
     }
-  }, [user]);
+  }, [user, filterValidIds]);
 
   const toggleWishlist = useCallback(async (product: any) => {
     const productId = String(product.id || product.slug || "");
@@ -186,6 +186,8 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       prefetchWishlistProducts(wishlist);
     }
   }, [wishlist]);
+
+  const loading = internalLoading || authLoading;
 
   const value = useMemo(() => ({
     wishlist,
