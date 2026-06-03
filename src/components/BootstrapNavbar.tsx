@@ -26,14 +26,20 @@ export default function BootstrapNavbar() {
 
   return (
     <>
-      <nav className="keshvi-nav top-navbar">
-        <div className="nav-inner">
-          <Link href="/" className="brand header-left logo" aria-label="Keshvi Crafts — Home">
-            <Image
-              src="/uploads/hero/logo.png"
-              alt="Keshvi Crafts Logo"
-              width={160}
-              height={56}
+      <nav className="keshvi-nav">
+        <div className="announcement-banner">
+          <div className="announcement-banner-text">
+            ✨ Flat 10% off on your first order! Use code CRAFTS10 ✨ Free shipping on orders over ₹999 ✨
+          </div>
+        </div>
+        <div className="top-navbar">
+          <div className="nav-inner">
+            <Link href="/" className="brand header-left logo" aria-label="Keshvi Crafts — Home">
+              <Image
+                src="/uploads/hero/logo.png"
+                alt="Keshvi Crafts Logo"
+                width={130}
+                height={40}
               className="logo-img"
               priority={true}
               style={{ objectFit: "contain" }}
@@ -106,6 +112,7 @@ export default function BootstrapNavbar() {
               </div>
             </Link>
           </div>
+        </div>
         </div>
       </nav>
 
