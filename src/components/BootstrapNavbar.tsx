@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import BrandLogo from "@/components/ui/BrandLogo";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabaseClient";
 import CartBadge from "@/components/CartBadge";
