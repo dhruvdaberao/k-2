@@ -454,6 +454,9 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     
     const productPayload: any = {
       ...formData,
+      price: Number(formData.price) || 0,
+      stock: Number(formData.stock) || 0,
+      discount_percentage: formData.discount_percentage === "" || formData.discount_percentage === null ? null : Number(formData.discount_percentage),
       variants: hasVariants ? variants : null,
       images,
       status: 'live'

@@ -36,11 +36,14 @@ export async function POST(request: Request) {
     const payload = await request.json();
     const { error } = await supabaseAdmin.from('products').upsert(payload);
 
-    if (error) throw error;
+    if (error) {
+      console.error('[Admin Catalog API] Supabase Upsert Error:', error);
+      return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    }
     return NextResponse.json({ success: true });
   } catch (err: any) {
     console.error('[Admin Catalog API] POST Product Error:', err);
-    return NextResponse.json({ success: false, error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ success: false, error: err.message || 'Internal Server Error' }, { status: 500 });
   }
 }
 
