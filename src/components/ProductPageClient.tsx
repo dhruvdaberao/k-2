@@ -164,7 +164,7 @@ export default function ProductPageClient({
             </div>
 
             {product.original_price && product.type !== "custom-order" && (
-              <div style={{ fontSize: "1.5rem", fontWeight: 600, textDecoration: "line-through", color: "#a8a29e" }}>
+              <div style={{ fontSize: "1.5rem", fontWeight: 600, textDecoration: "line-through", color: "#9ca3af" }}>
                 ₹{product.original_price}
               </div>
             )}

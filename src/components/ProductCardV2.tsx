@@ -176,8 +176,8 @@ export default function ProductCardV2({ p, priority = false }: { p: Product, pri
                             <span className="text-base md:text-lg font-bold text-neutral-900">{priceDisplay}</span>
                             {originalPriceDisplay && (
                                 <span 
-                                    className="text-base md:text-lg font-semibold text-stone-400" 
-                                    style={{ textDecoration: 'line-through' }}
+                                    className="text-base md:text-lg font-semibold" 
+                                    style={{ textDecoration: 'line-through', color: '#9ca3af' }}
                                 >
                                     {originalPriceDisplay}
                                 </span>
