@@ -103,6 +103,13 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     localStorage.setItem(draftKey, JSON.stringify(draft));
   }, [formData, variants, images, hasVariants, draftKey]);
 
+  // Clear draft when leaving the page (but keep it on hard refresh)
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem(draftKey);
+    };
+  }, [draftKey]);
+
   const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
