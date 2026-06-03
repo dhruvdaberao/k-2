@@ -11,9 +11,22 @@ import CartBadge from "@/components/CartBadge";
 import WishlistBadge from "@/components/WishlistBadge";
 import "./Navbar.css";
 
+const bannerMessages = [
+  { text: "10% off on your first order", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.5 12H16c-.7 2-2 3-4 3s-3.3-1-4-3H2.5"/><path d="M5.5 5.1L2 12v6c0 1.1.9 2 2 2h16a2 2 0 002-2v-6l-3.4-6.9A2 2 0 0016.8 4H7.2a2 2 0 00-1.8 1.1z"/></svg> },
+  { text: "Pan India Delivery", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> }
+];
+
 export default function BootstrapNavbar() {
   const pathname = usePathname();
   const { user } = useAuth();
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentMessageIndex((prev) => (prev + 1) % bannerMessages.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   const authLink = user ? "/profile" : "/auth";
 
@@ -28,8 +41,9 @@ export default function BootstrapNavbar() {
     <>
       <nav className="keshvi-nav">
         <div className="announcement-banner">
-          <div className="announcement-banner-text">
-            ✨ Flat 10% off on your first order! Use code CRAFTS10 ✨ Free shipping on orders over ₹999 ✨
+          <div className="announcement-banner-content" key={currentMessageIndex}>
+            <span className="banner-icon">{bannerMessages[currentMessageIndex].icon}</span>
+            <span>{bannerMessages[currentMessageIndex].text}</span>
           </div>
         </div>
         <div className="top-navbar">

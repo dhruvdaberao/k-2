@@ -29,24 +29,31 @@
   height: 22px;
   background: var(--primary-brown);
   color: #fff;
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 500;
   display: flex;
   align-items: center;
+  justify-content: center;
   overflow: hidden;
-  white-space: nowrap;
   letter-spacing: 0.5px;
 }
 
-.announcement-banner-text {
-  display: inline-block;
-  padding-left: 100%;
-  animation: marquee 25s linear infinite;
+.announcement-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  animation: fadeSlideUp 0.4s ease-out forwards;
 }
 
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
+.banner-icon {
+  display: flex;
+  align-items: center;
+  opacity: 0.9;
+}
+
+@keyframes fadeSlideUp {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 .top-navbar {
@@ -282,8 +289,10 @@ body {
     max-width: 100%;
     height: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom));
     padding-bottom: env(safe-area-inset-bottom);
-    background: var(--bg-nav);
-    border-top: 1px solid #e6e0d8;
+    background: rgba(241, 235, 230, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(0,0,0,0.06);
     z-index: 1350;
     align-items: stretch;
     justify-content: space-between;
