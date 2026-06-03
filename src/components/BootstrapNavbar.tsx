@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import BrandLogo from "@/components/ui/BrandLogo";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabaseClient";
@@ -28,17 +26,14 @@ export default function BootstrapNavbar() {
       <nav className="keshvi-nav">
         <div className="top-navbar">
           <div className="nav-inner">
-            <Link href="/" className="brand header-left logo" aria-label="Keshvi Crafts — Home">
-              <Image
-                src="/uploads/hero/logo.png"
+            <Link href="/" className="brand header-left" style={{ textDecoration: 'none' }} aria-label="Keshvi Crafts — Home">
+              <img
+                src="/keshvi-yarn-logo-cropped.png"
                 alt="Keshvi Crafts Logo"
-                width={130}
-                height={40}
-              className="logo-img"
-              priority={true}
-              style={{ objectFit: "contain" }}
-            />
-          </Link>
+                className="my-0"
+                style={{ height: '46px', width: 'auto', objectFit: 'contain' }}
+              />
+            </Link>
 
           <div className="nav-icons header-right">
             <div className="desktop-links">

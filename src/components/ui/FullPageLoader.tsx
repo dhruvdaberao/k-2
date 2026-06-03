@@ -24,11 +24,14 @@ export default function FullPageLoader() {
         gap: 20,
       }}
     >
-      <img
-        src="/uploads/hero/logo.png"
-        alt="Keshvi Crafts"
-        style={{ height: 90, width: 'auto', mixBlendMode: 'multiply' }}
-      />
+      <div className="flex flex-col items-center justify-center animate-pulse py-4">
+        <img
+          src="/keshvi-yarn-logo-cropped.png"
+          alt="Keshvi Crafts Logo"
+          className="mb-4"
+          style={{ height: '95px', width: 'auto', objectFit: 'contain' }}
+        />
+      </div>
       <div
         style={{
           width: 36,

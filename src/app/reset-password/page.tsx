@@ -75,7 +75,7 @@ export default function ResetPasswordPage() {
             src="/uploads/hero/logo.png"
             alt="Logo"
             className="mx-auto mb-4"
-            style={{ height: "110px", width: "auto", mixBlendMode: "multiply" }}
+            style={{ height: "120px", width: "auto", objectFit: "contain" }}
           />
           <h1 className="text-2xl font-bold" style={{ color: "var(--brand)" }}>
             Create New Password
