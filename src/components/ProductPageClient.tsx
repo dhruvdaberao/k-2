@@ -154,7 +154,7 @@ export default function ProductPageClient({
           <h1 style={{ marginTop: 0, fontSize: "2rem", lineHeight: 1.3, marginBottom: "1rem" }}>{product.title}</h1>
 
           {/* Price */}
-          <div style={{ display: "flex", alignItems: "baseline", gap: "12px", margin: "1rem 0" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", margin: "1rem 0" }}>
             <div style={{ fontSize: "1.5rem", fontWeight: 700, color: "var(--brand)" }}>
               {product.type === "custom-order" ? (
                 product.priceLabel || `Starts at ₹${product.minPrice || product.price}`
@@ -164,7 +164,7 @@ export default function ProductPageClient({
             </div>
 
             {product.original_price && product.type !== "custom-order" && (
-              <div style={{ fontSize: "1.1rem", textDecoration: "line-through", color: "#a8a29e" }}>
+              <div style={{ fontSize: "1.5rem", fontWeight: 600, textDecoration: "line-through", color: "#a8a29e" }}>
                 ₹{product.original_price}
               </div>
             )}

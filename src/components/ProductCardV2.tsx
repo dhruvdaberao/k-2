@@ -172,11 +172,11 @@ export default function ProductCardV2({ p, priority = false }: { p: Product, pri
                 <div className="mt-auto flex flex-col justify-end">
 
                     <div className="flex items-center justify-between mb-2 flex-wrap gap-1">
-                        <div className="flex items-baseline gap-2">
+                        <div className="flex items-center gap-2">
                             <span className="text-base md:text-lg font-bold text-neutral-900">{priceDisplay}</span>
                             {originalPriceDisplay && (
                                 <span 
-                                    className="text-xs md:text-sm font-semibold text-stone-400" 
+                                    className="text-base md:text-lg font-semibold text-stone-400" 
                                     style={{ textDecoration: 'line-through' }}
                                 >
                                     {originalPriceDisplay}
