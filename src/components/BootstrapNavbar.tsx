@@ -45,9 +45,6 @@ export default function BootstrapNavbar() {
               <Link href="/" prefetch={true} className={`nav-item ${isActive("/") ? "active" : ""}`} title="Home">
                 <span className="nav-label">Home</span>
               </Link>
-              <Link href="/search" prefetch={true} className={`nav-item ${isActive("/search") ? "active" : ""}`} title="Search">
-                <span className="nav-label">Search</span>
-              </Link>
               <Link href="/collections" prefetch={true} className={`nav-item ${isActive("/collections") ? "active" : ""}`} title="Collections">
                 <span className="nav-label">Collections</span>
               </Link>
@@ -63,14 +60,17 @@ export default function BootstrapNavbar() {
                   <WishlistBadge />
                 </div>
               </Link>
+              <Link href={authLink} prefetch={true} className={`nav-item ${isActive(authLink) ? "active" : ""}`} title={user ? "Profile" : "Login"}>
+                <span className="nav-label">{user ? "Profile" : "Login"}</span>
+              </Link>
+              <Link href="/search" prefetch={true} className={`nav-item ${isActive("/search") ? "active" : ""}`} title="Search">
+                <span className="nav-label">Search</span>
+              </Link>
               <Link href="/cart" prefetch={true} className={`nav-item ${isActive("/cart") ? "active" : ""}`} title="Bag">
                 <div className="cart-wrapper-text">
                   <span className="nav-label">Bag</span>
                   <CartBadge />
                 </div>
-              </Link>
-              <Link href={authLink} prefetch={true} className={`nav-item ${isActive(authLink) ? "active" : ""}`} title={user ? "Profile" : "Login"}>
-                <span className="nav-label">{user ? "Profile" : "Login"}</span>
               </Link>
             </div>
 
@@ -94,7 +94,7 @@ export default function BootstrapNavbar() {
               className={`mobile-top-cart ${isActive("/cart") ? "active" : ""}`}
               aria-label="Shopping Bag"
               title="Bag"
-              style={{ display: 'flex', alignItems: 'center', marginLeft: "12px" }}
+              style={{ marginLeft: "12px" }}
             >
               <div className="cart-wrapper">
                 {isActive("/cart") ? (
