@@ -53,7 +53,7 @@ type WishlistContextType = {
 const WishlistContext = createContext<WishlistContextType | null>(null);
 
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   // Start with empty state to match server render (avoids hydration mismatch)
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [internalLoading, setInternalLoading] = useState(true);
