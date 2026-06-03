@@ -42,6 +42,13 @@ function getSupabaseClient() {
       {
         global: {
           fetch: customFetch
+        },
+        auth: {
+          // Bypass navigator.locks entirely. PWAs (especially on iOS/Android) 
+          // notoriously deadlock background locks, causing getSession to hang forever.
+          lock: async (name: string, acquire: () => Promise<void>) => {
+            return await acquire();
+          }
         }
       }
     );

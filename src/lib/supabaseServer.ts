@@ -14,20 +14,26 @@ export function createSupabaseServerClient() {
         },
         set(name: string, value: string, options: CookieOptions) {
           try {
-            cookieStore.set({ name, value, ...options });
+            cookieStore.set({ 
+              name, 
+              value, 
+              ...options,
+              secure: process.env.NODE_ENV === "production" 
+            });
           } catch (error) {
             // The `set` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
           }
         },
         remove(name: string, options: CookieOptions) {
           try {
-            cookieStore.set({ name, value: "", ...options });
+            cookieStore.set({ 
+              name, 
+              value: "", 
+              ...options,
+              secure: process.env.NODE_ENV === "production" 
+            });
           } catch (error) {
             // The `delete` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
           }
         },
       },
