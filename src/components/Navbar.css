@@ -164,6 +164,7 @@
 .mobile-top-cart .cart-icon {
   color: var(--brand);
   stroke: var(--brand);
+  stroke-width: 1.6;
   width: 22px;
   height: 22px;
   display: flex;
@@ -311,6 +312,10 @@ body {
     opacity: 1;
     stroke-linecap: round;
     stroke-linejoin: round;
+  }
+
+  .mobile-bottom-nav .bottom-nav-item svg.profile-icon-svg {
+    stroke-width: 1.575;
   }
 
   .mobile-bottom-nav .bottom-nav-item span {
