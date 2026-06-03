@@ -106,11 +106,17 @@ export default function LoginPage() {
           setAuthMode("login");
         } else if (data.session && data.user) {
           // If auto-confirm is ON and it's a genuine new account
-          await supabase.auth.setSession({
-            access_token: data.session.access_token,
-            refresh_token: data.session.refresh_token
-          });
-          await syncLocalCartToDB(data.user.id);
+          await Promise.race([
+            supabase.auth.setSession({
+              access_token: data.session.access_token,
+              refresh_token: data.session.refresh_token
+            }),
+            new Promise(r => setTimeout(r, 1000))
+          ]);
+          await Promise.race([
+            syncLocalCartToDB(data.user.id),
+            new Promise(r => setTimeout(r, 2000))
+          ]);
           showToast("Account created successfully");
           setSuccessModal(true);
           setTimeout(() => {
@@ -139,16 +145,22 @@ export default function LoginPage() {
         }
 
         if (data && data.session) {
-          await supabase.auth.setSession({
-            access_token: data.session.access_token,
-            refresh_token: data.session.refresh_token
-          });
+          await Promise.race([
+            supabase.auth.setSession({
+              access_token: data.session.access_token,
+              refresh_token: data.session.refresh_token
+            }),
+            new Promise(r => setTimeout(r, 1000))
+          ]);
         }
 
         showToast("Logged in successfully");
 
         if (data && data.user?.id) {
-          await syncLocalCartToDB(data.user.id);
+          await Promise.race([
+            syncLocalCartToDB(data.user.id),
+            new Promise(r => setTimeout(r, 2000))
+          ]);
         }
 
         setSuccessModal(true);
@@ -176,15 +188,21 @@ export default function LoginPage() {
         }
 
         if (data && data.session) {
-          await supabase.auth.setSession({
-            access_token: data.session.access_token,
-            refresh_token: data.session.refresh_token
-          });
+          await Promise.race([
+            supabase.auth.setSession({
+              access_token: data.session.access_token,
+              refresh_token: data.session.refresh_token
+            }),
+            new Promise(r => setTimeout(r, 1000))
+          ]);
         }
 
         showToast("Logged in successfully");
         if (data && data.user?.id) {
-          await syncLocalCartToDB(data.user.id);
+          await Promise.race([
+            syncLocalCartToDB(data.user.id),
+            new Promise(r => setTimeout(r, 2000))
+          ]);
         }
 
         setSuccessModal(true);
