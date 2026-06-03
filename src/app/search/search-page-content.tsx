@@ -7,21 +7,44 @@ import type { Product } from "@/types";
 import ProductCard from "@/components/ProductCardV2";
 import "./search.css";
 
+let cachedSearchProducts: Product[] | null = null;
+
 export default function SearchPageContent() {
   const router = useRouter();
   const [query, setQuery] = useState("");
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<Product[]>(cachedSearchProducts || []);
+  const [loading, setLoading] = useState(!cachedSearchProducts);
 
   useEffect(() => {
-    supabase.from("products")
-      .select("*")
-      .eq("status", "live")
-      .then(({ data }: { data: any }) => {
-        if (data) setProducts(data as Product[]);
-      }).catch((err: any) => console.error("Search fetch error:", err))
-      .finally(() => setLoading(false));
+    if (cachedSearchProducts) return;
+
+    let isMounted = true;
+    const loadData = async () => {
+      try {
+        const { data, error } = await supabase.from("products").select("*").eq("status", "live");
+        if (error) throw error;
+        if (isMounted && data) {
+          cachedSearchProducts = data as Product[];
+          setProducts(data as Product[]);
+        }
+      } catch (err) {
+        console.error("Search fetch error:", err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    loadData();
+
+    const timeout = setTimeout(() => {
+      if (isMounted) setLoading(false);
+    }, 6000);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timeout);
+    };
   }, []);
 
   const liveProducts = useMemo(
