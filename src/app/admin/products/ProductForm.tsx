@@ -43,7 +43,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     badge: initialData?.badge || "",
     tags: initialData?.tags || ["handmade"],
     type: initialData?.type || "direct-purchase",
-    homeSection: initialData?.homeSection || "none",
+    homeSection: initialData?.homeSection || (initialData?.tags?.find((t: string) => t.startsWith('_homeSection:'))?.split(':')[1]) || "none",
     discount_active: initialData?.discount_active || false,
     discount_percentage: initialData?.discount_percentage || "",
   });
