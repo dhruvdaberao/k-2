@@ -241,7 +241,7 @@ export default function LoginPage() {
         </div>
       )}
 
-      <main className="checkout-page checkout-container pb-20 login-page-styles" style={{ minHeight: 'calc(100vh - 180px)', display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingTop: 'env(safe-area-inset-top)' }}>
+      <main className="checkout-page checkout-container pb-20 login-page-styles" style={{ minHeight: 'calc(100vh - 180px)', paddingTop: '160px' }}>
         <style dangerouslySetInnerHTML={{__html: `
           .login-page-styles input {
             border: 1px solid rgba(139, 94, 60, 0.4) !important;
@@ -254,7 +254,7 @@ export default function LoginPage() {
           }
         `}} />
         <div className="w-full mx-auto" style={{ maxWidth: '460px' }}>
-          <div className="text-center mb-6">
+          <div className="text-center mb-10">
             <h1 className="text-2xl font-bold" style={{ color: "var(--brand)" }}>
               {authMode === "login" ? "Login" : authMode === "signup" ? "Sign Up" : authMode === "otp" ? "Login via OTP" : authMode === "otp_verify" ? "Enter OTP Code" : "Reset Password"}
             </h1>
