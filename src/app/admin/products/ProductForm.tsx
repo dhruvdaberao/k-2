@@ -11,6 +11,14 @@ import { getLiveCategories, Category } from "@/lib/categoriesApi";
 import imageCompression from "browser-image-compression";
 import { revalidateStorefront } from "@/actions/revalidate";
 
+const HOME_SECTION_OPTIONS = [
+  { value: 'none', label: 'None (Automatic placement)' },
+  { value: 'popular-picks', label: 'Popular Picks' },
+  { value: 'best-sellers', label: 'Best Sellers' },
+  { value: 'trending', label: 'Trending Creations' },
+  { value: 'handmade', label: 'Handmade Collections' },
+];
+
 interface ProductFormProps {
   initialData?: any;
   isEdit?: boolean;
@@ -42,6 +50,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   
   const [categories, setCategories] = useState<Category[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [homeSectionDropdownOpen, setHomeSectionDropdownOpen] = useState(false);
   const [categorySearch, setCategorySearch] = useState("");
 
   useEffect(() => {
@@ -395,12 +404,19 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
     setLoading(true);
     
-    const productPayload = {
+    const productPayload: any = {
       ...formData,
       variants: hasVariants ? variants : null,
       images,
       status: 'live'
     };
+
+    // Polyfill for homeSection without DB schema changes
+    productPayload.tags = (productPayload.tags || []).filter((t: string) => !t.startsWith('_homeSection:'));
+    if (productPayload.homeSection && productPayload.homeSection !== 'none') {
+      productPayload.tags.push(`_homeSection:${productPayload.homeSection}`);
+    }
+    delete productPayload.homeSection;
 
 
     try {
@@ -697,18 +713,43 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
               </label>
               
               <label className="block text-sm font-semibold text-[#8B7355] mt-6 mb-1">Home Page Section</label>
-              <select 
-                name="homeSection" 
-                value={formData.homeSection} 
-                onChange={handleInputChange} 
-                className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355] bg-white text-[#3E2C1C]"
-              >
-                <option value="none">None (Automatic placement)</option>
-                <option value="popular-picks">Popular Picks</option>
-                <option value="best-sellers">Best Sellers</option>
-                <option value="trending">Trending Creations</option>
-                <option value="handmade">Handmade Collections</option>
-              </select>
+              <div className="relative">
+                <div 
+                  className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#C4A484] bg-white cursor-pointer flex justify-between items-center text-[#3E2C1C]"
+                  style={{ outline: homeSectionDropdownOpen ? '2px solid #8B7355' : 'none', minHeight: '42px' }}
+                  onClick={() => setHomeSectionDropdownOpen(!homeSectionDropdownOpen)}
+                >
+                  <span style={{ fontWeight: formData.homeSection !== 'none' ? 'bold' : 'normal', color: formData.homeSection !== 'none' ? '#3E2C1C' : '#8B7355' }}>
+                    {HOME_SECTION_OPTIONS.find(o => o.value === formData.homeSection)?.label || 'None (Automatic placement)'}
+                  </span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: homeSectionDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s', marginLeft: '8px' }}>
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </div>
+                
+                {homeSectionDropdownOpen && (
+                  <>
+                    <div className="fixed inset-0 z-10" onClick={() => setHomeSectionDropdownOpen(false)}></div>
+                    <div className="absolute z-20 w-full mt-2 bg-white border border-[#C4A484] rounded-xl shadow-lg max-h-60 overflow-hidden flex flex-col" style={{ top: '100%' }}>
+                      <div className="overflow-y-auto py-1">
+                        {HOME_SECTION_OPTIONS.map(opt => (
+                          <div 
+                            key={opt.value} 
+                            className="px-4 py-3 hover:bg-[#F5EFE6] cursor-pointer text-[#3E2C1C] transition-colors"
+                            style={{ backgroundColor: formData.homeSection === opt.value ? '#FDFBF7' : 'transparent', fontWeight: formData.homeSection === opt.value ? 'bold' : 'normal' }}
+                            onClick={() => {
+                              setFormData(prev => ({ ...prev, homeSection: opt.value as any }));
+                              setHomeSectionDropdownOpen(false);
+                            }}
+                          >
+                            {opt.label}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
 
@@ -724,7 +765,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                 placeholder="e.g. handmade, valentine" 
               />
               <div className="flex flex-wrap gap-2">
-                {formData.tags?.map((tag: string) => (
+                {formData.tags?.filter((tag: string) => !tag.startsWith('_homeSection:')).map((tag: string) => (
                   <div key={tag} className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#FDFBF7] text-[#4A3219] text-sm font-semibold rounded-lg border border-[#C4A484] shadow-sm max-w-full">
                     <span className="text-[#8B7355] opacity-70 shrink-0">#</span>
                     <span className="truncate shrink">{tag}</span>

@@ -1,5 +1,15 @@
 import { supabase } from "@/lib/supabaseClient";
 
+function mapProduct(p: any) {
+  if (!p) return p;
+  const homeSectionTag = p.tags?.find((t: string) => t.startsWith('_homeSection:'));
+  return {
+    ...p,
+    homeSection: p.homeSection || (homeSectionTag ? homeSectionTag.split(':')[1] : 'none'),
+    stock: typeof p.stock === 'number' ? (p.stock > 0 ? 1 : 0) : p.stock
+  };
+}
+
 export async function getLiveProducts() {
   const { data, error } = await supabase
     .from("products")
@@ -11,10 +21,7 @@ export async function getLiveProducts() {
     console.error("Error fetching live products:", error);
     return [];
   }
-  return (data || []).map((p: any) => ({
-    ...p,
-    stock: typeof p.stock === 'number' ? (p.stock > 0 ? 1 : 0) : p.stock
-  }));
+  return (data || []).map(mapProduct);
 }
 
 export async function getProductBySlug(slug: string) {
@@ -28,10 +35,7 @@ export async function getProductBySlug(slug: string) {
     console.error(`Error fetching product ${slug}:`, error);
     return null;
   }
-  if (data) {
-    data.stock = typeof data.stock === 'number' ? (data.stock > 0 ? 1 : 0) : data.stock;
-  }
-  return data;
+  return mapProduct(data);
 }
 
 export async function getProductById(id: string) {
@@ -45,8 +49,5 @@ export async function getProductById(id: string) {
     console.error(`Error fetching product ${id}:`, error);
     return null;
   }
-  if (data) {
-    data.stock = typeof data.stock === 'number' ? (data.stock > 0 ? 1 : 0) : data.stock;
-  }
-  return data;
+  return mapProduct(data);
 }
