@@ -178,19 +178,19 @@ export default function CollectionsContent({ serverCategory, liveProducts = [], 
 
       {sorted.length === 0 ? (
         <div 
-          className="py-16 px-6 text-center shadow-sm"
+          className="py-20 px-6 text-center shadow-sm"
           style={{ backgroundColor: '#F5EFE6', borderRadius: '24px', border: '1px solid #E6DCCF', margin: '2rem 0' }}
         >
-          <div className="text-5xl mb-5 flex justify-center text-[#8B7355]">
+          <div className="mb-6 opacity-40 flex justify-center">
             {!qParam ? (
-              <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="3" width="7" height="7" rx="1"></rect>
-                <rect x="14" y="3" width="7" height="7" rx="1"></rect>
-                <rect x="14" y="14" width="7" height="7" rx="1"></rect>
-                <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+              <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="1.5 1.5 21 21" fill="none" stroke="#4A3219" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-layout-grid">
+                <rect width="7" height="7" x="3" y="3" rx="1"/>
+                <rect width="7" height="7" x="14" y="3" rx="1"/>
+                <rect width="7" height="7" x="14" y="14" rx="1"/>
+                <rect width="7" height="7" x="3" y="14" rx="1"/>
               </svg>
             ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8" />
                 <path d="m21 21-4.3-4.3" />
               </svg>
