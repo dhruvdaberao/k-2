@@ -36,7 +36,6 @@ def get_cropped_logo(input_path, thicken=True):
             y_1x = y / scale
             
             # Safe boundary for the left edge of the "K" tail/loop to completely erase the watercolor smudge
-            # At y=0, boundary_x = 342. At y=483, boundary_x = 300.
             boundary_x = 342.0 - (y_1x * 42.0 / 483.0)
             if x_1x < boundary_x:
                 alpha_data.append(0)
@@ -53,8 +52,8 @@ def get_cropped_logo(input_path, thicken=True):
             else:
                 # Text stroke detection
                 if thicken:
-                    l_bg = 230
-                    l_fg = 180
+                    l_bg = 232  # Keep threshold high to extract complete strokes
+                    l_fg = 165  # Broader range for naturally thicker lines without closing holes
                 else:
                     l_bg = 220
                     l_fg = 100
@@ -71,16 +70,18 @@ def get_cropped_logo(input_path, thicken=True):
     alpha_high = Image.new("L", high_res_size)
     alpha_high.putdata(alpha_data)
     
-    # Apply morphological dilation (MaxFilter) if thicken is true
+    # Apply a gentle morphological dilation (MaxFilter) if thicken is true
+    # We use MaxFilter(3) to thicken the stroke slightly (1 pixel in high-res)
+    # instead of MaxFilter(9) which merges small holes and notches.
     if thicken:
-        # MaxFilter(9) dilates by 4 pixels at 4x resolution, making strokes significantly thicker
-        alpha_high = alpha_high.filter(ImageFilter.MaxFilter(9))
+        alpha_high = alpha_high.filter(ImageFilter.MaxFilter(3))
         
-    # --- Smooth the edges using SDF-like Blur & Threshold technique ---
-    # This removes blockiness/irregularities and creates organic vector-smooth lines.
-    alpha_high = alpha_high.filter(ImageFilter.GaussianBlur(radius=5.0))
+    # --- Smooth the edges using a smaller radius SDF-like technique ---
+    # We use radius=2.2 (instead of 5.0) to prevent small details like the crochet hook notch
+    # and the 'K' center loop hole from being closed/filled by the blur.
+    alpha_high = alpha_high.filter(ImageFilter.GaussianBlur(radius=2.2))
     alpha_high = alpha_high.point(lambda p: 255 if p > 105 else 0)
-    alpha_high = alpha_high.filter(ImageFilter.GaussianBlur(radius=2.0))
+    alpha_high = alpha_high.filter(ImageFilter.GaussianBlur(radius=1.2))
     
     # Create the high-res text image
     text_color = (61, 35, 20) # brand brown color #3d2314
@@ -114,7 +115,6 @@ def get_cropped_logo(input_path, thicken=True):
     cropped = text_im.crop((crop_left, crop_top, crop_right, crop_bottom))
     
     # --- Add soft brown drop shadow ---
-    # Pad the cropped image slightly to prevent the shadow from being clipped
     shadow_padding = 20
     padded = Image.new("RGBA", (cropped.width + shadow_padding * 2, cropped.height + shadow_padding * 2), (0, 0, 0, 0))
     padded.paste(cropped, (shadow_padding, shadow_padding), cropped)
@@ -124,9 +124,8 @@ def get_cropped_logo(input_path, thicken=True):
     shadow_mask = padded_alpha.filter(ImageFilter.GaussianBlur(radius=5.5))
     
     # Create solid dark-brown shadow image
-    # Shadow color: (35, 18, 8), opacity: soft 24%
     shadow_color = Image.new("RGBA", padded.size, (35, 18, 8, 0))
-    shadow_alpha_data = [int(a * 0.24) for a in shadow_mask.getdata()]
+    shadow_alpha_data = [int(a * 0.22) for a in shadow_mask.getdata()]  # slightly softer shadow (22%)
     shadow_alpha = Image.new("L", padded.size)
     shadow_alpha.putdata(shadow_alpha_data)
     
@@ -171,7 +170,7 @@ def fit_to_canvas(cropped_img, output_width, output_height, padding_ratio=0.05, 
 def main():
     img_path = r"C:\Users\dhruv\.gemini\antigravity-ide\brain\78756275-0122-4fd4-a99a-389c33158b25\media__1780511736311.png"
     
-    print("Generating ultra-smooth logo assets with soft shadow (Optimized)...")
+    print("Generating detailed, smooth logo assets with soft shadow (Optimized)...")
     
     # Process the high-res text crop ONCE
     cropped = get_cropped_logo(img_path, thicken=True)
@@ -212,7 +211,7 @@ def main():
     nav_logo.save("public/keshvi-yarn-logo-transparent.png", "PNG")
     print("Created public/keshvi-yarn-logo.png and transparent variant")
     
-    print("All logo assets and icons created successfully with vector-smooth edges and drop shadow!")
+    print("All logo assets and icons created successfully with preserved loop hole, crochet hook and drop shadow!")
 
 if __name__ == "__main__":
     main()
