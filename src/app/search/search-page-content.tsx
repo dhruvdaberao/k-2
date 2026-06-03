@@ -55,10 +55,18 @@ export default function SearchPageContent() {
     [products],
   );
 
+  const popularCategories = ["Accessories", "Keyrings", "Car Charms", "Bags"];
+
+  const trendingProducts = useMemo(() => {
+    return [...liveProducts]
+      .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+      .slice(0, 4);
+  }, [liveProducts]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) {
-      return liveProducts;
+      return [];
     }
 
     return liveProducts.filter((p) => {
@@ -111,6 +119,33 @@ export default function SearchPageContent() {
       <section className="search-page__results" aria-live="polite">
         {loading ? (
           <div className="search-page__empty">Loading products...</div>
+        ) : !query.trim() ? (
+          <div className="search-page__suggestions">
+            <h3 className="suggestions-title">Popular Categories</h3>
+            <div className="suggestions-pills">
+              {popularCategories.map(cat => (
+                <button 
+                  key={cat} 
+                  type="button"
+                  onClick={() => setQuery(cat)}
+                  className="suggestion-pill"
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            {trendingProducts.length > 0 && (
+              <>
+                <h3 className="suggestions-title mt-6">Trending Products</h3>
+                <div className="plp-grid-mobile">
+                  {trendingProducts.map((p) => (
+                    <ProductCard key={p.slug} p={p} />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
         ) : filtered.length === 0 ? (
           <div className="search-page__empty">No matching products found.</div>
         ) : (

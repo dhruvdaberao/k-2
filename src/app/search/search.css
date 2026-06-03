@@ -85,3 +85,45 @@
 .search-page__clear:hover {
   opacity: 0.8;
 }
+
+.search-page__suggestions {
+  padding-top: 10px;
+}
+
+.suggestions-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #3c2a1d;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.suggestions-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.suggestion-pill {
+  background: #f1ebe6;
+  border: 1px solid rgba(90, 62, 43, 0.1);
+  color: #5a3e2b;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.suggestion-pill:active {
+  background: #e8dfd6;
+  transform: scale(0.96);
+}
+
+.mt-6 {
+  margin-top: 24px !important;
+}
