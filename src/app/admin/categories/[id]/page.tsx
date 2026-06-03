@@ -406,45 +406,59 @@ export default function EditCategory({ params }: { params: { id: string } }) {
           </div>
 
           {/* Discount Settings */}
-          <div className="mb-8 w-full p-5 rounded-2xl border border-stone-200 bg-white shadow-sm relative overflow-hidden">
+          <div className="mb-8 w-full p-5 rounded-2xl border border-[#C4A484] bg-white shadow-sm relative overflow-hidden">
             <div className="absolute top-0 left-0 w-1 h-full bg-[#8B7355]"></div>
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="font-bold text-[#4A3219] text-lg">Category Discount</h3>
-                <p className="text-xs text-stone-500 mt-1">Apply a universal discount to all products in this category.</p>
+                <h3 className="font-bold text-[#8B7355] text-lg">Category Discount</h3>
+                <p className="text-xs text-[#8B7355] mt-1">Apply a universal discount to all products in this category.</p>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input 
-                  type="checkbox" 
-                  className="sr-only peer"
-                  checked={formData.discount_active}
-                  onChange={(e) => {
-                    const isActive = e.target.checked;
-                    setFormData({
-                      ...formData, 
-                      discount_active: isActive,
-                      discount_percentage: isActive ? formData.discount_percentage : ""
-                    });
-                  }}
-                />
-                <div className="w-11 h-6 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#8B7355]"></div>
+              <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '12px' }}>
+                <div style={{ position: 'relative', width: '56px', height: '32px' }}>
+                  <input
+                    type="checkbox"
+                    style={{ opacity: 0, width: 0, height: 0, position: 'absolute' }}
+                    checked={formData.discount_active}
+                    onChange={(e) => {
+                      const isActive = e.target.checked;
+                      setFormData({
+                        ...formData, 
+                        discount_active: isActive,
+                        discount_percentage: isActive ? formData.discount_percentage : ""
+                      });
+                    }}
+                  />
+                  {/* Track */}
+                  <div style={{ 
+                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, 
+                    borderRadius: '34px', transition: 'background-color 0.3s',
+                    backgroundColor: formData.discount_active ? '#4A3219' : '#E6DCCF'
+                  }}></div>
+                  {/* Thumb */}
+                  <div style={{
+                    position: 'absolute', top: '4px', left: '4px', 
+                    width: '24px', height: '24px', borderRadius: '50%', 
+                    backgroundColor: 'white', transition: 'transform 0.3s',
+                    transform: formData.discount_active ? 'translateX(24px)' : 'translateX(0)'
+                  }}></div>
+                </div>
               </label>
             </div>
 
             {formData.discount_active && (
-              <div className="mt-4 pt-4 border-t border-stone-100 flex items-center justify-between">
-                <label className="text-sm font-bold text-[#3E2C1C]">Discount Percentage</label>
-                <div className="relative w-32">
+              <div className="mt-4 pt-4 border-t border-[#E6DCCF] flex items-center justify-between">
+                <label className="text-sm font-bold text-[#8B7355]">Discount Percentage</label>
+                <div className="relative">
                   <input
                     type="number"
                     min="1"
                     max="99"
                     value={formData.discount_percentage}
                     onChange={(e) => setFormData({...formData, discount_percentage: e.target.value})}
-                    className="w-full border border-stone-300 p-2 pr-8 text-base rounded-lg focus:outline-none focus:border-[#4A3219] focus:ring-1 focus:ring-[#4A3219] text-right"
+                    className="w-24 p-2 pr-6 text-base rounded-xl border border-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355] text-right font-bold text-[#4A3219]"
                     placeholder="10"
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 font-bold">%</span>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8B7355] font-bold">%</span>
                 </div>
               </div>
             )}

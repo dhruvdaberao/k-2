@@ -698,11 +698,10 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                   const originalPrice = Number(formData.price) || 0;
                   const discountedPrice = Math.round(originalPrice - (originalPrice * Number(effPct) / 100));
                   return (
-                    <div className="relative w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-stone-200 bg-stone-50 flex items-center gap-3">
+                    <div className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#C4A484] bg-[#F9F6F0] flex items-center gap-3">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B7355" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                      <span className="text-stone-400 line-through text-sm">₹{originalPrice}</span>
-                      <span className="font-bold text-[#4A3219]">₹{discountedPrice}</span>
-                      {isCatDiscount && <span className="ml-auto text-xs bg-[#4A3219] text-white px-2 py-0.5 rounded-full">Category Discount</span>}
+                      <span className="text-[#8B7355] text-sm md:text-base font-medium">₹{originalPrice} <span className="font-bold text-[#4A3219] ml-1">(₹{discountedPrice})</span></span>
+                      {isCatDiscount && <span className="ml-auto text-[10px] uppercase font-bold bg-[#8B7355] text-white px-2 py-1 rounded">Category Discount</span>}
                     </div>
                   );
                 }
@@ -726,33 +725,47 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                 }
                 
                 return (
-                  <div className="mt-3 p-3 rounded-xl border border-stone-200 bg-white">
+                  <div className="mt-3 p-3 md:p-4 rounded-xl border border-[#C4A484] bg-white">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-semibold text-[#4A3219]">Personal Discount</span>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input 
-                          type="checkbox" 
-                          className="sr-only peer"
-                          checked={formData.discount_active}
-                          onChange={(e) => setFormData(prev => ({...prev, discount_active: e.target.checked}))}
-                        />
-                        <div className="w-9 h-5 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#8B7355]"></div>
+                      <span className="text-sm font-semibold text-[#8B7355]">Personal Discount</span>
+                      <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '12px' }}>
+                        <div style={{ position: 'relative', width: '56px', height: '32px' }}>
+                          <input
+                            type="checkbox"
+                            style={{ opacity: 0, width: 0, height: 0, position: 'absolute' }}
+                            checked={formData.discount_active}
+                            onChange={(e) => setFormData(prev => ({...prev, discount_active: e.target.checked}))}
+                          />
+                          {/* Track */}
+                          <div style={{ 
+                            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, 
+                            borderRadius: '34px', transition: 'background-color 0.3s',
+                            backgroundColor: formData.discount_active ? '#4A3219' : '#E6DCCF'
+                          }}></div>
+                          {/* Thumb */}
+                          <div style={{
+                            position: 'absolute', top: '4px', left: '4px', 
+                            width: '24px', height: '24px', borderRadius: '50%', 
+                            backgroundColor: 'white', transition: 'transform 0.3s',
+                            transform: formData.discount_active ? 'translateX(24px)' : 'translateX(0)'
+                          }}></div>
+                        </div>
                       </label>
                     </div>
                     {formData.discount_active && (
-                      <div className="mt-3 flex items-center justify-between border-t border-stone-100 pt-3">
-                        <span className="text-xs font-semibold text-[#8B7355]">Percentage Off</span>
-                        <div className="relative w-24">
+                      <div className="mt-4 flex items-center justify-between border-t border-[#E6DCCF] pt-4">
+                        <span className="text-sm font-semibold text-[#8B7355]">Percentage Off</span>
+                        <div className="relative">
                           <input
                             type="number"
                             min="1"
                             max="99"
                             value={formData.discount_percentage}
                             onChange={(e) => setFormData({...formData, discount_percentage: e.target.value})}
-                            className="w-full border border-stone-300 p-1 pr-6 text-sm rounded-md focus:outline-none focus:border-[#4A3219] text-right"
+                            className="w-24 p-2 pr-6 text-sm md:text-base rounded-xl border border-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355] text-right font-bold text-[#4A3219]"
                             placeholder="10"
                           />
-                          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-stone-500 text-xs">%</span>
+                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8B7355] font-bold text-sm">%</span>
                         </div>
                       </div>
                     )}
