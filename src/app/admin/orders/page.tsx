@@ -28,13 +28,15 @@ const STATUS_COLORS: Record<string, { bg: string, text: string }> = {
 
 export default function AdminOrders() {
   const router = useRouter();
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<Order[] | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [filter, setFilter] = useState("placed");
   const [search, setSearch] = useState("");
 
   // 1. Unified Auth & Data Fetching
   useEffect(() => {
+    let isMounted = true;
     const init = async () => {
       try {
         const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
@@ -43,42 +45,82 @@ export default function AdminOrders() {
         if (sessionError) {
           console.warn("Auth check error (bypassing strict redirect):", sessionError);
         } else if (!sessionData?.session?.user || !isAdmin(sessionData.session.user)) {
-          router.push("/");
+          if (isMounted) router.push("/");
           return;
         }
 
-        // Fetch ALL orders via secure service-role API (bypasses RLS)
         const res = await fetch(`/api/admin/orders?t=${Date.now()}`, {
           headers: {
             Authorization: `Bearer ${token}`
           },
           cache: 'no-store'
         });
+        
+        if (!res.ok) throw new Error("Failed to fetch");
+
         const result = await res.json();
 
         if (!result.success) {
-          console.error("Admin Orders API Error:", result.error);
+          throw new Error(result.error);
         } else {
-          setOrders(result.orders || []);
+          if (isMounted) {
+            setOrders(result.orders || []);
+            setError(false);
+          }
         }
       } catch (err) {
         console.error("Admin Load Error:", err);
+        if (isMounted) setError(true);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     init();
 
     // Fail-safe timeout
-    const timeout = setTimeout(() => setLoading(false), 5000);
-    return () => clearTimeout(timeout);
+    const timeout = setTimeout(() => {
+      if (isMounted && orders === null) {
+        setLoading(false);
+        setError(true);
+      }
+    }, 8000);
+    return () => {
+      isMounted = false;
+      clearTimeout(timeout);
+    };
   }, []);
 
   if (loading) {
     return (
       <main className="min-h-screen bg-[#FDFBF7] py-20 px-4 md:px-6" style={{ paddingTop: '5rem', paddingBottom: '5rem' }}>
         <OrderSkeleton type="list" />
+      </main>
+    );
+  }
+
+  if (error || orders === null) {
+    return (
+      <main className="min-h-screen bg-[#FDFBF7] pt-24 md:pt-28 pb-20 px-4 md:px-6" style={{ paddingBottom: '5rem' }}>
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-[#F5EFE6] text-center shadow-sm" style={{ padding: '48px', border: '1px solid #D4C4B0', borderRadius: '24px', maxWidth: '400px', margin: '40px auto' }}>
+            <div style={{ marginBottom: '24px' }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#C62828" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto' }}>
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-[#5A3E2B]" style={{ marginBottom: '8px' }}>Failed to load</h3>
+            <p className="text-[#6B6B6B]" style={{ fontSize: '14px', marginBottom: '24px' }}>There was a problem loading your orders. Please check your connection and try again.</p>
+            <button 
+              onClick={() => window.location.reload()}
+              className="w-full bg-[#5A3E2B] text-white py-3 rounded-xl font-bold transition hover:bg-[#3E2A1D]"
+            >
+              Reload Page
+            </button>
+          </div>
+        </div>
       </main>
     );
   }
@@ -174,12 +216,11 @@ export default function AdminOrders() {
 
         {/* LIST */}
         {filteredOrders.length === 0 ? (
-          <div className="bg-[#F5EFE6] rounded-[24px] text-center shadow-sm" style={{ padding: '48px', border: '1px solid #E6DCCF' }}>
+          <div className="bg-[#F5EFE6] text-center shadow-sm" style={{ padding: '48px', border: '1px solid #D4C4B0', borderRadius: '24px' }}>
             <div style={{ marginBottom: '24px' }}>
               <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#5A3E2B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto' }}>
-                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <path d="M16 10a4 4 0 0 1-8 0"></path>
+                <rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="none"/>
+                <path d="M7 11V6a5 5 0 0 1 10 0v5" fill="none"/>
               </svg>
             </div>
             <h3 className="text-xl font-bold text-[#5A3E2B]" style={{ marginBottom: '8px' }}>No orders found</h3>
