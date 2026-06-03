@@ -448,17 +448,17 @@ export default function EditCategory({ params }: { params: { id: string } }) {
             {formData.discount_active && (
               <div className="mt-4 pt-4 border-t border-[#E6DCCF] flex items-center justify-between">
                 <label className="text-sm font-bold text-[#8B7355]">Discount Percentage</label>
-                <div className="relative">
+                <div className="flex items-center gap-2">
                   <input
                     type="number"
                     min="1"
                     max="99"
                     value={formData.discount_percentage}
                     onChange={(e) => setFormData({...formData, discount_percentage: e.target.value})}
-                    className="w-24 p-2 pr-6 text-base rounded-xl border border-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355] text-right font-bold text-[#4A3219]"
+                    className="w-20 p-2 text-base rounded-xl border border-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355] text-center font-bold text-[#4A3219]"
                     placeholder="10"
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8B7355] font-bold">%</span>
+                  <span className="text-[#8B7355] font-bold">%</span>
                 </div>
               </div>
             )}
