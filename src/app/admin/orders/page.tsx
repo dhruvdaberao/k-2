@@ -112,7 +112,7 @@ export default function AdminOrders() {
       <div className="max-w-4xl mx-auto">
         
         {/* Header */}
-        <div className="relative text-center mb-8">
+        <div className="relative text-center mb-8 mt-6">
           <Link
             href="/admin"
             className="absolute left-0 top-1/2 -translate-y-1/2 p-2 text-[#8B7355] hover:bg-[#F5EFE6] rounded-full transition-colors flex items-center justify-center"
@@ -226,8 +226,8 @@ export default function AdminOrders() {
                     </p>
                     <Link 
                       href={`/admin/orders/${order.id}`} 
-                      className="transition text-[13px] uppercase tracking-widest shadow-sm view-order-btn whitespace-nowrap text-center shrink-0"
-                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', textDecoration: 'none', display: 'inline-block', border: 'none', padding: '10px 20px', borderRadius: '999px', fontWeight: 800, fontFamily: 'Quicksand, sans-serif' }}
+                      className="transition text-[12px] uppercase tracking-widest shadow-sm view-order-btn whitespace-nowrap text-center shrink-0 flex items-center justify-center"
+                      style={{ backgroundColor: '#5a3e2b', color: '#ffffff', textDecoration: 'none', border: 'none', height: '40px', padding: '0 20px', borderRadius: '8px', fontWeight: 700, fontFamily: 'Quicksand, sans-serif' }}
                     >
                       View Order
                     </Link>
