@@ -90,9 +90,8 @@ export default function AdminDashboard() {
           <div className="rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col" style={{ backgroundColor: '#F5EFE6', border: '1px solid rgba(139, 94, 60, 0.4)', padding: '32px' }}>
             <div className="mb-6 opacity-80">
               <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#5A3E2B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <path d="M16 10a4 4 0 0 1-8 0"></path>
+                <rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="none"></rect>
+                <path d="M7 11V6a5 5 0 0 1 10 0v5" fill="none"></path>
               </svg>
             </div>
             <h2 className="text-xl font-bold text-[#3E2C1C] mb-2">Orders</h2>

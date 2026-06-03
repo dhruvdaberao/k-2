@@ -168,9 +168,8 @@ export default function OrdersPage() {
           <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4 max-w-md mx-auto">
             <div className="mb-6 opacity-30">
               <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <path d="M16 10a4 4 0 0 1-8 0"></path>
+                <rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="none"></rect>
+                <path d="M7 11V6a5 5 0 0 1 10 0v5" fill="none"></path>
               </svg>
             </div>
             <h2 className="text-xl font-serif font-bold text-[#2f2a26] mb-2">No orders yet</h2>
