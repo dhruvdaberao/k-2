@@ -67,6 +67,8 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   const [images, setImages] = useState<string[]>(initialData?.images || []);
   const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
   const [draggedOverIdx, setDraggedOverIdx] = useState<number | null>(null);
+  const [expandedVariantIndex, setExpandedVariantIndex] = useState<number | null>(0);
+  const [variantTagInputs, setVariantTagInputs] = useState<Record<number, string>>({});
 
   const draftKey = `draft_product_${initialData?.id || 'new'}`;
   const isInitialMount = useRef(true);
@@ -123,6 +125,32 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
   const removeTag = (tagToRemove: string) => {
     setFormData(prev => ({ ...prev, tags: prev.tags.filter((t: string) => t !== tagToRemove) }));
+  };
+
+  const handleAddVariantTag = (vIdx: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const newTag = (variantTagInputs[vIdx] || "").trim().toLowerCase();
+      if (newTag) {
+        setVariants(prev => {
+          const newVariants = [...prev];
+          const currentTags = newVariants[vIdx].tags || [];
+          if (!currentTags.includes(newTag)) {
+             newVariants[vIdx].tags = [...currentTags, newTag];
+          }
+          return newVariants;
+        });
+      }
+      setVariantTagInputs(prev => ({ ...prev, [vIdx]: "" }));
+    }
+  };
+
+  const removeVariantTag = (vIdx: number, tagToRemove: string) => {
+    setVariants(prev => {
+      const newVariants = [...prev];
+      newVariants[vIdx].tags = (newVariants[vIdx].tags || []).filter((t: string) => t !== tagToRemove);
+      return newVariants;
+    });
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -372,7 +400,10 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
   };
 
   const addVariant = () => {
-    setVariants(prev => [...prev, { name: '', slug: '', price: formData.price || 0, stock: 999, images: [] }]);
+    setVariants(prev => {
+      setExpandedVariantIndex(prev.length);
+      return [...prev, { name: '', slug: '', price: formData.price || 0, stock: 999, images: [], tags: ["handmade"] }];
+    });
   };
 
   const removeVariant = (index: number) => {
@@ -841,7 +872,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                 <span style={{ fontSize: '0.875rem', color: '#8B7355' }}>PNG, JPG up to 5MB</span>
               </label>
               
-              <div style={{ position: 'absolute', bottom: '12px', left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: '12px' }}>
                 <button 
                    type="button" 
                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); handlePasteClick(); }}
@@ -1035,13 +1066,28 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
         {hasVariants && (
           <div className="space-y-6">
-            {variants.map((variant, vIdx) => (
+            {variants.map((variant, vIdx) => {
+               const isExpanded = expandedVariantIndex === vIdx;
+               return (
                <div key={vIdx} className="p-4 md:p-6 bg-[#FDFBF7] border border-[#C4A484] rounded-2xl relative shadow-sm hover:shadow-md transition-shadow">
-                  <button type="button" onClick={() => removeVariant(vIdx)} className="absolute top-4 right-4 transition-colors" style={{ background: 'none', border: 'none', padding: '0', color: '#ef4444', cursor: 'pointer' }} title="Remove Variant">
+                  <button type="button" onClick={(e) => { e.stopPropagation(); removeVariant(vIdx); }} className="absolute top-4 right-4 transition-colors z-10" style={{ background: 'none', border: 'none', padding: '0', color: '#ef4444', cursor: 'pointer' }} title="Remove Variant">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                   </button>
-                  <h3 className="font-bold text-[#4A3219] mb-4 text-lg">Variant {vIdx + 1}</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+                  <div className="flex items-center gap-4 cursor-pointer pr-8" onClick={() => setExpandedVariantIndex(isExpanded ? null : vIdx)}>
+                     <h3 className="font-bold text-[#4A3219] text-lg flex-1 truncate">{variant.name || `Variant ${vIdx + 1}`}</h3>
+                     {!isExpanded && (
+                       <div className="flex items-center gap-4">
+                         <span className="text-sm font-bold text-[#5A3E2B]">₹{variant.price || 0}</span>
+                         <span className="text-[10px] font-bold px-2 py-1 rounded bg-[#E6DCCF] text-[#4A3219]">{variant.stock > 0 ? 'In Stock' : 'Out of Stock'}</span>
+                       </div>
+                     )}
+                     <div className="text-[#8B7355]" style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
+                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                     </div>
+                  </div>
+                  {isExpanded && (
+                    <div className="pt-6 mt-4 border-t border-[#E6DCCF]">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
                     <div>
                       <label className="block text-xs font-semibold text-[#8B7355] mb-1">Variant Name</label>
                       <input type="text" required value={variant.name} onChange={(e) => handleVariantChange(vIdx, 'name', e.target.value)} className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355] bg-white" placeholder="e.g. Red Rose" />
@@ -1061,10 +1107,24 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                         <span className="text-sm font-semibold" style={{ color: variant.stock > 0 ? '#4A3219' : '#8B7355' }}>{variant.stock > 0 ? 'In Stock' : 'Out of Stock'}</span>
                       </label>
                     </div>
-                  </div>
+                      </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-[#8B7355] mb-2">Variant Images</label>
+                      <div className="mb-5">
+                        <label className="block text-xs font-semibold text-[#8B7355] mb-1">Variant Tags (Press Enter)</label>
+                        <input type="text" value={variantTagInputs[vIdx] || ''} onChange={(e) => setVariantTagInputs(prev => ({ ...prev, [vIdx]: e.target.value }))} onKeyDown={(e) => handleAddVariantTag(vIdx, e)} className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355] bg-white mb-2" placeholder="e.g. handmade, red" />
+                        <div className="flex flex-wrap gap-2">
+                          {(variant.tags || []).map((tag: string) => (
+                            <div key={tag} className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#FDFBF7] text-[#4A3219] text-sm font-semibold rounded-lg border border-[#C4A484] shadow-sm max-w-full">
+                              <span className="text-[#8B7355] opacity-70 shrink-0">#</span>
+                              <span className="truncate shrink">{tag}</span>
+                              <button type="button" onClick={() => removeVariantTag(vIdx, tag)} className="ml-1 text-[#ef4444] hover:text-red-700 flex items-center justify-center shrink-0" style={{ background: 'transparent', border: 'none', padding: 0, outline: 'none', cursor: 'pointer' }}><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-semibold text-[#8B7355] mb-2">Variant Images</label>
                     
                     <div 
                       style={{ 
@@ -1104,27 +1164,27 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                         </div>
                         <span style={{ fontWeight: 'bold', color: '#4A3219', fontSize: '1.125rem', marginTop: '4px' }}>Add New Images</span>
                         <span style={{ fontSize: '0.875rem', color: '#8B7355', marginBottom: '8px' }}>PNG, JPG up to 5MB</span>
+                                             <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: '12px' }}>
+                          <button 
+                             type="button" 
+                             onClick={(e) => { e.preventDefault(); e.stopPropagation(); handlePasteClick(vIdx); }}
+                             className="flex items-center justify-center gap-1 hover:scale-105 transition-all z-10"
+                             style={{ 
+                               border: 'none', 
+                               background: 'rgba(139, 115, 85, 0.15)', 
+                               padding: '4px 10px', 
+                               borderRadius: '12px',
+                               color: '#4A3219',
+                               fontSize: '11px',
+                               fontWeight: 'bold',
+                               cursor: 'pointer'
+                             }}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                            Paste
+                          </button>
+                        </div>
                       </label>
-                      <div style={{ position: 'absolute', bottom: '12px', left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
-                        <button 
-                           type="button" 
-                           onClick={(e) => { e.preventDefault(); e.stopPropagation(); handlePasteClick(vIdx); }}
-                           className="flex items-center justify-center gap-1 hover:scale-105 transition-all z-10"
-                           style={{ 
-                             border: 'none', 
-                             background: 'rgba(139, 115, 85, 0.15)', 
-                             padding: '4px 10px', 
-                             borderRadius: '12px',
-                             color: '#4A3219',
-                             fontSize: '11px',
-                             fontWeight: 'bold',
-                             cursor: 'pointer'
-                           }}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                          Paste
-                        </button>
-                      </div>
                     </div>
                     {uploadingImages === vIdx && (
                       <div className="mt-4 p-4 rounded-xl border border-[#C4A484] bg-[#FDFBF7]">
@@ -1228,8 +1288,11 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                       <div className="text-xs text-stone-400 italic mt-2">No images added for this variant yet.</div>
                     )}
                   </div>
+                </div>
+               )}
                </div>
-            ))}
+               );
+            })}
             <div className="flex justify-start">
               <button type="button" onClick={addVariant} className="btn-primary px-5 py-2 md:px-6 md:py-2.5 rounded-xl text-sm md:text-base font-bold text-white shadow-sm transition-transform active:scale-95 flex items-center justify-center gap-2" style={{ background: "var(--brand)", width: "fit-content" }}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
