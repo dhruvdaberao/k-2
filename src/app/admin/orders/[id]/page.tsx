@@ -49,6 +49,8 @@ export default function OrderDetails() {
   const [updating, setUpdating] = useState(false);
   const [trackingLink, setTrackingLink] = useState("");
   const [showCancelPrompt, setShowCancelPrompt] = useState(false);
+  const [showShipConfirm, setShowShipConfirm] = useState(false);
+  const [showDeliverConfirm, setShowDeliverConfirm] = useState(false);
 
   // 1. Unified Auth & Data Fetching
   useEffect(() => {
@@ -134,8 +136,17 @@ export default function OrderDetails() {
   const updateOrderStatus = async (newStatus: string) => {
     if (!order) return;
     
-    if (newStatus === "shipped" && !trackingLink.trim()) {
-      showToast("Please enter a tracking link first");
+    if (newStatus === "shipped") {
+      if (!trackingLink.trim()) {
+        showToast("Please enter a tracking link first");
+        return;
+      }
+      setShowShipConfirm(true);
+      return;
+    }
+
+    if (newStatus === "delivered") {
+      setShowDeliverConfirm(true);
       return;
     }
 
@@ -353,6 +364,31 @@ export default function OrderDetails() {
         onCancel={() => setShowCancelPrompt(false)}
       />
 
+      <ConfirmModal
+        isOpen={showShipConfirm}
+        title="Ship Order"
+        message="Would you like to mark this order as shipped? An email will be sent to the customer with the tracking details."
+        confirmLabel="Yes, Ship It"
+        cancelLabel="Back"
+        onConfirm={() => {
+          setShowShipConfirm(false);
+          executeStatusUpdate("shipped");
+        }}
+        onCancel={() => setShowShipConfirm(false)}
+      />
+
+      <ConfirmModal
+        isOpen={showDeliverConfirm}
+        title="Mark as Delivered"
+        message="Would you like to mark this order as delivered? An email will be sent to the customer."
+        confirmLabel="Yes, Delivered"
+        cancelLabel="Back"
+        onConfirm={() => {
+          setShowDeliverConfirm(false);
+          executeStatusUpdate("delivered");
+        }}
+        onCancel={() => setShowDeliverConfirm(false)}
+      />
     </main>
   );
 }
