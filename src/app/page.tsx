@@ -237,6 +237,9 @@ export default async function Home() {
 
 
 
+        {/* About / Why Handmade Section - Moved here to break up the product grids and tell the brand story! */}
+        <WhyHandmadeSection />
+
         {/* Section 3: Trending Now */}
         {section3.length > 0 && (
           <section className="mb-2 md:mb-12 mt-0 md:mt-6">
@@ -294,8 +297,6 @@ export default async function Home() {
           </section>
         )}
 
-        {/* About / Why Handmade Section */}
-        <WhyHandmadeSection />
       </div>
     </main>
   );
