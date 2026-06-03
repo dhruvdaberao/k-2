@@ -40,6 +40,7 @@ export type Product = {
 
   // Product Type Logic
   type?: "direct-purchase" | "custom-order";
+  homeSection?: "popular-picks" | "best-sellers" | "trending" | "handmade" | "none";
 
   // Pricing nuances
   priceBucket?: "under-500" | "under-1000" | "premium";

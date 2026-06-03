@@ -43,34 +43,51 @@ export default async function Home() {
     carouselDelay = timerRes.data.setting_value.ms;
   }
 
-  // 1. Priority Sorting (DESC priority, ASC price)
+  // 1. Priority Sorting (DESC priority, ASC rating, ASC price)
   const sortedProducts = [...live].sort((a, b) => {
     const pA = a.priority ?? -9999;
     const pB = b.priority ?? -9999;
     if (pA !== pB) return pB - pA;
+    const rA = a.rating ?? 0;
+    const rB = b.rating ?? 0;
+    if (rA !== rB) return rB - rA;
     return a.price - b.price;
   });
 
   // Track rendered slugs to prevent duplication
   const renderedSlugs = new Set<string>();
 
-  const getDeduplicated = (list: Product[], count: number) => {
-    const output: Product[] = [];
-    for (const p of list) {
-      if (!renderedSlugs.has(p.slug)) {
-        output.push(p);
-        renderedSlugs.add(p.slug);
+  const getSectionProducts = (sectionName: string, maxCount: number) => {
+    // 1. Get explicitly assigned products
+    const explicit = sortedProducts.filter(p => p.homeSection === sectionName && !renderedSlugs.has(p.slug));
+    
+    // 2. Mark as rendered
+    explicit.forEach(p => renderedSlugs.add(p.slug));
+    
+    // 3. Fill remaining slots automatically with top unassigned products
+    const needed = maxCount - explicit.length;
+    const automatic: Product[] = [];
+    
+    if (needed > 0) {
+      for (const p of sortedProducts) {
+        if (!p.homeSection || p.homeSection === 'none') {
+          if (!renderedSlugs.has(p.slug)) {
+            automatic.push(p);
+            renderedSlugs.add(p.slug);
+            if (automatic.length >= needed) break;
+          }
+        }
       }
-      if (output.length >= count) break;
     }
-    return output;
+    
+    return [...explicit, ...automatic].slice(0, maxCount);
   };
 
-  // 2. Pure Priority Slicing for Home Page Sections
-  const section1 = sortedProducts.slice(0, 6);
-  const section2 = sortedProducts.slice(6, 10).map(p => ({ ...p, badge: 'Bestseller' }));
-  const section3 = sortedProducts.slice(10, 14);
-  const section4 = sortedProducts.slice(14, 22);
+  // 2. Build Home Page Sections
+  const section1 = getSectionProducts('popular-picks', 6);
+  const section2 = getSectionProducts('best-sellers', 4).map(p => ({ ...p, badge: 'Bestseller' }));
+  const section3 = getSectionProducts('trending', 4);
+  const section4 = getSectionProducts('handmade', 8);
 
   // Categories (Unique Display Categories)
   // (Fetched concurrently above)
@@ -178,7 +195,7 @@ export default async function Home() {
                 Popular Picks
               </h2>
               <Link 
-                href="/collections" 
+                href="/collections?section=popular-picks" 
                 className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center gap-1 text-[#8B7355]" 
                 aria-label="View All"
               >
@@ -202,7 +219,7 @@ export default async function Home() {
                 Best Sellers
               </h2>
               <Link 
-                href="/collections" 
+                href="/collections?section=best-sellers" 
                 className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center gap-1 text-[#8B7355]" 
                 aria-label="View All"
               >
@@ -228,7 +245,7 @@ export default async function Home() {
                 Trending Creations
               </h2>
               <Link 
-                href="/collections" 
+                href="/collections?section=trending" 
                 className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center gap-1 text-[#8B7355]" 
                 aria-label="View All"
               >
@@ -252,7 +269,7 @@ export default async function Home() {
                 Handmade Collections
               </h2>
               <Link 
-                href="/collections" 
+                href="/collections?section=handmade" 
                 className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center gap-1 text-[#8B7355]" 
                 aria-label="View All"
               >

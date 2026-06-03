@@ -26,6 +26,7 @@ export default function CollectionsContent({ serverCategory, liveProducts = [], 
   const tagParam = searchParams.get("tag");
   const maxPriceParam = searchParams.get("maxPrice");
   const qParam = searchParams.get("q");
+  const sectionParam = searchParams.get("section");
 
   const [sortBy, setSortBy] = useState<SortOption>("default");
   const [category, setCategory] = useState<string | null>(categoryParam);
@@ -55,6 +56,10 @@ export default function CollectionsContent({ serverCategory, liveProducts = [], 
   const filtered = useMemo(() => {
     let result = live;
 
+    if (sectionParam) {
+      result = result.filter(p => p.homeSection === sectionParam);
+    }
+
     if (qParam) {
       const query = qParam.toLowerCase().trim();
       result = result.filter((p) => 
@@ -82,7 +87,7 @@ export default function CollectionsContent({ serverCategory, liveProducts = [], 
     }
 
     return result;
-  }, [live, category, tagParam, maxPriceParam, qParam]);
+  }, [live, category, tagParam, maxPriceParam, qParam, sectionParam]);
 
   const sorted = useMemo(() => {
     const data = [...filtered];
@@ -122,6 +127,13 @@ export default function CollectionsContent({ serverCategory, liveProducts = [], 
     if (qParam) return `Search Results for "${qParam}"`;
     if (tagParam) return `${tagParam.charAt(0).toUpperCase() + tagParam.slice(1)} Collection`;
     if (maxPriceParam) return `Under ₹${maxPriceParam}`;
+    if (sectionParam) {
+      if (sectionParam === "popular-picks") return "Popular Picks";
+      if (sectionParam === "best-sellers") return "Best Sellers";
+      if (sectionParam === "trending") return "Trending Creations";
+      if (sectionParam === "handmade") return "Handmade Collections";
+      return "Collection";
+    }
     if (category) return `${category} Collection`;
     return "Collections";
   }

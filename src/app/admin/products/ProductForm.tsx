@@ -35,6 +35,7 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
     badge: initialData?.badge || "",
     tags: initialData?.tags || ["handmade"],
     type: initialData?.type || "direct-purchase",
+    homeSection: initialData?.homeSection || "none",
   });
   
   const [tagInput, setTagInput] = useState("");
@@ -694,6 +695,20 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
                   {formData.type === 'custom-order' ? 'Enquire Only' : 'Buy / Add to Bag'}
                 </div>
               </label>
+              
+              <label className="block text-sm font-semibold text-[#8B7355] mt-6 mb-1">Home Page Section</label>
+              <select 
+                name="homeSection" 
+                value={formData.homeSection} 
+                onChange={handleInputChange} 
+                className="w-full p-2 md:p-3 text-sm md:text-base rounded-xl border border-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355] bg-white text-[#3E2C1C]"
+              >
+                <option value="none">None (Automatic placement)</option>
+                <option value="popular-picks">Popular Picks</option>
+                <option value="best-sellers">Best Sellers</option>
+                <option value="trending">Trending Creations</option>
+                <option value="handmade">Handmade Collections</option>
+              </select>
             </div>
           </div>
 
