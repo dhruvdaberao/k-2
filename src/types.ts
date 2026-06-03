@@ -28,6 +28,10 @@ export type Product = {
   stock?: number;
   status?: "live" | "hidden";
 
+  // Reviews
+  rating?: number;
+  reviewsCount?: number;
+
   // Badges & Priority
   badge?: string; // Legacy support
   badges?: string[];
