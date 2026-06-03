@@ -192,7 +192,7 @@ export default async function Home() {
           <section className="mb-2 md:mb-12 mt-0 md:mt-6">
             <div className="flex items-center justify-between gap-2 custom-section-header">
               <h2 className="text-2xl md:text-3xl font-bold truncate" style={{ color: "var(--text)" }}>
-                Popular Picks
+                Signature Picks
               </h2>
               <Link 
                 href="/collections?section=popular-picks" 
@@ -245,7 +245,7 @@ export default async function Home() {
           <section className="mb-2 md:mb-12 mt-0 md:mt-6">
             <div className="flex items-center justify-between gap-2 custom-section-header">
               <h2 className="text-2xl md:text-3xl font-bold truncate" style={{ color: "var(--text)" }}>
-                Trending Creations
+                New Arrivals
               </h2>
               <Link 
                 href="/collections?section=trending" 
@@ -269,7 +269,7 @@ export default async function Home() {
           <section className="mb-2 md:mb-12 mt-0 md:mt-6">
             <div className="flex items-center justify-between gap-2 custom-section-header">
               <h2 className="text-2xl md:text-3xl font-bold truncate" style={{ color: "var(--text)" }}>
-                Handmade Collections
+                Our Favorites
               </h2>
               <Link 
                 href="/collections?section=handmade" 
