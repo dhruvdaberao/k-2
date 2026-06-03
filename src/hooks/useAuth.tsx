@@ -68,7 +68,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (error) {
           if (error.message.includes("refresh_token_not_found") || error.message.includes("Invalid Refresh Token")) {
-            console.warn("Auth: Token issue detected.");
+            console.warn("Auth: Token issue detected. Forcing sign out.");
+            await supabase.auth.signOut().catch(() => {});
+            clearAllLocalData();
+            setSession(null);
+            setUser(null);
           } else if (error.message.includes("Lock")) {
             console.warn("Auth: Benign lock error from another tab.");
           } else {
