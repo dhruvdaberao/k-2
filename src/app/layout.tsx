@@ -83,7 +83,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="manifest" href="/manifest.json?v=4" />
         <meta name="theme-color" content="#f1ebe6" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body className="bg-cream text-dark">
         <GoogleTagManager gtmId="GTM-MFVDFHT3" />

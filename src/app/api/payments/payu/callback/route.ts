@@ -74,6 +74,18 @@ export async function POST(req: Request) {
       const { data: orderData } = await supabase.from("orders").select("*, order_items(*)").eq("id", udf1).single();
       
       if (orderData) {
+        // --- ATOMIC STOCK DECREMENT ---
+        if (orderData.order_items && orderData.order_items.length > 0) {
+          const stockPayload = orderData.order_items.map((item: any) => ({
+            product_id: item.product_id,
+            quantity: Number(item.quantity)
+          }));
+          const { error: stockError } = await supabase.rpc('decrement_stock', { items: stockPayload });
+          if (stockError) {
+            console.error('🔴 [API PayU Callback] Stock Error:', stockError);
+          }
+        }
+
         // Clear the user's cart if they have a registered account
         if (orderData.user_id) {
           await supabase.from("cart").delete().eq("user_id", orderData.user_id);

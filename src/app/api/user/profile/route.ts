@@ -57,6 +57,21 @@ export async function POST(req: Request) {
 
     const body = await req.json();
     
+    const allowedFields = {
+      name: body.name,
+      phone: body.phone,
+      address: body.address,
+      city: body.city,
+      pincode: body.pincode,
+      state: body.state,
+      country: body.country,
+    };
+
+    // Remove undefined fields so we don't overwrite existing data with nulls unintentionally
+    const cleanFields = Object.fromEntries(
+      Object.entries(allowedFields).filter(([_, v]) => v !== undefined)
+    );
+
     const supabaseAdmin = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -67,7 +82,7 @@ export async function POST(req: Request) {
       .from('profiles')
       .upsert({
         id: user.id,
-        ...body
+        ...cleanFields
       }, { onConflict: 'id' });
 
     if (profileError) {
