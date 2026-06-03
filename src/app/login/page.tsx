@@ -241,7 +241,7 @@ export default function LoginPage() {
         </div>
       )}
 
-      <main className="checkout-page checkout-container pb-20 pt-[120px] login-page-styles" style={{ paddingTop: '120px' }}>
+      <main className="checkout-page checkout-container pb-20 pt-[90px] login-page-styles">
         <style dangerouslySetInnerHTML={{__html: `
           .login-page-styles input {
             border: 1px solid rgba(139, 94, 60, 0.4) !important;
@@ -253,11 +253,10 @@ export default function LoginPage() {
             box-shadow: 0 0 0 1px var(--brand);
           }
         `}} />
-        <div className="w-full mx-auto mt-6 sm:mt-10" style={{ maxWidth: '460px' }}>
-          <div className="text-center mb-8">
-            <img src="/uploads/hero/logo.png" alt="Logo" className="mx-auto mb-4" style={{ height: '110px', width: 'auto', mixBlendMode: 'multiply' }} />
+        <div className="w-full mx-auto mt-2 sm:mt-6" style={{ maxWidth: '460px' }}>
+          <div className="text-center mb-6">
             <h1 className="text-2xl font-bold" style={{ color: "var(--brand)" }}>
-              {authMode === "login" ? "Welcome Back" : authMode === "signup" ? "Create an Account" : authMode === "otp" ? "Login via OTP" : authMode === "otp_verify" ? "Enter OTP Code" : "Reset Password"}
+              {authMode === "login" ? "Login" : authMode === "signup" ? "Sign Up" : authMode === "otp" ? "Login via OTP" : authMode === "otp_verify" ? "Enter OTP Code" : "Reset Password"}
             </h1>
           </div>
 
