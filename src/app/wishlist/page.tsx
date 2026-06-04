@@ -143,8 +143,8 @@ export default function WishlistPage() {
 
   return (
     <div className="container py-8">
-      <div className="text-center mb-6">
-        <h1 className="collections-title mb-5 md:mb-6 text-center">Wishlist</h1>
+      <div className="text-center mb-5">
+        <h1 className="collections-title mb-3 md:mb-6 text-center">Wishlist</h1>
         {items.length > 0 && (
           <button 
             onClick={() => setShowClearAll(true)}
