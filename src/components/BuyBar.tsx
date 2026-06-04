@@ -104,7 +104,7 @@ export default function BuyBar({
             <>
               {/* Buy Now */}
               <button
-                className="btn-primary w-full buybar-btn-primary"
+                className="btn-primary w-full buybar-btn-primary hover:scale-[1.02] active:scale-[0.96] transition-transform duration-200"
                 onClick={onBuyNowClick}
               >
                 Buy Now
@@ -112,9 +112,10 @@ export default function BuyBar({
 
               {/* Add to Cart / In-cart qty control */}
               {cartQuantity > 0 ? (
-                <div className="buybar-qty-container" style={{ flex: 1, backgroundColor: '#4A3219', display: 'flex', alignItems: 'center', justifyContent: 'space-between', overflow: 'hidden' }}>
+                <div className="buybar-qty-container hover:scale-[1.02] transition-transform duration-200" style={{ flex: 1, backgroundColor: '#4A3219', display: 'flex', alignItems: 'center', justifyContent: 'space-between', overflow: 'hidden' }}>
                   <button
                     onClick={handleDecrease}
+                    className="active:scale-75 transition-transform duration-100"
                     style={{ background: 'transparent', border: 'none', color: '#FDFBF7', fontSize: '1.8rem', width: '48px', height: '100%', cursor: 'pointer', outline: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                     aria-label="Decrease quantity"
                   >
@@ -125,6 +126,7 @@ export default function BuyBar({
                   </span>
                   <button
                     onClick={handleIncrease}
+                    className="active:scale-75 transition-transform duration-100"
                     style={{ background: 'transparent', border: 'none', color: '#FDFBF7', fontSize: '1.8rem', width: '48px', height: '100%', cursor: 'pointer', outline: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                     aria-label="Increase quantity"
                   >
@@ -133,7 +135,7 @@ export default function BuyBar({
                 </div>
               ) : (
                 <button
-                  className="btn-primary w-full buybar-btn-primary"
+                  className="btn-primary w-full buybar-btn-primary hover:scale-[1.02] active:scale-[0.96] transition-transform duration-200"
                   onClick={onAddToCart}
                   style={{ backgroundColor: '#4A3219', color: '#FDFBF7' }}
                 >
