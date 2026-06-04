@@ -441,7 +441,7 @@ function ProfileContent() {
           <label className="checkout-field checkout-field--full">
             <span>Delivery Address</span>
             {!isEditing ? (
-              <div style={{ width: '100%', minHeight: '48px', padding: '0.85rem 0.95rem', borderRadius: '10px', border: '1px solid rgba(139, 94, 60, 0.4)', background: '#ffffff', color: 'var(--text)', whiteSpace: 'pre-wrap', wordBreak: 'break-word', lineHeight: '1.5' }}>
+              <div style={{ width: '100%', minHeight: '48px', padding: '0.85rem 0.95rem', borderRadius: '10px', border: '1px solid rgba(139, 94, 60, 0.4)', background: '#ffffff', color: '#2F2A26', fontWeight: '600', whiteSpace: 'pre-wrap', wordBreak: 'break-word', lineHeight: '1.5' }}>
                 {details.address}
               </div>
             ) : (
@@ -469,8 +469,8 @@ function ProfileContent() {
       <section className="mx-auto mt-8 md:mt-12 px-4 md:px-0 w-full" style={{ maxWidth: '800px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '16px' }}>
         <Link href="/orders" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 calc(50% - 12px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Your Orders</Link>
         <Link href="/my-reviews" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 calc(50% - 12px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Your Reviews</Link>
-        <Link href="/account-settings" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 calc(50% - 12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-main)', color: 'var(--brand)', border: '2px solid var(--brand)' }}>Account Settings</Link>
-        {isAdmin(user) && (<Link href="/admin" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 calc(50% - 12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--brand)', color: 'white' }}>Admin Portal</Link>)}
+        <Link href="/account-settings" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 calc(50% - 12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-main)', color: 'var(--brand)', border: '2px solid var(--brand)' }}>Account</Link>
+        {isAdmin(user) && (<Link href="/admin" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 calc(50% - 12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--brand)', color: 'white' }}>Admin</Link>)}
       </section>
       {profileModalHTML}
       <ConfirmModal isOpen={showLogoutConfirm} title="Confirm Logout" message="Are you sure you want to log out?" confirmLabel="Log Out" onConfirm={executeLogout} onCancel={() => setShowLogoutConfirm(false)} />
