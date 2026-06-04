@@ -84,7 +84,7 @@ export default function ProductPageClient({
   return (
     <>
       <div className="product-page-grid">
-        <div className="md:hidden flex items-center mb-4 px-1">
+        <div className="md:hidden flex items-center mb-2 px-1">
             <button 
               onClick={() => router.back()} 
               className="global-back-btn flex items-center gap-2"
