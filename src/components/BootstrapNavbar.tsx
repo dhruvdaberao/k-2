@@ -6,7 +6,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabaseClient";
 import CartBadge from "@/components/CartBadge";
 import WishlistBadge from "@/components/WishlistBadge";
-import BrandLogo from "@/components/ui/BrandLogo";
 import "./Navbar.css";
 
 export default function BootstrapNavbar() {
@@ -28,7 +27,12 @@ export default function BootstrapNavbar() {
         <div className="top-navbar">
           <div className="nav-inner">
             <Link href="/" className="brand header-left" style={{ textDecoration: 'none' }} aria-label="Keshvi Crafts — Home">
-              <BrandLogo className="my-0" size={46} />
+              <img
+                src="/keshvi-yarn-logo-cropped.png"
+                alt="Keshvi Crafts Logo"
+                className="my-0"
+                style={{ height: '46px', width: 'auto', objectFit: 'contain' }}
+              />
             </Link>
 
           <div className="nav-icons header-right">
