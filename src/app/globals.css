@@ -2324,12 +2324,12 @@ h1:not(.product-title):not(.hero-title) {
 
 .category-chip {
   flex-shrink: 0;
-  padding: 0.625rem 1.25rem;
+  padding: 0.5rem 1rem;
   background: white;
   border: 1px solid rgba(74, 50, 25, 0.4);
   border-radius: 999px;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--brand);
   cursor: pointer;
   transition: all 0.2s ease;
