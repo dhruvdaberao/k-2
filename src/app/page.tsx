@@ -100,7 +100,7 @@ export default async function Home() {
       <div className="container pt-0 md:pt-5" style={{ paddingBottom: '30px' }}>
         {/* Shop by Collection Section */}
         {displayCats.length > 0 && (
-          <section className="home-section mt-16 md:mt-32 mb-8 md:mb-24">
+          <section className="home-section mt-10 md:mt-32 mb-6 md:mb-24">
             <div className="flex items-center justify-between gap-2 custom-section-header">
               <h2 className="home-section-title font-bold truncate" style={{ color: "var(--text)" }}>
                 Shop by Collection
@@ -171,7 +171,7 @@ export default async function Home() {
 
         {/* Section 1: Popular Picks */}
         {section1.length > 0 && (
-          <section className="home-section mt-16 md:mt-32 mb-8 md:mb-24">
+          <section className="home-section mt-10 md:mt-32 mb-6 md:mb-24">
             <div className="flex items-center justify-between gap-2 custom-section-header">
               <h2 className="home-section-title font-bold truncate" style={{ color: "var(--text)" }}>
                 Signature Picks
@@ -195,7 +195,7 @@ export default async function Home() {
 
         {/* Section 2: Best Sellers (Auto-badged) */}
         {section2.length > 0 && (
-          <section className="home-section mt-16 md:mt-32 mb-8 md:mb-24">
+          <section className="home-section mt-10 md:mt-32 mb-6 md:mb-24">
             <div className="flex items-center justify-between gap-2 custom-section-header">
               <h2 className="home-section-title font-bold truncate" style={{ color: "var(--text)" }}>
                 Best Sellers
