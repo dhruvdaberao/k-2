@@ -100,7 +100,7 @@ export default async function Home() {
       <div className="container pt-0 md:pt-5" style={{ paddingBottom: '30px' }}>
         {/* Shop by Collection Section */}
         {displayCats.length > 0 && (
-          <section className="home-section mt-10 md:mt-32 mb-6 md:mb-24">
+          <section className="home-section mt-10 md:mt-32 mb-0 md:mb-24">
             <div className="flex items-center justify-between gap-2 custom-section-header">
               <h2 className="home-section-title font-bold truncate" style={{ color: "var(--text)" }}>
                 Shop by Collection
@@ -114,7 +114,7 @@ export default async function Home() {
                   <Link
                     key={cat.id}
                     href={`/collections/${slug}`}
-                    className="flex flex-col items-center gap-2 group min-w-[80px] md:min-w-[115px] lg:min-w-[170px] shrink-0"
+                    className="flex flex-col items-center gap-2 group w-[84px] md:w-[115px] lg:w-[170px] shrink-0"
                     style={{ textDecoration: 'none' }}
                   >
                     {/* Insta-story border wrapper */}
@@ -145,7 +145,7 @@ export default async function Home() {
               
               <Link 
                 href="/collections" 
-                className="flex flex-col items-center gap-2 group min-w-[80px] md:min-w-[110px] shrink-0"
+                className="flex flex-col items-center gap-2 group w-[84px] md:w-[110px] shrink-0"
                 style={{ textDecoration: 'none' }}
               >
                 <div 
@@ -171,7 +171,7 @@ export default async function Home() {
 
         {/* Section 1: Popular Picks */}
         {section1.length > 0 && (
-          <section className="home-section mt-10 md:mt-32 mb-6 md:mb-24">
+          <section className="home-section mt-10 md:mt-32 mb-0 md:mb-24">
             <div className="flex items-center justify-between gap-2 custom-section-header">
               <h2 className="home-section-title font-bold truncate" style={{ color: "var(--text)" }}>
                 Signature Picks
@@ -195,7 +195,7 @@ export default async function Home() {
 
         {/* Section 2: Best Sellers (Auto-badged) */}
         {section2.length > 0 && (
-          <section className="home-section mt-10 md:mt-32 mb-6 md:mb-24">
+          <section className="home-section mt-10 md:mt-32 mb-0 md:mb-24">
             <div className="flex items-center justify-between gap-2 custom-section-header">
               <h2 className="home-section-title font-bold truncate" style={{ color: "var(--text)" }}>
                 Best Sellers
