@@ -3,7 +3,7 @@ import React from 'react';
 export default function BrandLogo({ className = "", size = 48 }: { className?: string, size?: number }) {
   return (
     <img 
-      src="/keshvi-yarn-logo-cropped.png" 
+      src="/nav-icons/logo.png" 
       alt="Keshvi Crafts Logo" 
       className={className}
       style={{ 
