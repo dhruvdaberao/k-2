@@ -349,7 +349,7 @@
   background-color: #C84C35;
   color: white;
   font-weight: bold;
-  border-radius: 9999px;
+  border-radius: 6px;
 }
 
 @media (min-width: 1024px) {
