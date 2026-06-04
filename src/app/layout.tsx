@@ -79,8 +79,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Quicksand:wght@300;400;500;600;700&display=swap"
         />
         <link rel="icon" href="/favicon.ico?v=4" sizes="any" />
-        <link rel="icon" type="image/png" href="/pwa-icon.png?v=4" />
-        <link rel="apple-touch-icon" href="/pwa-icon.png?v=4" />
+        <link rel="icon" type="image/png" href="/nav-icons/keshvi-sunflower-logo.png?v=5" />
+        <link rel="apple-touch-icon" href="/nav-icons/keshvi-sunflower-logo.png?v=5" />
         <link rel="manifest" href="/manifest.json?v=4" />
         <meta name="theme-color" content="#f1ebe6" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -113,7 +113,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             "@context": "https://schema.org",
             "@type": "LocalBusiness",
             "name": "Keshvi Crafts",
-            "image": "https://keshvicrafts.in/logo.png", // Assuming a logo exists or general image
+            "image": "https://keshvicrafts.in/nav-icons/keshvi-sunflower-logo.png", // Assuming a logo exists or general image
             "description": "Handmade crochet and artisanal home decor, crafted with care in India.",
             "url": "https://keshvicrafts.in",
             "telephone": "+917507996961",
