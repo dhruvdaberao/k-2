@@ -454,7 +454,7 @@ export default function ReviewPage() {
           <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#1a1a1a', margin: 0, position: 'absolute', left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap' }}>Product Reviews</h1>
           <div style={{ width: '40px' }}></div>
         </div>
-        <div style={{ maxWidth: '600px', margin: '0 auto', padding: '0 16px' }}>
+        <div className="reviews-container w-full pb-12">
           <div className="mx-4 p-4 rounded-2xl animate-pulse" style={{ backgroundColor: '#f8f4ef', borderRadius: '24px', marginBottom: '24px' }}>
             <div className="h-5 w-2/3 bg-[#e0d6cc] rounded mb-2"></div>
             <div className="h-4 w-1/3 bg-[#e0d6cc] rounded"></div>
@@ -499,19 +499,19 @@ export default function ReviewPage() {
         <div style={{ width: '40px' }}></div>
       </div>
 
-      <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+      <div className="reviews-container w-full pb-12">
         
         {/* SUBHEADING */}
-        <div style={{ textAlign: 'center', marginTop: '4px', marginBottom: '24px', padding: '0 20px' }}>
-          <p style={{ fontSize: '14px', color: '#666', fontStyle: 'italic', maxWidth: '380px', margin: '0 auto', lineHeight: 1.5 }}>
+        <div className="text-center mt-2 mb-8 md:mb-12 px-4">
+          <p className="text-sm md:text-lg lg:text-xl text-gray-500 italic max-w-sm md:max-w-2xl mx-auto leading-relaxed">
             Discover what our community has to say about this handcrafted piece, made with love and care.
           </p>
         </div>
 
         {/* PRODUCT INFO CARD */}
-        <div className="mx-4 p-4 rounded-2xl flex items-center justify-between" style={{ backgroundColor: '#f8f4ef', borderRadius: '24px', display: 'flex', padding: '20px', border: '1px solid #f1ebe6' }}>
-          <div style={{ flex: 1, marginRight: '16px' }}>
-            <p className="font-bold text-lg text-[#2d2d2d]" style={{ margin: '0 0 6px 0', fontSize: '18px' }}>
+        <div className="product-info-card mx-4 md:mx-8">
+          <div className="flex-1 pr-4 md:pr-8">
+            <p className="product-title">
               {product.name}
             </p>
             <div className="flex items-center gap-1.5" style={{ display: 'flex', alignItems: 'center' }}>
@@ -523,54 +523,42 @@ export default function ReviewPage() {
               ) : ratingData.count === 0 ? (
                 <span className="text-sm text-gray-400">No reviews yet</span>
               ) : (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <StarIcon filled={true} size={20} />
-                  <span className="text-[#5a3e2b] font-bold" style={{ fontSize: '16px', lineHeight: 1, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    {ratingData.avg} <span style={{ color: '#888', fontWeight: 400, fontSize: '14px', lineHeight: 1 }}>({ratingData.count})</span>
+                <div className="flex items-center gap-1.5 md:gap-3">
+                  <StarIcon filled={true} size={24} />
+                  <span className="text-[#5a3e2b] font-bold flex items-center gap-1 text-[16px] md:text-2xl leading-none">
+                    {ratingData.avg} <span className="text-gray-500 font-normal text-[14px] md:text-xl leading-none">({ratingData.count})</span>
                   </span>
                 </div>
               )}
             </div>
           </div>
 
-          <div style={{ width: '64px', height: '64px', borderRadius: '16px', overflow: 'hidden', flexShrink: 0, border: '3px solid white', boxShadow: '0 4px 10px rgba(0,0,0,0.08)' }}>
+          <div className="product-img-wrap">
             <img
               src={product.image}
               alt={product.name}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              className="w-full h-full object-cover"
             />
           </div>
         </div>
 
         {/* ADD REVIEW BUTTON */}
-        <div className="px-4 mt-6">
+        <div className="px-4 md:px-8 mt-6 md:mt-10">
           <button
             onClick={handleOpenReview}
-            style={{ 
-              width: '100%', 
-              backgroundColor: '#5a3e2b', 
-              color: 'white', 
-              padding: '16px', 
-              borderRadius: '999px', 
-              border: 'none', 
-              fontWeight: 800, 
-              cursor: 'pointer',
-              fontSize: '16px',
-              boxShadow: '0 6px 20px rgba(90, 62, 43, 0.25)',
-              transition: 'transform 0.2s ease'
-            }}
+            className="add-review-btn"
           >
             Add a Review
           </button>
         </div>
 
         {/* SECTION TITLE */}
-        <div style={{ padding: '0 20px', marginTop: '40px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{ height: '1px', flex: 1, backgroundColor: '#eee' }}></div>
-          <h2 style={{ fontSize: '11px', color: '#aaa', textTransform: 'uppercase', letterSpacing: '1.2px', fontWeight: 800 }}>
+        <div className="customer-feedback-container">
+          <div className="h-px flex-1 bg-gray-200"></div>
+          <h2 className="customer-feedback-title">
             Customer Feedback
           </h2>
-          <div style={{ height: '1px', flex: 1, backgroundColor: '#eee' }}></div>
+          <div className="h-px flex-1 bg-gray-200"></div>
         </div>
 
         {/* RATING BREAKDOWN */}
@@ -586,17 +574,8 @@ export default function ReviewPage() {
             ))}
           </div>
         ) : ratingBreakdown && ratingBreakdown.total > 0 && (
-          <div 
-            className="mx-4 mb-6" 
-            style={{ 
-              backgroundColor: '#f8f4ef', 
-              padding: '24px', 
-              borderRadius: '28px', 
-              border: '1px solid #f1ebe6',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.02)'
-            }}
-          >
-            <h3 style={{ color: '#5a3e2b', fontWeight: 800, marginBottom: '16px', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+          <div className="rating-bd-card mx-4 md:mx-8">
+            <h3 className="rating-breakdown-title">
               Rating Breakdown
             </h3>
             {[5, 4, 3, 2, 1].map((star) => {
@@ -604,22 +583,20 @@ export default function ReviewPage() {
               const percent = ratingBreakdown.total > 0 ? (count / ratingBreakdown.total) * 100 : 0;
 
               return (
-                <div key={star} style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                  <span style={{ fontSize: '14px', fontWeight: 800, color: '#5a3e2b', width: '40px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    {star} <StarIcon filled={true} size={14} />
+                <div key={star} className="rating-row">
+                  <span className="rating-star-col">
+                    {star} <StarIcon filled={true} size={16} />
                   </span>
-                  <div style={{ flex: 1, height: '10px', backgroundColor: 'white', borderRadius: '999px', overflow: 'hidden' }}>
+                  <div className="rating-bar-bg">
                     <div
                       style={{ 
-                        height: '100%', 
-                        backgroundColor: '#5a3e2b', 
                         width: `${percent}%`, 
-                        borderRadius: '999px',
                         transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)' 
                       }}
+                      className="h-full bg-[#5a3e2b] rounded-full"
                     />
                   </div>
-                  <span style={{ fontSize: '13px', fontWeight: 800, color: '#888', width: '30px', textAlign: 'right' }}>
+                  <span className="rating-count-col">
                     {count}
                   </span>
                 </div>
@@ -630,27 +607,11 @@ export default function ReviewPage() {
 
         {/* CUSTOM SORT DROPDOWN */}
         {reviews.length > 0 && (
-          <div className="flex justify-end px-4 mb-8">
-            <div style={{ position: 'relative', width: '180px' }}>
+          <div className="flex justify-end px-4 md:px-8 mb-8 md:mb-12">
+            <div className="relative w-[180px] md:w-[240px]">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  backgroundColor: '#f8f4ef',
-                  border: '2px solid #e8e2da',
-                  borderRadius: '16px',
-                  padding: '12px 18px',
-                  fontSize: '14px',
-                  fontWeight: 800,
-                  color: '#5a3e2b',
-                  cursor: 'pointer',
-                  outline: 'none',
-                  transition: 'all 0.2s ease',
-                  boxShadow: '0 4px 12px rgba(90, 62, 43, 0.05)',
-                }}
+                className="sort-btn"
               >
                 <span>
                   {sortBy === 'latest' ? 'Latest First' : sortBy === 'high' ? 'Highest Rating' : 'Lowest Rating'}
@@ -694,7 +655,6 @@ export default function ReviewPage() {
                         }}
                         style={{
                           padding: '14px 20px',
-                          fontSize: '14px',
                           fontWeight: sortBy === opt.val ? 800 : 600,
                           color: '#5a3e2b',
                           cursor: 'pointer',
@@ -702,6 +662,7 @@ export default function ReviewPage() {
                           transition: 'all 0.2s ease',
                           borderBottom: opt.val !== 'low' ? '1px solid #f5f0eb' : 'none'
                         }}
+                        className="text-sm md:text-lg"
                         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f8f4ef')}
                         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = sortBy === opt.val ? '#f8f4ef' : 'transparent')}
                       >
@@ -715,17 +676,80 @@ export default function ReviewPage() {
           </div>
         )}
 
+        
         <style jsx>{`
+          .reviews-container { max-width: 600px; margin: 0 auto; }
+          @media (min-width: 1024px) { .reviews-container { max-width: 900px; } }
+
+          .product-info-card { background-color: #f8f4ef; border-radius: 24px; padding: 20px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #f1ebe6; margin-bottom: 32px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+          @media (min-width: 1024px) { .product-info-card { border-radius: 32px; padding: 32px; margin-bottom: 48px; } }
+
+          .product-title { font-size: 18px; font-weight: bold; color: #2d2d2d; margin-bottom: 8px; }
+          @media (min-width: 1024px) { .product-title { font-size: 32px; margin-bottom: 16px; } }
+
+          .product-img-wrap { width: 64px; height: 64px; border-radius: 16px; overflow: hidden; flex-shrink: 0; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+          @media (min-width: 1024px) { .product-img-wrap { width: 140px; height: 140px; border-radius: 24px; border: 4px solid white; } }
+
+          .add-review-btn { width: 100%; background-color: #5a3e2b; color: white; padding: 16px; border-radius: 999px; font-weight: 800; font-size: 16px; border: none; cursor: pointer; box-shadow: 0 6px 20px rgba(90,62,43,0.25); transition: transform 0.2s ease; }
+          .add-review-btn:hover { transform: scale(1.02); }
+          @media (min-width: 1024px) { .add-review-btn { padding: 24px; font-size: 24px; } }
+
+          .rating-bd-card { background-color: #f8f4ef; padding: 24px; border-radius: 28px; border: 1px solid #f1ebe6; margin-bottom: 32px; }
+          @media (min-width: 1024px) { .rating-bd-card { padding: 40px; border-radius: 32px; margin-bottom: 48px; } }
+
+          .rating-breakdown-title { color: #5a3e2b; font-weight: 800; margin-bottom: 16px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+          @media (min-width: 1024px) { .rating-breakdown-title { font-size: 18px; margin-bottom: 24px; } }
+          
+          .customer-feedback-container { display: flex; align-items: center; gap: 16px; padding: 0 20px; margin-top: 48px; margin-bottom: 24px; }
+          @media (min-width: 1024px) { .customer-feedback-container { padding: 0 40px; margin-top: 120px; margin-bottom: 40px; } }
+          @media (min-width: 1024px) { .rating-breakdown-title { font-size: 16px; margin-bottom: 32px; } }
+
+          .rating-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+          @media (min-width: 1024px) { .rating-row { gap: 20px; margin-bottom: 20px; } }
+
+          .rating-star-col { font-size: 14px; font-weight: 800; color: #5a3e2b; width: 40px; display: flex; align-items: center; gap: 4px; }
+          @media (min-width: 1024px) { .rating-star-col { font-size: 20px; width: 64px; } }
+
+          .rating-bar-bg { flex: 1; height: 10px; background-color: white; border-radius: 999px; overflow: hidden; }
+          @media (min-width: 1024px) { .rating-bar-bg { height: 16px; } }
+
+          .rating-count-col { font-size: 13px; font-weight: 800; color: #888; width: 30px; text-align: right; }
+          @media (min-width: 1024px) { .rating-count-col { font-size: 18px; width: 48px; } }
+
+          .review-card { padding: 24px; background-color: #f1ede8; border-radius: 24px; border: 1px solid #e8e2da; margin-bottom: 16px; }
+          @media (min-width: 1024px) { .review-card { padding: 40px; border-radius: 32px; margin-bottom: 24px; } }
+
+          .sort-btn { width: 100%; display: flex; align-items: center; justify-content: space-between; background-color: #f8f4ef; border: 2px solid #e8e2da; border-radius: 16px; padding: 12px 18px; font-size: 14px; font-weight: 800; color: #5a3e2b; cursor: pointer; outline: none; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(90, 62, 43, 0.05); }
+          @media (min-width: 1024px) { .sort-btn { padding: 16px 24px; font-size: 18px; border-radius: 20px; } }
+
           @keyframes dropdownIn {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
           }
+        
+          .review-item-inner { display: flex; justify-content: space-between; align-items: flex-start; }
+          .review-stars-wrap { display: flex; gap: 5px; margin-bottom: 12px; }
+          .review-text { margin: 0; font-size: 15px; color: #333; line-height: 1.7; font-weight: 500; }
+          .review-meta { text-align: right; display: flex; flex-direction: column; align-items: flex-end; margin-left: 16px; }
+          .review-author { margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: #5a3e2b; opacity: 0.7; }
+          .review-delete-btn { background-color: #5a3e2b; color: white; border: none; padding: 6px 16px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; }
+          
+          .customer-feedback-title { font-size: 11px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 800; }
+          
+          @media (min-width: 1024px) {
+            .review-stars-wrap { gap: 8px; margin-bottom: 20px; }
+            .review-text { font-size: 20px; }
+            .review-author { font-size: 18px; margin-bottom: 16px; }
+            .review-delete-btn { padding: 10px 24px; font-size: 14px; border-radius: 12px; }
+            .customer-feedback-title { font-size: 20px; letter-spacing: 0.15em; }
+          }
         `}</style>
 
+
         {/* REVIEW LIST */}
-        <div className="px-4 space-y-4 pb-12" style={{ padding: '0 16px' }}>
+        <div className="space-y-4 md:space-y-6 pb-16 px-4 md:px-8">
           {(loading || !reviewsLoaded) ? (
-            <div className="space-y-4">
+            <div className="space-y-4 md:space-y-6">
               <SkeletonCard />
               <SkeletonCard />
               <SkeletonCard />
@@ -749,42 +773,31 @@ export default function ReviewPage() {
               .map((r) => (
                 <div
                   key={r.id}
-                  className="transition-all duration-300 hover:translate-y-[-2px]"
-                  style={{ padding: '24px', backgroundColor: '#f1ede8', borderRadius: '24px', border: '1px solid #e8e2da', marginBottom: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.04)' }}
+                  className="review-card transition-transform duration-300 hover:-translate-y-1"
                 >
-                <div className="flex justify-between items-start">
+                <div className="review-item-inner">
                   <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', gap: '5px', marginBottom: '12px' }}>
+                    <div className="review-stars-wrap">
                       {Array.from({ length: 5 }).map((_, j) => (
-                        <StarIcon key={j} filled={j < r.rating} size={16} />
+                        <StarIcon key={j} filled={j < r.rating} size={18} />
                       ))}
                     </div>
                     {r.review && (
-                      <p style={{ margin: 0, fontSize: '15px', color: '#333', lineHeight: 1.7, fontWeight: 500 }}>
+                      <p className="review-text">
                         "{r.review}"
                       </p>
                     )}
                   </div>
 
-                  <div className="text-right flex flex-col items-end" style={{ marginLeft: '16px' }}>
-                    <p className="text-sm text-[#5a3e2b] opacity-70" style={{ margin: '0 0 12px 0', fontWeight: 600 }}>
+                  <div className="review-meta">
+                    <p className="review-author">
                       – by {r.author_name}
                     </p>
 
                     {r.user_id === user?.id && (
                       <button
                         onClick={() => setDeleteConfirm({ show: true, id: r.id })}
-                        style={{
-                          backgroundColor: '#5a3e2b',
-                          color: 'white',
-                          border: 'none',
-                          padding: '6px 16px',
-                          borderRadius: '8px',
-                          fontSize: '11px',
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease'
-                        }}
+                        className="review-delete-btn"
                       >
                         DELETE
                       </button>

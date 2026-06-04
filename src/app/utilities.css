@@ -127,6 +127,14 @@
     height: 1.25rem;
 }
 
+.w-4 {
+    width: 1rem;
+}
+
+.h-4 {
+    height: 1rem;
+}
+
 .w-24 {
     width: 6rem;
 }
@@ -358,6 +366,16 @@
     line-height: 1.75rem;
 }
 
+.text-\[13px\] {
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+.text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+
 .text-3xl {
     font-size: 1.875rem;
     line-height: 2.25rem;
@@ -366,6 +384,11 @@
 .text-4xl {
     font-size: 2.25rem;
     line-height: 2.5rem;
+}
+
+.text-5xl {
+    font-size: 3rem;
+    line-height: 1;
 }
 
 .font-bold {
@@ -530,17 +553,25 @@
         margin-bottom: 1rem; /* 16px */
     }
 
-    .md\:mb-6 {
-        margin-bottom: 1.5rem; /* 24px */
-    }
+    .md\:mb-6 { margin-bottom: 1.5rem !important; }
+    .md\:mb-12 { margin-bottom: 3rem !important; }
+    .md\:mt-6 { margin-top: 1.5rem !important; }
+    .md\:mb-16 { margin-bottom: 4rem !important; }
+    .md\:mt-10 { margin-top: 2.5rem !important; }
 
-    .md\:mb-12 {
-        margin-bottom: 3rem; /* 48px */
-    }
-
-    .md\:mt-6 {
-        margin-top: 1.5rem; /* 24px */
-    }
+    .md\:text-sm { font-size: 0.875rem !important; line-height: 1.25rem !important; }
+    .md\:text-\[15px\] { font-size: 15px !important; line-height: 1.4 !important; }
+    .md\:text-lg { font-size: 1.125rem !important; line-height: 1.75rem !important; }
+    .md\:text-xl { font-size: 1.25rem !important; line-height: 1.75rem !important; }
+    .md\:text-4xl { font-size: 2.25rem !important; line-height: 2.5rem !important; }
+    .md\:px-3 { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+    .md\:py-1\.5 { padding-top: 0.375rem !important; padding-bottom: 0.375rem !important; }
+    .md\:mb-2 { margin-bottom: 0.5rem !important; }
+    .md\:min-w-\[115px\] { min-width: 115px !important; }
+    .md\:w-5 { width: 1.25rem !important; }
+    .md\:h-5 { height: 1.25rem !important; }
+    .md\:w-8 { width: 2rem !important; }
+    .md\:h-8 { height: 2rem !important; }
 }
 
 @media (min-width: 1024px) {
@@ -551,6 +582,18 @@
     .lg\:hidden {
         display: none;
     }
+
+    .lg\:text-xl { font-size: 1.25rem !important; line-height: 1.75rem !important; }
+    .lg\:text-2xl { font-size: 1.5rem !important; line-height: 2rem !important; }
+    .lg\:text-5xl { font-size: 3.5rem !important; line-height: 1.1 !important; }
+    .lg\:min-w-\[170px\] { min-width: 170px !important; }
+    .lg\:w-6 { width: 1.5rem !important; }
+    .lg\:h-6 { height: 1.5rem !important; }
+}
+
+@media (min-width: 1536px) {
+    .lg\:text-5xl { font-size: 4.5rem !important; line-height: 1.1 !important; }
+    .md\:text-4xl { font-size: 3rem !important; line-height: 1.2 !important; }
 }
 
 /* Specific Colors used in Cart */

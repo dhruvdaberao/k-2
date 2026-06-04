@@ -1,11 +1,17 @@
 :root {
-  --nav-h: 50px;
+  --nav-h: 56px;
   --bottom-nav-h: 60px;
   --bg-main: #f8f5f2;
   --bg-nav: #f1ebe6;
   --primary-brown: #5a3e2b;
   --icon-color: var(--primary-brown);
   --icon-muted: #b8ada4;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --nav-h: 70px;
+  }
 }
 
 .keshvi-nav {
@@ -26,7 +32,7 @@
 }
 
 .top-navbar {
-  height: 50px;
+  height: var(--nav-h);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -40,18 +46,33 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 16px;
-  height: 60px;
+  height: var(--nav-h);
 }
 
 .nav-inner {
-  max-width: 1280px;
+  max-width: 100%;
   height: 100%;
   margin: 0 auto;
   width: 100%;
-  padding: 0;
+  padding: 0 4%;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
+}
+
+.header-center {
+  display: none;
+}
+@media (min-width: 768px) {
+  .header-center {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 
 .brand {
@@ -105,7 +126,7 @@
 .desktop-links {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem;
 }
 
 .nav-item {
@@ -120,6 +141,16 @@
   transition: color 0.3s ease;
 }
 
+@media (min-width: 1024px) {
+  .logo img {
+    height: 52px !important;
+  }
+  .nav-item {
+    font-size: 18px !important;
+    padding: 10px 16px !important;
+  }
+}
+
 .nav-item.active {
   color: #2F2A26;
 }
@@ -130,9 +161,9 @@
   bottom: 0;
   left: 12px;
   right: 12px;
-  height: 2px;
-  background: var(--brand);
-  border-radius: 2px;
+  height: 4px; /* Thicker line */
+  background: #8B7355; /* Distinct rich brown */
+  border-radius: 99px; /* Circular corners */
   transform: scaleX(0);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin: center;

@@ -361,6 +361,20 @@ export default function AdminProducts() {
           )}
         </div>
       </div>
+      <style>{`
+        @media (min-width: 1024px) {
+          .max-w-6xl { max-width: 1400px !important; }
+          h1 { font-size: 3.5rem !important; margin-bottom: 8px !important; }
+          p { font-size: 1.25rem !important; margin-bottom: 16px !important; }
+          .text-sm.font-bold { font-size: 1.25rem !important; padding: 6px 16px !important; }
+          .btn-primary { font-size: 1.1rem !important; padding: 16px 32px !important; border-radius: 16px !important; }
+          input[type="text"] { font-size: 1.25rem !important; padding: 16px !important; border-radius: 16px !important; }
+          th { font-size: 1.1rem !important; padding: 24px !important; }
+          td { font-size: 1.1rem !important; padding: 24px !important; }
+          td .text-xs, td .text-sm, td .text-\\[10px\\] { font-size: 1.1rem !important; }
+          .w-\\[44px\\] { width: 80px !important; height: 80px !important; min-width: 80px !important; }
+        }
+      `}</style>
     </main>
   );
 }

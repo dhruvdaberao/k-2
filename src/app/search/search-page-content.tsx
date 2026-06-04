@@ -78,11 +78,11 @@ export default function SearchPageContent() {
   }, [liveProducts, query]);
 
   return (
-    <main className="search-page container">
+    <main className="search-page container pt-32 md:pt-56 lg:pt-[240px]">
       <header className="search-page__top">
         <button
           type="button"
-          className="search-page__back"
+          className="search-page__back global-back-btn"
           onClick={() => router.back()}
           aria-label="Go back"
         >

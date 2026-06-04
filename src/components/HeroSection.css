@@ -1,7 +1,7 @@
 .hero-carousel {
   position: relative;
   overflow: hidden;
-  padding: 0 16px 8px;
+  padding: 0 4% 8px;
   background:
     radial-gradient(circle at top left, rgba(178, 149, 123, 0.16), transparent 32%),
     radial-gradient(circle at right center, rgba(74, 50, 25, 0.08), transparent 26%),
@@ -14,7 +14,7 @@
 
 .hero-carousel__viewport {
   position: relative;
-  max-width: 1320px;
+  max-width: 100%;
   margin: 0 auto;
   overflow: hidden;
 }
@@ -185,21 +185,22 @@
 @media (min-width: 769px) {
   .hero-slide__inner {
     min-height: auto;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    grid-template-columns: auto auto;
+    justify-content: center;
     gap: clamp(2rem, 5vw, 5rem);
-    padding: 24px 90px 12px;
+    padding: 24px 24px 12px;
   }
 
   .hero-slide__image-shell {
     height: auto;
-    max-height: 720px;
+    max-height: 500px;
     align-items: center;
   }
   
   .hero-slide__image,
   .carousel-image {
     height: auto;
-    max-height: 720px;
+    max-height: 500px;
     transform: none; /* Removes the scale that was causing the top cut-off */
     object-position: center;
     margin-bottom: 0;
@@ -244,12 +245,9 @@
     white-space: nowrap;
   }
 
-  .hero-carousel__arrow--prev {
-    left: max(12px, calc(50vw - 660px));
-  }
-
+  .hero-carousel__arrow--prev,
   .hero-carousel__arrow--next {
-    right: max(12px, calc(50vw - 660px));
+    display: none !important;
   }
 
   .hero-carousel__arrow svg,

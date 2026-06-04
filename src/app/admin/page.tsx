@@ -137,6 +137,20 @@ export default function AdminDashboard() {
 
         </div>
       </div>
+      <style>{`
+        @media (min-width: 1024px) {
+          main { padding-top: 120px !important; }
+          .max-w-3xl { max-width: 1200px !important; }
+          h1 { font-size: 4rem !important; }
+          p.text-stone-500 { font-size: 1.5rem !important; }
+          .grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 32px !important; }
+          .grid > div { padding: 48px !important; border-radius: 32px !important; }
+          h2 { font-size: 2.2rem !important; margin-bottom: 16px !important; }
+          .grid p { font-size: 1.25rem !important; margin-bottom: 32px !important; }
+          .btn-primary { padding: 16px 24px !important; font-size: 1.25rem !important; border-radius: 16px !important; }
+          svg[width="40"] { width: 56px !important; height: 56px !important; }
+        }
+      `}</style>
     </main>
   );
 }

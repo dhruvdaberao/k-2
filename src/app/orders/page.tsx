@@ -146,12 +146,13 @@ export default function OrdersPage() {
           <div className="flex items-center justify-between w-full relative mb-2">
             <button
               onClick={() => router.push("/profile")}
+              className="global-back-btn"
               style={{ background: 'none', border: 'none', padding: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#5a3e2b', zIndex: 10, marginLeft: '-8px' }}
               aria-label="Go Back"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             </button>
-            <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#1a1a1a', margin: 0, position: 'absolute', left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap' }}>
+            <h1 className="collections-title" style={{ margin: 0, position: 'absolute', left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap' }}>
               Your Orders
             </h1>
             <div style={{ width: '40px' }}></div>
@@ -179,16 +180,16 @@ export default function OrdersPage() {
           /* ── Empty State (matches Wishlist empty state) ── */
           <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4 max-w-md mx-auto">
             <div className="mb-6 opacity-30">
-              <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '120px', height: '120px', margin: '0 auto' }}>
                 <rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="none"></rect>
                 <path d="M7 11V6a5 5 0 0 1 10 0v5" fill="none"></path>
               </svg>
             </div>
-            <h2 className="text-xl font-serif font-bold text-[#2f2a26] mb-2">No orders yet</h2>
-            <p className="text-stone-500 mb-8 text-sm italic">
+            <h2 className="text-xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-2 md:mb-4">No orders yet</h2>
+            <p className="text-stone-500 mb-8 text-sm md:text-lg lg:text-xl italic">
               Start shopping to place your first order.
             </p>
-            <Link href="/collections" className="btn-primary px-10 py-3 rounded-full font-bold">
+            <Link href="/collections" className="btn-primary px-10 py-3 md:px-14 md:py-4 md:text-xl lg:text-2xl rounded-full font-bold">
               Browse Products
             </Link>
           </div>
@@ -469,6 +470,56 @@ const ordersCSS = `
     .order-badge {
       font-size: 11px;
       padding: 4px 10px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .orders-container {
+      max-width: 900px;
+    }
+    
+    .orders-header {
+      padding: 72px 0 48px;
+    }
+
+    .orders-title {
+      font-size: 56px;
+    }
+
+    .orders-subtitle {
+      font-size: 18px;
+      margin-top: 24px !important;
+    }
+
+    .order-card {
+      padding: 32px 40px;
+      border-radius: 24px;
+    }
+
+    .order-card__id {
+      font-size: 18px;
+    }
+    
+    .order-card__date {
+      font-size: 16px;
+    }
+
+    .order-card__total {
+      font-size: 28px;
+    }
+    
+    .order-badge {
+      font-size: 15px;
+      padding: 8px 18px;
+    }
+    
+    .order-card__chevron {
+      width: 28px;
+      height: 28px;
+    }
+
+    .orders-list {
+      gap: 24px;
     }
   }
 `;

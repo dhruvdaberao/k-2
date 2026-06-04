@@ -245,16 +245,17 @@ export default function MyReviewsPage() {
       <div className="bg-white px-4 flex items-center justify-between" style={{ display: 'flex', position: 'relative', paddingTop: '60px', paddingBottom: '16px' }}>
         <button
           onClick={() => router.push("/profile")}
+          className="global-back-btn"
           style={{ background: 'none', border: 'none', padding: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#5a3e2b', zIndex: 10 }}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         </button>
-        <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#1a1a1a', margin: 0, position: 'absolute', left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap' }}>My Reviews</h1>
+        <h1 className="my-reviews-title" style={{ margin: 0, position: 'absolute', left: '50%', transform: 'translateX(-50%)', whiteSpace: 'nowrap' }}>My Reviews</h1>
         <div style={{ width: '40px' }}></div>
       </div>
 
-      <div style={{ maxWidth: '600px', margin: '0 auto', padding: '0 16px' }}>
-        <p className="text-center text-sm text-gray-500 mt-2 mb-8">Manage and view all your product reviews</p>
+      <div className="my-reviews-container">
+        <p className="my-reviews-subtitle">Manage and view all your product reviews</p>
 
         {/* SEARCH BAR */}
         <div className="relative mb-8" style={{ display: 'flex', alignItems: 'center' }}>
@@ -268,21 +269,21 @@ export default function MyReviewsPage() {
         </div>
 
         {/* REVIEW LIST */}
-        <div className="space-y-4">
+        <div className="space-y-6 md:space-y-8">
           {filteredReviews.map((review) => (
-            <div key={review.id} style={{ background: '#F5EFE6', borderRadius: '20px', padding: '20px', boxShadow: '0 1px 3px rgba(74, 50, 25, 0.05)', border: '1px solid #E6DCCF', height: 'fit-content' }}>
+            <div key={review.id} className="my-review-card">
               <div className="flex items-center gap-4">
-                <div style={{ width: '60px', height: '60px', flexShrink: 0, borderRadius: '12px', overflow: 'hidden', border: '2px solid white', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+                <div className="my-review-img-wrap" style={{ flexShrink: 0, overflow: 'hidden', border: '2px solid white', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
                   <img src={review.product_image} alt="product" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-[#1a1a1a] leading-tight">{review.product_name}</h3>
-                  <p className="text-[11px] text-[#8B7355] font-semibold uppercase tracking-wider mt-1">{new Date(review.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
+                  <h3 className="my-review-product-title">{review.product_name}</h3>
+                  <p className="my-review-date">{new Date(review.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
                 </div>
               </div>
 
               {review.review && (
-                <p className="mt-3 text-[14px] text-[#3E2C1C] leading-relaxed italic">"{review.review}"</p>
+                <p className="my-review-text">"{review.review}"</p>
               )}
 
               <div className="mt-3 flex flex-wrap justify-between items-center gap-4">
@@ -294,13 +295,15 @@ export default function MyReviewsPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleEditOpen(review)}
-                    style={{ backgroundColor: 'white', color: '#5a3e2b', border: '1.5px solid #5a3e2b', padding: '8px 20px', borderRadius: '10px', fontSize: '11px', fontWeight: 800, cursor: 'pointer' }}
+                    className="my-review-btn"
+                    style={{ backgroundColor: 'white', color: '#5a3e2b', border: '1.5px solid #5a3e2b', fontWeight: 800, cursor: 'pointer' }}
                   >
                     EDIT
                   </button>
                   <button
                     onClick={() => setDeleteConfirm({ show: true, id: review.id })}
-                    style={{ backgroundColor: '#5a3e2b', color: 'white', border: 'none', padding: '8px 20px', borderRadius: '10px', fontSize: '11px', fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 10px rgba(90, 62, 43, 0.2)' }}
+                    className="my-review-btn"
+                    style={{ backgroundColor: '#5a3e2b', color: 'white', border: 'none', fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 10px rgba(90, 62, 43, 0.2)' }}
                   >
                     DELETE
                   </button>
@@ -367,6 +370,29 @@ export default function MyReviewsPage() {
           </div>
         </div>
       )}
+      <style jsx>{`
+        .my-reviews-container { max-width: 600px; margin: 0 auto; padding: 0 16px; }
+        .my-reviews-title { font-size: 28px; font-weight: 800; color: #1a1a1a; }
+        .my-reviews-subtitle { text-align: center; font-size: 14px; color: #6b7280; margin-top: 8px; margin-bottom: 32px; }
+        .my-review-card { background: #F5EFE6; border-radius: 20px; padding: 20px; box-shadow: 0 1px 3px rgba(74, 50, 25, 0.05); border: 1px solid #E6DCCF; height: fit-content; }
+        .my-review-img-wrap { width: 60px; height: 60px; border-radius: 12px; }
+        .my-review-product-title { font-size: 16px; font-weight: 700; color: #1a1a1a; line-height: 1.25; }
+        .my-review-date { font-size: 11px; color: #8B7355; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
+        .my-review-text { font-size: 14px; color: #3E2C1C; line-height: 1.6; font-style: italic; margin-top: 12px; }
+        .my-review-btn { padding: 8px 20px; border-radius: 10px; font-size: 11px; }
+
+        @media (min-width: 1024px) {
+          .my-reviews-container { max-width: 900px; }
+          .my-reviews-title { font-size: 56px; }
+          .my-reviews-subtitle { font-size: 18px; margin-bottom: 48px; }
+          .my-review-card { padding: 32px 40px; border-radius: 24px; }
+          .my-review-img-wrap { width: 100px; height: 100px; border-radius: 16px; }
+          .my-review-product-title { font-size: 24px; }
+          .my-review-date { font-size: 14px; margin-top: 8px; }
+          .my-review-text { font-size: 18px; margin-top: 24px; margin-bottom: 24px; }
+          .my-review-btn { padding: 12px 24px; font-size: 14px; border-radius: 12px; }
+        }
+      `}</style>
     </div>
   )
 }

@@ -163,7 +163,7 @@ export default function CollectionsContent({ serverCategory, liveProducts = [], 
       <CategoryChips serverCategory={serverCategory} liveCategories={categories} />
 
       <div className="collections-control-bar">
-        <div className="collections-result-count items-count">{sorted.length} items</div>
+        <div className="collections-result-count items-count md:text-lg lg:text-xl font-bold lg:mt-1">{sorted.length} items</div>
         <div className="collections-controls-right">
           <button
             className="collections-filter-btn"

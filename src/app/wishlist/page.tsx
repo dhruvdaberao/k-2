@@ -125,7 +125,7 @@ export default function WishlistPage() {
     }
     return (
       <div className="container py-8">
-        <h1 className="text-3xl font-serif font-bold text-[#2f2a26] mb-8 text-center">Wishlist</h1>
+        <h1 className="collections-title mb-8 text-center">Wishlist</h1>
         <div className="plp-grid-mobile">
           {[1, 2, 3, 4].map(i => (
             <div key={i} className="overflow-hidden border border-stone-100 shadow-sm animate-pulse" style={{ backgroundColor: '#F5EFE6', borderRadius: '24px' }}>
@@ -144,7 +144,7 @@ export default function WishlistPage() {
   return (
     <div className="container py-8">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-serif font-bold text-[#2f2a26]">Wishlist</h1>
+        <h1 className="collections-title mb-8 text-center">Wishlist</h1>
         {items.length > 0 && (
           <button 
             onClick={() => setShowClearAll(true)}
@@ -159,15 +159,15 @@ export default function WishlistPage() {
       {items.length === 0 ? (
         <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4 max-w-md mx-auto">
           <div className="mb-6 opacity-30">
-            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ width: '120px', height: '120px', margin: '0 auto' }}>
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L10 19.23A2.83 2.83 0 0 0 14 19.23L19.78 13.45l1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
             </svg>
           </div>
-          <h2 className="text-xl font-serif font-bold text-[#2f2a26] mb-2">Your wishlist is empty</h2>
-          <p className="text-stone-500 mb-8 text-sm italic">
+          <h2 className="text-xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-2 md:mb-4">Your wishlist is empty</h2>
+          <p className="text-stone-500 mb-8 text-sm md:text-lg lg:text-xl italic">
             Save your favorite handcrafted pieces here to keep track of what you love.
           </p>
-          <Link href="/collections" className="btn-primary px-10 py-3 rounded-full font-bold">
+          <Link href="/collections" className="btn-primary px-10 py-3 md:px-14 md:py-4 md:text-xl lg:text-2xl rounded-full font-bold">
             Browse Collections
           </Link>
         </div>

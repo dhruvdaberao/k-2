@@ -116,8 +116,6 @@ export default async function ProductPage({ params }: { params: { slug: string }
       <JsonLd data={jsonLdData} />
       <JsonLd data={breadcrumbData} />
 
-      <TextBackButton text="← Go Back" />
-
       <ProductPageClient product={p} relatedProducts={relatedProducts} initialRating={rating} />
     </main>
   );

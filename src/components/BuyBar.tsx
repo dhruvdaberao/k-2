@@ -80,7 +80,7 @@ export default function BuyBar({
   return (
     <>
       <div className="buy-bar">
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: "0.8rem" }}>
+        <div className="flex flex-wrap md:flex-nowrap md:justify-start gap-3 mb-3 md:mb-6">
           {disabled ? (
             <button
               className="btn-primary"
@@ -104,81 +104,29 @@ export default function BuyBar({
             <>
               {/* Buy Now */}
               <button
-                className="btn-primary"
+                className="btn-primary w-full"
+                style={{ flex: 1, minHeight: '64px', borderRadius: '20px', fontSize: '20px' }}
                 onClick={onBuyNowClick}
-                style={{ flex: "1 1 auto", minWidth: "140px", borderRadius: "12px", height: "48px" }}
               >
                 Buy Now
               </button>
 
               {/* Add to Cart / In-cart qty control */}
               {cartQuantity > 0 ? (
-                <div style={{
-                  flex: "1 1 auto",
-                  minWidth: "140px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "0",
-                  background: "#2f2a26",
-                  borderRadius: "12px",
-                  overflow: "hidden",
-                  height: "48px",
-                }}>
+                <div style={{ flex: 1, minHeight: '64px', borderRadius: '20px', backgroundColor: '#4A3219', display: 'flex', alignItems: 'center', justifyContent: 'space-between', overflow: 'hidden' }}>
                   <button
                     onClick={handleDecrease}
-                    style={{
-                      flex: "0 0 48px",
-                      height: "100%",
-                      background: "transparent",
-                      border: "none",
-                      outline: "none",
-                      WebkitTapHighlightColor: "transparent",
-                      color: "white",
-                      fontSize: "1.4rem",
-                      fontWeight: 700,
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      transition: "background 0.15s",
-                    }}
-                    onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.1)")}
-                    onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                    style={{ background: 'transparent', border: 'none', color: '#FDFBF7', fontSize: '2rem', flex: 1, height: '100%', cursor: 'pointer', outline: 'none' }}
                     aria-label="Decrease quantity"
                   >
                     −
                   </button>
-                  <span style={{
-                    flex: 1,
-                    textAlign: "center",
-                    color: "white",
-                    fontWeight: 700,
-                    fontSize: "1rem",
-                    userSelect: "none",
-                  }}>
+                  <span style={{ color: '#FDFBF7', fontSize: '1.4rem', fontWeight: 'bold', flex: 1, textAlign: 'center', userSelect: 'none' }}>
                     {cartQuantity}
                   </span>
                   <button
                     onClick={handleIncrease}
-                    style={{
-                      flex: "0 0 48px",
-                      height: "100%",
-                      background: "transparent",
-                      border: "none",
-                      outline: "none",
-                      WebkitTapHighlightColor: "transparent",
-                      color: "white",
-                      fontSize: "1.4rem",
-                      fontWeight: 700,
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      transition: "background 0.15s",
-                    }}
-                    onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.1)")}
-                    onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                    style={{ background: 'transparent', border: 'none', color: '#FDFBF7', fontSize: '2rem', flex: 1, height: '100%', cursor: 'pointer', outline: 'none' }}
                     aria-label="Increase quantity"
                   >
                     +
@@ -186,9 +134,9 @@ export default function BuyBar({
                 </div>
               ) : (
                 <button
-                  className="btn-secondary"
+                  className="btn-primary w-full"
+                  style={{ flex: 1, minHeight: '64px', borderRadius: '20px', fontSize: '20px', padding: '0 40px', backgroundColor: '#4A3219', color: '#FDFBF7', border: 'none', outline: 'none', cursor: 'pointer' }}
                   onClick={onAddToCart}
-                  style={{ flex: "1 1 auto", minWidth: "140px", borderRadius: "12px", height: "48px" }}
                 >
                   Add to Cart
                 </button>

@@ -340,6 +340,53 @@
   }
 }
 
+/* Discount Badge */
+.discount-badge {
+  top: 12px;
+  left: 12px;
+  font-size: 12px;
+  padding: 4px 8px;
+}
+
+@media (min-width: 1024px) {
+  .discount-badge {
+    top: 16px !important;
+    left: 16px !important;
+    font-size: 16px !important;
+    padding: 6px 12px !important;
+  }
+}
+@media (min-width: 1536px) {
+  .discount-badge {
+    top: 20px !important;
+    left: 20px !important;
+    font-size: 18px !important;
+    padding: 8px 14px !important;
+  }
+}
+
+/* Large Desktop Adjustments */
+@media (min-width: 1024px) {
+  .interactive-qty-pill {
+    height: 56px;
+    min-height: 56px;
+  }
+  
+  .add-to-cart-overlay {
+    font-size: 19px;
+  }
+  
+  .qty-controls button {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 24px !important;
+  }
+  
+  .qty-controls span {
+    font-size: 19px !important;
+  }
+}
+
 
 
 

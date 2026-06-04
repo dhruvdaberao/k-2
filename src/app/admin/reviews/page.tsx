@@ -278,6 +278,22 @@ export default function AdminManageReviewsPage() {
           </div>
         </div>
       )}
+      <style>{`
+        @media (min-width: 1024px) {
+          .min-h-screen > div:nth-child(2) { max-width: 1000px !important; }
+          h1 { font-size: 3.5rem !important; }
+          .text-center.text-sm.text-gray-500 { font-size: 1.25rem !important; margin-bottom: 40px !important; }
+          input[type="text"] { font-size: 1.25rem !important; padding: 24px 24px 24px 70px !important; border-radius: 20px !important; }
+          .space-y-4 > div { padding: 40px !important; border-radius: 32px !important; }
+          h3.text-base { font-size: 1.75rem !important; margin-bottom: 8px !important; }
+          p.text-\\[11px\\] { font-size: 1.1rem !important; }
+          p.text-xs.italic { font-size: 1.25rem !important; }
+          p.text-\\[14px\\] { font-size: 1.5rem !important; margin-top: 24px !important; }
+          .space-y-4 button { font-size: 1.1rem !important; padding: 12px 24px !important; }
+          .space-y-4 img { width: 100px !important; height: 100px !important; }
+          .space-y-4 .flex.items-center.gap-4 > div:first-child { width: 100px !important; height: 100px !important; }
+        }
+      `}</style>
     </div>
   )
 }

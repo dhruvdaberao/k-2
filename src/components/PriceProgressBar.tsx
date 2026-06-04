@@ -37,7 +37,7 @@ export default function PriceProgressBar({ subtotal }: PriceProgressBarProps) {
         switch (icon) {
             case "shipping":
                 return (
-                    <svg className="icon shipping-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <svg className="icon shipping-icon w-4 h-4 md:w-6 md:h-6 lg:w-8 lg:h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                         <rect x="1" y="3" width="15" height="13" rx="1" />
                         <path d="M16 8h4l3 5v3h-7V8z" />
                         <circle cx="5.5" cy="18.5" r="1.5" />
@@ -46,7 +46,7 @@ export default function PriceProgressBar({ subtotal }: PriceProgressBarProps) {
                 );
             case "offer":
                 return (
-                    <svg className="icon offer-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <svg className="icon offer-icon w-4 h-4 md:w-6 md:h-6 lg:w-8 lg:h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                         <circle cx="12" cy="12" r="10" />
                         <path d="m15 9-6 6" />
                         <circle cx="9.5" cy="9.5" r="1" fill="currentColor" stroke="none" />
@@ -55,7 +55,7 @@ export default function PriceProgressBar({ subtotal }: PriceProgressBarProps) {
                 );
             default:
                 return (
-                    <svg className="icon discount-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <svg className="icon discount-icon w-4 h-4 md:w-6 md:h-6 lg:w-8 lg:h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                         <circle cx="12" cy="12" r="10" />
                         <path d="m15 9-6 6" />
                         <circle cx="9.5" cy="9.5" r="1" fill="currentColor" stroke="none" />
@@ -66,9 +66,9 @@ export default function PriceProgressBar({ subtotal }: PriceProgressBarProps) {
     };
 
     return (
-        <div className="mb-8">
+        <div className="mb-8 md:mb-12">
             {/* Message */}
-            <p className={`text-sm font-semibold ${messageColor} mb-4 text-center`}>
+            <p className={`text-sm md:text-lg lg:text-xl font-bold ${messageColor} mb-4 text-center`}>
                 {message}
             </p>
 
@@ -96,8 +96,8 @@ export default function PriceProgressBar({ subtotal }: PriceProgressBarProps) {
                                 style={{ left: `${position}%` }}
                             >
                                 <div
-                                    className={`w-4 h-4 rounded-full border-2 transition-all duration-300 ${isReached
-                                            ? 'bg-[#15803d] border-white shadow-md scale-110'
+                                    className={`w-4 h-4 md:w-5 md:h-5 rounded-full border-2 transition-all duration-300 ${isReached
+                                            ? 'bg-[#15803d] border-white shadow-md scale-110 md:scale-125'
                                             : 'bg-white border-[#d1d5db] shadow-sm'
                                         }`}
                                 />
@@ -108,18 +108,18 @@ export default function PriceProgressBar({ subtotal }: PriceProgressBarProps) {
             </div>
 
             {/* Milestone Labels */}
-            <div className="flex justify-between gap-2 text-[10px] font-medium">
+            <div className="flex justify-between gap-2 text-[10px] md:text-sm lg:text-base font-medium mt-2 md:mt-4">
                 {milestones.map((milestone) => {
                     const isReached = subtotal >= milestone.value;
                     return (
                         <div
                             key={milestone.value}
-                            className={`shipping-item flex-1 text-center transition-colors ${isReached ? (milestone as any).color || 'text-[#15803d]' : 'text-[#78716c]'
+                            className={`shipping-item flex-1 text-center transition-colors flex flex-col items-center gap-1 ${isReached ? (milestone as any).color || 'text-[#15803d]' : 'text-[#78716c]'
                                 }`}
                         >
-                            <span className="inline-flex">{renderMilestoneIcon(milestone.icon)}</span>
-                            <span className="whitespace-nowrap">{milestone.label}</span>
-                            <span className="text-[9px] opacity-70">on & above ₹{milestone.value}</span>
+                            <span className="inline-flex mb-1 md:mb-2">{renderMilestoneIcon(milestone.icon)}</span>
+                            <span className="whitespace-nowrap font-bold">{milestone.label}</span>
+                            <span className="text-[9px] md:text-xs lg:text-sm opacity-70">on & above ₹{milestone.value}</span>
                         </div>
                     );
                 })}

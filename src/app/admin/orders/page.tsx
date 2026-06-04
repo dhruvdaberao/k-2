@@ -289,6 +289,21 @@ export default function AdminOrders() {
         .search-input:focus {
           border-color: #5A3E2B !important;
         }
+        @media (min-width: 1024px) {
+          .max-w-4xl { max-width: 1200px !important; }
+          h1 { font-size: 3.5rem !important; margin-bottom: 8px !important; }
+          p { font-size: 1.25rem !important; }
+          .search-input { height: 64px !important; font-size: 1.25rem !important; border-radius: 20px !important; }
+          .flex-col > div.p-5 { padding: 32px !important; border-radius: 32px !important; }
+          .text-\\[14px\\] { font-size: 1.5rem !important; }
+          .text-\\[12px\\] { font-size: 1.1rem !important; }
+          .text-\\[10px\\] { font-size: 1rem !important; padding: 6px 16px !important; }
+          .text-\\[11px\\] { font-size: 1rem !important; }
+          .text-\\[16px\\] { font-size: 2rem !important; }
+          .view-order-btn { height: 56px !important; font-size: 1.1rem !important; padding: 0 32px !important; border-radius: 16px !important; }
+          .gap-10px { gap: 16px !important; }
+          button.capitalize { font-size: 1rem !important; padding: 12px 24px !important; }
+        }
       `}</style>
     </main>
   );

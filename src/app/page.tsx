@@ -100,13 +100,13 @@ export default async function Home() {
       <div className="container pt-0 md:pt-5" style={{ paddingBottom: '30px' }}>
         {/* Shop by Collection Section */}
         {displayCats.length > 0 && (
-          <section className="mb-2 md:mb-12 mt-2 md:mt-6" style={{ marginTop: '36px' }}>
+          <section className="home-section mt-16 md:mt-32 mb-8 md:mb-24">
             <div className="flex items-center justify-between gap-2 custom-section-header">
-              <h2 className="text-2xl md:text-3xl font-bold truncate" style={{ color: "var(--text)" }}>
+              <h2 className="home-section-title font-bold truncate" style={{ color: "var(--text)" }}>
                 Shop by Collection
               </h2>
             </div>
-            <div className="category-chips-scroll home-category-chips mb-0 md:mb-6">
+            <div className="category-chips-scroll home-category-chips mb-0 md:mb-6 md:gap-16 px-4 md:px-0">
               {displayCats.map((cat) => {
                 const count = live.filter((p) => (p.category || '') === cat.name).length;
                 const slug = cat.slug;
@@ -114,7 +114,7 @@ export default async function Home() {
                   <Link
                     key={cat.id}
                     href={`/collections/${slug}`}
-                    className="flex flex-col items-center gap-2 group min-w-[80px] md:min-w-[110px] shrink-0"
+                    className="flex flex-col items-center gap-2 group min-w-[80px] md:min-w-[115px] lg:min-w-[170px] shrink-0"
                     style={{ textDecoration: 'none' }}
                   >
                     {/* Insta-story border wrapper */}
@@ -136,16 +136,7 @@ export default async function Home() {
                         )}
                       </div>
                     </div>
-                    <span 
-                      className="text-center group-hover:text-[var(--brand)] transition-colors" 
-                      style={{ 
-                        fontSize: '13px', 
-                        fontWeight: '700', 
-                        color: '#2A1A0F',
-                        lineHeight: '1.2',
-                        marginTop: '2px'
-                      }}
-                    >
+                    <span className="category-label text-center group-hover:text-[var(--brand)] transition-colors">
                       {cat.name}
                     </span>
                   </Link>
@@ -170,16 +161,7 @@ export default async function Home() {
                     </svg>
                   </div>
                 </div>
-                <span 
-                  className="text-center group-hover:text-[var(--brand)] transition-colors" 
-                  style={{ 
-                    fontSize: '13px', 
-                    fontWeight: '700', 
-                    color: '#2A1A0F',
-                    lineHeight: '1.2',
-                    marginTop: '2px'
-                  }}
-                >
+                <span className="category-label text-center group-hover:text-[var(--brand)] transition-colors">
                   View All
                 </span>
               </Link>
@@ -189,9 +171,9 @@ export default async function Home() {
 
         {/* Section 1: Popular Picks */}
         {section1.length > 0 && (
-          <section className="mb-2 md:mb-12 mt-0 md:mt-6">
+          <section className="home-section mt-16 md:mt-32 mb-8 md:mb-24">
             <div className="flex items-center justify-between gap-2 custom-section-header">
-              <h2 className="text-2xl md:text-3xl font-bold truncate" style={{ color: "var(--text)" }}>
+              <h2 className="home-section-title font-bold truncate" style={{ color: "var(--text)" }}>
                 Signature Picks
               </h2>
               <Link 
@@ -199,8 +181,8 @@ export default async function Home() {
                 className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center gap-1 text-[#8B7355]" 
                 aria-label="View All"
               >
-                <span className="text-[14px] font-medium">View all</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                <span className="text-[14px] md:text-[16px] lg:text-[18px] font-medium">View all</span>
+                <svg className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
               </Link>
             </div>
             <div className="plp-grid-mobile">
@@ -213,9 +195,9 @@ export default async function Home() {
 
         {/* Section 2: Best Sellers (Auto-badged) */}
         {section2.length > 0 && (
-          <section className="mb-2 md:mb-12 mt-0 md:mt-6">
+          <section className="home-section mt-16 md:mt-32 mb-8 md:mb-24">
             <div className="flex items-center justify-between gap-2 custom-section-header">
-              <h2 className="text-2xl md:text-3xl font-bold truncate" style={{ color: "var(--text)" }}>
+              <h2 className="home-section-title font-bold truncate" style={{ color: "var(--text)" }}>
                 Best Sellers
               </h2>
               <Link 
@@ -223,8 +205,8 @@ export default async function Home() {
                 className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center gap-1 text-[#8B7355]" 
                 aria-label="View All"
               >
-                <span className="text-[14px] font-medium">View all</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                <span className="text-[14px] md:text-[16px] lg:text-[18px] font-medium">View all</span>
+                <svg className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
               </Link>
             </div>
             <div className="plp-grid-mobile">
@@ -240,20 +222,20 @@ export default async function Home() {
         {/* About / Why Handmade Section - Moved here to break up the product grids and tell the brand story! */}
         <WhyHandmadeSection />
 
-        {/* Section 3: Trending Now */}
+        {/* Section 3: New Arrivals */}
         {section3.length > 0 && (
-          <section className="mb-2 md:mb-12 mt-0 md:mt-6">
+          <section className="home-section mt-16 md:mt-32 mb-8 md:mb-24">
             <div className="flex items-center justify-between gap-2 custom-section-header">
-              <h2 className="text-2xl md:text-3xl font-bold truncate" style={{ color: "var(--text)" }}>
+              <h2 className="home-section-title font-bold truncate" style={{ color: "var(--text)" }}>
                 New Arrivals
               </h2>
               <Link 
-                href="/collections?section=trending" 
+                href="/collections?section=new-arrivals" 
                 className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center gap-1 text-[#8B7355]" 
                 aria-label="View All"
               >
-                <span className="text-[14px] font-medium">View all</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                <span className="text-[14px] md:text-[16px] lg:text-[18px] font-medium">View all</span>
+                <svg className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
               </Link>
             </div>
             <div className="plp-grid-mobile">
@@ -264,11 +246,11 @@ export default async function Home() {
           </section>
         )}
 
-        {/* Section 4: Featured Collections */}
+        {/* Section 4: Fallback / Category-based mapping */}
         {section4.length > 0 && (
-          <section className="mb-2 md:mb-12 mt-0 md:mt-6">
+          <section className="home-section mt-16 md:mt-32 mb-8 md:mb-24">
             <div className="flex items-center justify-between gap-2 custom-section-header">
-              <h2 className="text-2xl md:text-3xl font-bold truncate" style={{ color: "var(--text)" }}>
+              <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold truncate" style={{ color: "var(--text)" }}>
                 Our Favorites
               </h2>
               <Link 
@@ -276,8 +258,8 @@ export default async function Home() {
                 className="shrink-0 transition-opacity hover:opacity-80 flex items-center justify-center gap-1 text-[#8B7355]" 
                 aria-label="View All"
               >
-                <span className="text-[14px] font-medium">View all</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                <span className="text-[14px] md:text-[16px] lg:text-[18px] font-medium">View all</span>
+                <svg className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
               </Link>
             </div>
 
@@ -289,7 +271,7 @@ export default async function Home() {
 
             {live.length > renderedSlugs.size && (
               <div className="text-center mt-8">
-                <Link href="/collections" className="btn-luxe">
+                <Link href="/collections" className="btn-luxe view-all-pill">
                   View All Products ({live.length})
                 </Link>
               </div>

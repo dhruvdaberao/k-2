@@ -342,7 +342,7 @@ function ProfileContent() {
           }
         `}} />
         <header className="mb-8 text-center" style={{ marginTop: '40px' }}>
-          <h1 className="text-3xl font-serif font-bold text-[#2f2a26]">Your Profile</h1>
+          <h1 className="collections-title mb-6">Your Profile</h1>
         </header>
         <section className="checkout-card rounded-2xl shadow-sm" style={{ maxWidth: '900px', width: '92%', margin: '0 auto', border: '1px solid rgba(139, 94, 60, 0.4)', padding: '28px 24px' }}>
           <div className="profile-skeleton-bar" style={{ width: '180px', height: '22px', marginBottom: '24px' }} />
@@ -408,14 +408,30 @@ function ProfileContent() {
           background: var(--brand);
           color: white;
         }
+        @media (min-width: 1024px) {
+          .profile-page-styles .checkout-field span {
+            font-size: 16px !important;
+            margin-bottom: 8px !important;
+          }
+          .profile-page-styles input, 
+          .profile-page-styles textarea,
+          .profile-page-styles .checkout-field > div {
+            font-size: 18px !important;
+            padding: 16px !important;
+          }
+          .profile-page-styles .btn-primary {
+            font-size: 18px !important;
+            padding: 14px 24px !important;
+          }
+        }
       `}} />
       <header className="mb-8 text-center" style={{ marginTop: '40px' }}>
-        <h1 className="text-3xl font-serif font-bold text-[#2f2a26]">Your Profile</h1>
+        <h1 className="text-3xl md:text-5xl font-serif font-bold text-[#2f2a26]">Your Profile</h1>
       </header>
 
-      <section className="checkout-card rounded-2xl shadow-sm" style={{ maxWidth: '900px', width: '92%', margin: '0 auto', border: '1px solid rgba(139, 94, 60, 0.4)' }}>
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b pb-4 px-2">
-          <h2 className="text-xl font-bold" style={{ color: "var(--text)", margin: 0 }}>Personal Information</h2>
+      <section className="checkout-card rounded-2xl shadow-sm mx-auto w-[92%] border border-[rgba(139,94,60,0.4)] p-6 md:p-12" style={{ maxWidth: '1000px' }}>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 md:mb-12 border-b pb-4 px-2">
+          <h2 className="text-xl md:text-3xl font-bold" style={{ color: "var(--text)", margin: 0 }}>Personal Information</h2>
         </div>
 
         <div className="checkout-form-grid" style={{ opacity: isEditing ? 1 : 0.8 }}>
@@ -438,23 +454,23 @@ function ProfileContent() {
           <label className="checkout-field"><span>Country</span><input type="text" value={details.country} onChange={(e) => handleFieldChange("country", e.target.value)} readOnly={!isEditing} /></label>
         </div>
 
-        <div className="flex flex-row gap-3 justify-center items-center mt-8 pt-4 border-t border-[#e6ded4] w-full">
+        <div className="pt-8 md:pt-12 border-t border-[#e6ded4] w-full" style={{ marginTop: '48px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '16px' }}>
           {!isEditing ? (
-            <button onClick={() => setIsEditing(true)} className="btn-primary py-3 px-4 shadow-sm rounded-lg flex-1 md:flex-none md:min-w-[140px]">Edit</button>
+            <button onClick={() => setIsEditing(true)} className="btn-primary" style={{ width: "100%", maxWidth: "250px", flex: '1 1 200px' }}>Edit Profile</button>
           ) : (
-            <button onClick={saveDetails} disabled={isSaving} className="btn-primary py-3 px-4 shadow-sm rounded-lg flex-1 md:flex-none md:min-w-[140px]" style={{ background: isSaving ? "#c9b99a" : "var(--brand)" }}>
+            <button onClick={saveDetails} disabled={isSaving} className="btn-primary" style={{ width: "100%", maxWidth: "250px", flex: '1 1 200px', background: isSaving ? "#c9b99a" : "var(--brand)" }}>
               {isSaving ? "Saving..." : "Save Changes"}
             </button>
           )}
-          <button onClick={handleLogout} className="btn-primary py-3 px-4 shadow-sm rounded-lg flex-1 md:flex-none md:min-w-[140px]" style={{ background: 'var(--brand)', color: 'white', border: 'none' }}>Log Out</button>
+          <button onClick={handleLogout} className="btn-primary" style={{ width: "100%", maxWidth: "250px", flex: '1 1 200px', background: 'transparent', color: 'var(--brand)', border: '2px solid var(--brand)' }}>Log Out</button>
         </div>
       </section>
 
-      <section className="mx-auto flex flex-wrap justify-center gap-3 mt-8 px-4 md:px-0 w-full" style={{ maxWidth: '900px' }}>
-        <Link href="/orders" prefetch={true} className="btn-primary py-3 text-sm md:text-base shadow-sm rounded-lg whitespace-nowrap px-2 text-center" style={{ flex: '1 1 calc(50% - 12px)', minWidth: '130px', maxWidth: '200px', display: 'inline-block' }}>Your Orders</Link>
-        <Link href="/my-reviews" prefetch={true} className="btn-primary py-3 text-sm md:text-base shadow-sm rounded-lg whitespace-nowrap px-2 text-center" style={{ flex: '1 1 calc(50% - 12px)', minWidth: '130px', maxWidth: '200px', display: 'inline-block' }}>Your Reviews</Link>
-        <Link href="/account-settings" prefetch={true} className="btn-primary py-3 text-sm md:text-base shadow-sm rounded-lg whitespace-nowrap px-2 text-center" style={{ background: 'var(--bg-main)', color: 'var(--brand)', border: '1px solid var(--brand)', flex: '1 1 calc(50% - 12px)', minWidth: '130px', maxWidth: '200px', display: 'inline-block' }}>Account</Link>
-        {isAdmin(user) && (<Link href="/admin" prefetch={true} className="btn-primary py-3 text-sm md:text-base shadow-sm rounded-lg whitespace-nowrap px-2 text-center" style={{ background: 'var(--brand)', color: 'white', flex: '1 1 calc(50% - 12px)', minWidth: '130px', maxWidth: '200px', display: 'inline-block' }}>Admin</Link>)}
+      <section className="mx-auto mt-8 md:mt-12 px-4 md:px-0 w-full" style={{ maxWidth: '800px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '16px' }}>
+        <Link href="/orders" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Your Orders</Link>
+        <Link href="/my-reviews" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Your Reviews</Link>
+        <Link href="/account-settings" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 200px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-main)', color: 'var(--brand)', border: '2px solid var(--brand)' }}>Account Settings</Link>
+        {isAdmin(user) && (<Link href="/admin" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 200px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--brand)', color: 'white' }}>Admin Portal</Link>)}
       </section>
       {profileModalHTML}
       <ConfirmModal isOpen={showLogoutConfirm} title="Confirm Logout" message="Are you sure you want to log out?" confirmLabel="Log Out" onConfirm={executeLogout} onCancel={() => setShowLogoutConfirm(false)} />

@@ -550,16 +550,16 @@ function CheckoutContent() {
   // Exception: If we just placed an order, don't show the empty cart screen (allow redirect to success page)
   if (finalItems.length === 0 && !isOrderPlaced) {
     return (
-      <main className="checkout-page checkout-container checkout-flow py-20 text-center" style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <main className="checkout-page checkout-container checkout-flow py-20 text-center" style={{ margin: '0 auto' }}>
         <div className="mb-6 opacity-30">
-          <svg style={{ margin: '0 auto' }} xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+          <svg style={{ margin: '0 auto', width: '120px', height: '120px' }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
             <rect x="2" y="8" width="20" height="14" rx="2" ry="2"/>
             <path d="M7 11V6a5 5 0 0 1 10 0v5"/>
           </svg>
         </div>
-        <h2 className="text-2xl font-serif font-bold text-[#2f2a26] mb-3">Your bag is empty</h2>
-        <p className="text-stone-500 mb-10 text-sm italic">You don't have any items to checkout.</p>
-        <button onClick={() => router.push('/collections')} className="btn btn-primary px-10 py-3 rounded-full font-bold shadow-sm">
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-3 md:mb-5">Your bag is empty</h2>
+        <p className="text-stone-500 mb-10 text-sm md:text-lg lg:text-xl italic">You don't have any items to checkout.</p>
+        <button onClick={() => router.push('/collections')} className="btn btn-primary px-10 py-3 md:px-14 md:py-4 md:text-xl lg:text-2xl rounded-full font-bold shadow-sm">
           Browse Collections
         </button>
       </main>
@@ -577,28 +577,22 @@ function CheckoutContent() {
       borderRadius: '12px',
       marginTop: '16px',
       marginBottom: '16px'
-    }}>
+    }} className="terms-checkbox-ui">
       <input
         type="checkbox"
         id="agree-terms"
         checked={agreedToTerms}
         onChange={(e) => { setAgreedToTerms(e.target.checked); setCheckoutError(""); }}
-        style={{
-          marginTop: '3px',
-          width: '18px',
-          height: '18px',
-          cursor: 'pointer',
-          accentColor: '#5a3e2b'
-        }}
+        className="w-5 h-5 lg:w-7 lg:h-7 mt-1 cursor-pointer accent-[#5a3e2b]"
       />
-      <label htmlFor="agree-terms" style={{ fontSize: '14px', color: '#4a4a4a', lineHeight: '1.5', cursor: 'pointer' }}>
+      <label htmlFor="agree-terms" className="terms-checkbox-label cursor-pointer" style={{ color: '#4a4a4a' }}>
         I agree to the <a href="/terms" style={{ color: '#0066cc', textDecoration: 'underline' }}>Terms</a>, <a href="/privacy" style={{ color: '#0066cc', textDecoration: 'underline' }}>Privacy Policy</a>, and <a href="/returns" style={{ color: '#0066cc', textDecoration: 'underline' }}>Returns Policy</a>.
       </label>
     </div>
   );
 
 return (
-    <main className="checkout-page checkout-container checkout-flow" style={{ maxWidth: '800px', margin: '0 auto' }}>
+    <main className="checkout-page checkout-container checkout-flow" style={{ margin: '0 auto' }}>
       <meta name="robots" content="noindex" />
 
       <div className="checkout-header">
@@ -781,7 +775,7 @@ return (
               <div className="checkout-actions mt-10 flex flex-col gap-3">
                 <button
                   type="button"
-                  className="btn-primary checkout-button w-full"
+                  className="btn-primary checkout-button w-full lg:text-xl lg:py-4"
                   onClick={handleGuestDetailsToggle}
                 >
                   {isGuestLocked ? "Edit Details" : "Save Details"}
@@ -798,7 +792,7 @@ return (
                       </div>
                     )}
                     {termsCheckboxUI}
-                    <button type="button" className="btn-primary checkout-button w-full" onClick={handleDetailsNext} style={{ background: 'transparent', color: 'var(--brand)', border: '2px solid var(--brand)' }}>
+                    <button type="button" className="btn-primary checkout-button w-full lg:text-xl lg:py-4" onClick={handleDetailsNext} style={{ background: 'transparent', color: 'var(--brand)', border: '2px solid var(--brand)' }}>
                       Select Payment Mode {"\u2192"}
                     </button>
                   </>
@@ -842,10 +836,10 @@ return (
                 </div>
               </div>
 
-              <div className="summary-edit-footer">
+              <div className="summary-edit-footer mt-4 lg:mt-6">
                 <button
                   type="button"
-                  className="btn-secondary text-sm px-4 py-2"
+                  className="btn-secondary edit-details-btn"
                   onClick={() => router.push("/profile?edit=true")}
                   style={{ height: 'auto', borderRadius: '8px' }}
                 >

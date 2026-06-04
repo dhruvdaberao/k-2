@@ -169,6 +169,20 @@ function AccountSettingsContent() {
           border-color: var(--brand) !important;
           outline: none;
         }
+        .account-settings-title {
+          font-size: 1.125rem;
+          font-weight: bold;
+          color: var(--text);
+        }
+        .account-settings-subtitle {
+          font-size: 0.875rem;
+          color: #78716c;
+          margin-top: 4px;
+        }
+        @media (min-width: 1024px) {
+          .account-settings-title { font-size: 1.5rem !important; }
+          .account-settings-subtitle { font-size: 1.15rem !important; margin-top: 8px !important; margin-bottom: 8px !important; }
+        }
       `}} />
 
       <div className="w-full mx-auto" style={{ maxWidth: '768px' }}>
@@ -176,6 +190,7 @@ function AccountSettingsContent() {
         <div className="flex items-center justify-between mt-8 mb-6">
           <button
             onClick={() => router.push("/profile")}
+            className="global-back-btn"
             style={{ background: 'none', border: 'none', padding: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#5a3e2b', marginLeft: '-12px', flexShrink: 0 }}
             aria-label="Go Back"
           >
@@ -191,8 +206,8 @@ function AccountSettingsContent() {
           {/* Email Update Card */}
           <section className="checkout-card px-5 py-4 sm:px-6 sm:py-5 shadow-sm">
             <div className="border-b pb-3 mb-4">
-              <h2 className="text-lg font-bold" style={{ color: "var(--text)" }}>Email Authentication</h2>
-              <p className="text-stone-500 text-sm mt-1">Update your primary login address.</p>
+              <h2 className="account-settings-title">Email Authentication</h2>
+              <p className="account-settings-subtitle">Update your primary login address.</p>
             </div>
             
             {emailOtpState === "idle" ? (
@@ -271,8 +286,8 @@ function AccountSettingsContent() {
           {/* Password Update Card */}
           <section id="password-section" className="checkout-card px-5 py-4 sm:px-6 sm:py-5 shadow-sm transition-all duration-500">
             <div className="border-b pb-3 mb-4">
-              <h2 className="text-lg font-bold" style={{ color: "var(--text)" }}>Security & Password</h2>
-              <p className="text-stone-500 text-sm mt-1">Ensure your account remains securely locked.</p>
+              <h2 className="account-settings-title">Security & Password</h2>
+              <p className="account-settings-subtitle">Ensure your account remains securely locked.</p>
             </div>
 
             <form onSubmit={handleUpdatePassword} className="flex flex-col gap-3">

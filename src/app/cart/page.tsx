@@ -218,7 +218,7 @@ export default function CartPage() {
       <main className="cart-page py-4 py-md-5 px-3 bg-[#FAF7F2] min-h-screen">
         <div className="container" style={{ maxWidth: '900px' }}>
           <header className="mb-8 text-center pt-2">
-            <h1 className="text-3xl font-serif font-bold text-[#2f2a26]">Bag</h1>
+            <h1 className="collections-title mb-4">Bag</h1>
           </header>
           <div className="row g-4 items-start">
             <div className="col-12 col-lg-7">
@@ -245,31 +245,31 @@ export default function CartPage() {
 
   return (
     <main className="cart-page py-4 py-md-5 px-3 bg-[#FAF7F2] min-h-screen">
-      <div className="container">
+      <div className="container" style={{ maxWidth: '1100px' }}>
         {/* Header - centered matching Collections */}
         <header className="mb-8 text-center pt-2">
-          <h1 className="text-3xl font-serif font-bold text-[#2f2a26]">Bag</h1>
+          <h1 className="collections-title mb-4 text-center">Bag</h1>
         </header>
 
         {cartItems.length === 0 ? (
           /* Minimalist Empty State - Matching Wishlist Style */
           <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4 max-w-md mx-auto">
             <div className="mb-8 opacity-30">
-              <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ width: '120px', height: '120px', margin: '0 auto' }}>
                 <rect x="2" y="8" width="20" height="14" rx="2" ry="2"/>
                 <path d="M7 11V6a5 5 0 0 1 10 0v5"/>
               </svg>
             </div>
             
-            <h2 className="text-2xl font-serif font-bold text-[#2f2a26] mb-3">Your bag is empty</h2>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-3 md:mb-5">Your bag is empty</h2>
             
-            <p className="text-stone-500 mb-10 text-sm italic">
+            <p className="text-stone-500 mb-10 text-sm md:text-lg lg:text-xl italic">
               Looks like you haven't found your perfect piece yet.
             </p>
             
             <NextLink 
               href="/collections" 
-              className="btn btn-primary px-10 py-3 rounded-full font-bold shadow-sm"
+              className="btn btn-primary px-10 py-3 md:px-14 md:py-4 md:text-xl lg:text-2xl rounded-full font-bold shadow-sm"
               style={{ minWidth: '220px' }}
             >
               Browse Collections
@@ -306,14 +306,14 @@ export default function CartPage() {
                   return (
                   <div key={it.id} className={`cart-item-row-refined shadow-sm${selectedItems.includes(it.id) ? " cart-item--selected" : ""}`}>
                     {/* Left: Thumbnail */}
-                    <NextLink href={`/products/${p?.slug || it.id}`} className="cart-item-thumbnail relative block" style={{ width: 72, height: 72 }}>
-                      <ImageWithFallback src={imageUrl} alt={it.name} fill style={{ objectFit: 'cover' }} sizes="72px" />
+                    <NextLink href={`/products/${p?.slug || it.id}`} className="cart-item-thumbnail relative block">
+                      <ImageWithFallback src={imageUrl} alt={it.name} fill style={{ objectFit: 'cover' }} sizes="(max-width: 1024px) 72px, 120px" />
                     </NextLink>
 
                     {/* Center: Details & Picker */}
                     <div className="cart-item-info-center">
                       <NextLink href={`/products/${p?.slug || it.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <h3 className="cart-item-name font-sans hover:text-[#8B5E3C] transition-colors">{it.name.split(" - ")[0]}</h3>
+                        <h3 className="cart-item-name font-sans hover:text-[#8B5E3C] transition-colors">{(it.name || "Product").split(" - ")[0]}</h3>
                       </NextLink>
                       {p && typeof p.stock === "number" && p.stock <= 0 && p.type !== "custom-order" ? (
                         <div className="w-full text-center py-1.5 px-3 rounded-full text-sm font-bold mt-2 cursor-not-allowed select-none" style={{ backgroundColor: "#F5EFE6", color: "#8B7355", border: "1px solid #E6DCCF" }}>
@@ -367,11 +367,11 @@ export default function CartPage() {
             </div>
 
             {/* Sidebar (Right) */}
-            <div className="col-12 col-lg-5">
-              <div className="p-0">
-                <h3 className="h5 fw-bold text-[#2f2a26] mb-4 pb-3 border-bottom border-light">Order Summary</h3>
+            <div className="col-12 col-lg-5 mt-8 lg:mt-0">
+              <div className="p-0 max-w-md mx-auto lg:ml-auto lg:mr-0 xl:max-w-[450px]">
+                <h3 className="h5 md:text-2xl lg:text-3xl fw-bold text-[#2f2a26] mb-4 pb-3 border-bottom border-light">Order Summary</h3>
                 
-                <div className="vstack gap-3 text-sm">
+                <div className="vstack gap-3 md:gap-4 text-sm md:text-base lg:text-lg">
                   <div className="d-flex justify-content-between text-[#2f2a26] font-bold">
                     <span>Subtotal ({itemCount} item{itemCount !== 1 ? "s" : ""})</span>
                     <span>₹{subtotal}</span>
@@ -399,8 +399,8 @@ export default function CartPage() {
                   <hr className="my-2 border-stone-300" />
                   
                   <div className="d-flex justify-content-between align-items-center mt-1">
-                    <span className="text-xl font-bold text-[#2f2a26] font-sans mb-0">Total</span>
-                    <span className="text-xl font-bold font-sans mb-0" style={{ color: "var(--brand)" }}>₹{grandTotal}</span>
+                    <span className="text-xl md:text-2xl lg:text-3xl font-bold text-[#2f2a26] font-sans mb-0">Total</span>
+                    <span className="text-xl md:text-2xl lg:text-3xl font-bold font-sans mb-0" style={{ color: "var(--brand)" }}>₹{grandTotal}</span>
                   </div>
                 </div>
 

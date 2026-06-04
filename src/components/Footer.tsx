@@ -85,11 +85,11 @@ export default function Footer() {
           </div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "3rem", borderTop: "1px solid rgba(0,0,0,0.1)", paddingTop: "1.5rem" }}>
-          <p className="footer-copyright">
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "3rem", borderTop: "1px solid rgba(0,0,0,0.1)", paddingTop: "1.5rem", paddingBottom: "1.5rem" }}>
+          <p className="footer-copyright md:text-base lg:text-lg">
             &copy; {new Date().getFullYear()} Keshvi Crafts. All rights reserved.
           </p>
-          <p className="footer-text" style={{ fontSize: "0.85rem", marginTop: "0.5rem" }}>
+          <p className="footer-text md:text-sm lg:text-base" style={{ marginTop: "0.5rem" }}>
             Handmade in India
           </p>
         </div>

@@ -133,25 +133,25 @@ export default function ProductCard({ p }: { p: Product }) {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke={isHearted ? "#C84C35" : "white"}
-            className={`w-6 h-6 transition-all duration-200 hover:scale-110 active:scale-90 drop-shadow-md ${isPopping ? 'animate-heart-pop' : ''}`}
+            className={`w-6 h-6 md:w-8 md:h-8 lg:w-9 lg:h-9 transition-all duration-200 hover:scale-110 active:scale-90 drop-shadow-md ${isPopping ? 'animate-heart-pop' : ''}`}
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M21.19 5.01a5.72 5.72 0 0 0-8.09 0L12 6.12l-1.1-1.1a5.72 5.72 0 0 0-8.09 8.09l1.1 1.1L9.92 20.22a2.94 2.94 0 0 0 4.16 0L20.09 14.21l1.1-1.1a5.72 5.72 0 0 0 0-8.1z" />
           </svg>
         </div>
 
         {/* Badges - Top Left */}
-        <div className="absolute top-3 left-3 flex flex-wrap gap-2 z-10 pointer-events-none max-w-[80%]">
+        <div className="absolute top-3 left-3 flex flex-wrap gap-2 lg:gap-3 z-10 pointer-events-none max-w-[80%]">
           {!inStock && !isCustomOrder && (
-            <span className="px-2 py-1 text-[10px] font-bold bg-neutral-900 text-white rounded shadow-sm">Out of Stock</span>
+            <span className="px-2 py-1 lg:px-3 lg:py-1.5 text-[10px] lg:text-sm font-bold bg-neutral-900 text-white rounded shadow-sm">Out of Stock</span>
           )}
           {/* Auto-badge for custom order if not present */}
           {isCustomOrder && !badges.includes("Made to Order") && (
-            <span className="px-2 py-1 text-[10px] font-semibold bg-[#C2410C] text-white backdrop-blur-sm rounded shadow-sm">
+            <span className="px-2 py-1 lg:px-3 lg:py-1.5 text-[10px] lg:text-sm font-semibold bg-[#C2410C] text-white backdrop-blur-sm rounded shadow-sm">
               Made to Order
             </span>
           )}
           {visibleBadges.map(b => (
-            <span key={b} className={`px-2 py-1 text-[10px] font-semibold backdrop-blur-sm rounded shadow-sm border ${b === "Bestseller"
+            <span key={b} className={`px-2 py-1 lg:px-3 lg:py-1.5 text-[10px] lg:text-sm font-semibold backdrop-blur-sm rounded shadow-sm border ${b === "Bestseller"
               ? "bg-[#2C1810] text-white border-[#2C1810]"
               : "bg-white/90 text-neutral-800 border-neutral-100"
               }`}>
@@ -159,7 +159,7 @@ export default function ProductCard({ p }: { p: Product }) {
             </span>
           ))}
           {overflowCount > 0 && (
-            <span className="px-2 py-1 text-[10px] font-semibold bg-white/90 text-neutral-600 backdrop-blur-sm rounded shadow-sm border border-neutral-100">
+            <span className="px-2 py-1 lg:px-3 lg:py-1.5 text-[10px] lg:text-sm font-semibold bg-white/90 text-neutral-600 backdrop-blur-sm rounded shadow-sm border border-neutral-100">
               +{overflowCount}
             </span>
           )}
@@ -178,7 +178,7 @@ export default function ProductCard({ p }: { p: Product }) {
         <div className="mt-auto">
 
           <div className="flex items-center justify-between mb-3">
-            <span className="text-lg font-bold text-neutral-900">{priceDisplay}</span>
+            <span className="text-lg md:text-xl lg:text-2xl font-bold text-neutral-900">{priceDisplay}</span>
             {!isCustomOrder && (
               <div 
                 className="flex items-center gap-1 cursor-pointer hover:opacity-80 transition-all active:scale-90"
@@ -203,10 +203,10 @@ export default function ProductCard({ p }: { p: Product }) {
                   </div>
                 ) : (
                   <div className="flex items-center gap-1 text-[#5a3e2b] whitespace-nowrap">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 lg:w-[22px] lg:h-[22px]">
                       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                     </svg>
-                    <span className="font-bold text-base">{ratingData.avg}</span>
+                    <span className="font-bold text-base lg:text-2xl">{ratingData.avg}</span>
                   </div>
                 )}
               </div>
@@ -217,13 +217,13 @@ export default function ProductCard({ p }: { p: Product }) {
             <button
               type="button"
               disabled={true}
-              className="w-full btn-primary font-bold opacity-50 cursor-not-allowed"
+              className="w-[90%] max-w-[240px] mx-auto flex justify-center btn-primary font-bold opacity-50 cursor-not-allowed text-[15px] md:text-[17px] min-h-[44px] md:min-h-[52px]"
               style={{ backgroundColor: "#8B7355", color: "#F5EFE6" }}
             >
               Out of Stock
             </button>
           ) : cartItem && !isCustomOrder ? (
-            <div className="qty-pill-brand w-full">
+            <div className="qty-pill-brand w-[90%] max-w-[240px] mx-auto min-h-[44px] md:min-h-[52px] text-[16px] md:text-[18px]">
               <button 
                 onClick={(e) => {
                   e.preventDefault();
@@ -250,7 +250,7 @@ export default function ProductCard({ p }: { p: Product }) {
             <button
               type="button"
               onClick={handleAction}
-              className="w-full btn-primary font-bold"
+              className="w-[90%] max-w-[240px] mx-auto flex justify-center btn-primary font-bold text-[15px] md:text-[17px] min-h-[44px] md:min-h-[52px]"
             >
               {getButtonLabel()}
             </button>

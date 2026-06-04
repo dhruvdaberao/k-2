@@ -146,15 +146,14 @@ export default function ProductCardV2({ p, priority = false }: { p: Product, pri
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke={isHearted ? "#C84C35" : "white"}
-                        className={`w-6 h-6 transition-all duration-200 hover:scale-110 active:scale-90 drop-shadow-md ${isPopping ? 'animate-heart-pop' : ''}`}
+                        className={`w-6 h-6 md:w-8 md:h-8 transition-all duration-200 hover:scale-110 active:scale-90 drop-shadow-md ${isPopping ? 'animate-heart-pop' : ''}`}
                     >
                         <path strokeLinecap="round" strokeLinejoin="round" d="M21.19 5.01a5.72 5.72 0 0 0-8.09 0L12 6.12l-1.1-1.1a5.72 5.72 0 0 0-8.09 8.09l1.1 1.1L9.92 20.22a2.94 2.94 0 0 0 4.16 0L20.09 14.21l1.1-1.1a5.72 5.72 0 0 0 0-8.1z" />
                     </svg>
                 </div>
 
-                {/* Discount Badge */}
                 {p.discount_badge && (
-                    <div className="absolute top-3 left-3 bg-[#C84C35] text-white text-xs font-bold px-2 py-1 rounded-sm z-10 shadow-sm uppercase">
+                    <div className="discount-badge absolute bg-[#C84C35] text-white font-bold z-10 shadow-sm uppercase rounded-sm">
                         {p.discount_badge}
                     </div>
                 )}
@@ -163,7 +162,7 @@ export default function ProductCardV2({ p, priority = false }: { p: Product, pri
 
             {/* CONTENT */}
             <div className="flex flex-col flex-grow p-3 md:p-4" style={{ backgroundColor: '#F5EFE6' }}>
-                <h3 className="text-sm md:text-base font-bold text-[#2F2A26] leading-snug mb-1 line-clamp-1">
+                <h3 className="text-sm md:text-lg lg:text-xl font-bold text-[#2F2A26] leading-snug mb-1 md:mb-2 line-clamp-1">
                     <Link href={`/products/${encoded}`} onClick={handleCardClick} className="product-title-link">
                         {p.title}
                     </Link>
@@ -173,10 +172,10 @@ export default function ProductCardV2({ p, priority = false }: { p: Product, pri
 
                     <div className="flex items-center justify-between mb-2 flex-wrap gap-1">
                         <div className="flex items-center gap-2">
-                            <span className="text-base md:text-lg font-bold text-neutral-900">{priceDisplay}</span>
+                            <span className="text-base md:text-xl lg:text-2xl font-bold text-neutral-900">{priceDisplay}</span>
                             {originalPriceDisplay && (
                                 <span 
-                                    className="text-base md:text-lg font-semibold" 
+                                    className="text-base md:text-xl lg:text-2xl font-semibold" 
                                     style={{ textDecoration: 'line-through', color: '#9ca3af' }}
                                 >
                                     {originalPriceDisplay}
@@ -196,18 +195,18 @@ export default function ProductCardV2({ p, priority = false }: { p: Product, pri
                                     </svg>
                                 </div>
                             ) : ratingData.count === 0 ? (
-                                    <div className="flex items-center gap-1 text-xs text-gray-400 font-medium whitespace-nowrap">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#aaa" stroke="#aaa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <div className="flex items-center gap-1 text-xs md:text-[15px] lg:text-lg text-gray-400 font-medium whitespace-nowrap">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6" viewBox="0 0 24 24" fill="#aaa" stroke="#aaa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                                         </svg>
                                         No reviews
                                     </div>
                                 ) : (
                                     <div className="flex items-center gap-1 text-[#5a3e2b] whitespace-nowrap">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6" viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                                         </svg>
-                                        <span className="font-bold text-base">{ratingData.avg}</span>
+                                        <span className="font-bold text-base md:text-lg lg:text-xl">{ratingData.avg}</span>
                                     </div>
                                 )}
                             </Link>
