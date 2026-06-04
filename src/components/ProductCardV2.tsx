@@ -145,7 +145,7 @@ export default function ProductCardV2({ p, priority = false }: { p: Product, pri
                         fill={isHearted ? "#C84C35" : "rgba(0,0,0,0.15)"}
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
-                        stroke={isHearted ? "#C84C35" : "white"}
+                        stroke="white"
                         className={`w-6 h-6 md:w-8 md:h-8 transition-all duration-200 hover:scale-110 active:scale-90 drop-shadow-md ${isPopping ? 'animate-heart-pop' : ''}`}
                     >
                         <path strokeLinecap="round" strokeLinejoin="round" d="M21.19 5.01a5.72 5.72 0 0 0-8.09 0L12 6.12l-1.1-1.1a5.72 5.72 0 0 0-8.09 8.09l1.1 1.1L9.92 20.22a2.94 2.94 0 0 0 4.16 0L20.09 14.21l1.1-1.1a5.72 5.72 0 0 0 0-8.1z" />
