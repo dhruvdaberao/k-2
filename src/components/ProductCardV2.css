@@ -9,7 +9,7 @@
   /* Force uniform card sizing */
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: max-content;
   position: relative;
 }
 
@@ -117,7 +117,7 @@
 @media (max-width: 767px) {
   .plp-card {
     border-radius: 10px !important;
-    height: 100% !important;
+    height: max-content !important;
     display: flex !important;
     flex-direction: column !important;
   }
