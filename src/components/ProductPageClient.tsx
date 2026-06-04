@@ -84,16 +84,16 @@ export default function ProductPageClient({
   return (
     <>
       <div className="product-page-grid">
-        <div className="md:hidden flex items-start gap-3 mb-4 mt-2 px-1">
+        <div className="md:hidden flex items-center mb-4 px-1">
             <button 
               onClick={() => router.back()} 
-              className="global-back-btn shrink-0 mt-[6px]"
-              style={{ background: 'transparent', border: 'none', outline: 'none', padding: '0', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              className="global-back-btn flex items-center gap-2"
+              style={{ background: 'transparent', border: 'none', outline: 'none', padding: '0', cursor: 'pointer', color: '#5a3e2b' }}
               title="Go Back"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              <span style={{ fontSize: '16px', fontWeight: 600 }}>Go Back</span>
             </button>
-            <h1 className="product-title font-bold text-neutral-900" style={{ marginTop: 0, fontSize: "2rem", lineHeight: 1.1, marginBottom: 0 }}>{product.title}</h1>
         </div>
         <div className="product-page-media product-image-container relative">
           {product.discount_badge && (
@@ -160,7 +160,7 @@ export default function ProductPageClient({
           />
         </div>
         <div className="product-page-details">
-          <div className="hidden md:flex items-center gap-3 mb-4 lg:mt-3">
+          <div className="flex items-center gap-3 mb-4 lg:mt-3">
             <h1 className="product-title font-bold text-neutral-900" style={{ marginTop: 0, fontSize: "2rem", lineHeight: 1.3, marginBottom: 0 }}>{product.title}</h1>
           </div>
 
