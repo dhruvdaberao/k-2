@@ -26,7 +26,7 @@ export default function FullPageLoader() {
     >
       <div className="flex flex-col items-center justify-center animate-pulse py-4">
         <img
-          src="/keshvi-yarn-logo-cropped.png"
+          src="/nav-icons/logo.png"
           alt="Keshvi Crafts Logo"
           className="mb-4"
           style={{ height: '95px', width: 'auto', objectFit: 'contain' }}
