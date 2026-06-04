@@ -87,7 +87,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body className="bg-cream text-dark">
-        <NextTopLoader color="#5a3e2b" showSpinner={false} />
+        <NextTopLoader color="#5a3e2b" height={2} shadow="none" showSpinner={false} />
         <GoogleTagManager gtmId="GTM-MFVDFHT3" />
         <AnalyticsTracker />
         <ServiceWorkerRegister />
