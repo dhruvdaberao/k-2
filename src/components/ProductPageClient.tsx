@@ -83,18 +83,18 @@ export default function ProductPageClient({
 
   return (
     <>
+      <div className="md:hidden flex items-center mb-3 px-1">
+          <button 
+            onClick={() => router.back()} 
+            className="global-back-btn flex items-center gap-2"
+            style={{ background: 'transparent', border: 'none', outline: 'none', padding: '0', cursor: 'pointer', color: '#5a3e2b' }}
+            title="Go Back"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            <span style={{ fontSize: '16px', fontWeight: 600 }}>Go Back</span>
+          </button>
+      </div>
       <div className="product-page-grid">
-        <div className="md:hidden flex items-center mb-2 px-1">
-            <button 
-              onClick={() => router.back()} 
-              className="global-back-btn flex items-center gap-2"
-              style={{ background: 'transparent', border: 'none', outline: 'none', padding: '0', cursor: 'pointer', color: '#5a3e2b' }}
-              title="Go Back"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-              <span style={{ fontSize: '16px', fontWeight: 600 }}>Go Back</span>
-            </button>
-        </div>
         <div className="product-page-media product-image-container relative">
           {product.discount_badge && (
             <div 
