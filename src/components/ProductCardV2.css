@@ -349,6 +349,7 @@
   background-color: #C84C35;
   color: white;
   font-weight: bold;
+  border-radius: 9999px;
 }
 
 @media (min-width: 1024px) {

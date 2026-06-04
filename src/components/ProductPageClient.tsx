@@ -98,7 +98,7 @@ export default function ProductPageClient({
         <div className="product-page-media product-image-container relative">
           {product.discount_badge && (
             <div 
-              className="absolute text-white font-bold z-10 shadow-sm uppercase rounded-sm"
+              className="absolute text-white font-bold z-10 shadow-sm uppercase rounded-full"
               style={{
                 top: "20px",
                 left: "16px",
