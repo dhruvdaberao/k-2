@@ -72,40 +72,7 @@ export default function PriceProgressBar({ subtotal }: PriceProgressBarProps) {
                 {message}
             </p>
 
-            {/* Progress Bar Container */}
-            <div className="relative mb-4">
-                {/* Background Track */}
-                <div className="h-3 bg-stone-200/50 rounded-full overflow-hidden shadow-inner">
-                    {/* Progress Fill */}
-                    <div
-                        className="h-full bg-gradient-to-r from-[#16a34a] to-[#15803d] transition-all duration-500 ease-out shadow-sm"
-                        style={{ width: `${progress}%` }}
-                    />
-                </div>
-
-                {/* Milestone Markers */}
-                <div className="absolute top-0 left-0 w-full h-3">
-                    {milestones.map((milestone) => {
-                        const position = (milestone.value / maxValue) * 100;
-                        const isReached = subtotal >= milestone.value;
-
-                        return (
-                            <div
-                                key={milestone.value}
-                                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2"
-                                style={{ left: `${position}%` }}
-                            >
-                                <div
-                                    className={`w-4 h-4 md:w-5 md:h-5 rounded-full border-2 transition-all duration-300 ${isReached
-                                            ? 'bg-[#15803d] border-white shadow-md scale-110 md:scale-125'
-                                            : 'bg-white border-[#d1d5db] shadow-sm'
-                                        }`}
-                                />
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
+            {/* Progress Bar Container Removed */}
 
             {/* Milestone Labels */}
             <div className="flex justify-between gap-2 text-[10px] md:text-sm lg:text-base font-medium mt-2 md:mt-4">
