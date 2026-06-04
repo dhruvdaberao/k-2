@@ -523,8 +523,8 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
     setLoading(false);
 
-    await revalidateStorefront();
     showToast(isEdit ? "Product updated successfully ✓" : "Product added successfully ✓");
+    revalidateStorefront().catch(err => console.error("Revalidation failed:", err));
     localStorage.removeItem(`draft_product_${initialData?.id || 'new'}`);
     router.push("/admin/products");
     router.refresh();
@@ -581,8 +581,8 @@ export default function ProductForm({ initialData, isEdit }: ProductFormProps) {
 
     setLoading(false);
     
-    await revalidateStorefront();
     showToast("Product deleted successfully");
+    revalidateStorefront().catch(err => console.error("Revalidation failed:", err));
     router.push("/admin/products");
     router.refresh();
   };
