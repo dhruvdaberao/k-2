@@ -104,7 +104,8 @@ export default function ProductPageClient({
                 left: "16px",
                 fontSize: "13px",
                 padding: "4px 8px",
-                backgroundColor: "#C84C35"
+                backgroundColor: "#C84C35",
+                border: "1.5px solid white"
               }}
             >
               {product.discount_badge}
