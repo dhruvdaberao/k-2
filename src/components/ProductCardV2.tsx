@@ -168,9 +168,7 @@ export default function ProductCardV2({ p, priority = false }: { p: Product, pri
                     </Link>
                 </h3>
 
-                <div className="mt-auto flex flex-col justify-end">
-
-                    <div className="flex items-center justify-between mb-2 flex-wrap gap-1">
+                <div className="flex items-center justify-between mb-3 flex-wrap gap-1">
                         <div className="flex items-center gap-2">
                             <span className="text-base md:text-xl lg:text-2xl font-bold text-neutral-900">{priceDisplay}</span>
                             {originalPriceDisplay && (
@@ -213,6 +211,7 @@ export default function ProductCardV2({ p, priority = false }: { p: Product, pri
                         )}
                     </div>
 
+                    <div className="mt-auto w-full">
                     {(!inStock && !isCustomOrder) ? (
                         <div className="interactive-qty-pill w-full">
                             <button
