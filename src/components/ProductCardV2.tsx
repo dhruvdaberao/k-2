@@ -153,7 +153,7 @@ export default function ProductCardV2({ p, priority = false }: { p: Product, pri
                 </div>
 
                 {p.discount_badge && (
-                    <div className="discount-badge absolute bg-[#C84C35] text-white font-bold z-10 shadow-sm uppercase rounded-sm">
+                    <div className="discount-badge absolute z-10 shadow-sm uppercase rounded-sm">
                         {p.discount_badge}
                     </div>
                 )}

@@ -343,9 +343,12 @@
 /* Discount Badge */
 .discount-badge {
   top: 14px;
-  left: 12px;
+  left: 10px;
   font-size: 13px;
   padding: 4px 8px;
+  background-color: #C84C35;
+  color: white;
+  font-weight: bold;
 }
 
 @media (min-width: 1024px) {
