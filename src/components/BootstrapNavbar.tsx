@@ -28,7 +28,7 @@ export default function BootstrapNavbar() {
           <div className="nav-inner">
             <Link href="/" className="brand header-left" style={{ textDecoration: 'none' }} aria-label="Keshvi Crafts — Home">
               <img
-                src="/nav-icons/keshvi-sunflower-logo.png"
+                src="/nav-icons/keshvi-sunflower-logo-v2.png"
                 alt="Keshvi Crafts Logo"
                 className="my-0"
                 style={{ height: '46px', width: 'auto', objectFit: 'contain' }}

@@ -161,7 +161,7 @@ export default function SignupPage() {
         `}} />
         <div className="w-full mx-auto mt-6 sm:mt-10" style={{ maxWidth: '460px' }}>
           <div className="text-center mb-8">
-            <img src="/nav-icons/keshvi-sunflower-logo.png" alt="Logo" className="mx-auto mb-4" style={{ height: '120px', width: 'auto', objectFit: 'contain' }} />
+            <img src="/nav-icons/keshvi-sunflower-logo-v2.png" alt="Logo" className="mx-auto mb-4" style={{ height: '120px', width: 'auto', objectFit: 'contain' }} />
             <h1 className="text-2xl font-bold" style={{ color: "var(--brand)" }}>
               {authMode === "login" ? "Welcome Back" : authMode === "signup" ? "Create an Account" : "Reset Password"}
             </h1>

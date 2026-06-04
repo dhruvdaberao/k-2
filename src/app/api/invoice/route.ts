@@ -135,7 +135,7 @@ export async function GET(req: Request) {
 
     // Embed actual logo from disk
     try {
-      const logoPath = path.join(process.cwd(), 'public', 'nav-icons', 'keshvi-sunflower-logo.png');
+      const logoPath = path.join(process.cwd(), 'public', 'nav-icons', 'keshvi-sunflower-logo-v2.png');
       const logoBuffer = fs.readFileSync(logoPath);
       const logoBase64 = logoBuffer.toString('base64');
       doc.addImage(`data:image/png;base64,${logoBase64}`, 'PNG', 18, 20, 35, 35);

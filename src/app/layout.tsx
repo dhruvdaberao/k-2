@@ -113,7 +113,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             "@context": "https://schema.org",
             "@type": "LocalBusiness",
             "name": "Keshvi Crafts",
-            "image": "https://keshvicrafts.in/nav-icons/keshvi-sunflower-logo.png", // Assuming a logo exists or general image
+            "image": "https://keshvicrafts.in/nav-icons/keshvi-sunflower-logo-v2.png", // Assuming a logo exists or general image
             "description": "Handmade crochet and artisanal home decor, crafted with care in India.",
             "url": "https://keshvicrafts.in",
             "telephone": "+917507996961",
