@@ -1968,14 +1968,14 @@ h1:not(.product-title):not(.hero-title) {
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
   padding: 0 0 12px;
-  align-items: stretch;
+  align-items: start;
 }
 
 @media (min-width: 768px) {
   .plp-grid-mobile {
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
-    align-items: stretch;
+    align-items: start;
   }
 }
 
