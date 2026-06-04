@@ -342,10 +342,10 @@
 
 /* Discount Badge */
 .discount-badge {
-  top: 6px;
-  left: 6px;
-  font-size: 11px;
-  padding: 3px 6px;
+  top: 14px;
+  left: 12px;
+  font-size: 13px;
+  padding: 4px 8px;
 }
 
 @media (min-width: 1024px) {
