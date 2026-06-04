@@ -456,21 +456,21 @@ function ProfileContent() {
 
         <div className="pt-8 md:pt-12 border-t border-[#e6ded4] w-full" style={{ marginTop: '48px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '16px' }}>
           {!isEditing ? (
-            <button onClick={() => setIsEditing(true)} className="btn-primary" style={{ width: "100%", maxWidth: "250px", flex: '1 1 200px' }}>Edit Profile</button>
+            <button onClick={() => setIsEditing(true)} className="btn-primary" style={{ width: "100%", maxWidth: "250px", flex: '1 1 calc(50% - 12px)' }}>Edit Profile</button>
           ) : (
-            <button onClick={saveDetails} disabled={isSaving} className="btn-primary" style={{ width: "100%", maxWidth: "250px", flex: '1 1 200px', background: isSaving ? "#c9b99a" : "var(--brand)" }}>
+            <button onClick={saveDetails} disabled={isSaving} className="btn-primary" style={{ width: "100%", maxWidth: "250px", flex: '1 1 calc(50% - 12px)', background: isSaving ? "#c9b99a" : "var(--brand)" }}>
               {isSaving ? "Saving..." : "Save Changes"}
             </button>
           )}
-          <button onClick={handleLogout} className="btn-primary" style={{ width: "100%", maxWidth: "250px", flex: '1 1 200px', background: 'transparent', color: 'var(--brand)', border: '2px solid var(--brand)' }}>Log Out</button>
+          <button onClick={handleLogout} className="btn-primary" style={{ width: "100%", maxWidth: "250px", flex: '1 1 calc(50% - 12px)', background: 'transparent', color: 'var(--brand)', border: '2px solid var(--brand)' }}>Log Out</button>
         </div>
       </section>
 
       <section className="mx-auto mt-8 md:mt-12 px-4 md:px-0 w-full" style={{ maxWidth: '800px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '16px' }}>
-        <Link href="/orders" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Your Orders</Link>
-        <Link href="/my-reviews" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Your Reviews</Link>
-        <Link href="/account-settings" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 200px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-main)', color: 'var(--brand)', border: '2px solid var(--brand)' }}>Account Settings</Link>
-        {isAdmin(user) && (<Link href="/admin" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 200px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--brand)', color: 'white' }}>Admin Portal</Link>)}
+        <Link href="/orders" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 calc(50% - 12px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Your Orders</Link>
+        <Link href="/my-reviews" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 calc(50% - 12px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Your Reviews</Link>
+        <Link href="/account-settings" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 calc(50% - 12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-main)', color: 'var(--brand)', border: '2px solid var(--brand)' }}>Account Settings</Link>
+        {isAdmin(user) && (<Link href="/admin" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 calc(50% - 12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--brand)', color: 'white' }}>Admin Portal</Link>)}
       </section>
       {profileModalHTML}
       <ConfirmModal isOpen={showLogoutConfirm} title="Confirm Logout" message="Are you sure you want to log out?" confirmLabel="Log Out" onConfirm={executeLogout} onCancel={() => setShowLogoutConfirm(false)} />

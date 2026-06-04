@@ -85,8 +85,19 @@ export default function ProductPageClient({
     <>
       <div className="product-page-grid">
         <div className="product-page-media product-image-container relative">
+          <div className="absolute top-4 left-4 z-10 flex gap-2">
+            <button 
+              onClick={() => router.back()} 
+              className="global-back-btn flex items-center justify-center text-[#5a3e2b] hover:text-[#3e291d] transition-colors shrink-0"
+              style={{ background: "rgba(255,255,255,0.7)", borderRadius: "50%", backdropFilter: "blur(4px)", padding: '8px' }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+          </div>
           {product.discount_badge && (
-            <div className="absolute top-4 left-4 bg-[#C84C35] text-white pdp-badge-text z-10 shadow-md uppercase">
+            <div className="absolute top-16 left-4 bg-[#C84C35] text-white pdp-badge-text z-10 shadow-md uppercase">
               {product.discount_badge}
             </div>
           )}
@@ -150,14 +161,6 @@ export default function ProductPageClient({
         </div>
         <div className="product-page-details">
           <div className="flex items-center gap-3 mb-4 lg:mt-3">
-            <button 
-              onClick={() => router.back()} 
-              className="global-back-btn shrink-0"
-              style={{ background: 'transparent', border: 'none', outline: 'none', color: '#5a3e2b', padding: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-              title="Go Back"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-            </button>
             <h1 className="product-title font-bold text-neutral-900" style={{ marginTop: 0, fontSize: "2rem", lineHeight: 1.3, marginBottom: 0 }}>{product.title}</h1>
           </div>
 

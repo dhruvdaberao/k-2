@@ -104,8 +104,7 @@ export default function BuyBar({
             <>
               {/* Buy Now */}
               <button
-                className="btn-primary w-full"
-                style={{ flex: 1, minHeight: '64px', borderRadius: '20px', fontSize: '20px' }}
+                className="btn-primary w-full buybar-btn-primary"
                 onClick={onBuyNowClick}
               >
                 Buy Now
@@ -113,20 +112,20 @@ export default function BuyBar({
 
               {/* Add to Cart / In-cart qty control */}
               {cartQuantity > 0 ? (
-                <div style={{ flex: 1, minHeight: '64px', borderRadius: '20px', backgroundColor: '#4A3219', display: 'flex', alignItems: 'center', justifyContent: 'space-between', overflow: 'hidden' }}>
+                <div className="buybar-qty-container" style={{ flex: 1, backgroundColor: '#4A3219', display: 'flex', alignItems: 'center', justifyContent: 'space-between', overflow: 'hidden' }}>
                   <button
                     onClick={handleDecrease}
-                    style={{ background: 'transparent', border: 'none', color: '#FDFBF7', fontSize: '2rem', flex: 1, height: '100%', cursor: 'pointer', outline: 'none' }}
+                    style={{ background: 'transparent', border: 'none', color: '#FDFBF7', fontSize: '1.8rem', width: '48px', height: '100%', cursor: 'pointer', outline: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                     aria-label="Decrease quantity"
                   >
                     −
                   </button>
-                  <span style={{ color: '#FDFBF7', fontSize: '1.4rem', fontWeight: 'bold', flex: 1, textAlign: 'center', userSelect: 'none' }}>
+                  <span style={{ color: '#FDFBF7', fontSize: '1.2rem', fontWeight: 'bold', flex: 1, textAlign: 'center', userSelect: 'none' }}>
                     {cartQuantity}
                   </span>
                   <button
                     onClick={handleIncrease}
-                    style={{ background: 'transparent', border: 'none', color: '#FDFBF7', fontSize: '2rem', flex: 1, height: '100%', cursor: 'pointer', outline: 'none' }}
+                    style={{ background: 'transparent', border: 'none', color: '#FDFBF7', fontSize: '1.8rem', width: '48px', height: '100%', cursor: 'pointer', outline: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                     aria-label="Increase quantity"
                   >
                     +
@@ -134,9 +133,9 @@ export default function BuyBar({
                 </div>
               ) : (
                 <button
-                  className="btn-primary w-full"
-                  style={{ flex: 1, minHeight: '64px', borderRadius: '20px', fontSize: '20px', padding: '0 40px', backgroundColor: '#4A3219', color: '#FDFBF7', border: 'none', outline: 'none', cursor: 'pointer' }}
+                  className="btn-primary w-full buybar-btn-primary"
                   onClick={onAddToCart}
+                  style={{ backgroundColor: '#4A3219', color: '#FDFBF7' }}
                 >
                   Add to Cart
                 </button>
@@ -378,6 +377,24 @@ export default function BuyBar({
           font-weight: 800;
           color: #3E2C1C;
           font-family: var(--font-outfit), var(--font-sans, system-ui), sans-serif;
+        }
+      `}</style>
+      <style>{`
+        .buybar-btn-primary, .buybar-qty-container {
+          flex: 1;
+          height: 48px !important;
+          min-height: 48px !important;
+          border-radius: 20px !important;
+          font-size: 16px !important;
+          min-width: 130px;
+        }
+        @media (min-width: 1024px) {
+          .buybar-btn-primary, .buybar-qty-container {
+            height: 64px !important;
+            min-height: 64px !important;
+            font-size: 20px !important;
+            border-radius: 20px !important;
+          }
         }
       `}</style>
     </>

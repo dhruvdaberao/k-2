@@ -143,12 +143,12 @@ export default function WishlistPage() {
 
   return (
     <div className="container py-8">
-      <div className="text-center mb-8">
-        <h1 className="collections-title mb-8 text-center">Wishlist</h1>
+      <div className="text-center mb-6">
+        <h1 className="collections-title mb-3 md:mb-5 text-center">Wishlist</h1>
         {items.length > 0 && (
           <button 
             onClick={() => setShowClearAll(true)}
-            className="btn-clear-pill mt-3 inline-block"
+            className="btn-clear-pill inline-block"
             style={{ fontSize: '12px', padding: '6px 16px' }}
           >
             Clear All Items

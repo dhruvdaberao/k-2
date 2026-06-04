@@ -3580,19 +3580,19 @@ body {
   }
 
   .checkout-stepper__dot {
-    width: 48px;
-    height: 48px;
-    font-size: 1.25rem;
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
   }
 
   .checkout-stepper__label {
-    font-size: 1.1rem;
+    font-size: 0.8rem;
     /* fully visible without truncation */
   }
 
   .checkout-stepper__line {
-    width: 32px;
-    margin: 0 8px;
+    width: 16px;
+    margin: 0 4px;
   }
 
   .checkout-item-thumb {
