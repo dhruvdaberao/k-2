@@ -205,18 +205,21 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 .pdp-gallery__thumb {
   border: 1px solid rgba(74, 50, 25, 0.12);
-  border-radius: 12px;
-  padding: 0;
-  background: #fff;
+  border-radius: 14px;
+  padding: 0px;
+  background: transparent;
   cursor: pointer;
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  transition: all 0.2s ease;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .pdp-gallery__thumb.is-active {
-  border-color: var(--brand);
+  border-color: #C4A484; /* Light brown */
   border-width: 2px;
-  box-shadow: 0 0 0 1px #fff inset;
+  border-style: dashed;
+  padding: 3px; /* Spacing between border and image */
+  background: transparent;
 }
 
 .pdp-gallery__thumb:hover {
@@ -228,6 +231,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   width: 64px;
   height: 64px;
   object-fit: cover;
+  border-radius: 10px; /* Radius for the image itself */
 }
 
 @media (min-width: 1024px) {
