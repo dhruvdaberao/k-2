@@ -19,7 +19,7 @@ function getSupabaseClient() {
   const customFetch = (url: string | Request | URL, options?: RequestInit) => {
     const urlString = typeof url === 'string' ? url : (url instanceof Request ? url.url : url.toString());
     const isStorage = urlString.includes('/storage/v1/');
-    const timeoutDuration = isStorage ? 60000 : 10000; // 60s for uploads, 10s for auth/db
+    const timeoutDuration = isStorage ? 60000 : 45000; // 60s for uploads, 45s for auth/db
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutDuration);

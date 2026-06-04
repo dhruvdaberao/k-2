@@ -33,18 +33,17 @@ const SkeletonCard = () => (
       borderRadius: '24px', 
       border: '1px solid #e8e2da', 
       marginBottom: '16px',
-      opacity: 0.7
     }}
-    className="animate-pulse"
   >
     <div style={{ display: 'flex', gap: '5px', marginBottom: '16px' }}>
       {[1, 2, 3, 4, 5].map((i) => (
-        <div key={i} style={{ width: '16px', height: '16px', backgroundColor: '#e0d6cc', borderRadius: '50%' }} />
+        <div key={i} className="profile-skeleton-bar" style={{ width: '16px', height: '16px', borderRadius: '50%' }} />
       ))}
     </div>
     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-      <div style={{ height: '12px', backgroundColor: '#e0d6cc', borderRadius: '6px', width: '80%' }} />
-      <div style={{ height: '12px', backgroundColor: '#e0d6cc', borderRadius: '6px', width: '50%' }} />
+      <div className="profile-skeleton-bar" style={{ height: '16px', width: '40%', borderRadius: '4px' }} />
+      <div className="profile-skeleton-bar" style={{ height: '16px', width: '80%', borderRadius: '4px' }} />
+      <div className="profile-skeleton-bar" style={{ height: '16px', width: '60%', borderRadius: '4px' }} />
     </div>
   </div>
 );
@@ -455,9 +454,9 @@ export default function ReviewPage() {
           <div style={{ width: '40px' }}></div>
         </div>
         <div className="reviews-container w-full pb-12">
-          <div className="mx-4 p-4 rounded-2xl animate-pulse" style={{ backgroundColor: '#f8f4ef', borderRadius: '24px', marginBottom: '24px' }}>
-            <div className="h-5 w-2/3 bg-[#e0d6cc] rounded mb-2"></div>
-            <div className="h-4 w-1/3 bg-[#e0d6cc] rounded"></div>
+          <div className="mx-4 p-4 rounded-2xl" style={{ backgroundColor: '#f8f4ef', borderRadius: '24px', marginBottom: '24px' }}>
+            <div className="h-5 w-2/3 profile-skeleton-bar rounded mb-2"></div>
+            <div className="h-4 w-1/3 profile-skeleton-bar rounded"></div>
           </div>
           <div className="space-y-4 px-4">
             <SkeletonCard />

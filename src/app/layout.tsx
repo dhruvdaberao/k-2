@@ -11,6 +11,7 @@ import { GoogleTagManager } from '@next/third-parties/google';
 import { AuthProvider } from "@/hooks/useAuth";
 import { CartProvider } from "@/hooks/useCart";
 import { WishlistProvider } from "@/hooks/useWishlist";
+import NextTopLoader from 'nextjs-toploader';
 
 import RatingHydrator from "@/components/RatingHydrator";
 import { supabase } from "@/lib/supabaseClient";
@@ -86,6 +87,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body className="bg-cream text-dark">
+        <NextTopLoader color="#5a3e2b" showSpinner={false} />
         <GoogleTagManager gtmId="GTM-MFVDFHT3" />
         <AnalyticsTracker />
         <ServiceWorkerRegister />

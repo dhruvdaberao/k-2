@@ -2351,6 +2351,11 @@ h1:not(.product-title):not(.hero-title) {
   background: rgba(74, 50, 25, 0.05);
 }
 
+.category-chip:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
 .category-chip.active {
   background: var(--brand);
   color: white !important;
@@ -4027,4 +4032,16 @@ body a.btn-primary {
   body a.btn-primary {
     border-radius: 20px !important;
   }
+}
+
+@keyframes globalShimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.profile-skeleton-bar {
+  background: linear-gradient(90deg, #e8dfd4 25%, #f5efe6 37%, #e8dfd4 63%);
+  background-size: 800px 100%;
+  animation: globalShimmer 1.6s ease-in-out infinite;
+  border-radius: 8px;
 }

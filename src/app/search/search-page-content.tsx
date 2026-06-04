@@ -118,7 +118,18 @@ export default function SearchPageContent() {
 
       <section className="search-page__results" aria-live="polite">
         {loading ? (
-          <div className="search-page__empty">Loading products...</div>
+          <div className="plp-grid-mobile plp-grid">
+            {[1, 2, 3, 4, 5, 6].map(i => (
+              <div key={i} className="plp-card-mobile plp-card h-full flex flex-col overflow-hidden" style={{ backgroundColor: '#F5EFE6', borderRadius: '18px', border: '1px solid rgba(120, 88, 58, 0.22)' }}>
+                <div className="relative w-full aspect-square profile-skeleton-bar rounded-none" />
+                <div className="flex flex-col flex-grow p-3 md:p-4">
+                  <div className="profile-skeleton-bar" style={{ width: '80%', height: '20px', marginBottom: '8px', borderRadius: '4px' }} />
+                  <div className="profile-skeleton-bar" style={{ width: '60%', height: '24px', marginBottom: '12px', borderRadius: '4px' }} />
+                  <div className="mt-auto profile-skeleton-bar" style={{ width: '100%', height: '48px', borderRadius: '20px' }} />
+                </div>
+              </div>
+            ))}
+          </div>
         ) : !query.trim() ? (
           <div className="search-page__suggestions">
             <h3 className="suggestions-title">Popular Categories</h3>

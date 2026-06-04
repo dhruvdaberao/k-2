@@ -32,16 +32,36 @@ export default function AdminDashboard() {
 
     init();
 
-    // Safety: never show loading for more than 2 seconds if auth API hangs
-    const safety = setTimeout(() => {
-      if (isMounted) setLoading(false);
-    }, 2000);
-
     return () => {
       isMounted = false;
-      clearTimeout(safety);
     };
   }, []);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-[#FDFBF7] py-20 px-4">
+        <div className="max-w-3xl mx-auto">
+          <header className="mb-8 md:mb-12 relative flex flex-col items-center md:items-start" style={{ paddingTop: '40px', paddingBottom: '20px' }}>
+            <div className="text-center md:text-left px-10 md:px-14">
+              <div className="profile-skeleton-bar" style={{ width: '250px', height: '60px', marginBottom: '16px' }} />
+              <div className="profile-skeleton-bar" style={{ width: '200px', height: '24px' }} />
+            </div>
+          </header>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="rounded-2xl flex flex-col" style={{ backgroundColor: '#F5EFE6', border: '1px solid rgba(139, 94, 60, 0.4)', padding: '32px' }}>
+                <div className="profile-skeleton-bar" style={{ width: '40px', height: '40px', marginBottom: '24px', borderRadius: '50%' }} />
+                <div className="profile-skeleton-bar" style={{ width: '120px', height: '24px', marginBottom: '8px' }} />
+                <div className="profile-skeleton-bar" style={{ width: '100%', height: '40px', marginBottom: '24px' }} />
+                <div className="profile-skeleton-bar mt-auto" style={{ width: '100%', height: '45px', borderRadius: '12px' }} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+    );
+  }
+
 
 
   return (
