@@ -201,11 +201,12 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   margin-top: 16px;
   flex-wrap: wrap;
   padding: 4px;
+  align-items: center;
 }
 
 .pdp-gallery__thumb {
   border: 1px solid rgba(74, 50, 25, 0.12);
-  border-radius: 14px;
+  border-radius: 10px;
   padding: 0px;
   background: transparent;
   cursor: pointer;
@@ -218,6 +219,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   border-color: #C4A484; /* Light brown */
   border-width: 2px;
   border-style: dashed;
+  border-radius: 13px;
   padding: 3px; /* Spacing between border and image */
   background: transparent;
 }
