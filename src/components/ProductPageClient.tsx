@@ -104,8 +104,7 @@ export default function ProductPageClient({
                 left: "16px",
                 fontSize: "13px",
                 padding: "4px 8px",
-                backgroundColor: "#C84C35",
-                border: "1.5px solid white"
+                backgroundColor: "#C84C35"
               }}
             >
               {product.discount_badge}
@@ -142,7 +141,7 @@ export default function ProductPageClient({
                     strokeWidth="1.5" 
                     strokeLinecap="round" 
                     strokeLinejoin="round" 
-                    stroke="white"
+                    stroke={isHearted ? "#C84C35" : "white"}
                     className={`pdp-action-icon transition-transform duration-200 ${isPopping ? 'animate-heart-pop' : ''} hover:scale-110 active:scale-90 drop-shadow-md`}
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21.19 5.01a5.72 5.72 0 0 0-8.09 0L12 6.12l-1.1-1.1a5.72 5.72 0 0 0-8.09 8.09l1.1 1.1L9.92 20.22a2.94 2.94 0 0 0 4.16 0L20.09 14.21l1.1-1.1a5.72 5.72 0 0 0 0-8.1z" />
