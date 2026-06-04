@@ -78,7 +78,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Quicksand:wght@300;400;500;600;700&display=swap"
         />
-        <link rel="icon" href="/favicon.ico?v=4" sizes="any" />
+        <link rel="icon" href="/favicon.ico?v=7" sizes="any" />
         <link rel="icon" type="image/png" href="/nav-icons/pwa-sunflower-square.png?v=6" />
         <link rel="apple-touch-icon" href="/nav-icons/pwa-sunflower-square.png?v=6" />
         <link rel="manifest" href="/manifest.json?v=6" />
