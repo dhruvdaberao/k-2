@@ -106,7 +106,7 @@ export default async function Home() {
                 Shop by Collection
               </h2>
             </div>
-            <div className="category-chips-scroll home-category-chips mb-0 md:mb-6 md:gap-16 px-4 md:px-0">
+            <div className="category-chips-scroll home-category-chips mb-0 md:mb-6 md:gap-16">
               {displayCats.map((cat) => {
                 const count = live.filter((p) => (p.category || '') === cat.name).length;
                 const slug = cat.slug;
@@ -114,7 +114,7 @@ export default async function Home() {
                   <Link
                     key={cat.id}
                     href={`/collections/${slug}`}
-                    className="flex flex-col items-center gap-2 group w-[84px] md:w-[115px] lg:w-[170px] shrink-0"
+                    className="flex flex-col items-center gap-2 group min-w-[80px] md:min-w-[115px] lg:min-w-[170px] shrink-0"
                     style={{ textDecoration: 'none' }}
                   >
                     {/* Insta-story border wrapper */}
@@ -145,7 +145,7 @@ export default async function Home() {
               
               <Link 
                 href="/collections" 
-                className="flex flex-col items-center gap-2 group w-[84px] md:w-[110px] shrink-0"
+                className="flex flex-col items-center gap-2 group min-w-[80px] md:min-w-[110px] shrink-0"
                 style={{ textDecoration: 'none' }}
               >
                 <div 
