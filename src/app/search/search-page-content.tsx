@@ -1,58 +1,21 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
 import type { Product } from "@/types";
 import ProductCard from "@/components/ProductCardV2";
 import "./search.css";
 
-let cachedSearchProducts: Product[] | null = null;
-
-export default function SearchPageContent() {
+export default function SearchPageContent({ initialProducts = [] }: { initialProducts?: Product[] }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
 
-  const [products, setProducts] = useState<Product[]>(cachedSearchProducts || []);
-  const [loading, setLoading] = useState(!cachedSearchProducts);
-
-  useEffect(() => {
-    if (cachedSearchProducts) return;
-
-    let isMounted = true;
-    const loadData = async () => {
-      try {
-        const { data, error } = await supabase.from("products").select("*").eq("status", "live");
-        if (error) throw error;
-        if (isMounted && data) {
-          cachedSearchProducts = data as Product[];
-          setProducts(data as Product[]);
-        }
-      } catch (err) {
-        console.error("Search fetch error:", err);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-
-    loadData();
-
-    const timeout = setTimeout(() => {
-      if (isMounted) setLoading(false);
-    }, 6000);
-
-    return () => {
-      isMounted = false;
-      clearTimeout(timeout);
-    };
-  }, []);
-
   const liveProducts = useMemo(
     () =>
-      products.filter(
+      initialProducts.filter(
         (p) => (p.status ?? "live") !== "hidden" && !p.isVariant,
       ),
-    [products],
+    [initialProducts],
   );
 
   const popularCategories = ["Accessories", "Keyrings", "Car Charms", "Bags"];
@@ -117,20 +80,7 @@ export default function SearchPageContent() {
       </header>
 
       <section className="search-page__results" aria-live="polite">
-        {loading ? (
-          <div className="plp-grid-mobile plp-grid">
-            {[1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i} className="plp-card-mobile plp-card h-full flex flex-col overflow-hidden" style={{ backgroundColor: '#F5EFE6', borderRadius: '18px', border: '1px solid rgba(120, 88, 58, 0.22)' }}>
-                <div className="relative w-full aspect-square profile-skeleton-bar rounded-none" />
-                <div className="flex flex-col flex-grow p-3 md:p-4">
-                  <div className="profile-skeleton-bar" style={{ width: '80%', height: '20px', marginBottom: '8px', borderRadius: '4px' }} />
-                  <div className="profile-skeleton-bar" style={{ width: '60%', height: '24px', marginBottom: '12px', borderRadius: '4px' }} />
-                  <div className="mt-auto profile-skeleton-bar" style={{ width: '100%', height: '48px', borderRadius: '20px' }} />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : !query.trim() ? (
+        {!query.trim() ? (
           <div className="search-page__suggestions">
             <h3 className="suggestions-title">Popular Categories</h3>
             <div className="suggestions-pills">
