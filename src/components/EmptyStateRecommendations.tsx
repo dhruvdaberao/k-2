@@ -32,7 +32,7 @@ export default function EmptyStateRecommendations({ title }: { title: string }) 
 
   if (loading) {
     return (
-      <div className="w-full max-w-5xl mx-auto mt-6 pb-10">
+      <div className="w-full mt-6 pb-10">
         <h3 className="text-xl md:text-2xl font-serif font-bold text-[#2f2a26] mb-6 text-center">{title}</h3>
         <div className="plp-grid-mobile">
           {[1, 2, 3, 4].map(i => (
@@ -52,7 +52,7 @@ export default function EmptyStateRecommendations({ title }: { title: string }) 
   if (products.length === 0) return null;
 
   return (
-    <div className="w-full max-w-5xl mx-auto mt-6 pb-10 px-2 md:px-0">
+    <div className="w-full mt-6 pb-10">
       <h3 className="text-xl md:text-2xl font-serif font-bold text-[#2f2a26] mb-6 text-center">{title}</h3>
       <div className="plp-grid-mobile text-left">
         {products.map((p) => (
