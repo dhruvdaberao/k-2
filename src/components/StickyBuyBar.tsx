@@ -74,8 +74,8 @@ export default function StickyBuyBar({
              ) : (
                 <>
                   <button
-                    className="flex-1 rounded-xl h-[54px] font-bold text-[16px] md:text-lg transition-transform hover:scale-[1.02] active:scale-[0.96] shadow-sm"
-                    style={{ backgroundColor: '#4A3219', color: '#FDFBF7', border: 'none' }}
+                    className="flex-1 font-bold text-[16px] md:text-lg transition-transform hover:scale-[1.02] active:scale-[0.96] shadow-sm"
+                    style={{ backgroundColor: '#4A3219', color: '#FDFBF7', border: 'none', height: '54px', minHeight: '54px', borderRadius: '12px', WebkitAppearance: 'none' }}
                     onClick={() => {
                         document.getElementById('product-main-buy')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }}
@@ -84,11 +84,11 @@ export default function StickyBuyBar({
                   </button>
 
                   {cartQuantity > 0 ? (
-                    <div className="flex-1 h-[54px] rounded-xl overflow-hidden hover:scale-[1.02] transition-transform duration-200" style={{ backgroundColor: '#4A3219', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div className="flex-1 overflow-hidden hover:scale-[1.02] transition-transform duration-200" style={{ backgroundColor: '#4A3219', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '54px', minHeight: '54px', borderRadius: '12px' }}>
                       <button
                         onClick={handleDecrease}
                         className="active:scale-75 transition-transform duration-100 flex items-center justify-center w-14 h-full"
-                        style={{ background: 'transparent', border: 'none', color: '#FDFBF7', fontSize: '1.8rem', cursor: 'pointer', outline: 'none' }}
+                        style={{ background: 'transparent', border: 'none', color: '#FDFBF7', fontSize: '1.8rem', cursor: 'pointer', outline: 'none', WebkitAppearance: 'none' }}
                       >
                         −
                       </button>
@@ -98,16 +98,16 @@ export default function StickyBuyBar({
                       <button
                         onClick={handleIncrease}
                         className="active:scale-75 transition-transform duration-100 flex items-center justify-center w-14 h-full"
-                        style={{ background: 'transparent', border: 'none', color: '#FDFBF7', fontSize: '1.8rem', cursor: 'pointer', outline: 'none' }}
+                        style={{ background: 'transparent', border: 'none', color: '#FDFBF7', fontSize: '1.8rem', cursor: 'pointer', outline: 'none', WebkitAppearance: 'none' }}
                       >
                         +
                       </button>
                     </div>
                   ) : (
                     <button
-                      className="flex-1 rounded-xl h-[54px] font-bold text-[16px] md:text-lg transition-transform hover:scale-[1.02] active:scale-[0.96] shadow-sm"
+                      className="flex-1 font-bold text-[16px] md:text-lg transition-transform hover:scale-[1.02] active:scale-[0.96] shadow-sm"
                       onClick={onAddToCart}
-                      style={{ backgroundColor: '#4A3219', color: '#FDFBF7', border: 'none' }}
+                      style={{ backgroundColor: '#4A3219', color: '#FDFBF7', border: 'none', height: '54px', minHeight: '54px', borderRadius: '12px', WebkitAppearance: 'none' }}
                     >
                       Add to Bag
                     </button>
