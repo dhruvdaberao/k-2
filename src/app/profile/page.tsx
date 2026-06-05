@@ -11,6 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { syncLocalCartToDB } from "@/lib/cartSupabase";
 import { isAdmin } from "@/lib/isAdmin";
 import GlobalLoader from "@/components/ui/GlobalLoader";
+import SkeletonTimeout from "@/components/ui/SkeletonTimeout";
 
 const initialDetails: CheckoutCustomerDetails = {
   fullName: "",

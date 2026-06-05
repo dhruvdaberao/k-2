@@ -9,7 +9,7 @@ import { supabase } from "@/lib/supabaseClient";
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // 1. Unified Auth Check
   useEffect(() => {

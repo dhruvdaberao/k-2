@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Plus, Search, Edit2, Trash2 } from "lucide-react";
+import SkeletonTimeout from "@/components/ui/SkeletonTimeout";
 import { supabase } from "@/lib/supabaseClient";
 import { revalidateStorefront } from "@/actions/revalidate";
 import Link from "next/link";
@@ -203,49 +205,51 @@ export default function AdminProducts() {
         </div>
         <div className="">
           {loading ? (
-            <div className="overflow-x-auto">
-              <table className="w-full md:min-w-[1000px] text-left border-collapse">
-                <thead>
-                  <tr className="bg-[#F5EFE6] text-[#8B7355] text-[10px] md:text-sm uppercase tracking-wider">
-                    <th className="p-2 md:p-5 font-semibold text-center w-[40px] md:w-[60px]">Order</th>
-                    <th className="p-2 md:p-5 font-semibold w-[50px] md:w-[80px]">Image</th>
-                    <th className="p-2 md:p-5 font-semibold md:w-[220px]">Product Details</th>
-                    <th className="p-2 md:p-5 font-semibold text-center w-[70px] md:w-[140px]">Actions</th>
-                    <th className="hidden md:table-cell p-4 md:p-5 font-semibold w-[140px]">Category</th>
-                    <th className="hidden md:table-cell p-4 md:p-5 font-semibold w-[100px]">Price</th>
-                    <th className="hidden md:table-cell p-4 md:p-5 font-semibold text-center w-[100px]">Stock</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#E6DCCF]">
-                  {[1, 2, 3, 4, 5].map(i => (
-                    <tr key={i} className="hover:bg-[#FDFBF7] transition-colors bg-white">
-                      <td className="p-2 md:p-5 text-center">
-                        <div className="profile-skeleton-bar mx-auto" style={{ width: '20px', height: '40px' }} />
-                      </td>
-                      <td className="p-2 md:p-5">
-                        <div className="profile-skeleton-bar rounded-xl" style={{ width: '48px', height: '48px', margin: 'auto' }} />
-                      </td>
-                      <td className="p-2 md:p-5">
-                        <div className="profile-skeleton-bar" style={{ width: '120px', height: '16px', marginBottom: '8px' }} />
-                        <div className="profile-skeleton-bar" style={{ width: '80px', height: '12px' }} />
-                      </td>
-                      <td className="p-2 md:p-5 text-center">
-                        <div className="profile-skeleton-bar mx-auto" style={{ width: '60px', height: '24px', borderRadius: '12px' }} />
-                      </td>
-                      <td className="hidden md:table-cell p-4 md:p-5">
-                        <div className="profile-skeleton-bar" style={{ width: '80px', height: '16px' }} />
-                      </td>
-                      <td className="hidden md:table-cell p-4 md:p-5">
-                        <div className="profile-skeleton-bar" style={{ width: '60px', height: '16px' }} />
-                      </td>
-                      <td className="hidden md:table-cell p-4 md:p-5 text-center">
-                        <div className="profile-skeleton-bar mx-auto" style={{ width: '60px', height: '24px', borderRadius: '12px' }} />
-                      </td>
+            <SkeletonTimeout>
+              <div className="overflow-x-auto">
+                <table className="w-full md:min-w-[1000px] text-left border-collapse">
+                  <thead>
+                    <tr className="bg-[#F5EFE6] text-[#8B7355] text-[10px] md:text-sm uppercase tracking-wider">
+                      <th className="p-2 md:p-5 font-semibold text-center w-[40px] md:w-[60px]">Order</th>
+                      <th className="p-2 md:p-5 font-semibold w-[50px] md:w-[80px]">Image</th>
+                      <th className="p-2 md:p-5 font-semibold md:w-[220px]">Product Details</th>
+                      <th className="p-2 md:p-5 font-semibold text-center w-[70px] md:w-[140px]">Actions</th>
+                      <th className="hidden md:table-cell p-4 md:p-5 font-semibold w-[140px]">Category</th>
+                      <th className="hidden md:table-cell p-4 md:p-5 font-semibold w-[100px]">Price</th>
+                      <th className="hidden md:table-cell p-4 md:p-5 font-semibold text-center w-[100px]">Stock</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="divide-y divide-[#E6DCCF]">
+                    {[1, 2, 3, 4, 5].map(i => (
+                      <tr key={i} className="hover:bg-[#FDFBF7] transition-colors bg-white">
+                        <td className="p-2 md:p-5 text-center">
+                          <div className="profile-skeleton-bar mx-auto" style={{ width: '20px', height: '40px' }} />
+                        </td>
+                        <td className="p-2 md:p-5">
+                          <div className="profile-skeleton-bar rounded-xl" style={{ width: '48px', height: '48px', margin: 'auto' }} />
+                        </td>
+                        <td className="p-2 md:p-5">
+                          <div className="profile-skeleton-bar" style={{ width: '120px', height: '16px', marginBottom: '8px' }} />
+                          <div className="profile-skeleton-bar" style={{ width: '80px', height: '12px' }} />
+                        </td>
+                        <td className="p-2 md:p-5 text-center">
+                          <div className="profile-skeleton-bar mx-auto" style={{ width: '60px', height: '24px', borderRadius: '12px' }} />
+                        </td>
+                        <td className="hidden md:table-cell p-4 md:p-5">
+                          <div className="profile-skeleton-bar" style={{ width: '80px', height: '16px' }} />
+                        </td>
+                        <td className="hidden md:table-cell p-4 md:p-5">
+                          <div className="profile-skeleton-bar" style={{ width: '60px', height: '16px' }} />
+                        </td>
+                        <td className="hidden md:table-cell p-4 md:p-5 text-center">
+                          <div className="profile-skeleton-bar mx-auto" style={{ width: '60px', height: '24px', borderRadius: '12px' }} />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </SkeletonTimeout>
           ) : filteredProducts.length === 0 ? (
             <div className="py-24 text-center bg-[#F5EFE6] rounded-2xl border border-[#E6DCCF]">
               <div className="text-[#8B7355] font-semibold text-lg">
