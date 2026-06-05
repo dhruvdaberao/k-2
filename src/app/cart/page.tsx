@@ -256,13 +256,11 @@ export default function CartPage() {
           /* Minimalist Empty State */
           <div className="flex flex-col items-center justify-center pt-20 pb-32 text-center px-4 mx-auto w-full">
             <div className="max-w-md w-full flex flex-col items-center">
-              <div className="mb-6 relative w-20 h-20 md:w-24 md:h-24 opacity-60">
-                <ImageWithFallback 
-                  src="/nav-icons/bag-unfilled.png" 
-                  alt="Empty Bag" 
-                  fill
-                  className="object-contain"
-                />
+              <div className="mb-6 relative text-[#4A3219] opacity-40">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="w-20 h-20 md:w-28 md:h-28">
+                  <rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="none"/>
+                  <path d="M7 11V6a5 5 0 0 1 10 0v5" fill="none"/>
+                </svg>
               </div>
               
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-3 md:mb-4">Your bag is empty</h2>
