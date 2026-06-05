@@ -71,15 +71,7 @@ export default function ResetPasswordPage() {
     <main className="checkout-page checkout-container pb-20 pt-[120px]">
       <div className="mx-auto w-full" style={{ maxWidth: "380px", marginTop: "40px" }}>
         <div className="text-center mb-4">
-          <video
-            autoPlay
-            muted
-            playsInline
-            className="mx-auto mb-4"
-            style={{ height: '120px', width: 'auto', objectFit: 'contain' }}
-          >
-            <source src="/nav-icons/logo-animation.mp4" type="video/mp4" />
-          </video>
+
           <h1 className="text-2xl font-bold" style={{ color: "var(--brand)" }}>
             Create New Password
           </h1>

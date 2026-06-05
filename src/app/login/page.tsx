@@ -273,15 +273,7 @@ export default function LoginPage() {
         `}} />
         <div className="w-full mx-auto" style={{ maxWidth: '460px' }}>
           <div className="text-center mb-4">
-            <video
-              autoPlay
-              muted
-              playsInline
-              className="mx-auto mb-4"
-              style={{ height: '120px', width: 'auto', objectFit: 'contain' }}
-            >
-              <source src="/nav-icons/logo-animation.mp4" type="video/mp4" />
-            </video>
+
             <h1 className="text-2xl font-bold" style={{ color: "var(--brand)" }}>
               {authMode === "login" ? "Login" : authMode === "signup" ? "Sign Up" : authMode === "otp" ? "Login via OTP" : authMode === "otp_verify" ? "Enter OTP Code" : "Reset Password"}
             </h1>
