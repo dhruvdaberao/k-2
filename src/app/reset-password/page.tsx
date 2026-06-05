@@ -72,7 +72,7 @@ export default function ResetPasswordPage() {
       <div className="mx-auto w-full" style={{ maxWidth: "380px", marginTop: "40px" }}>
         <div className="text-center mb-8">
           <img
-            src="/nav-icons/keshvi-sunflower-logo-v2.png"
+            src="/nav-icons/LOGO-FINAL.png"
             alt="Logo"
             className="mx-auto mb-4"
             style={{ height: "120px", width: "auto", objectFit: "contain" }}
