@@ -11,11 +11,10 @@ export default function AuthChoicePage() {
         <div className="text-center mb-8">
           <video
             autoPlay
-            loop
             muted
             playsInline
             className="mx-auto mb-2"
-            style={{ height: '140px', width: 'auto', objectFit: 'contain', mixBlendMode: 'multiply' }}
+            style={{ height: '140px', width: 'auto', objectFit: 'contain' }}
           >
             <source src="/nav-icons/logo-animation.mp4" type="video/mp4" />
           </video>
@@ -37,12 +36,7 @@ export default function AuthChoicePage() {
           
           <button 
             onClick={() => router.push("/signup")} 
-            className="w-full py-3 text-sm font-semibold rounded-xl active:scale-[0.98] transition-all hover:bg-[#f3ede6]"
-            style={{ 
-              backgroundColor: 'transparent', 
-              color: 'var(--brand)', 
-              border: '1.5px solid var(--brand)'
-            }}
+            className="btn-outline w-full text-sm font-semibold shadow-sm"
           >
             Create Account
           </button>

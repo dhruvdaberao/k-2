@@ -163,11 +163,10 @@ export default function SignupPage() {
           <div className="text-center mb-4">
             <video
               autoPlay
-              loop
               muted
               playsInline
               className="mx-auto mb-4"
-              style={{ height: '120px', width: 'auto', objectFit: 'contain', mixBlendMode: 'multiply' }}
+              style={{ height: '120px', width: 'auto', objectFit: 'contain' }}
             >
               <source src="/nav-icons/logo-animation.mp4" type="video/mp4" />
             </video>
