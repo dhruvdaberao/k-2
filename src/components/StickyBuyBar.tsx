@@ -55,9 +55,7 @@ export default function StickyBuyBar({
         className={`fixed left-0 right-0 transition-transform duration-300 ease-in-out border-t border-[rgba(139,94,60,0.15)] shadow-[0_-8px_20px_rgba(0,0,0,0.06)] sticky-bar-wrapper`}
         style={{
           zIndex: 1300, 
-          background: 'rgba(253, 251, 247, 0.65)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
+          background: '#FDFBF7', // Completely opaque as requested
           transform: isVisible ? 'translateY(0)' : 'translateY(150%)',
         }}
       >
