@@ -54,34 +54,21 @@ export default function StickyBuyBar({
       <div 
         className={`fixed left-0 right-0 transition-transform duration-300 ease-in-out border-t border-[rgba(139,94,60,0.15)] shadow-[0_-8px_20px_rgba(0,0,0,0.06)] sticky-bar-wrapper`}
         style={{
-          zIndex: 1300, // Make sure it sits above the bottom nav (1000) and cards
-          background: 'rgba(253, 251, 247, 0.90)', // Slightly more opaque glass
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
+          zIndex: 1300, 
+          background: 'rgba(253, 251, 247, 0.85)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
           transform: isVisible ? 'translateY(0)' : 'translateY(150%)',
         }}
       >
-        <div className="max-w-7xl mx-auto px-2 md:px-4 py-2 md:py-3 flex items-center justify-between gap-2 md:gap-3">
+        <div className="max-w-7xl mx-auto px-4 py-3 md:py-4">
           
-          {/* Left: Product Info (Visible on mobile too, but compact) */}
-          <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
-            {image && (
-              <div className="w-10 h-10 md:w-14 md:h-14 rounded-md md:rounded-lg overflow-hidden shrink-0 border border-[rgba(139,94,60,0.2)] shadow-sm">
-                <Image src={image} alt={title} width={56} height={56} className="w-full h-full object-cover" />
-              </div>
-            )}
-            <div className="hidden sm:flex flex-col min-w-0">
-              <span className="font-bold text-[#4A3219] truncate text-sm md:text-base">{title}</span>
-              <span className="font-bold text-[var(--brand)] text-sm">₹{price}</span>
-            </div>
-          </div>
-
-          {/* Right: Actions */}
-          <div className="flex items-center gap-1.5 md:gap-2 flex-1 md:flex-none justify-end w-full">
+          {/* Actions: Exactly matching the Product Page UI */}
+          <div className="flex items-center gap-3 w-full">
              {disabled ? (
                 <button
                   disabled
-                  className="w-full rounded-xl h-[44px] md:h-[54px] opacity-60 font-bold border-none text-[13px] md:text-base"
+                  className="w-full rounded-xl h-[54px] opacity-60 font-bold border-none text-[16px] md:text-lg"
                   style={{ backgroundColor: "#8B7355", color: "#F5EFE6", cursor: "not-allowed" }}
                 >
                   Out of Stock
@@ -89,7 +76,7 @@ export default function StickyBuyBar({
              ) : (
                 <>
                   <button
-                    className="flex-1 md:w-[160px] rounded-[10px] md:rounded-xl h-[44px] md:h-[54px] font-bold text-[13px] md:text-base transition-transform hover:scale-[1.02] active:scale-[0.96] border-[1.5px] border-[#4A3219] whitespace-nowrap px-1"
+                    className="flex-1 rounded-xl h-[54px] font-bold text-[16px] md:text-lg transition-transform hover:scale-[1.02] active:scale-[0.96] border-[1.5px] border-[#4A3219]"
                     style={{ backgroundColor: 'transparent', color: '#4A3219' }}
                     onClick={() => {
                         document.getElementById('product-main-buy')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -99,28 +86,28 @@ export default function StickyBuyBar({
                   </button>
 
                   {cartQuantity > 0 ? (
-                    <div className="flex-1 md:w-[160px] h-[44px] md:h-[54px] rounded-[10px] md:rounded-xl overflow-hidden hover:scale-[1.02] transition-transform duration-200" style={{ backgroundColor: '#4A3219', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div className="flex-1 h-[54px] rounded-xl overflow-hidden hover:scale-[1.02] transition-transform duration-200" style={{ backgroundColor: '#4A3219', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                       <button
                         onClick={handleDecrease}
-                        className="active:scale-75 transition-transform duration-100 flex items-center justify-center w-8 md:w-12 h-full"
-                        style={{ background: 'transparent', border: 'none', color: '#FDFBF7', fontSize: '1.4rem', cursor: 'pointer', outline: 'none' }}
+                        className="active:scale-75 transition-transform duration-100 flex items-center justify-center w-14 h-full"
+                        style={{ background: 'transparent', border: 'none', color: '#FDFBF7', fontSize: '1.8rem', cursor: 'pointer', outline: 'none' }}
                       >
                         −
                       </button>
-                      <span className="text-[0.9rem] md:text-[1.1rem]" style={{ color: '#FDFBF7', fontWeight: 'bold', userSelect: 'none' }}>
+                      <span className="text-[1.2rem] md:text-[1.4rem]" style={{ color: '#FDFBF7', fontWeight: 'bold', userSelect: 'none' }}>
                         {cartQuantity}
                       </span>
                       <button
                         onClick={handleIncrease}
-                        className="active:scale-75 transition-transform duration-100 flex items-center justify-center w-8 md:w-12 h-full"
-                        style={{ background: 'transparent', border: 'none', color: '#FDFBF7', fontSize: '1.4rem', cursor: 'pointer', outline: 'none' }}
+                        className="active:scale-75 transition-transform duration-100 flex items-center justify-center w-14 h-full"
+                        style={{ background: 'transparent', border: 'none', color: '#FDFBF7', fontSize: '1.8rem', cursor: 'pointer', outline: 'none' }}
                       >
                         +
                       </button>
                     </div>
                   ) : (
                     <button
-                      className="flex-1 md:w-[160px] rounded-[10px] md:rounded-xl h-[44px] md:h-[54px] font-bold text-[13px] md:text-base transition-transform hover:scale-[1.02] active:scale-[0.96] shadow-sm whitespace-nowrap px-1"
+                      className="flex-1 rounded-xl h-[54px] font-bold text-[16px] md:text-lg transition-transform hover:scale-[1.02] active:scale-[0.96] shadow-sm"
                       onClick={onAddToCart}
                       style={{ backgroundColor: '#4A3219', color: '#FDFBF7', border: 'none' }}
                     >
