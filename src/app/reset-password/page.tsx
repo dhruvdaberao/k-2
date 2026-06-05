@@ -70,7 +70,7 @@ export default function ResetPasswordPage() {
   return (
     <main className="checkout-page checkout-container pb-20 pt-[120px]">
       <div className="mx-auto w-full" style={{ maxWidth: "380px", marginTop: "40px" }}>
-        <div className="text-center mb-8">
+        <div className="text-center mb-4">
           <video
             autoPlay
             loop
@@ -89,7 +89,7 @@ export default function ResetPasswordPage() {
           </p>
         </div>
 
-        <div className="checkout-card p-6 shadow-sm">
+        <div className="checkout-card p-5 sm:p-6 bg-[#f3ede6] rounded-2xl shadow-sm" style={{ border: "1.5px solid rgba(139, 94, 60, 0.3)" }}>
           <form onSubmit={handleUpdatePassword} className="flex flex-col gap-5">
             <label className="checkout-field">
               <span>New Password</span>

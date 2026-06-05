@@ -7,7 +7,7 @@ export default function AuthChoicePage() {
 
   return (
     <main className="checkout-page checkout-container pb-20 pt-[40px]" style={{ paddingTop: '40px', minHeight: '100vh' }}>
-      <div className="px-4 sm:px-6 md:px-0 mx-auto w-full mt-4" style={{ maxWidth: '460px' }}>
+      <div className="px-4 sm:px-6 md:px-0 mx-auto w-full mt-4 border border-[#e5dcd3] rounded-3xl p-6 sm:p-8" style={{ maxWidth: '460px', backgroundColor: '#faf9f7' }}>
         <div className="text-center mb-4">
           <video
             autoPlay

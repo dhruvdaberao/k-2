@@ -272,13 +272,23 @@ export default function LoginPage() {
           }
         `}} />
         <div className="w-full mx-auto" style={{ maxWidth: '460px' }}>
-          <div className="text-center" style={{ marginBottom: '60px' }}>
+          <div className="text-center mb-4">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="mx-auto mb-4"
+              style={{ height: '120px', width: 'auto', objectFit: 'contain' }}
+            >
+              <source src="/nav-icons/logo-animation.mp4" type="video/mp4" />
+            </video>
             <h1 className="text-2xl font-bold" style={{ color: "var(--brand)" }}>
               {authMode === "login" ? "Login" : authMode === "signup" ? "Sign Up" : authMode === "otp" ? "Login via OTP" : authMode === "otp_verify" ? "Enter OTP Code" : "Reset Password"}
             </h1>
           </div>
 
-          <div className="checkout-card p-5 sm:p-6 bg-[#f3ede6] rounded-2xl shadow-sm border border-[#e6ded4]">
+          <div className="checkout-card p-5 sm:p-6 bg-[#f3ede6] rounded-2xl shadow-sm" style={{ border: "1.5px solid rgba(139, 94, 60, 0.3)" }}>
             <form onSubmit={handleAuthAction} className="flex flex-col gap-4">
               <label className="checkout-field">
                 <span>Email Address</span>
