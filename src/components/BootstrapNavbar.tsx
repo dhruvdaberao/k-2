@@ -31,7 +31,7 @@ export default function BootstrapNavbar() {
                 src="/nav-icons/LOGO-FINAL.png"
                 alt="Keshvi Crafts Logo"
                 className="my-0"
-                style={{ height: '46px', width: 'auto', objectFit: 'contain' }}
+                style={{ height: '38px', width: 'auto', objectFit: 'contain' }}
               />
             </Link>
 
