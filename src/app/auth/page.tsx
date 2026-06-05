@@ -22,7 +22,7 @@ export default function AuthChoicePage() {
             Welcome
           </h1>
           <p className="text-stone-500 mt-2 text-sm leading-relaxed">
-            Log in or create an account to track your orders, manage your wishlist, and explore artisanal crochet.
+            Sign in or create an account to track your orders and manage your wishlist.
           </p>
         </div>
 
