@@ -59,21 +59,30 @@ export default function OrderDetails() {
     const init = async () => {
       try {
         console.log("🚀 [ADMIN-ORDER] Init for:", orderId);
-        // Auth check
-        const { data: authData, error: authError } = await supabase.auth.getSession();
         
-        if (authError) {
-          console.warn("Auth check error (bypassing strict redirect):", authError);
-        } else if (!authData?.session?.user || !isAdmin(authData.session.user)) {
-          console.warn("⚠️ [ADMIN-ORDER] Unauthorized access");
-          router.push("/");
-          return;
-        }
+        const loadData = async () => {
+          // Auth check
+          const { data: authData, error: authError } = await supabase.auth.getSession();
+          
+          if (authError) {
+            console.warn("Auth check error (bypassing strict redirect):", authError);
+          } else if (!authData?.session?.user || !isAdmin(authData.session.user)) {
+            console.warn("⚠️ [ADMIN-ORDER] Unauthorized access");
+            router.push("/");
+            return;
+          }
 
-        // Fetch Order Details
-        await fetchOrder();
+          // Fetch Order Details
+          await fetchOrder();
+        };
+
+        await Promise.race([
+          loadData(),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 3000))
+        ]);
+
       } catch (err) {
-        console.error("🔥 [ADMIN-ORDER] Crash:", err);
+        console.error("🔥 [ADMIN-ORDER] Crash or Timeout:", err);
       } finally {
         setLoading(false); // ✅ ALWAYS RUN
       }
@@ -81,13 +90,7 @@ export default function OrderDetails() {
 
     init();
 
-    // 🛡️ Fail-safe timeout (Guarantee UI exit)
-    const timeout = setTimeout(() => {
-      console.warn("🛡️ [ADMIN-ORDER] Safety timeout triggered");
-      setLoading(false);
-    }, 5000);
-
-    return () => clearTimeout(timeout);
+    // Removed old safety timeout as Promise.race handles it natively
   }, [orderId]);
 
   const fetchOrder = async () => {
@@ -216,7 +219,29 @@ export default function OrderDetails() {
   };
 
   if (!order) {
-    return null;
+    return (
+      <main className="min-h-screen bg-[#FDFBF7] pt-24 md:pt-28 pb-20 px-4 md:px-6 flex flex-col items-center justify-center text-center">
+        <div className="max-w-md mx-auto animate-fade-in w-full">
+          <div style={{ marginBottom: '24px' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#C62828" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto' }}>
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <h3 className="text-2xl font-bold text-[#4A3219]" style={{ marginBottom: '12px' }}>Failed to load</h3>
+          <p className="text-[#4A3219] font-medium" style={{ fontSize: '16px', marginBottom: '32px' }}>
+            There was a problem loading this order. Please check your connection and try again.
+          </p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="w-full sm:w-auto px-8 bg-[#8B7355] text-white py-3 rounded-full font-bold transition hover:bg-[#6b5840] shadow-sm border-none"
+          >
+            Reload Page
+          </button>
+        </div>
+      </main>
+    );
   }
 
   const statusColor = STATUS_COLORS[order.status] || { bg: "#F3F4F6", text: "#374151" };
@@ -278,13 +303,13 @@ export default function OrderDetails() {
               {order.status === "placed" && (
                 <div className="space-y-3">
                   <div className="flex flex-col gap-1">
-                    <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest px-1 mb-1">Tracking Info</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1 mb-1">Tracking Info</label>
                     <input 
                       type="text" 
                       placeholder="Paste tracking link..."
                       value={trackingLink}
                       onChange={(e) => setTrackingLink(e.target.value)}
-                      className="w-full px-4 h-[46px] rounded-xl border border-[rgba(139,94,60,0.4)] focus:border-[#5A3E2B] outline-none text-[13px] font-bold text-[#5A3E2B] transition-all bg-white shadow-sm"
+                      className="w-full px-4 h-[54px] rounded-xl border-2 border-[rgba(139,94,60,0.4)] focus:border-[#5A3E2B] outline-none text-[14px] font-bold text-[#5A3E2B] transition-all bg-white shadow-sm"
                       style={{ fontFamily: 'Quicksand, sans-serif' }}
                     />
                   </div>
@@ -292,7 +317,7 @@ export default function OrderDetails() {
                     <button 
                       onClick={() => updateOrderStatus("shipped")}
                       disabled={updating}
-                      className="flex-1 transition rounded-xl px-2 h-[46px] flex items-center justify-center text-[12px] uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
+                      className="flex-1 transition rounded-xl px-2 h-[54px] flex items-center justify-center text-[13px] uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
                       style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none', fontWeight: 700, fontFamily: 'Quicksand, sans-serif' }}
                     >
                       {updating ? "Processing..." : "Ship Order"}
@@ -300,7 +325,7 @@ export default function OrderDetails() {
                     <button 
                       onClick={() => updateOrderStatus("cancelled")}
                       disabled={updating}
-                      className="flex-1 transition rounded-xl px-2 h-[46px] flex items-center justify-center text-[12px] uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
+                      className="flex-1 transition rounded-xl px-2 h-[54px] flex items-center justify-center text-[13px] uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap"
                       style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none', fontWeight: 700, fontFamily: 'Quicksand, sans-serif' }}
                     >
                       {updating ? "Processing..." : "Cancel Order"}
@@ -313,7 +338,7 @@ export default function OrderDetails() {
                 <button 
                   onClick={() => updateOrderStatus("delivered")}
                   disabled={updating}
-                  className="w-full transition rounded-xl px-4 h-[46px] flex items-center justify-center text-[12px] uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap mt-2"
+                  className="w-full transition rounded-xl px-4 h-[54px] flex items-center justify-center text-[13px] uppercase tracking-widest shadow-sm disabled:opacity-50 whitespace-nowrap mt-2"
                   style={{ backgroundColor: '#5a3e2b', color: '#ffffff', border: 'none', fontWeight: 700, fontFamily: 'Quicksand, sans-serif' }}
                 >
                   {updating ? "Processing..." : "Mark Delivered"}

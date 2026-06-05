@@ -39,35 +39,43 @@ export default function AdminOrders() {
     let isMounted = true;
     const init = async () => {
       try {
-        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-        const token = sessionData?.session?.access_token;
+        const loadData = async () => {
+          const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+          const token = sessionData?.session?.access_token;
 
-        if (sessionError) {
-          console.warn("Auth check error (bypassing strict redirect):", sessionError);
-        } else if (!sessionData?.session?.user || !isAdmin(sessionData.session.user)) {
-          if (isMounted) router.push("/");
-          return;
-        }
-
-        const res = await fetch(`/api/admin/orders?t=${Date.now()}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          cache: 'no-store'
-        });
-        
-        if (!res.ok) throw new Error("Failed to fetch");
-
-        const result = await res.json();
-
-        if (!result.success) {
-          throw new Error(result.error);
-        } else {
-          if (isMounted) {
-            setOrders(result.orders || []);
-            setError(false);
+          if (sessionError) {
+            console.warn("Auth check error (bypassing strict redirect):", sessionError);
+          } else if (!sessionData?.session?.user || !isAdmin(sessionData.session.user)) {
+            if (isMounted) router.push("/");
+            return;
           }
-        }
+
+          const res = await fetch(`/api/admin/orders?t=${Date.now()}`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            },
+            cache: 'no-store'
+          });
+          
+          if (!res.ok) throw new Error("Failed to fetch");
+
+          const result = await res.json();
+
+          if (!result.success) {
+            throw new Error(result.error);
+          } else {
+            if (isMounted) {
+              setOrders(result.orders || []);
+              setError(false);
+            }
+          }
+        };
+
+        await Promise.race([
+          loadData(),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 3000))
+        ]);
+
       } catch (err) {
         console.error("Admin Load Error:", err);
         if (isMounted) setError(true);
