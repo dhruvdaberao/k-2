@@ -35,12 +35,12 @@ export default function EmptyStateRecommendations({ title }: { title: string }) 
   }, []);
 
   const handleAddToBag = (p: Product) => {
-    addToCart(p, 1);
+    addToCart(p);
     showToast(`${p.title} added to bag!`);
   };
 
   const handleBuyNow = (p: Product) => {
-    addToCart(p, 1);
+    addToCart(p);
     router.push("/cart");
   };
 
