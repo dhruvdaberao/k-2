@@ -37,59 +37,69 @@ export default function AdminManageReviewsPage() {
   const fetchReviews = useCallback(async () => {
     try {
       setLoading(true)
-      console.log("🔍 [ADMIN] Fetching ALL reviews...");
-      
-      // 1. Fetch ALL reviews (Simple fetch to avoid 400 join errors)
-      const { data: reviewData, error: reviewError } = await supabase
-        .from("reviews")
-        .select("*")
-        .order("created_at", { ascending: false });
+      const loadData = async () => {
+        console.log("🔍 [ADMIN] Fetching ALL reviews...");
+        
+        // 1. Fetch ALL reviews (Simple fetch to avoid 400 join errors)
+        const { data: reviewData, error: reviewError } = await supabase
+          .from("reviews")
+          .select("*")
+          .order("created_at", { ascending: false });
 
-      if (reviewError) {
-        console.error("❌ [ADMIN] REVIEWS ERROR:", reviewError);
-        throw reviewError;
-      }
-
-      if (!reviewData || reviewData.length === 0) {
-        setReviews([]);
-        return;
-      }
-
-      console.log("✅ [ADMIN] Reviews Loaded:", reviewData.length);
-
-      // 2. Fetch Profiles separately to avoid join errors
-      const userIds = Array.from(new Set(reviewData.map((r: any) => r.user_id)));
-      const { data: profileData, error: profileError } = await supabase
-        .from("profiles")
-        .select("id, name")
-        .in("id", userIds);
-
-      if (profileError) {
-        console.error("❌ [ADMIN] PROFILES ERROR (400?):", profileError);
-      }
-
-      const profileMap = (profileData || []).reduce((acc: any, p: any) => {
-        acc[p.id] = p.name;
-        return acc;
-      }, {});
-
-      const { data: prodData } = await supabase.from("products").select("id, slug, title, images");
-      const productsData = prodData || [];
-
-      // 3. Enrich with names + product info from DB
-      const enriched = reviewData.map((r: any) => {
-        const p = (productsData as any[]).find(x => x.id === r.product_id || x.slug === r.product_id)
-        return {
-          ...r,
-          reviewer_name: profileMap[r.user_id] || "Verified Customer",
-          product_name: p?.title || "Unknown Product",
-          product_image: p?.images?.[0] || "/placeholder.png"
+        if (reviewError) {
+          console.error("❌ [ADMIN] REVIEWS ERROR:", reviewError);
+          throw reviewError;
         }
-      })
 
-      setReviews(enriched)
-    } catch (err) {
+        if (!reviewData || reviewData.length === 0) {
+          setReviews([]);
+          return;
+        }
+
+        console.log("✅ [ADMIN] Reviews Loaded:", reviewData.length);
+
+        // 2. Fetch Profiles separately to avoid join errors
+        const userIds = Array.from(new Set(reviewData.map((r: any) => r.user_id)));
+        const { data: profileData, error: profileError } = await supabase
+          .from("profiles")
+          .select("id, name")
+          .in("id", userIds);
+
+        if (profileError) {
+          console.error("❌ [ADMIN] PROFILES ERROR (400?):", profileError);
+        }
+
+        const profileMap = (profileData || []).reduce((acc: any, p: any) => {
+          acc[p.id] = p.name;
+          return acc;
+        }, {});
+
+        const { data: prodData } = await supabase.from("products").select("id, slug, title, images");
+        const productsData = prodData || [];
+
+        // 3. Enrich with names + product info from DB
+        const enriched = reviewData.map((r: any) => {
+          const p = (productsData as any[]).find(x => x.id === r.product_id || x.slug === r.product_id)
+          return {
+            ...r,
+            reviewer_name: profileMap[r.user_id] || "Verified Customer",
+            product_name: p?.title || "Unknown Product",
+            product_image: p?.images?.[0] || "/placeholder.png"
+          }
+        })
+
+        setReviews(enriched)
+      };
+
+      await Promise.race([
+        loadData(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 3000))
+      ]);
+    } catch (err: any) {
       console.error("Fetch reviews error:", err)
+      if (err.message === "timeout") {
+        alert("Loading timed out. Please refresh the page.");
+      }
     } finally {
       setLoading(false)
     }

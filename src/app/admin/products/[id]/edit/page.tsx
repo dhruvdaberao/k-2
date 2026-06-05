@@ -104,20 +104,21 @@ export default function EditProductPage() {
     return (
       <main className="min-h-screen bg-[#FDFBF7] py-10 md:py-20 px-3 md:px-4">
         <div className="max-w-4xl mx-auto" style={{ paddingTop: '10px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
-            <div className="w-10 h-10 bg-[#E6DCCF] rounded-full animate-pulse" />
-            <div className="h-10 w-48 bg-[#E6DCCF] rounded-xl animate-pulse" />
+          <div className="max-w-3xl mx-auto space-y-6">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="w-10 h-10 bg-[#EAE1D3] rounded-full animate-pulse" />
+            <div className="h-10 w-48 bg-[#EAE1D3] rounded-xl animate-pulse" />
           </div>
-          <div className="h-5 w-64 bg-[#E6DCCF] rounded-lg animate-pulse mb-8 ml-[44px]" />
+          <div className="h-5 w-64 bg-[#EAE1D3] rounded-lg animate-pulse mb-8 ml-[44px]" />
           
-          <div className="bg-white rounded-2xl p-6 border border-[#E6DCCF] space-y-6 animate-pulse">
-            <div className="h-12 w-full bg-[#F5EFE6] rounded-xl" />
-            <div className="h-32 w-full bg-[#F5EFE6] rounded-xl" />
+          <div className="bg-[#F5EFE6] rounded-2xl p-6 border border-[#EAE1D3] space-y-6 animate-pulse">
+            <div className="h-12 bg-[#EAE1D3] rounded-xl w-full" />
+            <div className="h-32 bg-[#EAE1D3] rounded-xl w-full" />
             <div className="grid grid-cols-2 gap-4">
-              <div className="h-12 w-full bg-[#F5EFE6] rounded-xl" />
-              <div className="h-12 w-full bg-[#F5EFE6] rounded-xl" />
+              <div className="h-12 w-full bg-[#EAE1D3] rounded-xl" />
+              <div className="h-12 w-full bg-[#EAE1D3] rounded-xl" />
             </div>
-            <div className="h-48 w-full bg-[#F5EFE6] rounded-xl" />
+            <div className="h-48 w-full bg-[#EAE1D3] rounded-xl" />
             
             {showReload && (
               <div className="flex justify-center mt-8">

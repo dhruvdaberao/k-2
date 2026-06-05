@@ -89,7 +89,7 @@ export default function BuyBar({
                 flex: "1 1 auto",
                 width: "100%",
                 borderRadius: "12px",
-                height: "48px",
+                height: "54px",
                 opacity: 0.6,
                 backgroundColor: "#8B7355",
                 color: "#F5EFE6",
@@ -320,7 +320,7 @@ export default function BuyBar({
           border-radius: 30px;
           overflow: hidden;
           max-width: 180px;
-          height: 48px;
+          height: 54px;
         }
 
         .bnm-qty-btn {
@@ -384,8 +384,8 @@ export default function BuyBar({
       <style>{`
         .buybar-btn-primary, .buybar-qty-container {
           flex: 1;
-          height: 48px !important;
-          min-height: 48px !important;
+          height: 54px !important;
+          min-height: 54px !important;
           border-radius: 20px !important;
           font-size: 16px !important;
           min-width: 130px;

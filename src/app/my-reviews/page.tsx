@@ -67,36 +67,47 @@ export default function MyReviewsPage() {
           }
         }
 
-        const { data, error } = await supabase
-          .from("reviews")
-          .select(`
-            id,
-            rating,
-            review,
-            created_at,
-            product_id
-          `)
-          .eq("user_id", userId)
-          .order("created_at", { ascending: false })
+        const fetchPromise = async () => {
+          const { data, error } = await supabase
+            .from("reviews")
+            .select(`
+              id,
+              rating,
+              review,
+              created_at,
+              product_id
+            `)
+            .eq("user_id", userId)
+            .order("created_at", { ascending: false })
 
-        if (error) throw error
+          if (error) throw error
 
-        const { data: prodData } = await supabase.from("products").select("id, slug, title, images");
-        const productsData = prodData || [];
+          const { data: prodData } = await supabase.from("products").select("id, slug, title, images");
+          const productsData = prodData || [];
 
-        const enriched = (data || []).map((r: any) => {
-          const p = (productsData as any[]).find(x => x.id === r.product_id || x.slug === r.product_id)
-          return {
-            ...r,
-            product_name: p?.title || "Unknown Product",
-            product_image: p?.images?.[0] || "/placeholder.png"
-          }
-        })
+          const enriched = (data || []).map((r: any) => {
+            const p = (productsData as any[]).find(x => x.id === r.product_id || x.slug === r.product_id)
+            return {
+              ...r,
+              product_name: p?.title || "Unknown Product",
+              product_image: p?.images?.[0] || "/placeholder.png"
+            }
+          })
 
-        setReviews(enriched)
-        localStorage.setItem(cacheKey, JSON.stringify(enriched))
-      } catch (err) {
+          setReviews(enriched)
+          localStorage.setItem(cacheKey, JSON.stringify(enriched))
+        };
+
+        await Promise.race([
+          fetchPromise(),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 3000))
+        ]);
+
+      } catch (err: any) {
         console.error("Fetch reviews error:", err)
+        if (err.message === "timeout") {
+          showToast("Loading timed out. Please refresh.");
+        }
       } finally {
         if (isInitialLoad.current) {
           setLoading(false)
@@ -208,17 +219,17 @@ export default function MyReviewsPage() {
           <p className="text-center text-sm text-gray-500 mt-2 mb-8">Manage and view all your product reviews</p>
           <div className="space-y-4">
             {[1, 2, 3].map(i => (
-              <div key={i} className="animate-pulse" style={{ background: '#F5EFE6', borderRadius: '20px', padding: '20px', border: '1px solid #E6DCCF', boxShadow: '0 1px 3px rgba(74, 50, 25, 0.05)', height: 'fit-content' }}>
+              <div key={i} className="animate-pulse" style={{ background: '#F5EFE6', borderRadius: '24px', padding: '24px', height: 'fit-content', border: '1px solid #E6DCCF' }}>
                 <div className="flex items-center gap-4">
-                  <div style={{ width: '60px', height: '60px', borderRadius: '12px', backgroundColor: '#e0d6cc' }} />
+                  <div style={{ width: '60px', height: '60px', borderRadius: '12px', backgroundColor: '#EAE1D3' }} />
                   <div className="flex-1">
-                    <div className="h-4 w-3/4 bg-[#e0d6cc] rounded mb-2"></div>
-                    <div className="h-3 w-1/3 bg-[#e0d6cc] rounded"></div>
+                    <div className="h-4 w-3/4 bg-[#EAE1D3] rounded mb-2"></div>
+                    <div className="h-3 w-1/3 bg-[#EAE1D3] rounded"></div>
                   </div>
                 </div>
                 <div className="mt-4 flex gap-1">
                   {[1,2,3,4,5].map(j => (
-                    <div key={j} style={{ width: '18px', height: '18px', backgroundColor: '#e0d6cc', borderRadius: '50%' }} />
+                    <div key={j} style={{ width: '18px', height: '18px', backgroundColor: '#EAE1D3', borderRadius: '50%' }} />
                   ))}
                 </div>
               </div>

@@ -224,18 +224,18 @@ export default function CartPage() {
             <div className="col-12 col-lg-7">
               <div className="flex flex-col gap-4">
                 {[1, 2].map(i => (
-                  <div key={i} className="cart-item-row-refined shadow-sm animate-pulse opacity-60">
-                    <div className="w-[84px] h-[84px] bg-stone-200 rounded-xl flex-shrink-0" />
+                  <div key={i} className="cart-item-row-refined shadow-sm animate-pulse opacity-60" style={{ backgroundColor: '#F5EFE6', border: '1px solid #E6DCCF' }}>
+                    <div className="w-[84px] h-[84px] bg-[#EAE1D3] rounded-xl flex-shrink-0" />
                     <div className="flex-1 flex flex-col justify-center gap-3 py-2">
-                      <div className="h-4 w-3/4 bg-stone-200 rounded"></div>
-                      <div className="h-6 w-20 bg-stone-200 rounded-full"></div>
+                      <div className="h-4 w-3/4 bg-[#EAE1D3] rounded"></div>
+                      <div className="h-6 w-20 bg-[#EAE1D3] rounded-full"></div>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
             <div className="col-12 col-lg-5">
-              <div className="h-64 w-full bg-stone-200 rounded-2xl animate-pulse opacity-60"></div>
+              <div className="h-64 w-full bg-[#EAE1D3] rounded-2xl animate-pulse opacity-60"></div>
             </div>
           </div>
         </div>
@@ -255,7 +255,7 @@ export default function CartPage() {
           /* Minimalist Empty State - Matching Wishlist Style */
           <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4 max-w-md mx-auto">
             <div className="mb-8 opacity-30">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ width: '72px', height: '72px', margin: '0 auto' }}>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="w-16 h-16 md:w-20 md:h-20 mx-auto">
                 <rect x="2" y="8" width="20" height="14" rx="2" ry="2"/>
                 <path d="M7 11V6a5 5 0 0 1 10 0v5"/>
               </svg>
@@ -407,9 +407,10 @@ export default function CartPage() {
                 {user ? (
                   <NextLink
                     href="/checkout"
-                    className={`btn btn-primary w-100 py-3 mt-4 fw-bold shadow-sm${selectedItems.length === 0 ? " disabled opacity-50 pe-none" : ""}`}
+                    className={`btn btn-primary w-100 fw-bold shadow-sm flex items-center justify-center${selectedItems.length === 0 ? " disabled opacity-50 pe-none" : ""}`}
                     aria-disabled={selectedItems.length === 0}
                     onClick={handleCheckoutClick}
+                    style={{ minHeight: '54px' }}
                   >
                     {selectedItems.length === 0 ? "Select items to checkout" : `Checkout (${itemCount})`}
                   </NextLink>
@@ -417,16 +418,17 @@ export default function CartPage() {
                   <div className="flex flex-col gap-3 mt-4">
                     <NextLink
                       href="/auth"
-                      className={`btn btn-primary w-100 py-3 fw-bold shadow-sm${selectedItems.length === 0 ? " disabled opacity-50 pe-none" : ""}`}
+                      className={`btn btn-primary w-100 fw-bold shadow-sm flex items-center justify-center${selectedItems.length === 0 ? " disabled opacity-50 pe-none" : ""}`}
                       aria-disabled={selectedItems.length === 0}
                       onClick={handleCheckoutClick}
+                      style={{ minHeight: '54px' }}
                     >
                       Login
                     </NextLink>
                     <NextLink
                       href="/checkout?guest=true"
-                      className={`btn btn-primary w-100 py-3 fw-bold shadow-sm${selectedItems.length === 0 ? " disabled opacity-50 pe-none" : ""}`}
-                      style={{ background: "transparent", color: "var(--brand)", border: "2px solid var(--brand)", boxShadow: 'none' }}
+                      className={`btn btn-primary w-100 fw-bold shadow-sm flex items-center justify-center${selectedItems.length === 0 ? " disabled opacity-50 pe-none" : ""}`}
+                      style={{ background: "transparent", color: "var(--brand)", border: "2px solid var(--brand)", boxShadow: 'none', minHeight: '54px' }}
                       aria-disabled={selectedItems.length === 0}
                       onClick={handleCheckoutClick}
                     >

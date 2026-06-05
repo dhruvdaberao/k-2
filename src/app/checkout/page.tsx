@@ -552,7 +552,7 @@ function CheckoutContent() {
     return (
       <main className="checkout-page checkout-container checkout-flow py-20 text-center" style={{ margin: '0 auto' }}>
         <div className="mb-6 opacity-30">
-          <svg style={{ margin: '0 auto', width: '120px', height: '120px' }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+          <svg className="w-16 h-16 md:w-20 md:h-20 mx-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
             <rect x="2" y="8" width="20" height="14" rx="2" ry="2"/>
             <path d="M7 11V6a5 5 0 0 1 10 0v5"/>
           </svg>

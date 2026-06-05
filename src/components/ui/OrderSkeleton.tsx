@@ -20,7 +20,7 @@ export default function OrderSkeleton({ type = "list" }: { type?: "list" | "deta
           100% { background-position: 800px 0; }
         }
         .os-shimmer {
-          background: linear-gradient(90deg, #e8dfd4 25%, #f5efe6 37%, #e8dfd4 63%);
+          background: linear-gradient(90deg, #EAE1D3 25%, #f5efe6 37%, #EAE1D3 63%);
           background-size: 800px 100%;
           animation: orderSkeletonShimmer 2s infinite linear;
           border-radius: 8px;

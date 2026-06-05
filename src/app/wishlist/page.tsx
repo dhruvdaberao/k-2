@@ -129,10 +129,10 @@ export default function WishlistPage() {
         <div className="plp-grid-mobile">
           {[1, 2, 3, 4].map(i => (
             <div key={i} className="overflow-hidden border border-stone-100 shadow-sm animate-pulse" style={{ backgroundColor: '#F5EFE6', borderRadius: '24px' }}>
-              <div className="w-full aspect-square bg-stone-200" />
+              <div className="w-full aspect-square bg-[#EAE1D3]" />
               <div className="p-3">
-                <div className="h-4 w-3/4 bg-stone-200 rounded mb-2"></div>
-                <div className="h-5 w-1/3 bg-stone-200 rounded"></div>
+                <div className="h-4 w-3/4 bg-[#EAE1D3] rounded mb-2"></div>
+                <div className="h-5 w-1/3 bg-[#EAE1D3] rounded"></div>
               </div>
             </div>
           ))}
@@ -159,7 +159,7 @@ export default function WishlistPage() {
       {items.length === 0 ? (
         <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4 max-w-md mx-auto">
           <div className="mb-6 opacity-30">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ width: '72px', height: '72px', margin: '0 auto' }}>
+            <svg className="w-16 h-16 md:w-20 md:h-20 mx-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L10 19.23A2.83 2.83 0 0 0 14 19.23L19.78 13.45l1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
             </svg>
           </div>
@@ -193,10 +193,10 @@ export default function WishlistPage() {
         <div className="plp-grid-mobile">
           {items.map((id, i) => (
             <div key={id} className="overflow-hidden border border-stone-100 shadow-sm animate-pulse" style={{ backgroundColor: '#F5EFE6', borderRadius: '24px' }}>
-              <div className="w-full aspect-square bg-stone-200" />
+              <div className="w-full aspect-square bg-[#EAE1D3]" />
               <div className="p-3">
-                <div className="h-4 w-3/4 bg-stone-200 rounded mb-2"></div>
-                <div className="h-5 w-1/3 bg-stone-200 rounded"></div>
+                <div className="h-4 w-3/4 bg-[#EAE1D3] rounded mb-2"></div>
+                <div className="h-5 w-1/3 bg-[#EAE1D3] rounded"></div>
               </div>
             </div>
           ))}

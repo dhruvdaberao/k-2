@@ -364,7 +364,7 @@ function ProfileContent() {
             100% { background-position: 400px 0; }
           }
           .profile-skeleton-bar {
-            background: linear-gradient(90deg, #e8dfd4 25%, #f5efe6 37%, #e8dfd4 63%);
+            background: linear-gradient(90deg, #EAE1D3 25%, #f5efe6 37%, #EAE1D3 63%);
             background-size: 800px 100%;
             animation: profileShimmer 1.6s ease-in-out infinite;
             border-radius: 8px;
@@ -436,6 +436,12 @@ function ProfileContent() {
         .profile-page-styles .btn-edit:hover {
           background: var(--brand);
           color: white;
+        }
+        .profile-page-styles .btn-primary {
+          min-height: 54px !important;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
         @media (min-width: 1024px) {
           .profile-page-styles .checkout-field span {
