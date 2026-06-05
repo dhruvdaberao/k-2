@@ -979,9 +979,9 @@ h1:not(.product-title):not(.hero-title) {
 }
 
 .footer-title {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   color: var(--text);
   font-family: var(--font-outfit), sans-serif;
   text-transform: uppercase;
@@ -989,14 +989,14 @@ h1:not(.product-title):not(.hero-title) {
 }
 
 .footer-text {
-  font-size: 0.9rem;
-  line-height: 1.6;
+  font-size: 0.85rem;
+  line-height: 1.5;
   color: var(--muted);
   margin: 0;
 }
 
 .footer-meta-label {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--muted);
@@ -1018,7 +1018,7 @@ h1:not(.product-title):not(.hero-title) {
   color: var(--muted);
   text-decoration: none;
   transition: all 0.2s ease;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
 }
 
 .footer-links a:hover {
@@ -1079,7 +1079,7 @@ h1:not(.product-title):not(.hero-title) {
 }
 
 .footer-copyright {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: rgba(47, 42, 38, 0.8);
   margin: 0;
 }
