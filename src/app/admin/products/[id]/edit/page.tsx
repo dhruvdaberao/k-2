@@ -131,6 +131,7 @@ export default function EditProductPage() {
               </div>
             )}
           </div>
+          </div>
         </div>
       </main>
     );
