@@ -113,16 +113,30 @@ export default function ProductCardV2({ p, priority = false }: { p: Product, pri
                 >
                     {/* Aspect Ratio Container */}
                     <div className="relative w-full aspect-square overflow-hidden">
+                        {/* Primary Image */}
                         <ImageWithFallback
                             src={p.images?.[0] || '/placeholder.png'}
                             alt={p.title}
                             fill
-                            className="object-cover transition-transform duration-700 group-hover:scale-105"
+                            className="object-cover transition-all duration-700 group-hover:scale-105"
                             sizes="(max-width: 768px) 50vw, 33vw"
                             draggable={false}
                             priority={priority}
                             loading={priority ? "eager" : "lazy"}
                         />
+                        {/* Secondary Image Reveal on Hover (Desktop) / Zoom on Mobile */}
+                        {p.images && p.images.length > 1 && (
+                            <ImageWithFallback
+                                src={p.images[1]}
+                                alt={`${p.title} alternate view`}
+                                fill
+                                className="object-cover transition-all duration-700 opacity-0 md:group-hover:opacity-100 group-hover:scale-105 absolute top-0 left-0"
+                                sizes="(max-width: 768px) 50vw, 33vw"
+                                draggable={false}
+                                priority={priority}
+                                loading={priority ? "eager" : "lazy"}
+                            />
+                        )}
                     </div>
                 </Link>
 
