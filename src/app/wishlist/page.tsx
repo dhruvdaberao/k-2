@@ -158,13 +158,15 @@ export default function WishlistPage() {
       </div>
 
       {items.length === 0 ? (
-        <div className="flex flex-col items-center justify-center pt-2 pb-20 text-center px-4 w-full">
-          <div className="max-w-md w-full flex flex-col items-center mb-16">
-            <div className="mb-6 relative w-32 h-32 md:w-40 md:h-40 flex items-center justify-center">
-              <div className="absolute inset-0 bg-[#F5EFE6] rounded-full opacity-50 scale-110"></div>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#8B7355" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" className="w-20 h-20 md:w-24 md:h-24 relative z-10">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L10 19.23A2.83 2.83 0 0 0 14 19.23L19.78 13.45l1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-              </svg>
+        <div className="flex flex-col items-center justify-center pt-16 pb-32 text-center px-4 w-full">
+          <div className="max-w-md w-full flex flex-col items-center">
+            <div className="mb-6 relative w-20 h-20 md:w-24 md:h-24 opacity-60">
+              <Image 
+                src="/nav-icons/heart-unfilled.png" 
+                alt="Empty Wishlist" 
+                fill
+                className="object-contain"
+              />
             </div>
             <h2 className="text-xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-2 md:mb-4">Your wishlist is empty</h2>
             <p className="text-stone-500 mb-8 text-sm md:text-lg lg:text-xl italic">
@@ -178,7 +180,6 @@ export default function WishlistPage() {
               Browse Collections
             </Link>
           </div>
-          <EmptyStateRecommendations title="You May Also Like" />
         </div>
       ) : wishlistProducts.length > 0 ? (
         <div className="plp-grid-mobile">

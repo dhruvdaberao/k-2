@@ -253,19 +253,16 @@ export default function CartPage() {
         </header>
 
         {cartItems.length === 0 ? (
-          /* Sophisticated Empty State */
-          <div className="flex flex-col items-center justify-center pt-6 pb-20 text-center px-4 mx-auto w-full">
-            <div className="max-w-md w-full flex flex-col items-center mb-16">
-              <div className="mb-6 relative w-32 h-32 md:w-40 md:h-40 flex items-center justify-center transition-transform hover:scale-105 duration-500">
-                <div className="absolute inset-0 bg-[#F5EFE6] rounded-full opacity-50 scale-110"></div>
-                <div className="relative z-10 w-24 h-24 md:w-32 md:h-32 opacity-80 mix-blend-multiply">
-                  <ImageWithFallback 
-                    src="/nav-icons/empty-bag.png" 
-                    alt="Empty Bag" 
-                    fill
-                    className="object-contain"
-                  />
-                </div>
+          /* Minimalist Empty State */
+          <div className="flex flex-col items-center justify-center pt-20 pb-32 text-center px-4 mx-auto w-full">
+            <div className="max-w-md w-full flex flex-col items-center">
+              <div className="mb-6 relative w-20 h-20 md:w-24 md:h-24 opacity-60">
+                <ImageWithFallback 
+                  src="/nav-icons/bag-unfilled.png" 
+                  alt="Empty Bag" 
+                  fill
+                  className="object-contain"
+                />
               </div>
               
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-3 md:mb-4">Your bag is empty</h2>
@@ -282,8 +279,6 @@ export default function CartPage() {
                 Browse Collections
               </NextLink>
             </div>
-
-            <EmptyStateRecommendations title="Discover Best Sellers" />
           </div>
         ) : (
           <div className="row g-4 items-start" style={{ pointerEvents: isUpdating ? 'none' : 'auto' }}>
