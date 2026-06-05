@@ -12,6 +12,7 @@ import type { Product } from "@/types";
 
 import ImageWithFallback from "@/components/ImageWithFallback";
 import { useAuth } from "@/hooks/useAuth";
+import EmptyStateRecommendations from "@/components/EmptyStateRecommendations";
 
 export default function CartPage() {
   const { cartItems, loadCart, removeFromCart, updateQuantity, clearCart, loading } = useCart();
@@ -252,28 +253,34 @@ export default function CartPage() {
         </header>
 
         {cartItems.length === 0 ? (
-          /* Minimalist Empty State - Matching Wishlist Style */
-          <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4 max-w-md mx-auto">
-            <div className="mb-8 opacity-30">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="w-16 h-16 md:w-20 md:h-20 mx-auto">
-                <rect x="2" y="8" width="20" height="14" rx="2" ry="2"/>
-                <path d="M7 11V6a5 5 0 0 1 10 0v5"/>
-              </svg>
+          /* Sophisticated Empty State */
+          <div className="flex flex-col items-center justify-center pt-6 pb-20 text-center px-4 mx-auto w-full">
+            <div className="max-w-md w-full flex flex-col items-center">
+              <div className="mb-6 w-[200px] h-[200px] md:w-[250px] md:h-[250px] relative drop-shadow-md transition-transform hover:scale-105 duration-500">
+                <ImageWithFallback 
+                  src="/empty-cart.png" 
+                  alt="Empty Bag Basket" 
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-3 md:mb-4">Your bag is empty</h2>
+              
+              <p className="text-stone-500 mb-8 text-sm md:text-lg lg:text-xl italic">
+                Looks like you haven't found your perfect piece yet.
+              </p>
+              
+              <NextLink 
+                href="/collections" 
+                className="btn btn-primary px-10 py-3 md:px-14 md:py-4 md:text-xl lg:text-2xl rounded-full font-bold shadow-sm"
+                style={{ minWidth: '220px' }}
+              >
+                Browse Collections
+              </NextLink>
             </div>
-            
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-3 md:mb-5">Your bag is empty</h2>
-            
-            <p className="text-stone-500 mb-10 text-sm md:text-lg lg:text-xl italic">
-              Looks like you haven't found your perfect piece yet.
-            </p>
-            
-            <NextLink 
-              href="/collections" 
-              className="btn btn-primary px-10 py-3 md:px-14 md:py-4 md:text-xl lg:text-2xl rounded-full font-bold shadow-sm"
-              style={{ minWidth: '220px' }}
-            >
-              Browse Collections
-            </NextLink>
+
+            <EmptyStateRecommendations title="Discover Best Sellers" />
           </div>
         ) : (
           <div className="row g-4 items-start" style={{ pointerEvents: isUpdating ? 'none' : 'auto' }}>

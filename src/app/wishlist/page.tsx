@@ -9,6 +9,7 @@ import ProductCard from "@/components/ProductCardV2";
 import { supabase } from "@/lib/supabaseClient";
 import ConfirmModal from "@/components/ui/ConfirmModal";
 import { showToast } from "@/components/Toast";
+import EmptyStateRecommendations from "@/components/EmptyStateRecommendations";
 
 export default function WishlistPage() {
   const { wishlist: items, loading, removeWishlistItems } = useWishlist();
@@ -157,19 +158,25 @@ export default function WishlistPage() {
       </div>
 
       {items.length === 0 ? (
-        <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4 max-w-md mx-auto">
-          <div className="mb-6 opacity-30">
-            <svg className="w-16 h-16 md:w-20 md:h-20 mx-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L10 19.23A2.83 2.83 0 0 0 14 19.23L19.78 13.45l1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-            </svg>
+        <div className="flex flex-col items-center justify-center pt-2 pb-20 text-center px-4 w-full">
+          <div className="max-w-md w-full flex flex-col items-center">
+            <div className="mb-6 w-[200px] h-[200px] md:w-[250px] md:h-[250px] relative drop-shadow-md transition-transform hover:scale-105 duration-500">
+              <Image 
+                src="/empty-wishlist.png" 
+                alt="Empty Wishlist Heart" 
+                fill
+                className="object-contain"
+              />
+            </div>
+            <h2 className="text-xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-2 md:mb-4">Your wishlist is empty</h2>
+            <p className="text-stone-500 mb-8 text-sm md:text-lg lg:text-xl italic">
+              Save your favorite handcrafted pieces here to keep track of what you love.
+            </p>
+            <Link href="/collections" className="btn-primary px-10 py-3 md:px-14 md:py-4 md:text-xl lg:text-2xl rounded-full font-bold">
+              Browse Collections
+            </Link>
           </div>
-          <h2 className="text-xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-2 md:mb-4">Your wishlist is empty</h2>
-          <p className="text-stone-500 mb-8 text-sm md:text-lg lg:text-xl italic">
-            Save your favorite handcrafted pieces here to keep track of what you love.
-          </p>
-          <Link href="/collections" className="btn-primary px-10 py-3 md:px-14 md:py-4 md:text-xl lg:text-2xl rounded-full font-bold">
-            Browse Collections
-          </Link>
+          <EmptyStateRecommendations title="You May Also Like" />
         </div>
       ) : wishlistProducts.length > 0 ? (
         <div className="plp-grid-mobile">
