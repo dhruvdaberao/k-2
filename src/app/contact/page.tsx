@@ -18,7 +18,7 @@ export default function ContactPage() {
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6" style={{ gap: '1.5rem' }}>
-                <div className="bg-[#F5EFE6] p-6 rounded-[24px] border border-[#eadfcd] shadow-sm flex flex-col">
+                <div className="checkout-card rounded-2xl shadow-sm p-6 flex flex-col border border-[rgba(139,94,60,0.4)]" style={{ backgroundColor: '#F5EFE6' }}>
                     <h2 className="font-bold text-lg mb-4 text-[#5a3e2b]">Social Media</h2>
                     <p className="text-stone-600 mb-4 flex-grow">
                         Follow us for updates, behind the scenes, and direct messages.
@@ -29,17 +29,17 @@ export default function ContactPage() {
                         rel="noreferrer"
                         className="btn-outline w-full justify-center text-sm"
                     >
-                        Message @keshvicrafts on Instagram
+                        Visit @keshvi_crafts
                     </a>
                 </div>
 
-                <div className="bg-[#F5EFE6] p-6 rounded-[24px] border border-[#eadfcd] shadow-sm flex flex-col">
+                <div className="checkout-card rounded-2xl shadow-sm p-6 flex flex-col border border-[rgba(139,94,60,0.4)]" style={{ backgroundColor: '#F5EFE6' }}>
                     <h2 className="font-bold text-lg mb-4 text-[#5a3e2b]">Instagram Support</h2>
                     <p className="text-stone-600 mb-4 flex-grow">
                         Need a quick reply or help with a custom order? Chat with us directly on Instagram.
                     </p>
                     <a
-                        href="https://www.instagram.com/direct/t/17844051177388084/"
+                        href="https://ig.me/m/keshvi_crafts"
                         target="_blank"
                         rel="noreferrer"
                         className="btn-outline w-full justify-center text-sm"
@@ -48,7 +48,7 @@ export default function ContactPage() {
                     </a>
                 </div>
 
-                <div className="bg-[#F5EFE6] p-6 rounded-[24px] border border-[#eadfcd] shadow-sm flex flex-col">
+                <div className="checkout-card rounded-2xl shadow-sm p-6 flex flex-col border border-[rgba(139,94,60,0.4)]" style={{ backgroundColor: '#F5EFE6' }}>
                     <h2 className="font-bold text-lg mb-4 text-[#5a3e2b]">Email Support</h2>
                     <p className="text-stone-600 mb-4 flex-grow">
                         For order inquiries or collaborations, drop us a mail.
