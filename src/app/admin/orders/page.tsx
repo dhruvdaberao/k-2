@@ -78,16 +78,8 @@ export default function AdminOrders() {
 
     init();
 
-    // Fail-safe timeout
-    const timeout = setTimeout(() => {
-      if (isMounted && orders === null) {
-        setLoading(false);
-        setError(true);
-      }
-    }, 8000);
     return () => {
       isMounted = false;
-      clearTimeout(timeout);
     };
   }, []);
 
@@ -101,25 +93,25 @@ export default function AdminOrders() {
 
   if (error || orders === null) {
     return (
-      <main className="min-h-screen bg-[#FDFBF7] pt-24 md:pt-28 pb-20 px-4 md:px-6" style={{ paddingBottom: '5rem' }}>
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-[#F5EFE6] text-center shadow-sm" style={{ padding: '48px', border: '1px solid #D4C4B0', borderRadius: '24px', maxWidth: '400px', margin: '40px auto' }}>
-            <div style={{ marginBottom: '24px' }}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#C62828" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto' }}>
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold text-[#5A3E2B]" style={{ marginBottom: '8px' }}>Failed to load</h3>
-            <p className="text-[#6B6B6B]" style={{ fontSize: '14px', marginBottom: '24px' }}>There was a problem loading your orders. Please check your connection and try again.</p>
-            <button 
-              onClick={() => window.location.reload()}
-              className="w-full bg-[#5A3E2B] text-white py-3 rounded-xl font-bold transition hover:bg-[#3E2A1D]"
-            >
-              Reload Page
-            </button>
+      <main className="min-h-screen bg-[#FDFBF7] pt-24 md:pt-28 pb-20 px-4 md:px-6 flex flex-col items-center justify-center text-center">
+        <div className="max-w-md mx-auto animate-fade-in w-full">
+          <div style={{ marginBottom: '24px' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#C62828" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto' }}>
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
           </div>
+          <h3 className="text-2xl font-bold text-[#4A3219]" style={{ marginBottom: '12px' }}>Failed to load</h3>
+          <p className="text-[#4A3219] font-medium" style={{ fontSize: '16px', marginBottom: '32px' }}>
+            There was a problem loading your orders. Please check your connection and try again.
+          </p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="w-full sm:w-auto px-8 bg-[#8B7355] text-white py-3 rounded-full font-bold transition hover:bg-[#6b5840] shadow-sm border-none"
+          >
+            Reload Page
+          </button>
         </div>
       </main>
     );
