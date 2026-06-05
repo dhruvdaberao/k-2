@@ -27,7 +27,7 @@ export default function WhyHandmadeSection() {
         }}>
           <div className="mt-6 md:mt-16 text-center max-w-2xl lg:max-w-4xl mx-auto space-y-8 md:space-y-14 lg:space-y-16 pb-4 md:pb-8">
             <div className="flex flex-col items-center gap-2 md:gap-6 lg:gap-8">
-              <span className="flex items-center justify-center font-bold shadow-sm rounded-full aspect-square w-10 h-10 md:w-14 md:h-14 text-base md:text-xl" style={{ background: "rgba(139, 94, 60, 0.1)", color: "var(--brand)" }}>1</span>
+              <span className="flex-shrink-0 flex items-center justify-center font-bold shadow-sm text-base md:text-xl" style={{ width: "40px", height: "40px", minWidth: "40px", minHeight: "40px", borderRadius: "50%", background: "rgba(139, 94, 60, 0.1)", color: "var(--brand)" }}>1</span>
               <div>
                 <strong className="block text-base md:text-2xl lg:text-3xl mb-1 md:mb-3 mt-1" style={{ color: "var(--text)" }}>Made to order, not mass produced</strong>
                 <p className="leading-relaxed text-[0.95rem] md:text-lg lg:text-xl max-w-lg lg:max-w-2xl mx-auto" style={{ color: "var(--muted)" }}>Each item is started only after you place an order, reducing waste and ensuring it&apos;s made just for you.</p>
@@ -35,7 +35,7 @@ export default function WhyHandmadeSection() {
             </div>
 
             <div className="flex flex-col items-center gap-2 md:gap-6 lg:gap-8">
-              <span className="flex items-center justify-center font-bold shadow-sm rounded-full aspect-square w-10 h-10 md:w-14 md:h-14 text-base md:text-xl" style={{ background: "rgba(139, 94, 60, 0.1)", color: "var(--brand)" }}>2</span>
+              <span className="flex-shrink-0 flex items-center justify-center font-bold shadow-sm text-base md:text-xl" style={{ width: "40px", height: "40px", minWidth: "40px", minHeight: "40px", borderRadius: "50%", background: "rgba(139, 94, 60, 0.1)", color: "var(--brand)" }}>2</span>
               <div>
                 <strong className="block text-base md:text-2xl lg:text-3xl mb-1 md:mb-3 mt-1" style={{ color: "var(--text)" }}>Crafted with care & attention</strong>
                 <p className="leading-relaxed text-[0.95rem] md:text-lg lg:text-xl max-w-lg lg:max-w-2xl mx-auto" style={{ color: "var(--muted)" }}>Our artisans spend hours perfecting every stitch, ensuring quality that machines simply can&apos;t match.</p>
@@ -43,7 +43,7 @@ export default function WhyHandmadeSection() {
             </div>
 
             <div className="flex flex-col items-center gap-2 md:gap-6 lg:gap-8">
-              <span className="flex items-center justify-center font-bold shadow-sm rounded-full aspect-square w-10 h-10 md:w-14 md:h-14 text-base md:text-xl" style={{ background: "rgba(139, 94, 60, 0.1)", color: "var(--brand)" }}>3</span>
+              <span className="flex-shrink-0 flex items-center justify-center font-bold shadow-sm text-base md:text-xl" style={{ width: "40px", height: "40px", minWidth: "40px", minHeight: "40px", borderRadius: "50%", background: "rgba(139, 94, 60, 0.1)", color: "var(--brand)" }}>3</span>
               <div>
                 <strong className="block text-base md:text-2xl lg:text-3xl mb-1 md:mb-3 mt-1" style={{ color: "var(--text)" }}>Truly unique to you</strong>
                 <p className="leading-relaxed text-[0.95rem] md:text-lg lg:text-xl max-w-lg lg:max-w-2xl mx-auto" style={{ color: "var(--muted)" }}>No two handmade pieces are exactly alike. Your item carries individuality, warmth, and soul.</p>
