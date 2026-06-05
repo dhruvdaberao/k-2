@@ -76,8 +76,8 @@ export default function StickyBuyBar({
              ) : (
                 <>
                   <button
-                    className="flex-1 rounded-xl h-[54px] font-bold text-[16px] md:text-lg transition-transform hover:scale-[1.02] active:scale-[0.96] border-[1.5px] border-[#4A3219]"
-                    style={{ backgroundColor: 'transparent', color: '#4A3219' }}
+                    className="flex-1 rounded-xl h-[54px] font-bold text-[16px] md:text-lg transition-transform hover:scale-[1.02] active:scale-[0.96] shadow-sm"
+                    style={{ backgroundColor: '#4A3219', color: '#FDFBF7', border: 'none' }}
                     onClick={() => {
                         document.getElementById('product-main-buy')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }}
