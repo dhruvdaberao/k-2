@@ -98,7 +98,7 @@ export default function StickyBuyBar({
                       >
                         −
                       </button>
-                      <span style={{ color: '#FDFBF7', fontSize: '0.9rem', md: '1.1rem', fontWeight: 'bold', userSelect: 'none' }}>
+                      <span className="text-[0.9rem] md:text-[1.1rem]" style={{ color: '#FDFBF7', fontWeight: 'bold', userSelect: 'none' }}>
                         {cartQuantity}
                       </span>
                       <button
