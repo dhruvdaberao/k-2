@@ -24,12 +24,11 @@ export default function FullPageLoader() {
         gap: 20,
       }}
     >
-      <div className="flex flex-col items-center justify-center py-4">
+      <div className="flex flex-col items-center justify-center">
         <video
           autoPlay
           muted
           playsInline
-          className="mb-4"
           style={{ height: '120px', width: 'auto', objectFit: 'contain' }}
         >
           <source src="/nav-icons/logo-animation.mp4" type="video/mp4" />
@@ -37,6 +36,8 @@ export default function FullPageLoader() {
       </div>
       <div
         style={{
+          position: 'absolute',
+          bottom: '15%',
           width: 36,
           height: 36,
           border: '3px solid #e6ded4',
@@ -51,7 +52,8 @@ export default function FullPageLoader() {
         <button 
           onClick={() => window.location.reload()} 
           style={{
-            marginTop: '20px',
+            position: 'absolute',
+            bottom: '8%',
             padding: '8px 16px',
             backgroundColor: 'transparent',
             border: '1px solid #5a3e2b',
