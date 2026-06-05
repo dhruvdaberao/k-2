@@ -255,7 +255,7 @@ export default function CartPage() {
           /* Minimalist Empty State - Matching Wishlist Style */
           <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4 max-w-md mx-auto">
             <div className="mb-8 opacity-30">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ width: '120px', height: '120px', margin: '0 auto' }}>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ width: '72px', height: '72px', margin: '0 auto' }}>
                 <rect x="2" y="8" width="20" height="14" rx="2" ry="2"/>
                 <path d="M7 11V6a5 5 0 0 1 10 0v5"/>
               </svg>
