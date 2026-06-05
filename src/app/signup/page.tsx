@@ -65,11 +65,10 @@ export default function SignupPage() {
             setAuthMode("login");
           } else {
             await syncLocalCartToDB(data.user.id);
-            setSuccessModal(true);
             setTimeout(() => {
-              setSuccessModal(false);
               router.replace("/profile");
-            }, 2000);
+            }, 1500);
+            return; // keep authLoading true
           }
         }
       } else if (authMode === "login") {
