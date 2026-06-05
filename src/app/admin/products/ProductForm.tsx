@@ -13,10 +13,10 @@ import { revalidateStorefront } from "@/actions/revalidate";
 
 const HOME_SECTION_OPTIONS = [
   { value: 'none', label: 'None (Automatic placement)' },
-  { value: 'popular-picks', label: 'Popular Picks' },
+  { value: 'popular-picks', label: 'Signature Picks' },
   { value: 'best-sellers', label: 'Best Sellers' },
-  { value: 'trending', label: 'Trending Creations' },
-  { value: 'handmade', label: 'Handmade Collections' },
+  { value: 'trending', label: 'New Arrivals' },
+  { value: 'handmade', label: 'Our Favorites' },
 ];
 
 interface ProductFormProps {
