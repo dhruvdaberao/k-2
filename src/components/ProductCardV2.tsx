@@ -118,7 +118,7 @@ export default function ProductCardV2({ p, priority = false }: { p: Product, pri
                             src={p.images?.[0] || '/placeholder.png'}
                             alt={p.title}
                             fill
-                            className="object-cover transition-all duration-700 group-hover:scale-105"
+                            className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-0"
                             sizes="(max-width: 768px) 50vw, 33vw"
                             draggable={false}
                             priority={priority}
@@ -130,7 +130,7 @@ export default function ProductCardV2({ p, priority = false }: { p: Product, pri
                                 src={p.images[1]}
                                 alt={`${p.title} alternate view`}
                                 fill
-                                className="object-cover transition-all duration-700 opacity-0 md:group-hover:opacity-100 group-hover:scale-105 absolute top-0 left-0"
+                                className="object-cover transition-all duration-700 opacity-0 group-hover:opacity-100 group-hover:scale-105 absolute inset-0 z-10"
                                 sizes="(max-width: 768px) 50vw, 33vw"
                                 draggable={false}
                                 priority={priority}
