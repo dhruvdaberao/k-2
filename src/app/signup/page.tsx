@@ -167,7 +167,7 @@ export default function SignupPage() {
               muted
               playsInline
               className="mx-auto mb-4"
-              style={{ height: '120px', width: 'auto', objectFit: 'contain' }}
+              style={{ height: '120px', width: 'auto', objectFit: 'contain', mixBlendMode: 'multiply' }}
             >
               <source src="/nav-icons/logo-animation.mp4" type="video/mp4" />
             </video>
