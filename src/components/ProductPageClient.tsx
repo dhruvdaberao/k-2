@@ -6,6 +6,7 @@ import BuyBar from "@/components/BuyBar";
 import VariantSelector from "@/components/VariantSelector";
 import ProductCard from "@/components/ProductCardV2";
 import Link from "next/link";
+import StickyBuyBar from "@/components/StickyBuyBar";
 import type { Product, ProductVariant } from "@/types";
 import { trackEvent } from "@/lib/analytics";
 import SeoContentSection from "@/components/SeoContentSection";
@@ -33,8 +34,30 @@ export default function ProductPageClient({
     setIsHearted(isWishlisted(product.id || product.slug));
   }, [product.id, product.slug, isWishlisted]);
 
-
   const [isPopping, setIsPopping] = useState(false);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+
+  // Intersection Observer for Sticky Buy Bar
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Show sticky bar when the main buy bar is completely out of view (above the viewport)
+        if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
+          setShowStickyBar(true);
+        } else {
+          setShowStickyBar(false);
+        }
+      },
+      { threshold: 0 }
+    );
+
+    const mainBuyBar = document.getElementById("product-main-buy");
+    if (mainBuyBar) observer.observe(mainBuyBar);
+
+    return () => {
+      if (mainBuyBar) observer.unobserve(mainBuyBar);
+    };
+  }, []);
 
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
     product.variants && product.variants.length > 0 ? product.variants[0] : null
@@ -210,7 +233,7 @@ export default function ProductPageClient({
           )}
 
           {/* Actions: BuyBar or WhatsApp Enquiry */}
-          <div style={{ marginBottom: "1.5rem" }}>
+          <div id="product-main-buy" style={{ marginBottom: "1.5rem", scrollMarginTop: "120px" }}>
             {product.type === "custom-order" ? (
               <div className="flex flex-col gap-3">
                 <button
@@ -419,6 +442,18 @@ export default function ProductPageClient({
             ))}
           </div>
         </section>
+      )}
+
+      {/* Sticky Buy Bar for Mobile/Desktop conversions */}
+      {product.type !== "custom-order" && (
+        <StickyBuyBar 
+          slug={currentSlug}
+          title={currentTitle}
+          price={currentPrice}
+          image={currentImages[0]}
+          disabled={!inStock}
+          isVisible={showStickyBar}
+        />
       )}
     </>
   );
