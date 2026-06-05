@@ -161,7 +161,16 @@ export default function SignupPage() {
         `}} />
         <div className="w-full mx-auto mt-6 sm:mt-10" style={{ maxWidth: '460px' }}>
           <div className="text-center mb-8">
-            <img src="/nav-icons/LOGO-FINAL.png" alt="Logo" className="mx-auto mb-4" style={{ height: '120px', width: 'auto', objectFit: 'contain' }} />
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="mx-auto mb-4"
+              style={{ height: '120px', width: 'auto', objectFit: 'contain' }}
+            >
+              <source src="/nav-icons/logo-animation.mp4" type="video/mp4" />
+            </video>
             <h1 className="text-2xl font-bold" style={{ color: "var(--brand)" }}>
               {authMode === "login" ? "Welcome Back" : authMode === "signup" ? "Create an Account" : "Reset Password"}
             </h1>

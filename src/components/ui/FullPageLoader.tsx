@@ -24,13 +24,17 @@ export default function FullPageLoader() {
         gap: 20,
       }}
     >
-      <div className="flex flex-col items-center justify-center animate-pulse py-4">
-        <img
-          src="/nav-icons/LOGO-FINAL.png"
-          alt="Keshvi Crafts Logo"
+      <div className="flex flex-col items-center justify-center py-4">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
           className="mb-4"
-          style={{ height: '95px', width: 'auto', objectFit: 'contain' }}
-        />
+          style={{ height: '120px', width: 'auto', objectFit: 'contain' }}
+        >
+          <source src="/nav-icons/logo-animation.mp4" type="video/mp4" />
+        </video>
       </div>
       <div
         style={{

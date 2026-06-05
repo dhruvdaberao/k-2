@@ -9,7 +9,16 @@ export default function AuthChoicePage() {
     <main className="checkout-page checkout-container pb-20 pt-[40px]" style={{ paddingTop: '40px', minHeight: '100vh' }}>
       <div className="px-4 sm:px-6 md:px-0 mx-auto w-full mt-4" style={{ maxWidth: '460px' }}>
         <div className="text-center mb-4">
-          <img src="/nav-icons/LOGO-FINAL.png" alt="Logo" className="mx-auto mb-4" style={{ height: '120px', width: 'auto', objectFit: 'contain' }} />
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="mx-auto mb-4"
+            style={{ height: '120px', width: 'auto', objectFit: 'contain' }}
+          >
+            <source src="/nav-icons/logo-animation.mp4" type="video/mp4" />
+          </video>
           <h1 className="text-3xl font-bold" style={{ color: "var(--brand)" }}>
             Welcome
           </h1>
