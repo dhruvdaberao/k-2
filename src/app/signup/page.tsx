@@ -21,10 +21,10 @@ export default function SignupPage() {
   const { user } = useAuth();
 
   useEffect(() => {
-    if (user) {
+    if (user && !authLoading && !successModal) {
       router.replace("/profile");
     }
-  }, [user, router]);
+  }, [user, router, authLoading, successModal]);
 
   const handleAuthAction = async (e: React.FormEvent) => {
     e.preventDefault();

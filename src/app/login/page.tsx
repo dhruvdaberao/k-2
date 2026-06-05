@@ -24,10 +24,10 @@ export default function LoginPage() {
   const { user } = useAuth();
 
   useEffect(() => {
-    if (user) {
+    if (user && !authLoading && !successModal) {
       router.replace("/profile");
     }
-  }, [user, router]);
+  }, [user, router, authLoading, successModal]);
 
   const handleAuthAction = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -121,7 +121,7 @@ export default function LoginPage() {
           setSuccessModal(true);
           setTimeout(() => {
             setSuccessModal(false);
-            window.location.href = "/profile";
+            router.push("/profile");
           }, 2000);
         }
       } else if (authMode === "login") {
@@ -166,7 +166,7 @@ export default function LoginPage() {
         setSuccessModal(true);
         setTimeout(() => {
           setSuccessModal(false);
-          window.location.href = "/profile";
+          router.push("/profile");
         }, 2000);
       } else if (authMode === "otp") {
         const res = await loginWithOtpAction(cleanEmail);
@@ -208,7 +208,7 @@ export default function LoginPage() {
         setSuccessModal(true);
         setTimeout(() => {
           setSuccessModal(false);
-          window.location.href = "/profile";
+          router.push("/profile");
         }, 2000);
       } else if (authMode === "forgot") {
         const res = await resetPasswordAction(cleanEmail);
