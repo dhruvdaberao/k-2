@@ -17,17 +17,16 @@ export default function LoginPage() {
   const [otpCode, setOtpCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
-  const [successModal, setSuccessModal] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
   const { user } = useAuth();
 
   useEffect(() => {
-    if (user && !authLoading && !successModal) {
+    if (user && !authLoading) {
       router.replace("/profile");
     }
-  }, [user, router, authLoading, successModal]);
+  }, [user, router, authLoading]);
 
   const handleAuthAction = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,11 +117,10 @@ export default function LoginPage() {
             new Promise(r => setTimeout(r, 2000))
           ]);
           showToast("Account created successfully");
-          setSuccessModal(true);
           setTimeout(() => {
-            setSuccessModal(false);
             router.push("/profile");
-          }, 2000);
+          }, 1500);
+          return; // prevent setAuthLoading(false) from running
         }
       } else if (authMode === "login") {
         const res = await loginAction(cleanEmail, authPassword);
@@ -157,17 +155,13 @@ export default function LoginPage() {
         showToast("Logged in successfully");
 
         if (data && data.user?.id) {
-          await Promise.race([
-            syncLocalCartToDB(data.user.id),
-            new Promise(r => setTimeout(r, 2000))
-          ]);
+          syncLocalCartToDB(data.user.id);
         }
 
-        setSuccessModal(true);
         setTimeout(() => {
-          setSuccessModal(false);
           router.push("/profile");
-        }, 2000);
+        }, 1500);
+        return; // prevent setAuthLoading(false) from running
       } else if (authMode === "otp") {
         const res = await loginWithOtpAction(cleanEmail);
         const error = res.error ? { message: res.error } : null;
@@ -199,17 +193,13 @@ export default function LoginPage() {
 
         showToast("Logged in successfully");
         if (data && data.user?.id) {
-          await Promise.race([
-            syncLocalCartToDB(data.user.id),
-            new Promise(r => setTimeout(r, 2000))
-          ]);
+          syncLocalCartToDB(data.user.id);
         }
 
-        setSuccessModal(true);
         setTimeout(() => {
-          setSuccessModal(false);
           router.push("/profile");
-        }, 2000);
+        }, 1500);
+        return; // prevent setAuthLoading(false) from running
       } else if (authMode === "forgot") {
         const res = await resetPasswordAction(cleanEmail);
         const error = res.error ? { message: res.error } : null;
@@ -244,21 +234,6 @@ export default function LoginPage() {
 
   return (
     <>
-      {/* Success Modal */}
-      {successModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999 }}>
-          <div style={{ background: 'white', borderRadius: 20, padding: '36px 32px', maxWidth: 340, width: '90%', textAlign: 'center', boxShadow: '0 8px 32px rgba(0,0,0,0.15)' }}>
-            <div style={{ width: 52, height: 52, borderRadius: '50%', background: '#e8f5e9', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#388e3c" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="20 6 9 17 4 12"/>
-              </svg>
-            </div>
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: '#2f2a26', margin: '0 0 6px', fontFamily: 'Georgia, serif' }}>Welcome Back!</h3>
-            <p style={{ fontSize: 14, color: '#6b7280', margin: 0 }}>Successfully logged into your account</p>
-          </div>
-        </div>
-      )}
-
       <main className="checkout-page checkout-container pb-20 login-page-styles" style={{ minHeight: 'calc(100vh - 180px)', paddingTop: '80px' }}>
         <style dangerouslySetInnerHTML={{__html: `
           .login-page-styles input {

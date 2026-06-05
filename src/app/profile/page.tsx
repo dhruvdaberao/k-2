@@ -30,7 +30,35 @@ function ProfileContent() {
   const { session, user, profile, loading, refreshProfile } = useAuth();
   
   // Profile Form State
-  const [details, setDetails] = useState<CheckoutCustomerDetails>(initialDetails);
+  const [details, setDetails] = useState<CheckoutCustomerDetails>(() => {
+    // Initialize with profile data immediately to prevent flicker
+    const fromProfile = {
+      fullName: profile?.name || "",
+      email: user?.email || "",
+      phoneNumber: profile?.phone || "",
+      address: profile?.address || "",
+      city: profile?.city || "",
+      pincode: profile?.pincode || "",
+      state: profile?.state || "",
+      country: profile?.country || "",
+    };
+    if (typeof window !== "undefined" && (!fromProfile.fullName || !fromProfile.phoneNumber || !fromProfile.address)) {
+      try {
+        const stored = localStorage.getItem("checkout:details:v1") || localStorage.getItem("customer_details");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          fromProfile.fullName = fromProfile.fullName || parsed.fullName || parsed.name || "";
+          fromProfile.phoneNumber = fromProfile.phoneNumber || parsed.phoneNumber || parsed.phone || "";
+          fromProfile.address = fromProfile.address || parsed.address || "";
+          fromProfile.city = fromProfile.city || parsed.city || "";
+          fromProfile.pincode = fromProfile.pincode || parsed.pincode || "";
+          fromProfile.state = fromProfile.state || parsed.state || "";
+          fromProfile.country = fromProfile.country || parsed.country || "";
+        }
+      } catch {}
+    }
+    return fromProfile;
+  });
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [modalContent, setModalContent] = useState<{ title: string; message: string } | null>(null);
@@ -437,7 +465,18 @@ function ProfileContent() {
 
         <div className="checkout-form-grid" style={{ opacity: isEditing ? 1 : 0.8 }}>
           <label className="checkout-field"><span>Full Name</span><input type="text" value={details.fullName} onChange={(e) => handleFieldChange("fullName", e.target.value)} readOnly={!isEditing} /></label>
-          <label className="checkout-field"><span>Email Address</span><input type="email" value={details.email} readOnly={true} style={{ opacity: 0.7 }} /></label>
+          <label className="checkout-field">
+            <span>Email Address</span>
+            <div style={{ position: 'relative' }}>
+              <input type="email" value={details.email} readOnly={true} style={{ opacity: 0.7, width: '100%' }} />
+              <div style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </div>
+            </div>
+          </label>
           <label className="checkout-field"><span>Phone Number</span><input type="tel" value={details.phoneNumber} onChange={(e) => handleFieldChange("phoneNumber", e.target.value)} readOnly={!isEditing} /></label>
           <label className="checkout-field checkout-field--full">
             <span>Delivery Address</span>

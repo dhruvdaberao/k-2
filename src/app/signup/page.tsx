@@ -16,15 +16,14 @@ export default function SignupPage() {
   const [authConfirmPassword, setAuthConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
-  const [successModal, setSuccessModal] = useState(false);
 
   const { user } = useAuth();
 
   useEffect(() => {
-    if (user && !authLoading && !successModal) {
+    if (user && !authLoading) {
       router.replace("/profile");
     }
-  }, [user, router, authLoading, successModal]);
+  }, [user, router, authLoading]);
 
   const handleAuthAction = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,15 +90,16 @@ export default function SignupPage() {
           }
         }
 
+        showToast("Logged in successfully");
+
         if (data.user?.id) {
           await syncLocalCartToDB(data.user.id);
         }
 
-        setSuccessModal(true);
         setTimeout(() => {
-          setSuccessModal(false);
           router.replace("/profile");
-        }, 2000);
+        }, 1500);
+        return;
       } else if (authMode === "forgot") {
         const { error } = await supabase.auth.resetPasswordForEmail(authEmail, {
           redirectTo: `${window.location.origin}/reset-password`
@@ -132,22 +132,7 @@ export default function SignupPage() {
 
   return (
     <>
-      {/* Success Modal */}
-      {successModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999 }}>
-          <div style={{ background: 'white', borderRadius: 20, padding: '36px 32px', maxWidth: 340, width: '90%', textAlign: 'center', boxShadow: '0 8px 32px rgba(0,0,0,0.15)' }}>
-            <div style={{ width: 52, height: 52, borderRadius: '50%', background: '#e8f5e9', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#388e3c" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="20 6 9 17 4 12"/>
-              </svg>
-            </div>
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: '#2f2a26', margin: '0 0 6px', fontFamily: 'Georgia, serif' }}>{authMode === "signup" ? "Account Created!" : "Welcome Back!"}</h3>
-            <p style={{ fontSize: 14, color: '#6b7280', margin: 0 }}>{authMode === "signup" ? "Successfully created your account" : "Successfully logged into your account"}</p>
-          </div>
-        </div>
-      )}
-
-      <main className="checkout-page checkout-container pb-20 pt-[120px] login-page-styles" style={{ paddingTop: '120px' }}>
+      <main className="checkout-page checkout-container pb-20 signup-page-styles" style={{ minHeight: 'calc(100vh - 180px)', paddingTop: '80px' }}>
         <style dangerouslySetInnerHTML={{__html: `
           .login-page-styles input {
             border: 1px solid rgba(139, 94, 60, 0.4) !important;
