@@ -41,15 +41,24 @@ export default function StickyBuyBar({
   // Desktop layout: sits at the very bottom.
   return (
     <>
+      <style>{`
+        .sticky-bar-wrapper {
+          bottom: calc(env(safe-area-inset-bottom) + 60px);
+        }
+        @media (min-width: 768px) {
+          .sticky-bar-wrapper {
+            bottom: 0;
+          }
+        }
+      `}</style>
       <div 
-        className={`fixed left-0 right-0 transition-transform duration-300 ease-in-out border-t border-[rgba(139,94,60,0.15)] shadow-[0_-8px_20px_rgba(0,0,0,0.06)] bottom-[60px] md:bottom-0`}
+        className={`fixed left-0 right-0 transition-transform duration-300 ease-in-out border-t border-[rgba(139,94,60,0.15)] shadow-[0_-8px_20px_rgba(0,0,0,0.06)] sticky-bar-wrapper`}
         style={{
-          zIndex: 900, // Below full-screen modals, but above everything else
-          background: 'rgba(253, 251, 247, 0.85)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
+          zIndex: 1300, // Make sure it sits above the bottom nav (1000) and cards
+          background: 'rgba(253, 251, 247, 0.90)', // Slightly more opaque glass
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
           transform: isVisible ? 'translateY(0)' : 'translateY(150%)',
-          paddingBottom: 'env(safe-area-inset-bottom)', 
         }}
       >
         <div className="max-w-7xl mx-auto px-2 md:px-4 py-2 md:py-3 flex items-center justify-between gap-2 md:gap-3">
