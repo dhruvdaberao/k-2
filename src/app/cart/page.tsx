@@ -256,13 +256,16 @@ export default function CartPage() {
           /* Sophisticated Empty State */
           <div className="flex flex-col items-center justify-center pt-6 pb-20 text-center px-4 mx-auto w-full">
             <div className="max-w-md w-full flex flex-col items-center mb-16">
-              <div className="mb-6 relative w-32 h-32 md:w-40 md:h-40 flex items-center justify-center">
+              <div className="mb-6 relative w-32 h-32 md:w-40 md:h-40 flex items-center justify-center transition-transform hover:scale-105 duration-500">
                 <div className="absolute inset-0 bg-[#F5EFE6] rounded-full opacity-50 scale-110"></div>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#8B7355" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" className="w-20 h-20 md:w-24 md:h-24 relative z-10">
-                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
-                  <line x1="3" y1="6" x2="21" y2="6" />
-                  <path d="M16 10a4 4 0 0 1-8 0" />
-                </svg>
+                <div className="relative z-10 w-24 h-24 md:w-32 md:h-32 opacity-80 mix-blend-multiply">
+                  <ImageWithFallback 
+                    src="/nav-icons/empty-bag.png" 
+                    alt="Empty Bag" 
+                    fill
+                    className="object-contain"
+                  />
+                </div>
               </div>
               
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-3 md:mb-4">Your bag is empty</h2>
