@@ -371,7 +371,7 @@ function ProfileContent() {
         <header className="mb-8 text-center" style={{ marginTop: '40px' }}>
           <h1 className="collections-title mb-6">Your Profile</h1>
         </header>
-        <section className="checkout-card rounded-2xl shadow-sm" style={{ maxWidth: '900px', width: '92%', margin: '0 auto', border: '1px solid #8B5E3C', padding: '28px 24px' }}>
+        <section className="checkout-card rounded-2xl shadow-sm" style={{ maxWidth: '900px', width: '92%', margin: '0 auto', border: '1px solid #C4A484', padding: '28px 24px' }}>
           <div className="profile-skeleton-bar" style={{ width: '180px', height: '22px', marginBottom: '24px' }} />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
             {[1, 2, 3, 4, 5, 6].map(i => (
@@ -415,7 +415,7 @@ function ProfileContent() {
       <style dangerouslySetInnerHTML={{__html: `
         .profile-page-styles input, 
         .profile-page-styles textarea {
-          border: 1px solid #8B5E3C !important;
+          border: 1px solid #C4A484 !important;
         }
         .profile-page-styles .btn-edit {
           border: 1px solid var(--brand);
@@ -457,8 +457,8 @@ function ProfileContent() {
         <h1 className="text-3xl md:text-5xl font-serif font-bold text-[#2f2a26]">Your Profile</h1>
       </header>
 
-      <section className="checkout-card rounded-2xl shadow-sm mx-auto w-[92%] p-6 md:p-12" style={{ maxWidth: '1000px', border: '1px solid #8B5E3C' }}>
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 md:mb-12 border-b border-[#8B5E3C] pb-4 px-2">
+      <section className="checkout-card rounded-2xl shadow-sm mx-auto w-[92%] p-6 md:p-12" style={{ maxWidth: '1000px', border: '1px solid #C4A484' }}>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 md:mb-12 border-b border-[#C4A484] pb-4 px-2">
           <h2 className="text-xl md:text-3xl font-bold" style={{ color: "var(--text)", margin: 0 }}>Personal Information</h2>
         </div>
 

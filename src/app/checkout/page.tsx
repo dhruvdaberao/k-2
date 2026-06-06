@@ -641,13 +641,13 @@ return (
         <div className="checkout-item-summary-strip">
           <div className="checkout-item-summary-strip__inner">
             {enrichedItems.map((item, i) => (
-              <div className="checkout-item-summary-row" key={`thumb-${item.id}-${i}`} style={{ backgroundColor: '#F5EFE6', border: '1px solid #8B5E3C' }}>
+              <div className="checkout-item-summary-row" key={`thumb-${item.id}-${i}`} style={{ backgroundColor: '#F5EFE6', border: '1px solid #C4A484' }}>
                 <NextLink href={`/products/${item.product?.slug || item.id}`} className="checkout-item-summary-thumb relative block">
                   <ImageWithFallback src={item.product?.images?.[0] || item.image || "/placeholder.png"} alt={item.name} fill style={{ objectFit: 'cover' }} sizes="56px" />
                 </NextLink>
                 <div className="checkout-item-summary-content">
                   <NextLink href={`/products/${item.product?.slug || item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <p className="checkout-item-summary-name font-sans hover:text-[#8B5E3C] transition-colors">{item.name.split(" - ")[0]}</p>
+                    <p className="checkout-item-summary-name font-sans hover:text-[#C4A484] transition-colors">{item.name.split(" - ")[0]}</p>
                   </NextLink>
                   <p className="checkout-item-summary-meta">Qty {item.quantity} · ₹{item.price * item.quantity}</p>
                 </div>
@@ -660,7 +660,7 @@ return (
       <div className="checkout-shell">
         {step === 1 && (
           isGuest ? (
-            <section className="checkout-card checkout-section" style={{ backgroundColor: '#F5EFE6', border: '1px solid #8B5E3C' }}>
+            <section className="checkout-card checkout-section" style={{ backgroundColor: '#F5EFE6', border: '1px solid #C4A484' }}>
               <div className="checkout-form-grid">
                 <label className="checkout-field">
                   <span>Full Name</span>
@@ -797,7 +797,7 @@ return (
               </div>
             </section>
           ) : (
-            <section className="checkout-details-summary" style={{ backgroundColor: '#F5EFE6', border: '1px solid #8B5E3C' }}>
+            <section className="checkout-details-summary" style={{ backgroundColor: '#F5EFE6', border: '1px solid #C4A484' }}>
               <div className="summary-data-grid">
                 <div className="summary-item">
                   <span className="summary-label">Full Name</span>
@@ -872,7 +872,7 @@ return (
         )}
 
         {step === 2 && (
-          <section className="checkout-card checkout-section" style={{ backgroundColor: '#F5EFE6', border: '1px solid #8B5E3C' }}>
+          <section className="checkout-card checkout-section" style={{ backgroundColor: '#F5EFE6', border: '1px solid #C4A484' }}>
             <div className="checkout-payment-grid">
               <button
                 type="button"
@@ -930,7 +930,7 @@ return (
               <button
                 type="button"
                 className="checkout-payment-card cursor-not-allowed pointer-events-none w-full"
-                style={{ display: "block", padding: "20px", height: "auto", backgroundColor: '#ffffff', border: '1px solid #8B5E3C' }}
+                style={{ display: "block", padding: "20px", height: "auto", backgroundColor: '#ffffff', border: '1px solid #C4A484' }}
               >
                 <div className="flex flex-row items-start w-full justify-between gap-3 mb-4">
                   <div className="flex items-start gap-4">
@@ -960,13 +960,13 @@ return (
         )}
 
         {step === 3 && (
-          <section className="checkout-card checkout-card--summary checkout-section order-summary" style={{ backgroundColor: '#F5EFE6', border: '1px solid #8B5E3C' }}>
+          <section className="checkout-card checkout-card--summary checkout-section order-summary" style={{ backgroundColor: '#F5EFE6', border: '1px solid #C4A484' }}>
             <div className="checkout-summary-list checkout-items">
               {enrichedItems.map((it) => (
                 <div className="flex justify-between items-start" key={it.id}>
                   <div className="min-w-0 flex-1 pr-4">
                     <NextLink href={`/products/${it.product?.slug || it.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                      <p className="font-bold font-sans text-[#2f2a26] truncate hover:text-[#8B5E3C] transition-colors">{it.name.split(" - ")[0]}</p>
+                      <p className="font-bold font-sans text-[#2f2a26] truncate hover:text-[#C4A484] transition-colors">{it.name.split(" - ")[0]}</p>
                     </NextLink>
                     <p className="text-xs text-[#6a6150]">Qty {it.quantity} × ₹{it.price}</p>
                   </div>
