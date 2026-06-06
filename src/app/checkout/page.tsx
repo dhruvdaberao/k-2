@@ -641,7 +641,7 @@ return (
         <div className="checkout-item-summary-strip">
           <div className="checkout-item-summary-strip__inner">
             {enrichedItems.map((item, i) => (
-              <div className="checkout-item-summary-row" key={`thumb-${item.id}-${i}`} style={{ backgroundColor: '#F5EFE6', border: '1px solid rgba(139, 94, 60, 0.4)' }}>
+              <div className="checkout-item-summary-row" key={`thumb-${item.id}-${i}`} style={{ backgroundColor: '#F5EFE6', border: '1px solid #8B5E3C' }}>
                 <NextLink href={`/products/${item.product?.slug || item.id}`} className="checkout-item-summary-thumb relative block">
                   <ImageWithFallback src={item.product?.images?.[0] || item.image || "/placeholder.png"} alt={item.name} fill style={{ objectFit: 'cover' }} sizes="56px" />
                 </NextLink>
@@ -660,7 +660,7 @@ return (
       <div className="checkout-shell">
         {step === 1 && (
           isGuest ? (
-            <section className="checkout-card checkout-section" style={{ backgroundColor: '#F5EFE6', border: '1px solid rgba(139, 94, 60, 0.4)' }}>
+            <section className="checkout-card checkout-section" style={{ backgroundColor: '#F5EFE6', border: '1px solid #8B5E3C' }}>
               <div className="checkout-form-grid">
                 <label className="checkout-field">
                   <span>Full Name</span>
@@ -797,7 +797,7 @@ return (
               </div>
             </section>
           ) : (
-            <section className="checkout-details-summary" style={{ backgroundColor: '#F5EFE6', border: '1px solid rgba(139, 94, 60, 0.4)' }}>
+            <section className="checkout-details-summary" style={{ backgroundColor: '#F5EFE6', border: '1px solid #8B5E3C' }}>
               <div className="summary-data-grid">
                 <div className="summary-item">
                   <span className="summary-label">Full Name</span>
@@ -872,7 +872,7 @@ return (
         )}
 
         {step === 2 && (
-          <section className="checkout-card checkout-section" style={{ backgroundColor: '#F5EFE6', border: '1px solid rgba(139, 94, 60, 0.4)' }}>
+          <section className="checkout-card checkout-section" style={{ backgroundColor: '#F5EFE6', border: '1px solid #8B5E3C' }}>
             <div className="checkout-payment-grid">
               <button
                 type="button"
@@ -930,7 +930,7 @@ return (
               <button
                 type="button"
                 className="checkout-payment-card cursor-not-allowed pointer-events-none w-full"
-                style={{ display: "block", padding: "20px", height: "auto", backgroundColor: '#ffffff', border: '1px solid rgba(139, 94, 60, 0.4)' }}
+                style={{ display: "block", padding: "20px", height: "auto", backgroundColor: '#ffffff', border: '1px solid #8B5E3C' }}
               >
                 <div className="flex flex-row items-start w-full justify-between gap-3 mb-4">
                   <div className="flex items-start gap-4">
@@ -960,7 +960,7 @@ return (
         )}
 
         {step === 3 && (
-          <section className="checkout-card checkout-card--summary checkout-section order-summary" style={{ backgroundColor: '#F5EFE6', border: '1px solid rgba(139, 94, 60, 0.4)' }}>
+          <section className="checkout-card checkout-card--summary checkout-section order-summary" style={{ backgroundColor: '#F5EFE6', border: '1px solid #8B5E3C' }}>
             <div className="checkout-summary-list checkout-items">
               {enrichedItems.map((it) => (
                 <div className="flex justify-between items-start" key={it.id}>

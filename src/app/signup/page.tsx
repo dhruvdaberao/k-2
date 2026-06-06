@@ -151,7 +151,7 @@ export default function SignupPage() {
             </h1>
           </div>
 
-          <div className="checkout-card p-5 sm:p-6 bg-[#f3ede6] rounded-2xl shadow-sm" style={{ border: "1px solid #C4A484" }}>
+          <div className="checkout-card p-5 sm:p-6 bg-[#f3ede6] rounded-2xl shadow-sm" style={{ border: "1px solid #8B5E3C" }}>
             <form onSubmit={handleAuthAction} className="flex flex-col gap-4">
               <label className="checkout-field">
                 <span>Email Address</span>
