@@ -126,14 +126,25 @@ export default function WishlistPage() {
     }
     return (
       <div className="container py-8">
+        <style dangerouslySetInnerHTML={{ __html: `
+          @keyframes wishlistShimmer {
+            0% { background-position: -400px 0; }
+            100% { background-position: 400px 0; }
+          }
+          .wishlist-skeleton-element {
+            background: linear-gradient(90deg, #EAE1D3 25%, #f5efe6 37%, #EAE1D3 63%);
+            background-size: 800px 100%;
+            animation: wishlistShimmer 1.6s ease-in-out infinite;
+          }
+        `}} />
         <h1 className="collections-title mb-8 text-center">Wishlist</h1>
         <div className="plp-grid-mobile">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className="overflow-hidden border border-stone-100 shadow-sm animate-pulse" style={{ backgroundColor: '#F5EFE6', borderRadius: '24px' }}>
-              <div className="w-full aspect-square bg-[#EAE1D3]" />
-              <div className="p-3">
-                <div className="h-4 w-3/4 bg-[#EAE1D3] rounded mb-2"></div>
-                <div className="h-5 w-1/3 bg-[#EAE1D3] rounded"></div>
+          {[1, 2, 3, 4, 5, 6].map(i => (
+            <div key={i} className="overflow-hidden border border-[rgba(139,94,60,0.15)] shadow-sm" style={{ backgroundColor: '#F5EFE6', borderRadius: '24px' }}>
+              <div className="w-full aspect-[3/4] wishlist-skeleton-element" />
+              <div className="p-4 pb-5">
+                <div className="h-4 w-[85%] rounded-full mb-3" style={{ background: 'linear-gradient(90deg, #dfd4c5 25%, #ebe3d6 37%, #dfd4c5 63%)', backgroundSize: '800px 100%', animation: 'wishlistShimmer 1.6s ease-in-out infinite' }}></div>
+                <div className="h-5 w-[45%] rounded-full" style={{ background: 'linear-gradient(90deg, #dfd4c5 25%, #ebe3d6 37%, #dfd4c5 63%)', backgroundSize: '800px 100%', animation: 'wishlistShimmer 1.6s ease-in-out infinite' }}></div>
               </div>
             </div>
           ))}
