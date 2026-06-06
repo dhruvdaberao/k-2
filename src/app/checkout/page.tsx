@@ -551,8 +551,8 @@ function CheckoutContent() {
   if (finalItems.length === 0 && !isOrderPlaced) {
     return (
       <main className="checkout-page checkout-container checkout-flow py-20 text-center" style={{ margin: '0 auto' }}>
-        <div className="mb-6 relative flex justify-center text-[#5a3e2b]">
-          <svg className="w-16 h-16 md:w-20 md:h-20 mx-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <div className="mb-6 flex justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="none"/>
             <path d="M7 11V6a5 5 0 0 1 10 0v5" fill="none"/>
           </svg>

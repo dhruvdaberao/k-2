@@ -256,8 +256,8 @@ export default function CartPage() {
           /* Minimalist Empty State */
           <div className="flex flex-col items-center justify-center pt-20 pb-32 text-center px-4 mx-auto w-full">
             <div className="max-w-md w-full flex flex-col items-center">
-              <div className="mb-6 relative flex justify-center text-[#5a3e2b]">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-20 h-20 md:w-24 md:h-24">
+              <div className="mb-6 flex justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="none"/>
                   <path d="M7 11V6a5 5 0 0 1 10 0v5" fill="none"/>
                 </svg>
