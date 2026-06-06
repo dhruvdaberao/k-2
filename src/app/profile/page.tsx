@@ -415,7 +415,7 @@ function ProfileContent() {
       <style dangerouslySetInnerHTML={{__html: `
         .profile-page-styles input, 
         .profile-page-styles textarea {
-          border: 1px solid rgba(139, 94, 60, 0.4) !important;
+          border: 1px solid #C4A484 !important;
         }
         .profile-page-styles input:focus, 
         .profile-page-styles textarea:focus {
