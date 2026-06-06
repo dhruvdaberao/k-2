@@ -552,7 +552,7 @@ function CheckoutContent() {
     return (
       <main className="checkout-page checkout-container checkout-flow py-20 text-center" style={{ margin: '0 auto' }}>
         <div className="mb-6 flex justify-center">
-          <img src="/nav-icons/empty-cart.png" alt="Empty Bag" className="w-48 h-48 md:w-56 md:h-56 mx-auto object-contain" />
+          <img src="/nav-icons/empty-cart.png" alt="Empty Bag" className="h-40 md:h-48 w-auto mx-auto object-contain" />
         </div>
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-3 md:mb-5">Your bag is empty</h2>
         <p className="text-stone-500 mb-10 text-sm md:text-lg lg:text-xl italic">You don't have any items to checkout.</p>

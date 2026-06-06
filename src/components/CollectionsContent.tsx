@@ -180,9 +180,9 @@ export default function CollectionsContent({ serverCategory, liveProducts = [], 
         <div className="flex flex-col items-center justify-center py-10 md:py-20 text-center px-4 max-w-md mx-auto">
           <div className="mb-6 flex justify-center">
             {!qParam ? (
-              <img src="/nav-icons/empty-collection.png" alt="Empty Collection" className="w-48 h-48 md:w-56 md:h-56 object-contain" />
+              <img src="/nav-icons/empty-collection.png" alt="Empty Collection" className="h-40 md:h-48 w-auto object-contain" />
             ) : (
-              <img src="/nav-icons/empty-search.png" alt="No Search Results" className="w-48 h-48 md:w-56 md:h-56 object-contain" />
+              <img src="/nav-icons/empty-search.png" alt="No Search Results" className="h-40 md:h-48 w-auto object-contain" />
             )}
           </div>
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-3 md:mb-4">
