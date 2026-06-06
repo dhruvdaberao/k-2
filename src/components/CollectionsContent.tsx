@@ -180,17 +180,9 @@ export default function CollectionsContent({ serverCategory, liveProducts = [], 
         <div className="flex flex-col items-center justify-center py-10 md:py-20 text-center px-4 max-w-md mx-auto">
           <div className="mb-6 flex justify-center">
             {!qParam ? (
-              <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="2" y="2" width="8" height="8" rx="2.5"/>
-                <rect x="14" y="2" width="8" height="8" rx="2.5"/>
-                <rect x="2" y="14" width="8" height="8" rx="2.5"/>
-                <rect x="14" y="14" width="8" height="8" rx="2.5"/>
-              </svg>
+              <img src="/nav-icons/empty-collection.png" alt="Empty Collection" className="w-48 h-48 md:w-56 md:h-56 object-contain" />
             ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.3-4.3" />
-              </svg>
+              <img src="/nav-icons/empty-search.png" alt="No Search Results" className="w-48 h-48 md:w-56 md:h-56 object-contain" />
             )}
           </div>
           <h2 className="text-xl font-serif font-bold text-[#2f2a26] mb-2">

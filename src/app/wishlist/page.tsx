@@ -172,9 +172,7 @@ export default function WishlistPage() {
         <div className="flex flex-col items-center justify-center pt-16 pb-32 text-center px-4 w-full">
           <div className="max-w-md w-full flex flex-col items-center">
             <div className="mb-6 flex justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21.19 5.01a5.72 5.72 0 0 0-8.09 0L12 6.12l-1.1-1.1a5.72 5.72 0 0 0-8.09 8.09l1.1 1.1L9.92 20.22a2.94 2.94 0 0 0 4.16 0L20.09 14.21l1.1-1.1a5.72 5.72 0 0 0 0-8.1z" />
-              </svg>
+              <img src="/nav-icons/empty-whshlist.png" alt="Empty Wishlist" className="w-48 h-48 md:w-56 md:h-56 object-contain" />
             </div>
             <h2 className="text-xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-2 md:mb-4">Your wishlist is empty</h2>
             <p className="text-stone-500 mb-8 text-sm md:text-lg lg:text-xl italic">

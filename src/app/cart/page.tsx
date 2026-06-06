@@ -257,10 +257,7 @@ export default function CartPage() {
           <div className="flex flex-col items-center justify-center pt-20 pb-32 text-center px-4 mx-auto w-full">
             <div className="max-w-md w-full flex flex-col items-center">
               <div className="mb-6 flex justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="none"/>
-                  <path d="M7 11V6a5 5 0 0 1 10 0v5" fill="none"/>
-                </svg>
+                <img src="/nav-icons/empty-bag (3).png" alt="Empty Bag" className="w-48 h-48 md:w-56 md:h-56 object-contain" />
               </div>
               
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-3 md:mb-4">Your bag is empty</h2>
