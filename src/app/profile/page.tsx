@@ -413,18 +413,6 @@ function ProfileContent() {
   return (
     <main className="checkout-page checkout-container pb-20 profile-page-styles">
       <style dangerouslySetInnerHTML={{__html: `
-        .profile-page-styles .checkout-card {
-          border: 1px solid #C4A484 !important;
-        }
-        .profile-page-styles input, 
-        .profile-page-styles textarea {
-          border: 1px solid #C4A484 !important;
-        }
-        .profile-page-styles input:focus, 
-        .profile-page-styles textarea:focus {
-          border-color: var(--brand) !important;
-          outline: none;
-        }
         .profile-page-styles .btn-edit {
           border: 1px solid var(--brand);
           color: var(--brand);
@@ -454,7 +442,6 @@ function ProfileContent() {
           .profile-page-styles .checkout-field > div {
             font-size: 18px !important;
             padding: 16px !important;
-            border-color: #C4A484 !important;
           }
           .profile-page-styles .btn-primary {
             font-size: 18px !important;

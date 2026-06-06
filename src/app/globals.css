@@ -3202,7 +3202,7 @@ body {
 
 .checkout-card {
   background: #F5EFE6 !important;
-  border: 1px solid rgba(139, 94, 60, 0.4) !important;
+  border: 1px solid #C4A484 !important;
   border-radius: 18px;
   padding: 1.5rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
@@ -3259,7 +3259,7 @@ body {
   min-height: 48px;
   padding: 0.85rem 0.95rem;
   border-radius: 10px;
-  border: 1px solid rgba(74, 50, 25, 0.12);
+  border: 1px solid #C4A484;
   background: #fff;
   color: #2F2A26;
   font: inherit;
@@ -3280,8 +3280,8 @@ body {
 
 .checkout-field input:focus,
 .checkout-field textarea:focus {
-  border-color: rgba(74, 50, 25, 0.32);
-  box-shadow: 0 0 0 4px rgba(74, 50, 25, 0.08);
+  border-color: var(--brand);
+  box-shadow: 0 0 0 1px var(--brand);
 }
 
 .checkout-field textarea {
