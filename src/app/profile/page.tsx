@@ -413,6 +413,9 @@ function ProfileContent() {
   return (
     <main className="checkout-page checkout-container pb-20 profile-page-styles">
       <style dangerouslySetInnerHTML={{__html: `
+        .profile-page-styles .checkout-card {
+          border: 1px solid #C4A484 !important;
+        }
         .profile-page-styles input, 
         .profile-page-styles textarea {
           border: 1px solid #C4A484 !important;
