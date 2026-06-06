@@ -18,6 +18,9 @@ export default function StickyBuyBar({
   const cartQuantity = cartItem?.quantity || 0;
 
   const [showOutOfStockModal, setShowOutOfStockModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showQtyModal, setShowQtyModal] = useState(false);
+  const [buyQty, setBuyQty] = useState(1);
 
   async function onAddToCart() {
     if (disabled) {
@@ -37,8 +40,40 @@ export default function StickyBuyBar({
     else await updateQuantity(slug, cartQuantity - 1);
   }
 
-  // Mobile layout: Sticky bar sits just above bottom nav (env(safe-area-inset-bottom) + ~60px)
-  // Desktop layout: sits at the very bottom.
+  function onBuyNowClick() {
+    if (disabled) {
+      setShowOutOfStockModal(true);
+      return;
+    }
+    setShowConfirmModal(true);
+  }
+
+  async function handleBuyViaCart() {
+    setShowConfirmModal(false);
+    await addToCart({ id: slug, slug, title, price, image: image || "/placeholder.png" });
+    trackEvent({ action: "begin_checkout", category: "Ecommerce", label: title, value: price });
+    setTimeout(() => router.push("/cart"), 100);
+  }
+
+  function handleBuyDirect() {
+    setShowConfirmModal(false);
+    setBuyQty(1);
+    setShowQtyModal(true);
+  }
+
+  function handleProceedDirect() {
+    setDirectCheckoutItem({
+      product_id: slug,
+      name: title,
+      price,
+      image: image || "/placeholder.png",
+      quantity: buyQty,
+    });
+    trackEvent({ action: "buy_now_direct", category: "Ecommerce", label: title, value: price * buyQty });
+    setShowQtyModal(false);
+    router.push("/checkout?buyNow=true");
+  }
+
   return (
     <>
       <style>{`
@@ -50,25 +85,37 @@ export default function StickyBuyBar({
             bottom: 0;
           }
         }
+        .buybar-btn-primary, .buybar-qty-container {
+          flex: 1;
+          height: 54px !important;
+          min-height: 54px !important;
+          border-radius: 20px !important;
+          font-size: 16px !important;
+          min-width: 130px;
+        }
+        @media (min-width: 1024px) {
+          .buybar-btn-primary, .buybar-qty-container {
+            height: 64px !important;
+            min-height: 64px !important;
+            font-size: 20px !important;
+            border-radius: 20px !important;
+          }
+        }
       `}</style>
       <div 
-        className={`fixed left-0 right-0 transition-transform duration-300 ease-in-out border-t border-[rgba(139,94,60,0.15)] shadow-[0_-8px_20px_rgba(0,0,0,0.06)] sticky-bar-wrapper`}
+        className="fixed left-0 right-0 transition-transform duration-300 ease-in-out border-t border-[rgba(139,94,60,0.3)] shadow-[0_-8px_20px_rgba(0,0,0,0.06)] sticky-bar-wrapper rounded-t-3xl"
         style={{
           zIndex: 1300, 
-          background: 'rgba(253, 251, 247, 0.75)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
+          background: '#F5EFE6',
           transform: isVisible ? 'translateY(0)' : 'translateY(150%)',
         }}
       >
         <div className="max-w-7xl mx-auto px-4 py-3 md:py-4">
-          
-          {/* Actions: Exactly matching the Product Page UI */}
           <div className="flex items-center gap-3 w-full">
              {disabled ? (
                 <button
                   disabled
-                  className="w-full rounded-xl h-[54px] opacity-60 font-bold border-none text-[16px] md:text-lg"
+                  className="buybar-btn-primary opacity-60 font-bold border-none text-[16px] md:text-lg"
                   style={{ backgroundColor: "#8B7355", color: "#F5EFE6", cursor: "not-allowed" }}
                 >
                   Out of Stock
@@ -76,40 +123,37 @@ export default function StickyBuyBar({
              ) : (
                 <>
                   <button
-                    className="flex-1 font-bold text-[16px] md:text-lg transition-transform hover:scale-[1.02] active:scale-[0.96] shadow-sm"
-                    style={{ backgroundColor: '#4A3219', color: '#FDFBF7', border: 'none', height: '54px', minHeight: '54px', borderRadius: '20px', WebkitAppearance: 'none' }}
-                    onClick={() => {
-                        document.getElementById('product-main-buy')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }}
+                    className="btn-primary buybar-btn-primary hover:scale-[1.02] active:scale-[0.96] transition-transform duration-200"
+                    onClick={onBuyNowClick}
                   >
                     Buy Now
                   </button>
 
                   {cartQuantity > 0 ? (
-                    <div className="flex-1 overflow-hidden hover:scale-[1.02] transition-transform duration-200" style={{ backgroundColor: '#4A3219', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '54px', minHeight: '54px', borderRadius: '20px' }}>
+                    <div className="buybar-qty-container hover:scale-[1.02] transition-transform duration-200" style={{ flex: 1, backgroundColor: '#4A3219', display: 'flex', alignItems: 'center', justifyContent: 'space-between', overflow: 'hidden' }}>
                       <button
                         onClick={handleDecrease}
-                        className="active:scale-75 transition-transform duration-100 flex items-center justify-center w-14 h-full"
-                        style={{ background: 'transparent', border: 'none', color: '#FDFBF7', fontSize: '1.8rem', cursor: 'pointer', outline: 'none', WebkitAppearance: 'none' }}
+                        className="active:scale-75 transition-transform duration-100"
+                        style={{ background: 'transparent', border: 'none', color: '#FDFBF7', fontSize: '1.8rem', width: '48px', height: '100%', cursor: 'pointer', outline: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                       >
                         −
                       </button>
-                      <span className="text-[1.2rem] md:text-[1.4rem]" style={{ color: '#FDFBF7', fontWeight: 'bold', userSelect: 'none' }}>
+                      <span style={{ color: '#FDFBF7', fontSize: '1.2rem', fontWeight: 'bold', flex: 1, textAlign: 'center', userSelect: 'none' }}>
                         {cartQuantity}
                       </span>
                       <button
                         onClick={handleIncrease}
-                        className="active:scale-75 transition-transform duration-100 flex items-center justify-center w-14 h-full"
-                        style={{ background: 'transparent', border: 'none', color: '#FDFBF7', fontSize: '1.8rem', cursor: 'pointer', outline: 'none', WebkitAppearance: 'none' }}
+                        className="active:scale-75 transition-transform duration-100"
+                        style={{ background: 'transparent', border: 'none', color: '#FDFBF7', fontSize: '1.8rem', width: '48px', height: '100%', cursor: 'pointer', outline: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                       >
                         +
                       </button>
                     </div>
                   ) : (
                     <button
-                      className="flex-1 font-bold text-[16px] md:text-lg transition-transform hover:scale-[1.02] active:scale-[0.96] shadow-sm"
+                      className="btn-primary buybar-btn-primary hover:scale-[1.02] active:scale-[0.96] transition-transform duration-200"
                       onClick={onAddToCart}
-                      style={{ backgroundColor: '#4A3219', color: '#FDFBF7', border: 'none', height: '54px', minHeight: '54px', borderRadius: '20px', WebkitAppearance: 'none' }}
+                      style={{ backgroundColor: '#4A3219', color: '#FDFBF7' }}
                     >
                       Add to Bag
                     </button>
@@ -117,7 +161,6 @@ export default function StickyBuyBar({
                 </>
              )}
           </div>
-
         </div>
       </div>
 
@@ -136,6 +179,214 @@ export default function StickyBuyBar({
           </div>
         </div>
       )}
+
+      {showConfirmModal && (
+        <div className="bnm-overlay" onClick={() => setShowConfirmModal(false)}>
+          <div className="bnm-modal" onClick={(e) => e.stopPropagation()}>
+            <h3 className="bnm-title">Buy only this item?</h3>
+            <p className="bnm-text">
+              Skip the cart and checkout with just <strong>{title}</strong>?
+            </p>
+            <div className="bnm-actions">
+              <button className="bnm-btn bnm-btn--secondary" onClick={handleBuyViaCart}>
+                No, Add to Bag
+              </button>
+              <button className="bnm-btn bnm-btn--primary" onClick={handleBuyDirect}>
+                Yes, Buy Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showQtyModal && (
+        <div className="bnm-overlay" onClick={() => setShowQtyModal(false)}>
+          <div className="bnm-modal" onClick={(e) => e.stopPropagation()}>
+            <h3 className="bnm-title">{title}</h3>
+            <p className="bnm-text">Select quantity</p>
+
+            <div className="bnm-qty-row">
+              <button
+                className="bnm-qty-btn"
+                onClick={() => setBuyQty((q) => Math.max(1, q - 1))}
+                disabled={buyQty <= 1}
+              >
+                −
+              </button>
+              <input
+                type="number"
+                className="bnm-qty-input"
+                value={buyQty}
+                min={1}
+                onChange={(e) => {
+                  const v = parseInt(e.target.value, 10);
+                  if (!isNaN(v) && v >= 1) setBuyQty(v);
+                }}
+              />
+              <button
+                className="bnm-qty-btn"
+                onClick={() => setBuyQty((q) => q + 1)}
+              >
+                +
+              </button>
+            </div>
+
+            <div className="bnm-price-preview">
+              ₹{(price * buyQty).toLocaleString("en-IN")}
+            </div>
+
+            <button className="bnm-btn bnm-btn--primary bnm-btn--full" onClick={handleProceedDirect}>
+              Proceed to Checkout
+            </button>
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
+        .bnm-overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.45);
+          backdrop-filter: blur(4px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 16px;
+          z-index: 9999;
+        }
+
+        .bnm-modal {
+          background: #FDFBF7;
+          border-radius: 20px;
+          padding: 28px 24px;
+          max-width: 380px;
+          width: 100%;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+          text-align: center;
+        }
+
+        .bnm-title {
+          font-size: 20px;
+          font-weight: 700;
+          color: #3E2C1C;
+          margin: 0 0 8px;
+          font-family: var(--font-serif, serif);
+        }
+
+        .bnm-text {
+          font-size: 14px;
+          color: #8B7355;
+          line-height: 1.5;
+          margin: 0 0 24px;
+        }
+
+        .bnm-actions {
+          display: flex;
+          gap: 10px;
+        }
+
+        .bnm-btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 13px 20px;
+          font-size: 14px;
+          font-weight: 600;
+          border-radius: 30px;
+          border: none;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          flex: 1;
+        }
+
+        .bnm-btn--primary {
+          background: #4A3219;
+          color: #fff;
+        }
+
+        .bnm-btn--primary:hover {
+          background: #3B2814;
+        }
+
+        .bnm-btn--secondary {
+          background: #F5EFE6;
+          color: #5A3E2B;
+          border: 1.5px solid #E6DCCF;
+        }
+
+        .bnm-btn--secondary:hover {
+          background: #EDE5D8;
+        }
+
+        .bnm-btn--full {
+          width: 100%;
+          margin-top: 20px;
+        }
+
+        .bnm-qty-row {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0;
+          margin: 0 auto 12px;
+          background: #2f2a26;
+          border-radius: 30px;
+          overflow: hidden;
+          max-width: 180px;
+          height: 54px;
+        }
+
+        .bnm-qty-btn {
+          width: 48px;
+          height: 100%;
+          background: transparent;
+          border: none;
+          outline: none;
+          color: white;
+          font-size: 1.3rem;
+          font-weight: 700;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background 0.15s;
+        }
+
+        .bnm-qty-btn:hover {
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        .bnm-qty-btn:disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+        }
+
+        .bnm-qty-input {
+          flex: 1;
+          text-align: center;
+          background: transparent;
+          border: none;
+          color: white;
+          font-size: 1rem;
+          font-weight: 700;
+          outline: none;
+          width: 60px;
+          -moz-appearance: textfield;
+        }
+
+        .bnm-qty-input::-webkit-inner-spin-button,
+        .bnm-qty-input::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        .bnm-price-preview {
+          font-size: 26px;
+          font-weight: 800;
+          color: #3E2C1C;
+          font-family: var(--font-outfit), var(--font-sans, system-ui), sans-serif;
+        }
+      `}</style>
     </>
   );
 }
