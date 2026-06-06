@@ -41,7 +41,7 @@ export default function AuthChoicePage() {
             Create Account
           </button>
 
-          <div className="mt-4 text-center">
+          <div className="mt-4 mb-16 text-center">
             <button 
               onClick={() => router.push("/")} 
               className="inline-block text-sm font-semibold hover:opacity-80 transition-opacity"
