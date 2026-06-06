@@ -108,14 +108,14 @@ export default function SearchPageContent({ initialProducts = [] }: { initialPro
             )}
           </div>
         ) : filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-10 md:py-20 text-center px-4 w-full">
-            <div className="mb-6 flex justify-center">
-              <img src="/nav-icons/empty-search.png" alt="No Search Results" className="w-48 h-48 md:w-56 md:h-56 object-contain" />
-            </div>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-3 md:mb-4">No matching products found.</h2>
-            <p className="text-stone-500 mb-8 text-sm md:text-lg lg:text-xl italic">
+          <div className="flex flex-col items-center justify-center py-4 md:py-10 text-center px-4 w-full">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-2">No matching products found.</h2>
+            <p className="text-stone-500 mb-6 text-sm md:text-lg lg:text-xl italic">
               Try adjusting your keywords or explore our catalog.
             </p>
+            <div className="mb-6 flex justify-center">
+              <img src="/nav-icons/empty-search.png" alt="No Search Results" className="w-40 h-40 md:w-56 md:h-56 object-contain" />
+            </div>
             <button
               className="btn-primary px-10 py-3 rounded-full font-bold"
               onClick={() => router.push('/collections')}
