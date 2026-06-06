@@ -138,9 +138,9 @@ export default function BootstrapNavbar() {
 
         <Link href={authLink} prefetch={true} className={`bottom-nav-item ${isActive(authLink) ? "active" : ""}`} title={user ? "Profile" : "Login"}>
           {isActive(authLink) ? (
-            <svg xmlns="http://www.w3.org/2000/svg" width={29} height={29} viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon profile-icon-svg"><path d="M19 21a1 1 0 0 0 1-1v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1a1 1 0 0 0 1 1z"/><circle cx="12" cy="7" r="4"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width={32} height={32} viewBox="0 0 24 24" fill="#5a3e2b" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon profile-icon-svg"><path d="M19 21a1 1 0 0 0 1-1v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1a1 1 0 0 0 1 1z"/><circle cx="12" cy="7" r="4"/></svg>
           ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" width={29} height={29} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon profile-icon-svg"><path d="M19 21a1 1 0 0 0 1-1v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1a1 1 0 0 0 1 1z"/><circle cx="12" cy="7" r="4"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width={32} height={32} viewBox="0 0 24 24" fill="none" stroke="#5a3e2b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="bottom-nav-icon profile-icon-svg"><path d="M19 21a1 1 0 0 0 1-1v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1a1 1 0 0 0 1 1z"/><circle cx="12" cy="7" r="4"/></svg>
           )}
           <span className="bottom-nav-label">{user ? "Profile" : "Login"}</span>
         </Link>

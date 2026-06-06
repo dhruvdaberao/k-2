@@ -551,10 +551,10 @@ function CheckoutContent() {
   if (finalItems.length === 0 && !isOrderPlaced) {
     return (
       <main className="checkout-page checkout-container checkout-flow py-20 text-center" style={{ margin: '0 auto' }}>
-        <div className="mb-6 opacity-30">
-          <svg className="w-16 h-16 md:w-20 md:h-20 mx-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="2" y="8" width="20" height="14" rx="2" ry="2"/>
-            <path d="M7 11V6a5 5 0 0 1 10 0v5"/>
+        <div className="mb-6 relative flex justify-center text-[#5a3e2b]">
+          <svg className="w-16 h-16 md:w-20 md:h-20 mx-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="8" width="20" height="14" rx="2" ry="2" fill="none"/>
+            <path d="M7 11V6a5 5 0 0 1 10 0v5" fill="none"/>
           </svg>
         </div>
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-3 md:mb-5">Your bag is empty</h2>

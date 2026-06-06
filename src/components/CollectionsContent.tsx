@@ -178,16 +178,16 @@ export default function CollectionsContent({ serverCategory, liveProducts = [], 
 
       {sorted.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-10 md:py-20 text-center px-4 max-w-md mx-auto">
-          <div className="mb-6 opacity-30 flex justify-center">
+          <div className="mb-6 relative flex justify-center text-[#5a3e2b]">
             {!qParam ? (
-              <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-20 h-20 md:w-24 md:h-24">
                 <rect x="2" y="2" width="8" height="8" rx="2.5"/>
                 <rect x="14" y="2" width="8" height="8" rx="2.5"/>
                 <rect x="2" y="14" width="8" height="8" rx="2.5"/>
                 <rect x="14" y="14" width="8" height="8" rx="2.5"/>
               </svg>
             ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#4A3219" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-20 h-20 md:w-24 md:h-24">
                 <circle cx="11" cy="11" r="8" />
                 <path d="m21 21-4.3-4.3" />
               </svg>
