@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
     return (
-        <main className="px-4 py-12 md:py-16 max-w-3xl mx-auto" style={{ paddingTop: '80px' }}>
+        <main className="px-4 py-12 md:py-16 max-w-3xl mx-auto">
             <div className="flex items-center gap-3 mb-8">
                 <BackButton />
                 <h1 className="font-serif text-3xl font-bold m-0 text-[#2f2a26]">Contact Us</h1>
@@ -48,7 +48,7 @@ export default function ContactPage() {
                     </a>
                 </div>
 
-                <div className="checkout-card rounded-2xl shadow-sm p-6 flex flex-col border border-[rgba(139,94,60,0.4)]" style={{ backgroundColor: '#F5EFE6' }}>
+                <div className="checkout-card rounded-2xl shadow-sm p-6 flex flex-col border border-[#C4A484]" style={{ backgroundColor: '#F5EFE6' }}>
                     <h2 className="font-bold text-lg mb-4 text-[#5a3e2b]">Email Support</h2>
                     <p className="text-stone-600 mb-4 flex-grow">
                         For order inquiries or collaborations, drop us a mail.
