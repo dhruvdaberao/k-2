@@ -88,7 +88,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="preload" href="/nav-icons/empty-search.png" as="image" />
         <link rel="preload" href="/nav-icons/empty-collection.png" as="image" />
         <link rel="preload" href="/nav-icons/empty-bag (3).png" as="image" />
-        <link rel="preload" href="/nav-icons/empty-whshlist.png" as="image" />
+        <link rel="preload" href="/nav-icons/empty-cart.png" as="image" />
 
         <meta name="theme-color" content="#f1ebe6" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
