@@ -6,7 +6,7 @@ export default function AuthChoicePage() {
   const router = useRouter();
 
   return (
-    <main className="checkout-page checkout-container pb-10 pt-[20px]" style={{ paddingTop: '20px' }}>
+    <main className="checkout-page checkout-container pb-20 pt-[20px]" style={{ paddingTop: '20px' }}>
       <div className="px-5 mx-auto w-full mt-4" style={{ maxWidth: '420px' }}>
         <div className="text-center mb-8">
           <video
