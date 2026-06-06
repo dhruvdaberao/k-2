@@ -451,6 +451,7 @@ function ProfileContent() {
           .profile-page-styles .checkout-field > div {
             font-size: 18px !important;
             padding: 16px !important;
+            border-color: #C4A484 !important;
           }
           .profile-page-styles .btn-primary {
             font-size: 18px !important;
@@ -462,8 +463,8 @@ function ProfileContent() {
         <h1 className="text-3xl md:text-5xl font-serif font-bold text-[#2f2a26]">Your Profile</h1>
       </header>
 
-      <section className="checkout-card rounded-2xl shadow-sm mx-auto w-[92%] border border-[rgba(139,94,60,0.4)] p-6 md:p-12" style={{ maxWidth: '1000px' }}>
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 md:mb-12 border-b pb-4 px-2">
+      <section className="checkout-card rounded-2xl shadow-sm mx-auto w-[92%] border border-[#C4A484] p-6 md:p-12" style={{ maxWidth: '1000px' }}>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 md:mb-12 border-b border-[#C4A484] pb-4 px-2">
           <h2 className="text-xl md:text-3xl font-bold" style={{ color: "var(--text)", margin: 0 }}>Personal Information</h2>
         </div>
 
