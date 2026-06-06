@@ -185,10 +185,10 @@ export default function CollectionsContent({ serverCategory, liveProducts = [], 
               <img src="/nav-icons/empty-search.png" alt="No Search Results" className="w-48 h-48 md:w-56 md:h-56 object-contain" />
             )}
           </div>
-          <h2 className="text-xl font-serif font-bold text-[#2f2a26] mb-2">
-            {qParam ? "No products found" : "Currently no products in this category"}
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-3 md:mb-4">
+            {qParam ? "No products found." : "Currently no products in this category."}
           </h2>
-          <p className="text-stone-500 mb-8 max-w-md mx-auto text-sm md:text-base italic">
+          <p className="text-stone-500 mb-8 max-w-md mx-auto text-sm md:text-lg lg:text-xl italic">
             {qParam 
               ? "We couldn't find anything matching your search. Try adjusting your keywords or browse our full collection."
               : "We are currently crafting new items for this collection. Please check back later or explore our other creations."}
