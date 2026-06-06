@@ -82,6 +82,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="icon" type="image/png" href="/nav-icons/app-icon.png?v=9" />
         <link rel="apple-touch-icon" href="/nav-icons/app-icon.png?v=9" />
         <link rel="manifest" href="/manifest.json?v=6" />
+        
+        {/* Preload critical assets for instant loading */}
+        <link rel="preload" href="/nav-icons/logo-animation.mp4" as="video" type="video/mp4" />
+        <link rel="preload" href="/nav-icons/empty-search.png" as="image" />
+        <link rel="preload" href="/nav-icons/empty-collection.png" as="image" />
+        <link rel="preload" href="/nav-icons/empty-bag (3).png" as="image" />
+        <link rel="preload" href="/nav-icons/empty-whshlist.png" as="image" />
+
         <meta name="theme-color" content="#f1ebe6" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
