@@ -117,9 +117,7 @@ export default function LoginPage() {
             new Promise(r => setTimeout(r, 2000))
           ]);
           showToast("Account created successfully");
-          setTimeout(() => {
-            router.push("/profile");
-          }, 1500);
+          window.location.href = "/profile";
           return; // prevent setAuthLoading(false) from running
         }
       } else if (authMode === "login") {
@@ -158,9 +156,7 @@ export default function LoginPage() {
           syncLocalCartToDB(data.user.id);
         }
 
-        setTimeout(() => {
-          router.push("/profile");
-        }, 1500);
+        window.location.href = "/profile";
         return; // prevent setAuthLoading(false) from running
       } else if (authMode === "otp") {
         const res = await loginWithOtpAction(cleanEmail);
@@ -196,9 +192,7 @@ export default function LoginPage() {
           syncLocalCartToDB(data.user.id);
         }
 
-        setTimeout(() => {
-          router.push("/profile");
-        }, 1500);
+        window.location.href = "/profile";
         return; // prevent setAuthLoading(false) from running
       } else if (authMode === "forgot") {
         const res = await resetPasswordAction(cleanEmail);
