@@ -248,7 +248,7 @@ export default function LoginPage() {
             </h1>
           </div>
 
-          <div className="checkout-card p-5 sm:p-6 bg-[#f3ede6] rounded-2xl shadow-sm" style={{ border: "1.5px solid rgba(139, 94, 60, 0.3)" }}>
+          <div className="checkout-card p-5 sm:p-6 bg-[#f3ede6] rounded-2xl shadow-sm" style={{ border: "1px solid #C4A484" }}>
             <form onSubmit={handleAuthAction} className="flex flex-col gap-4">
               <label className="checkout-field">
                 <span>Email Address</span>
