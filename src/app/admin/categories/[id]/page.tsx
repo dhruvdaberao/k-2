@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -527,8 +528,8 @@ export default function EditCategory({ params }: { params: { id: string } }) {
           </div>
         )}
 
-        {showDeleteModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50" style={{ backdropFilter: 'blur(2px)' }}>
+        {showDeleteModal && createPortal(
+          <div className="fixed inset-0 z-[999999] flex items-center justify-center p-4 bg-black bg-opacity-50" style={{ backdropFilter: 'blur(2px)' }}>
             <div className="bg-[#F5EFE6] rounded-[24px] p-6 md:p-8 max-w-sm w-full shadow-xl" style={{ border: '1px solid #E6DCCF' }}>
               <div className="flex flex-col items-center text-center">
                 <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
@@ -581,7 +582,8 @@ export default function EditCategory({ params }: { params: { id: string } }) {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
         )}
       </div>
     </main>
