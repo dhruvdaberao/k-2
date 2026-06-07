@@ -114,7 +114,7 @@ export default function SearchPageContent({ initialProducts = [] }: { initialPro
               Try adjusting your keywords or explore our catalog.
             </p>
             <div className="mb-6 flex justify-center">
-              <img src="/nav-icons/empty-search.png" alt="No Search Results" style={{ width: '200px', height: '200px', objectFit: 'contain', padding: '0px' }} className="mx-auto" />
+              <img src="/nav-icons/empty-search.png" alt="No Search Results" style={{ width: '260px', height: '260px', objectFit: 'contain', padding: '0px' }} className="mx-auto" />
             </div>
             <button
               className="btn-primary px-10 py-3 rounded-full font-bold"
