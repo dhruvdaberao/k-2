@@ -83,36 +83,7 @@ export default function AdminCarouselsClient({ initialSlides }: { initialSlides:
     }
   };
 
-  const deleteSlide = async (id: string, imageUrl: string) => {
-    if (!window.confirm("Are you sure you want to delete this slide?")) return;
-    try {
-      const { data: authData } = await supabase.auth.getSession();
-      const token = authData.session?.access_token || "";
 
-      const response = await fetch(`/api/admin/catalog/carousels?id=${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const result = await response.json();
-      if (!result.success) throw new Error(result.error);
-
-      // Extract filename from URL to delete from bucket
-      if (imageUrl && !imageUrl.startsWith("/uploads")) {
-        const parts = imageUrl.split("/");
-        const filename = parts[parts.length - 1];
-        if (filename) {
-          await supabase.storage.from("carousel-images").remove([filename]);
-        }
-      }
-
-      await revalidateStorefront();
-      setSlides((prev) => prev.filter((s) => s.id !== id));
-      showToast("Slide deleted!");
-    } catch (err) {
-      console.error(err);
-      showToast("Failed to delete slide");
-    }
-  };
 
   return (
     <main className="min-h-screen bg-[#FDFBF7] py-8 px-2 md:px-4">

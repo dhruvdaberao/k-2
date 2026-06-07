@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation"
 import { useState, useEffect, useCallback } from "react"
 import { supabase } from "@/lib/supabaseClient"
 import { isAdmin } from "@/lib/isAdmin"
+import { showToast } from "@/components/Toast"
+import { revalidateStorefront } from "@/actions/revalidate"
 
 // Reusable Curved Star Component
 const StarIcon = ({ filled, size = 16 }: { filled: boolean; size?: number }) => (
@@ -80,7 +82,7 @@ export default function AdminManageReviewsPage() {
     } catch (err: any) {
       console.error("Fetch reviews error:", err)
       if (err.message === "timeout") {
-        alert("Loading timed out. Please refresh the page.");
+        showToast("Loading timed out. Please refresh the page.");
       }
     } finally {
       setLoading(false)
@@ -119,12 +121,14 @@ export default function AdminManageReviewsPage() {
 
       if (error) {
         console.error("❌ Delete error:", error);
-        alert("Failed to delete review");
+        showToast("Failed to delete review");
         setReviews(previousReviews);
         return;
       }
 
       console.log("✅ Deleted successfully.");
+      showToast("Review deleted successfully");
+      await revalidateStorefront();
       router.refresh();
     } catch (err: any) {
       console.error("🔥 Crash:", err);

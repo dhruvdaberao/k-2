@@ -15,6 +15,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
   const [showReload, setShowReload] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -798,12 +799,10 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
           <div className="flex w-full justify-center mt-4">
             <button
               type="button"
-              onClick={async (e) => { 
+              onClick={(e) => { 
                 e.preventDefault(); 
                 e.stopPropagation(); 
-                if (window.confirm("Are you sure you want to delete this slide? This action cannot be undone.")) {
-                  await confirmDelete();
-                }
+                setShowDeleteModal(true);
               }}
               disabled={saving}
               className="btn-outline flex items-center justify-center gap-2"
@@ -817,6 +816,47 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
               </svg>
               Delete Slide
             </button>
+          </div>
+        )}
+
+        {/* Delete Confirmation Modal */}
+        {showDeleteModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50" style={{ backdropFilter: 'blur(2px)' }}>
+            <div className="bg-[#F5EFE6] rounded-[24px] p-6 md:p-8 max-w-sm w-full shadow-xl" style={{ border: '1px solid #E6DCCF' }}>
+              <div className="flex flex-col items-center text-center">
+                <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-[#4A3219] mb-2">Delete Slide?</h3>
+                <p className="text-[#8B7355] text-sm mb-6">
+                  Are you sure you want to delete this slide? This action cannot be undone.
+                </p>
+                <div className="flex w-full gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowDeleteModal(false)}
+                    className="flex-1 py-3 px-4 rounded-xl font-bold text-sm bg-[#F5EFE6] text-[#4A3219] transition-colors hover:bg-[#E6DCCF]"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      setShowDeleteModal(false);
+                      await confirmDelete();
+                    }}
+                    className="flex-1 py-3 px-4 rounded-xl font-bold text-sm bg-red-500 text-white transition-colors hover:bg-red-600"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
         

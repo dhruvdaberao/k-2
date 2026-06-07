@@ -32,21 +32,32 @@ export default function EditCategory({ params }: { params: { id: string } }) {
 
   const fetchCategory = async () => {
     try {
-      const { data, error } = await supabase.from("categories").select("*").eq("id", params.id).single();
-      if (error) throw error;
-      if (data) {
-        setFormData({
-          name: data.name,
-          image_url: data.image_url || "",
-          discount_active: data.discount_active || false,
-          discount_percentage: data.discount_percentage || "",
-        });
-        setOriginalName(data.name);
-        setImagePreview(data.image_url || null);
-      }
-    } catch (err) {
+      const loadData = async () => {
+        const { data, error } = await supabase.from("categories").select("*").eq("id", params.id).single();
+        if (error) throw error;
+        if (data) {
+          setFormData({
+            name: data.name,
+            image_url: data.image_url || "",
+            discount_active: data.discount_active || false,
+            discount_percentage: data.discount_percentage || "",
+          });
+          setOriginalName(data.name);
+          setImagePreview(data.image_url || null);
+        }
+      };
+
+      await Promise.race([
+        loadData(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 8000))
+      ]);
+    } catch (err: any) {
       console.error(err);
-      showToast("Failed to load category");
+      if (err.message === "timeout") {
+        showToast("Loading timed out. Please refresh the page.");
+      } else {
+        showToast("Failed to load category");
+      }
       router.push("/admin/categories");
     } finally {
       setLoading(false);
@@ -255,7 +266,7 @@ export default function EditCategory({ params }: { params: { id: string } }) {
                       <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                     </div>
                     <div className="absolute top-0 right-0 z-10">
-                      <button type="button" onClick={() => { setImagePreview(null); setImageFile(null); setFormData({...formData, image_url: ""}); }} className="w-8 h-8 flex items-center justify-center bg-white rounded-full text-red-500 shadow-md hover:bg-red-50 transition-colors border border-red-100">
+                      <button type="button" onClick={() => { setImagePreview(null); setImageFile(null); setFormData({...formData, image_url: ""}); }} className="w-8 h-8 flex items-center justify-center bg-white rounded-full text-[#4A3219] shadow-md hover:bg-[#F5EFE6] transition-colors border border-[#E6DCCF]">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                       </button>
                     </div>
@@ -517,20 +528,31 @@ export default function EditCategory({ params }: { params: { id: string } }) {
         )}
 
         {showDeleteModal && (
-          <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}>
-            <div className="bg-[#FDFBF7] rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-[#E6DCCF]">
-              <h3 className="text-xl font-bold text-[#4A3219] mb-2">Delete Category</h3>
-              <p className="text-[#8B7355] text-sm mb-6">Are you sure you want to delete "{originalName}"? This action cannot be undone.</p>
-              <div className="flex gap-3 justify-end">
-                <button 
-                  type="button" 
-                  onClick={() => setShowDeleteModal(false)}
-                  className="px-5 py-2.5 rounded-xl text-sm font-bold text-[#4A3219] bg-[#F5EFE6] hover:bg-[#E6DCCF] transition-colors border border-[#E6DCCF]"
-                >
-                  Cancel
-                </button>
-                <button 
-                  type="button" 
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50" style={{ backdropFilter: 'blur(2px)' }}>
+            <div className="bg-[#F5EFE6] rounded-[24px] p-6 md:p-8 max-w-sm w-full shadow-xl" style={{ border: '1px solid #E6DCCF' }}>
+              <div className="flex flex-col items-center text-center">
+                <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-[#4A3219] mb-2">Delete Category?</h3>
+                <p className="text-[#8B7355] text-sm mb-6">
+                  Are you sure you want to delete "{originalName}"? This action cannot be undone.
+                </p>
+                <div className="flex w-full gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowDeleteModal(false)}
+                    className="flex-1 py-3 px-4 rounded-xl font-bold text-sm bg-[#F5EFE6] text-[#4A3219] transition-colors hover:bg-[#E6DCCF]"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button" 
                   onClick={async () => {
                     setShowDeleteModal(false);
                     setSaving(true);
@@ -552,7 +574,7 @@ export default function EditCategory({ params }: { params: { id: string } }) {
                       setSaving(false);
                     }
                   }}
-                  className="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-red-600 hover:bg-red-700 transition-colors shadow-sm flex items-center gap-2"
+                  className="flex-1 py-3 px-4 rounded-xl font-bold text-sm bg-red-500 text-white transition-colors hover:bg-red-600"
                 >
                   Delete
                 </button>
