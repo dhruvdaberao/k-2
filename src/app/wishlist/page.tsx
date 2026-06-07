@@ -172,7 +172,7 @@ export default function WishlistPage() {
         <div className="flex flex-col items-center justify-center pt-16 pb-32 text-center px-4 w-full">
           <div className="max-w-md w-full flex flex-col items-center">
             <div className="mb-6 flex justify-center">
-              <img src="/nav-icons/empty-bag (3).png" alt="Empty Wishlist" style={{ width: '260px', height: '260px', objectFit: 'contain', padding: '40px' }} className="mx-auto" />
+              <img src="/nav-icons/empty-bag (3).png" alt="Empty Wishlist" style={{ width: '260px', height: '260px', objectFit: 'contain', padding: '10px' }} className="mx-auto" />
             </div>
             <h2 className="text-xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-2 md:mb-4">Your wishlist is empty</h2>
             <p className="text-stone-500 mb-8 text-sm md:text-lg lg:text-xl italic">
