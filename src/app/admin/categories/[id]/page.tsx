@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { revalidateStorefront, revalidateAdmin } from "@/actions/revalidate";
 import { showToast } from "@/components/Toast";
-import { updateCategory } from "@/lib/categoriesApi";
+import { updateCategory, deleteCategory } from "@/lib/categoriesApi";
 import imageCompression from "browser-image-compression";
 
 export default function EditCategory({ params }: { params: { id: string } }) {
@@ -248,14 +248,15 @@ export default function EditCategory({ params }: { params: { id: string } }) {
               {imagePreview ? (
                 <>
                   {/* Current Image (Left) */}
-                  <div 
-                    className="relative rounded-full border border-stone-200 overflow-hidden group shadow-sm flex-shrink-0 bg-white"
-                    style={{ width: '128px', height: '128px' }}
-                  >
-                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                    <div className="absolute top-1 right-1">
-                      <button type="button" onClick={() => { setImagePreview(null); setImageFile(null); setFormData({...formData, image_url: ""}); }} className="w-6 h-6 flex items-center justify-center bg-white rounded-full text-red-500 shadow-md hover:bg-red-50 transition-colors border border-red-100">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                  <div className="relative flex-shrink-0" style={{ width: '128px', height: '128px' }}>
+                    <div 
+                      className="w-full h-full rounded-full border border-stone-200 overflow-hidden shadow-sm bg-white"
+                    >
+                      <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                    </div>
+                    <div className="absolute top-0 right-0 z-10">
+                      <button type="button" onClick={() => { setImagePreview(null); setImageFile(null); setFormData({...formData, image_url: ""}); }} className="w-8 h-8 flex items-center justify-center bg-white rounded-full text-red-500 shadow-md hover:bg-red-50 transition-colors border border-red-100">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                       </button>
                     </div>
                   </div>
@@ -534,7 +535,6 @@ export default function EditCategory({ params }: { params: { id: string } }) {
                     setShowDeleteModal(false);
                     setSaving(true);
                     try {
-                      const { deleteCategory } = await import("@/lib/categoriesApi");
                       const success = await deleteCategory(params.id, originalName);
                       if (success) {
                         await revalidateStorefront();

@@ -58,6 +58,7 @@ export default function AdminCategories() {
       setNewCategoryName("");
       const data = await getLiveCategories();
       setCategories(data);
+      await revalidateStorefront();
     } else {
       showToast("Failed to add category. It may already exist.");
     }
@@ -72,6 +73,7 @@ export default function AdminCategories() {
     if (success) {
       showToast("Category deleted");
       setCategories(categories.filter(c => c.id !== id));
+      await revalidateStorefront();
     } else {
       showToast("Failed to delete category");
     }
