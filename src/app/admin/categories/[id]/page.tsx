@@ -581,6 +581,7 @@ export default function EditCategory({ params }: { params: { id: string } }) {
               </div>
             </div>
           </div>
+        </div>
         )}
       </div>
     </main>
