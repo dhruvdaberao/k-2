@@ -257,7 +257,7 @@ export default function CartPage() {
           <div className="flex flex-col items-center justify-center pt-20 pb-32 text-center px-4 mx-auto w-full">
             <div className="max-w-md w-full flex flex-col items-center">
               <div className="mb-6 flex justify-center">
-                <img src="/nav-icons/empty-cart.png" alt="Empty Bag" className="w-56 h-56 md:w-64 md:h-64 object-contain" />
+                <img src="/nav-icons/empty-cart.png" alt="Empty Bag" style={{ width: '200px', height: '200px', objectFit: 'contain', padding: '15px' }} className="mx-auto" />
               </div>
               
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-[#2f2a26] mb-3 md:mb-4">Your bag is empty</h2>
