@@ -103,7 +103,9 @@ export async function loadCart(passedUser?: any): Promise<CartItem[]> {
   // This is a READ-ONLY cache — syncLocalCartToDB clears localStorage BEFORE
   // merging, so this mirror will never cause duplication on re-login.
   write(CART_KEY, items);
-  if (typeof window !== "undefined") localStorage.setItem("cart_is_db_cache", "true");
+  if (typeof window !== "undefined") {
+    try { localStorage.setItem("cart_is_db_cache", "true"); } catch (e) {}
+  }
 
   return items;
 }
@@ -116,7 +118,9 @@ export async function handleAddToCart(product: any, passedUser?: any): Promise<v
   // -------- GUEST --------
   if (!user) {
     console.log("[Cart] Guest AddToCart");
-    if (typeof window !== "undefined") localStorage.removeItem("cart_is_db_cache");
+    if (typeof window !== "undefined") {
+      try { localStorage.removeItem("cart_is_db_cache"); } catch (e) {}
+    }
     let cart = read<CartItem[]>(CART_KEY, []);
     const existing = cart.find(i => i.id === item.id);
 
@@ -176,7 +180,9 @@ export async function updateQty(productId: string, quantity: number, passedUser?
 
   // -------- GUEST
   if (!user) {
-    if (typeof window !== "undefined") localStorage.removeItem("cart_is_db_cache");
+    if (typeof window !== "undefined") {
+      try { localStorage.removeItem("cart_is_db_cache"); } catch (e) {}
+    }
     let cart = read<CartItem[]>(CART_KEY, []);
     if (quantity <= 0) {
       cart = cart.filter(x => x.id !== productId);
@@ -250,7 +256,7 @@ export async function syncLocalCartToDB(userId: string): Promise<void> {
 
   // IMMEDIATELY clear local storage to prevent race conditions where multiple 
   // SIGNED_IN events could cause the same local items to be merged multiple times.
-  localStorage.removeItem(CART_KEY);
+  try { localStorage.removeItem(CART_KEY); } catch (e) {}
 
   for (const item of localCart) {
     // Check if user already has this prod in DB
@@ -315,7 +321,9 @@ export async function loadWishlist(passedUser?: any): Promise<ItemSnapshot[]> {
 
   // Sync local mirror
   write(WISHLIST_KEY, items);
-  if (typeof window !== "undefined") localStorage.setItem("wishlist_is_db_cache", "true");
+  if (typeof window !== "undefined") {
+    try { localStorage.setItem("wishlist_is_db_cache", "true"); } catch (e) {}
+  }
   return items;
 }
 
@@ -325,7 +333,9 @@ export async function toggleWishlist(product: any, passedUser?: any): Promise<vo
 
   if (!user) {
     // GUEST MODE
-    if (typeof window !== "undefined") localStorage.removeItem("wishlist_is_db_cache");
+    if (typeof window !== "undefined") {
+      try { localStorage.removeItem("wishlist_is_db_cache"); } catch (e) {}
+    }
     let wishlist = read<ItemSnapshot[]>(WISHLIST_KEY, []);
     const existingIndex = wishlist.findIndex(i => i.id === item.id);
 
@@ -388,7 +398,7 @@ export async function syncLocalWishlistToDB(userId: string): Promise<void> {
 
   // IMMEDIATELY clear local storage to prevent race conditions where multiple 
   // SIGNED_IN events could cause the same local items to be merged multiple times.
-  localStorage.removeItem(WISHLIST_KEY);
+  try { localStorage.removeItem(WISHLIST_KEY); } catch (e) {}
 
   try {
     for (const item of local) {
@@ -435,7 +445,9 @@ export function wishlistCount(): number {
 export async function removeFromWishlist(id: string, passedUser?: any) {
   const user = passedUser;
   if (!user) {
-    if (typeof window !== "undefined") localStorage.removeItem("wishlist_is_db_cache");
+    if (typeof window !== "undefined") {
+      try { localStorage.removeItem("wishlist_is_db_cache"); } catch (e) {}
+    }
     let wishlist = read<ItemSnapshot[]>(WISHLIST_KEY, []);
     wishlist = wishlist.filter(i => i.id !== id);
     write(WISHLIST_KEY, wishlist);
@@ -486,11 +498,13 @@ export function removeFromCollection(name: string, id: string) {
  */
 export function clearAllLocalData() {
   if (typeof window === "undefined") return;
-  localStorage.removeItem(CART_KEY);
-  localStorage.removeItem("cart_is_db_cache");
-  localStorage.removeItem(WISHLIST_KEY);
-  localStorage.removeItem("wishlist_is_db_cache");
-  localStorage.removeItem(COLLECTIONS_KEY);
+  try {
+    localStorage.removeItem(CART_KEY);
+    localStorage.removeItem("cart_is_db_cache");
+    localStorage.removeItem(WISHLIST_KEY);
+    localStorage.removeItem("wishlist_is_db_cache");
+    localStorage.removeItem(COLLECTIONS_KEY);
+  } catch (e) {}
   notify();
   console.log("[Bags] All local storage data cleared.");
 }
