@@ -14,7 +14,7 @@ export default function ServiceWorkerRegister() {
         // ignore: we still attempt a fresh registration
       }
 
-      navigator.serviceWorker.register("/sw.js?v=3", { updateViaCache: "none" }).catch(() => {
+      navigator.serviceWorker.register("/sw.js?v=4", { updateViaCache: "none" }).catch(() => {
         // silent fail to avoid runtime noise in unsupported/proxied environments
       });
     };
