@@ -23,18 +23,21 @@ export default function GlobalError({
 
   return (
     <html lang="en">
-      <body>
-        <div className="flex flex-col items-center justify-center min-h-screen px-4 text-center bg-[#f1ebe6]">
-          <h2 className="text-2xl font-bold mb-4 text-[#5a3e2b]">Oops! Something went wrong.</h2>
-          <p className="text-gray-600 mb-6 max-w-md">
+      <body style={{ backgroundColor: '#f1ebe6', fontFamily: 'sans-serif', margin: 0, padding: 0 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '16px', textAlign: 'center' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '16px', color: '#5a3e2b' }}>Oops! Something went wrong.</h2>
+          <p style={{ color: '#4b5563', marginBottom: '24px', maxWidth: '400px' }}>
             We encountered a critical error. This usually happens due to a corrupted temporary session. We have cleared your local cache to fix this.
           </p>
+          <div style={{ background: '#fff', padding: '10px', borderRadius: '8px', border: '1px solid #ccc', marginBottom: '24px', color: '#d32f2f', fontSize: '14px', wordBreak: 'break-word', maxWidth: '90vw' }}>
+            <strong>Error Details:</strong> {error.message || "Unknown error"}
+          </div>
           <button
             onClick={() => {
               reset();
               window.location.reload();
             }}
-            className="px-6 py-2 bg-[#5a3e2b] text-white rounded-full font-medium transition hover:opacity-80"
+            style={{ padding: '10px 24px', backgroundColor: '#5a3e2b', color: '#fff', borderRadius: '9999px', fontWeight: '500', border: 'none', cursor: 'pointer' }}
           >
             Refresh & Continue
           </button>
