@@ -48,7 +48,7 @@ export default function ConfirmModal({
         .cm-overlay {
           position: fixed;
           inset: 0;
-          background: rgba(0, 0, 0, 0.4);
+          background: rgba(0, 0, 0, 0.5);
           backdrop-filter: blur(4px);
           display: flex;
           align-items: center;
@@ -69,57 +69,60 @@ export default function ConfirmModal({
         }
 
         .cm-box {
-          background: #F5EFE6;
-          border-radius: 20px;
-          padding: 28px 24px;
-          max-width: 380px;
+          background: #FDFBF7;
+          border-radius: 16px;
+          border: 1px solid #C4A484;
+          padding: 24px;
+          max-width: 448px;
           width: 100%;
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
           animation: cm-slideUp 0.2s ease-out;
+          font-family: inherit;
         }
 
         .cm-title {
-          font-size: 19px;
-          font-weight: 700;
-          color: #3E2C1C;
+          font-size: 1.25rem;
+          font-weight: bold;
+          color: #4A3219;
           margin: 0 0 8px;
-          font-family: var(--font-serif, serif);
         }
 
         .cm-message {
-          font-size: 14px;
+          font-size: 1rem;
           color: #8B7355;
-          line-height: 1.55;
+          line-height: 1.5;
           margin: 0 0 24px;
         }
 
         .cm-actions {
           display: flex;
-          gap: 10px;
+          gap: 16px;
         }
 
         .cm-btn {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          padding: 12px 20px;
-          font-size: 14px;
-          font-weight: 600;
-          border-radius: 14px;
+          min-height: 50px;
+          font-size: 1rem;
+          font-weight: bold;
+          border-radius: 12px;
           cursor: pointer;
           transition: all 0.2s ease;
           flex: 1;
           border: none;
+          outline: none;
         }
 
         .cm-btn--cancel {
           background: transparent;
-          color: #5A3E2B;
-          border: 1.5px solid #D4C4B0;
+          color: #4A3219;
+          border: 1px solid #C4A484;
         }
 
         .cm-btn--cancel:hover {
-          background: #EDE5D8;
+          background: #F5EFE6;
+          border-color: #8B7355;
         }
 
         .cm-btn--confirm {
@@ -132,12 +135,12 @@ export default function ConfirmModal({
         }
 
         .cm-btn--destructive {
-          background: #A33B3B;
+          background: #C84C35;
           color: #fff;
         }
 
         .cm-btn--destructive:hover {
-          background: #8C2E2E;
+          background: #A93B26;
         }
       `}</style>
     </div>

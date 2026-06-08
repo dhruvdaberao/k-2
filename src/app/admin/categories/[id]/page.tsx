@@ -13,6 +13,7 @@ export default function EditCategory({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -264,9 +265,13 @@ export default function EditCategory({ params }: { params: { id: string } }) {
                     >
                       <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                     </div>
-                    <div className="absolute top-0 right-0 z-10">
-                      <button type="button" onClick={() => { setImagePreview(null); setImageFile(null); setFormData({...formData, image_url: ""}); }} className="w-8 h-8 flex items-center justify-center bg-white rounded-full text-[#4A3219] shadow-md hover:bg-[#F5EFE6] transition-colors border border-[#E6DCCF]">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    <div style={{ position: 'absolute', top: '-8px', right: '-8px', zIndex: 10 }}>
+                      <button 
+                        type="button" 
+                        onClick={() => { setImagePreview(null); setImageFile(null); setFormData({...formData, image_url: ""}); }} 
+                        style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#4A3219', color: 'white', borderRadius: '50%', border: '2px solid white', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', outline: 'none' }}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                       </button>
                     </div>
                   </div>
@@ -502,34 +507,14 @@ export default function EditCategory({ params }: { params: { id: string } }) {
           <div className="flex w-full justify-center mt-4">
             <button
               type="button"
-              onClick={async (e) => {
+              onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 if ((originalName || "").toLowerCase() === "bags") {
                   showToast("The 'Bags' category is a default system category and cannot be deleted.");
                   return;
                 }
-                const confirmed = window.confirm(`Are you sure you want to delete "${originalName}"? This action cannot be undone.`);
-                if (!confirmed) return;
-                
-                setSaving(true);
-                try {
-                  const success = await deleteCategory(params.id, originalName);
-                  if (success) {
-                    await revalidateStorefront();
-                    await revalidateAdmin();
-                    showToast("Category deleted successfully!");
-                    router.refresh();
-                    setTimeout(() => router.push("/admin/categories"), 1000);
-                  } else {
-                    showToast("Failed to delete category");
-                    setSaving(false);
-                  }
-                } catch (err) {
-                  console.error(err);
-                  showToast("Failed to delete category");
-                  setSaving(false);
-                }
+                setShowDeleteModal(true);
               }}
               disabled={saving}
               className="btn-outline flex items-center justify-center gap-2"
@@ -546,6 +531,58 @@ export default function EditCategory({ params }: { params: { id: string } }) {
           </div>
         )}
       </div>
+
+      {showDeleteModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}>
+          <div style={{ backgroundColor: '#FDFBF7', borderRadius: '16px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', width: '100%', maxWidth: '448px', border: '1px solid #C4A484', position: 'relative', zIndex: 10000, fontFamily: 'inherit', padding: '24px' }}>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#4A3219', marginBottom: '8px', margin: 0 }}>Delete Category?</h3>
+            <p style={{ color: '#8B7355', margin: 0, marginTop: '8px', marginBottom: '24px' }}>Are you sure you want to delete &quot;{originalName}&quot;? This action cannot be undone.</p>
+            
+            <div style={{ display: 'flex', gap: '16px' }}>
+              <button
+                type="button"
+                onClick={() => setShowDeleteModal(false)}
+                style={{ flex: 1, minHeight: '50px', borderRadius: '12px', color: '#4A3219', fontWeight: 'bold', transition: 'all 0.2s', backgroundColor: 'transparent', border: '1px solid #C4A484', cursor: 'pointer', outline: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#F5EFE6'; e.currentTarget.style.borderColor = '#8B7355'; }}
+                onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.borderColor = '#C4A484'; }}
+                disabled={saving}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  setShowDeleteModal(false);
+                  setSaving(true);
+                  try {
+                    const success = await deleteCategory(params.id, originalName);
+                    if (success) {
+                      await revalidateStorefront();
+                      await revalidateAdmin();
+                      showToast("Category deleted successfully!");
+                      router.refresh();
+                      setTimeout(() => router.push("/admin/categories"), 1000);
+                    } else {
+                      showToast("Failed to delete category");
+                      setSaving(false);
+                    }
+                  } catch (err) {
+                    console.error(err);
+                    showToast("Failed to delete category");
+                    setSaving(false);
+                  }
+                }}
+                style={{ flex: 1, minHeight: '50px', backgroundColor: '#C84C35', color: 'white', fontWeight: 'bold', borderRadius: '12px', transition: 'background-color 0.2s', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', outline: 'none' }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#A93B26'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#C84C35'}
+                disabled={saving}
+              >
+                {saving ? 'Deleting...' : 'Yes, Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
