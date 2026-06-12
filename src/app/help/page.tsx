@@ -4,7 +4,7 @@ import BackButton from '@/components/BackButton';
 import { MessageSquare, Truck, PackageCheck, FileText, Shield, Info, ChevronRight } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Help & Policies - Keshvi Crafts',
+  title: 'Help & Support - Keshvi Crafts',
   description: 'Help, support, and policies center for Keshvi Crafts.',
 };
 
@@ -13,7 +13,7 @@ export default function HelpPage() {
     <main className="pb-24 px-4 max-w-2xl mx-auto flex flex-col items-center">
       <div className="w-full flex items-center gap-3" style={{ marginTop: '40px', marginBottom: '32px' }}>
         <BackButton />
-        <h1 className="font-serif text-3xl md:text-4xl font-bold m-0" style={{ color: '#4a3219' }}>Help & Policies</h1>
+        <h1 className="font-serif text-3xl md:text-4xl font-bold m-0" style={{ color: '#4a3219' }}>Help & Support</h1>
       </div>
 
       <div className="w-full flex flex-col gap-4">
