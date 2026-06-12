@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
     return (
-        <main className="px-4 py-12 md:py-16 max-w-3xl mx-auto">
+        <main className="px-4 pt-28 pb-12 max-w-3xl mx-auto">
             <div className="flex items-center gap-3 mb-8">
                 <BackButton />
                 <h1 className="font-serif text-3xl font-bold m-0 text-[#2f2a26]">Contact Us</h1>

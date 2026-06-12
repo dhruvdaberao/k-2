@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <main className="container py-12 px-4 max-w-3xl mx-auto prose" style={{ paddingTop: '80px' }}>
+    <main className="container pt-28 pb-12 px-4 max-w-3xl mx-auto prose">
       <div className="flex items-center gap-3 mb-6">
         <BackButton />
         <h1 className="font-serif text-3xl font-bold m-0">Privacy Policy</h1>

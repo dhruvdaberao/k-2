@@ -34,8 +34,6 @@ export default function ContactForm() {
                 <h2 className="font-serif text-2xl md:text-3xl font-bold text-[#4a3219]">Send us a message</h2>
             </div>
             
-            <img src="/nav-icons/chicken-gif.gif" alt="Cute crafting chick" className="absolute top-4 right-4 w-12 h-12 md:w-16 md:h-16 object-contain drop-shadow-sm" />
-            
             <div className="flex flex-col gap-1">
                 <label htmlFor="name" className="text-sm font-semibold text-stone-700">Name</label>
                 <input required type="text" id="name" name="name" className="p-3 rounded-xl border border-[#e6dccf] bg-white focus:outline-none focus:border-[#4a3219]" placeholder="Your name" />
