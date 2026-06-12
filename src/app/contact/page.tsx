@@ -54,7 +54,7 @@ export default function ContactPage() {
                     <p className="text-stone-600 mb-4 flex-grow">
                         For order inquiries or collaborations, drop us a mail.
                     </p>
-                    <a href="mailto:keshvicrafts@gmail.com" className="text-stone-800 underline hover:text-[#5a3e2b] mt-2 inline-block font-medium">
+                    <a href="mailto:keshvicrafts@gmail.com" className="btn-primary w-full justify-center text-sm">
                         keshvicrafts@gmail.com
                     </a>
                 </div>

@@ -29,24 +29,24 @@ export default function ContactForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-8 p-6 md:p-8 rounded-2xl shadow-sm relative" style={{ backgroundColor: '#EAE1D3', border: '1px solid #C4A484' }}>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-8 p-6 md:p-8 rounded-2xl shadow-sm relative" style={{ backgroundColor: '#F5EFE6', border: '1px solid #C4A484' }}>
             <div className="flex justify-between items-center mb-2">
                 <h2 className="font-serif text-2xl md:text-3xl font-bold text-[#4a3219]">Send us a message</h2>
             </div>
             
             <div className="flex flex-col gap-1">
                 <label htmlFor="name" className="text-sm font-semibold text-stone-700">Name</label>
-                <input required type="text" id="name" name="name" className="p-3 rounded-xl border border-[#e6dccf] bg-white focus:outline-none focus:border-[#4a3219]" placeholder="Your name" />
+                <input required type="text" id="name" name="name" className="p-3 rounded-xl bg-white focus:outline-none focus:ring-0" style={{ border: '1px solid #C4A484' }} placeholder="Your name" />
             </div>
             
             <div className="flex flex-col gap-1">
                 <label htmlFor="email" className="text-sm font-semibold text-stone-700">Email</label>
-                <input required type="email" id="email" name="email" className="p-3 rounded-xl border border-[#e6dccf] bg-white focus:outline-none focus:border-[#4a3219]" placeholder="your@email.com" />
+                <input required type="email" id="email" name="email" className="p-3 rounded-xl bg-white focus:outline-none focus:ring-0" style={{ border: '1px solid #C4A484' }} placeholder="your@email.com" />
             </div>
             
             <div className="flex flex-col gap-1">
                 <label htmlFor="message" className="text-sm font-semibold text-stone-700">Message</label>
-                <textarea required id="message" name="message" rows={4} className="p-3 rounded-xl border border-[#e6dccf] bg-white focus:outline-none focus:border-[#4a3219] resize-none" placeholder="How can we help you?"></textarea>
+                <textarea required id="message" name="message" rows={4} className="p-3 rounded-xl bg-white focus:outline-none focus:ring-0 resize-none" style={{ border: '1px solid #C4A484' }} placeholder="How can we help you?"></textarea>
             </div>
             
             <button type="submit" disabled={status === "submitting"} className="btn-primary py-3 rounded-xl font-bold mt-2 transition-all">
