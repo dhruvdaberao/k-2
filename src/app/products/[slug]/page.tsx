@@ -57,9 +57,18 @@ export default async function ProductPage({ params }: { params: { slug: string }
   const allLive = await getLiveProducts();
 
   // Get related products (same category, exclude current)
-  const relatedProducts = allLive
+  let relatedProducts = allLive
     .filter((prod: any) => prod.category === p.category && prod.slug !== p.slug)
     .slice(0, 4);
+
+  // If we have less than 4 related products from the same category, fill the rest with other popular products
+  if (relatedProducts.length < 4) {
+    const otherProducts = allLive
+      .filter((prod: any) => prod.slug !== p.slug && !relatedProducts.some((rp: any) => rp.slug === prod.slug))
+      .sort((a: any, b: any) => (b.priority || 0) - (a.priority || 0))
+      .slice(0, 4 - relatedProducts.length);
+    relatedProducts = [...relatedProducts, ...otherProducts];
+  }
 
   // Pre-fetch rating on the server
   const rating = await getProductRating(p.id || p.slug);

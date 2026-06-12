@@ -274,6 +274,10 @@ export default function CartPage() {
                 Browse Collections
               </NextLink>
             </div>
+            
+            <div className="mt-12 w-full max-w-5xl mx-auto border-t-2 border-[#E6DCCF] pt-12">
+              <EmptyStateRecommendations />
+            </div>
           </div>
         ) : (
           <div className="row g-4 items-start" style={{ pointerEvents: isUpdating ? 'none' : 'auto' }}>

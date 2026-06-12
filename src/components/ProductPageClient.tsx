@@ -360,7 +360,7 @@ export default function ProductPageClient({
               {product.type === "custom-order" ? "Custom Made for You" : "Made to Order"}
             </strong>
             <span className="pdp-box-text block text-stone-700">
-              {product.deliveryTime || "Dispatch in 3–5 business days."} {product.type === "custom-order" ? product.returnPolicy || "Non-refundable." : "Each piece is crafted especially for you."}
+              {product.deliveryTime || "Dispatch in 7-10 business days."} {product.type === "custom-order" ? product.returnPolicy || "Non-refundable." : "Each piece is crafted especially for you."}
             </span>
             {product.shippingCharge !== undefined && (
               <div className="pdp-box-text mt-2 text-stone-600 font-medium">

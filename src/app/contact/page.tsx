@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import BackButton from '@/components/BackButton';
+import ContactForm from '@/components/ContactForm';
 
 export const metadata: Metadata = {
     description: 'Get in touch with us for orders, inquiries, or support via Instagram or Email.',
@@ -60,6 +61,10 @@ export default function ContactPage() {
             </div>
 
 
+
+            <div className="mt-4">
+                <ContactForm />
+            </div>
 
             <div className="border-t border-stone-200" style={{ marginTop: '3.5rem', paddingTop: '2.5rem' }}>
                 <h2 className="font-bold text-2xl text-[#2f2a26] mb-6">Business Information</h2>

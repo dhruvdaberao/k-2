@@ -14,12 +14,16 @@ export default async function CollectionsPage() {
   return (
     <div className="container collections-page">
       <Suspense fallback={
-        <div className="collections-header">
-          <h1 className="collections-title">All Collections</h1>
-          <div className="collections-control-bar">
-            <div className="collections-result-count">Loading...</div>
+        <>
+          <div className="collections-header text-center">
+            <h1 className="collections-title">Collections</h1>
           </div>
-        </div>
+          <div className="plp-grid-mobile mt-10">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="animate-pulse bg-[#f1ebe6] rounded-2xl w-full aspect-[4/5]"></div>
+            ))}
+          </div>
+        </>
       }>
         <CollectionsContent liveProducts={liveProducts as any[]} liveCategories={liveCategories as any[]} />
       </Suspense>
