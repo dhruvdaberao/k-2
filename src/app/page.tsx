@@ -4,6 +4,7 @@ import HeroSection from "@/components/HeroSection";
 import WhyHandmadeSection from "@/components/WhyHandmadeSection";
 
 import Link from "next/link";
+import { Info, MessageSquare, ShieldCheck } from 'lucide-react';
 import { Product } from "@/types";
 import { getLiveCategories } from "@/lib/categoriesApi";
 import { supabase } from "@/lib/supabaseClient";
@@ -276,8 +277,30 @@ export default async function Home() {
                 </Link>
               </div>
             )}
+            )}
           </section>
         )}
+
+        {/* Quick Links Section */}
+        <section className="home-section mt-16 md:mt-32 mb-8 md:mb-24">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-4 md:px-0">
+            <Link href="/about" className="bg-[#EAE1D3] border border-[#C4A484] rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-sm hover:bg-[#dfd3c0] transition-colors gap-3">
+              <Info size={32} className="text-[#4a3219]" strokeWidth={1.5} />
+              <span className="font-serif font-bold text-xl text-[#4a3219]">About Us</span>
+              <span className="text-sm text-stone-600">Discover our story and how every piece is crafted with love.</span>
+            </Link>
+            <Link href="/contact" className="bg-[#EAE1D3] border border-[#C4A484] rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-sm hover:bg-[#dfd3c0] transition-colors gap-3">
+              <MessageSquare size={32} className="text-[#4a3219]" strokeWidth={1.5} />
+              <span className="font-serif font-bold text-xl text-[#4a3219]">Contact Us</span>
+              <span className="text-sm text-stone-600">Have a question or custom request? We're here to help.</span>
+            </Link>
+            <Link href="/help" className="bg-[#EAE1D3] border border-[#C4A484] rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-sm hover:bg-[#dfd3c0] transition-colors gap-3">
+              <ShieldCheck size={32} className="text-[#4a3219]" strokeWidth={1.5} />
+              <span className="font-serif font-bold text-xl text-[#4a3219]">Store Policies</span>
+              <span className="text-sm text-stone-600">View our shipping, returns, and privacy policies.</span>
+            </Link>
+          </div>
+        </section>
 
       </div>
     </main>
