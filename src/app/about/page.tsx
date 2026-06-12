@@ -8,9 +8,9 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main className="container pt-24 pb-12 max-w-4xl mx-auto px-4">
-      <div className="text-center mb-10">
-        <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4 text-[#2f2a26]">Our Story</h1>
+    <main className="container pb-12 max-w-4xl mx-auto px-4">
+      <div className="text-center mb-10" style={{ marginTop: '40px' }}>
+        <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4 text-[#2f2a26]">About Us</h1>
         <p className="text-stone-500 text-lg md:text-xl max-w-2xl mx-auto italic">
           Every loop, knot, and pattern tells a story of dedication and creativity.
         </p>

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
     return (
         <main className="px-4 pt-28 pb-12 max-w-3xl mx-auto">
-            <div className="flex items-center gap-3 mb-8">
+            <div className="flex items-center gap-3" style={{ marginTop: '40px', marginBottom: '32px' }}>
                 <BackButton />
                 <h1 className="font-serif text-3xl font-bold m-0 text-[#2f2a26]">Contact Us</h1>
             </div>
@@ -28,7 +28,7 @@ export default function ContactPage() {
                         href="https://www.instagram.com/keshvi_crafts/"
                         target="_blank"
                         rel="noreferrer"
-                        className="btn-outline w-full justify-center text-sm"
+                        className="btn-primary w-full justify-center text-sm"
                     >
                         Visit @keshvi_crafts
                     </a>
@@ -43,7 +43,7 @@ export default function ContactPage() {
                         href="https://ig.me/m/keshvi_crafts"
                         target="_blank"
                         rel="noreferrer"
-                        className="btn-outline w-full justify-center text-sm"
+                        className="btn-primary w-full justify-center text-sm"
                     >
                         Chat on Instagram
                     </a>

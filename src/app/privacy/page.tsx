@@ -8,10 +8,10 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <main className="container pt-28 pb-12 px-4 max-w-3xl mx-auto prose">
-      <div className="flex items-center gap-3 mb-6">
+    <main className="container pb-12 px-4 max-w-3xl mx-auto prose">
+      <div className="flex items-center gap-3 mb-6" style={{ marginTop: '40px' }}>
         <BackButton />
-        <h1 className="font-serif text-3xl font-bold m-0">Privacy Policy</h1>
+        <h1 className="font-serif text-3xl font-bold m-0 text-[#2f2a26]">Privacy Policy</h1>
       </div>
       <p className="text-stone-500 mb-8 italic">Last updated: {new Date().toLocaleDateString()}</p>
 
