@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/lib/supabaseClient";
 import CartBadge from "@/components/CartBadge";
 import WishlistBadge from "@/components/WishlistBadge";
+import AnnouncementBanner from "@/components/AnnouncementBanner";
 import "./Navbar.css";
 
 export default function BootstrapNavbar() {
@@ -24,6 +25,7 @@ export default function BootstrapNavbar() {
   return (
     <>
       <nav className="keshvi-nav">
+        <AnnouncementBanner />
         <div className="top-navbar">
           <div className="nav-inner">
             <Link href="/" className="brand header-left" style={{ textDecoration: 'none' }} aria-label="Keshvi Crafts — Home">

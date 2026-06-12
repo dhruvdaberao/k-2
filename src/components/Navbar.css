@@ -1,5 +1,6 @@
 :root {
   --nav-h: 50px;
+  --banner-h: 36px;
   --bottom-nav-h: 60px;
   --bg-main: #f8f5f2;
   --bg-nav: #f1ebe6;
@@ -20,7 +21,8 @@
   left: 0;
   right: 0;
   z-index: 1400;
-  height: calc(var(--nav-h) + env(safe-area-inset-top));
+  height: auto;
+  min-height: calc(var(--nav-h) + var(--banner-h) + env(safe-area-inset-top));
   background: rgba(241, 235, 230, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -260,7 +262,7 @@
 }
 
 body {
-  padding-top: calc(var(--nav-h) + env(safe-area-inset-top));
+  padding-top: calc(var(--nav-h) + var(--banner-h) + env(safe-area-inset-top));
 }
 
 @media (max-width: 768px) {
@@ -380,4 +382,37 @@ body {
   .collections-page {
     padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom) + 20px);
   }
+}
+
+.announcement-banner {
+  height: var(--banner-h);
+  background-color: #4A3219;
+  color: #FDFBF7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  z-index: 1500;
+}
+
+.announcement-text {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+  padding: 0 16px;
+}
+
+.announcement-text.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
