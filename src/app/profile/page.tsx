@@ -510,6 +510,7 @@ function ProfileContent() {
         <Link href="/my-reviews" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 calc(50% - 12px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Your Reviews</Link>
         <Link href="/account-settings" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 calc(50% - 12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-main)', color: 'var(--brand)', border: '2px solid var(--brand)' }}>Account</Link>
         {isAdmin(user) && (<Link href="/admin" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 calc(50% - 12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--brand)', color: 'white' }}>Admin</Link>)}
+        <Link href="/help" prefetch={true} className="btn-primary text-center" style={{ width: "100%", maxWidth: "250px", flex: '1 1 calc(50% - 12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-main)', color: 'var(--brand)', border: '2px solid var(--brand)' }}>Help & Support</Link>
       </section>
       {profileModalHTML}
       <ConfirmModal isOpen={showLogoutConfirm} title="Confirm Logout" message="Are you sure you want to log out?" confirmLabel="Log Out" onConfirm={executeLogout} onCancel={() => setShowLogoutConfirm(false)} />
