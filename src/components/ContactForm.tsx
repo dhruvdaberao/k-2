@@ -32,8 +32,9 @@ export default function ContactForm() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-8 bg-[#EAE1D3] p-6 md:p-8 rounded-2xl border border-[#C4A484] shadow-sm relative">
             <div className="flex justify-between items-center mb-2">
                 <h2 className="font-serif text-2xl md:text-3xl font-bold text-[#4a3219]">Send us a message</h2>
-                <img src="/nav-icons/chicken-gif.gif" alt="Cute crafting chick" className="w-16 h-16 md:w-20 md:h-20 object-contain drop-shadow-sm" />
             </div>
+            
+            <img src="/nav-icons/chicken-gif.gif" alt="Cute crafting chick" className="absolute top-4 right-4 w-12 h-12 md:w-16 md:h-16 object-contain drop-shadow-sm" />
             
             <div className="flex flex-col gap-1">
                 <label htmlFor="name" className="text-sm font-semibold text-stone-700">Name</label>
