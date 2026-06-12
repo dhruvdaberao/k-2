@@ -217,6 +217,17 @@ export default function CartPage() {
     }
     return (
       <main className="cart-page py-4 py-md-5 px-3 bg-[#FAF7F2] min-h-screen">
+        <style dangerouslySetInnerHTML={{ __html: `
+          @keyframes cartShimmer {
+            0% { background-position: -400px 0; }
+            100% { background-position: 400px 0; }
+          }
+          .cart-skeleton-shimmer {
+            background: linear-gradient(90deg, #EAE1D3 25%, #f5efe6 37%, #EAE1D3 63%);
+            background-size: 800px 100%;
+            animation: cartShimmer 1.6s ease-in-out infinite;
+          }
+        `}} />
         <div className="container" style={{ maxWidth: '900px' }}>
           <header className="mb-8 text-center pt-2">
             <h1 className="collections-title mb-4">Bag</h1>
@@ -225,18 +236,18 @@ export default function CartPage() {
             <div className="col-12 col-lg-7">
               <div className="flex flex-col gap-4">
                 {[1, 2].map(i => (
-                  <div key={i} className="cart-item-row-refined shadow-sm animate-pulse opacity-60" style={{ backgroundColor: '#F5EFE6', border: '1px solid #E6DCCF' }}>
-                    <div className="w-[84px] h-[84px] bg-[#EAE1D3] rounded-xl flex-shrink-0" />
+                  <div key={i} className="cart-item-row-refined shadow-sm" style={{ backgroundColor: '#F5EFE6', border: '1px solid #E6DCCF' }}>
+                    <div className="w-[84px] h-[84px] cart-skeleton-shimmer rounded-xl flex-shrink-0" />
                     <div className="flex-1 flex flex-col justify-center gap-3 py-2">
-                      <div className="h-4 w-3/4 bg-[#EAE1D3] rounded"></div>
-                      <div className="h-6 w-20 bg-[#EAE1D3] rounded-full"></div>
+                      <div className="h-4 w-3/4 cart-skeleton-shimmer rounded"></div>
+                      <div className="h-8 w-24 cart-skeleton-shimmer rounded-full mt-1"></div>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
             <div className="col-12 col-lg-5">
-              <div className="h-64 w-full bg-[#EAE1D3] rounded-2xl animate-pulse opacity-60"></div>
+              <div className="h-64 w-full cart-skeleton-shimmer rounded-2xl"></div>
             </div>
           </div>
         </div>
