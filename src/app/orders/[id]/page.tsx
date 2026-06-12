@@ -181,7 +181,7 @@ export default function OrderDetailPage() {
 
   // ── WhatsApp help link ─────────────────────────────────────────────────
   const whatsappLink = order
-    ? `https://wa.me/917507996961?text=${encodeURIComponent(
+    ? `https://wa.me/917310045515?text=${encodeURIComponent(
         `Hi, I need help with order ${order.display_id || shortenId(order.id)}. Order placed on ${formatDate(order.created_at)}.`
       )}`
     : "#";

@@ -28,7 +28,7 @@ import { useCart } from "@/hooks/useCart";
 
 type CheckoutStep = 1 | 2 | 3; // 1: details, 2: payment, 3: summary
 
-const OWNER_PHONE_NUMBER = "7507996961";
+const OWNER_PHONE_NUMBER = "7310045515";
 const DETAILS_STORAGE_KEY = "checkout:details:v1";
 const LEGACY_DETAILS_STORAGE_KEY = "customer_details";
 const initialDetails: CheckoutCustomerDetails = {

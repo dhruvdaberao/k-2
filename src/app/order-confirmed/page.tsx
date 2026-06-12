@@ -13,7 +13,7 @@ type ConfirmationData = {
   created_at: string;
 };
 
-const OWNER_PHONE_NUMBER = "7507996961";
+const OWNER_PHONE_NUMBER = "7310045515";
 
 export default function OrderConfirmedPage() {
   const [data, setData] = useState<ConfirmationData | null>(null);

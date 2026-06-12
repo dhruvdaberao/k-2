@@ -15,7 +15,7 @@ export default function ContactForm() {
         const message = formData.get("message")?.toString() || "";
         
         // Format message for WhatsApp
-        const waNumber = "917507996961";
+        const waNumber = "917310045515";
         const email = formData.get("email")?.toString() || "Not provided";
         
         const waText = `*New Inquiry from Contact Form*

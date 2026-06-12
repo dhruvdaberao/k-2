@@ -124,7 +124,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             "image": "https://keshvicrafts.in/nav-icons/LOGO-FINAL.png", // Assuming a logo exists or general image
             "description": "Handmade crochet and artisanal home decor, crafted with care in India.",
             "url": "https://keshvicrafts.in",
-            "telephone": "+917507996961",
+            "telephone": "+917310045515",
             "address": {
               "@type": "PostalAddress",
               "addressCountry": "IN"

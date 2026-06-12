@@ -41,7 +41,7 @@ export default function TermsPage() {
         <p className="text-stone-600">
           <strong>Keshvi Crafts</strong><br />
           Email: KESHVICRAFTS@gmail.com<br />
-          Phone: +91 7507996961
+          Phone: +91 7310045515
         </p>
       </div>
     </main>

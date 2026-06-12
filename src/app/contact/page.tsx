@@ -73,7 +73,7 @@ export default function ContactPage() {
                     <p><span className="font-semibold text-stone-800">Type:</span> Sole Proprietorship</p>
                     <p><span className="font-semibold text-stone-800" style={{ display: 'block', marginBottom: '4px' }}>Address:</span> 167 L, In Front of Indane Gas Godam, New Colony, Madhopur, Surajkund, Gorakhpur, Uttar Pradesh - 273015</p>
                     <p><span className="font-semibold text-stone-800">Email:</span> <a href="mailto:keshvicrafts@gmail.com" className="underline hover:text-[#5a3e2b]">keshvicrafts@gmail.com</a></p>
-                    <p><span className="font-semibold text-stone-800">Phone:</span> +91 7507996961</p>
+                    <p><span className="font-semibold text-stone-800">Phone:</span> +91 7310045515</p>
                 </div>
             </div>
         </main>
