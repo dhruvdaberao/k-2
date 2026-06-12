@@ -32,8 +32,7 @@ export default function ReturnsPage() {
 
       <h3>4. Size Issues</h3>
       <p>
-        For clothing items, please check our size guide carefully before ordering.
-        If there is a fit issue, we can alter the piece for a nominal charge, but shipping costs for alterations will be borne by the customer.
+        If there is a fit issue with clothing items, we can alter the piece for a nominal charge. Please note that shipping costs for any alterations will be borne by the customer.
       </p>
       <div className="mt-12 pt-8 border-t border-stone-200 text-sm">
         <h3 className="font-bold text-stone-800 mb-2">Business Information</h3>

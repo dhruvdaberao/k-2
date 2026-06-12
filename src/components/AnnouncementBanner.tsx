@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 
 const announcements = [
-  "Free Shipping on all orders above ₹999",
+  "Free Shipping on all orders above ₹650",
+  "Use code WELCOME10 for 10% off your first order",
   "Handcrafted with love, just for you",
   "100% Authentic Artisanal Crochet Pieces"
 ];
