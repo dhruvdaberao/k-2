@@ -16,25 +16,14 @@ export default function AboutPage() {
         </p>
       </div>
       
-      <div className="flex flex-col md:flex-row gap-10 items-center mb-16">
-        <div className="w-full md:w-1/2 rounded-2xl overflow-hidden shadow-lg border border-[#e6dccf]">
-          <Image 
-            src="/about-founder.png" 
-            alt="Vaishnavi crafting crochet" 
-            width={600} 
-            height={600} 
-            className="w-full h-auto object-cover aspect-square"
-          />
-        </div>
-        <div className="w-full md:w-1/2 prose prose-stone lg:prose-lg">
-          <h2 className="font-serif text-3xl font-bold text-[#4a3219]">Meet the Maker</h2>
-          <p>
-            Welcome to Keshvi Crafts, a labor of love founded by Vaishnavi Sharma. Born out of a deep appreciation for the timeless art of crochet, our brand is dedicated to bringing traditional craftsmanship into the modern home. 
-          </p>
-          <p>
-            What started as a quiet passion project has blossomed into a small business built on authenticity and artistry. 
-          </p>
-        </div>
+      <div className="mb-16 prose prose-stone lg:prose-lg max-w-3xl mx-auto text-center">
+        <h2 className="font-serif text-3xl font-bold text-[#4a3219]">Meet the Maker</h2>
+        <p>
+          Welcome to Keshvi Crafts, a labor of love founded by Vaishnavi Sharma. Born out of a deep appreciation for the timeless art of crochet, our brand is dedicated to bringing traditional craftsmanship into the modern home. 
+        </p>
+        <p>
+          What started as a quiet passion project has blossomed into a small business built on authenticity and artistry. 
+        </p>
       </div>
 
       <div className="bg-[#f5efe6] rounded-2xl p-8 md:p-12 mb-16 shadow-inner text-center">
