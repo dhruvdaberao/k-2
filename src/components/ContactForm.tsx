@@ -14,15 +14,23 @@ export default function ContactForm() {
         const name = formData.get("name")?.toString() || "";
         const message = formData.get("message")?.toString() || "";
         
-        // Use mailto as a fallback since there's no backend endpoint yet
-        const subject = encodeURIComponent(`Contact Form Inquiry from ${name}`);
-        const body = encodeURIComponent(message);
+        // Format message for WhatsApp
+        const waNumber = "917507996961";
+        const email = formData.get("email")?.toString() || "Not provided";
         
-        window.location.href = `mailto:keshvicrafts@gmail.com?subject=${subject}&body=${body}`;
+        const waText = `*New Inquiry from Contact Form*
+*Name:* ${name}
+*Email:* ${email}
+
+*Message:*
+${message}`;
+        
+        const encodedText = encodeURIComponent(waText);
+        window.open(`https://wa.me/${waNumber}?text=${encodedText}`, '_blank');
         
         setTimeout(() => {
             setStatus("success");
-            showToast("Opening your email client...");
+            showToast("Opening WhatsApp...");
             (e.target as HTMLFormElement).reset();
             setTimeout(() => setStatus("idle"), 3000);
         }, 500);
