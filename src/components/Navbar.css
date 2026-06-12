@@ -1,6 +1,6 @@
 :root {
   --nav-h: 50px;
-  --banner-h: 36px;
+  --banner-h: 26px;
   --bottom-nav-h: 60px;
   --bg-main: #f8f5f2;
   --bg-nav: #f1ebe6;
@@ -393,9 +393,9 @@ body {
   justify-content: center;
   position: relative;
   overflow: hidden;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
   z-index: 1500;
 }
