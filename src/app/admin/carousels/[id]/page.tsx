@@ -223,6 +223,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
         }).then(async res => {
           const data = await res.json();
           if (!data.success) throw new Error(data.error);
+          return { error: null };
         });
 
         const { error } = await Promise.race([
@@ -238,6 +239,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
         }).then(async res => {
           const data = await res.json();
           if (!data.success) throw new Error(data.error);
+          return { error: null };
         });
 
         const { error } = await Promise.race([
@@ -277,6 +279,7 @@ export default function EditCarousel({ params }: { params: { id: string } }) {
       }).then(async res => {
         const data = await res.json();
         if (!data.success) throw new Error(data.error);
+        return { error: null };
       });
 
       const { error } = await Promise.race([
