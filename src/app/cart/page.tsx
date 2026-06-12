@@ -276,7 +276,7 @@ export default function CartPage() {
             </div>
             
             <div className="mt-12 w-full max-w-5xl mx-auto border-t-2 border-[#E6DCCF] pt-12">
-              <EmptyStateRecommendations />
+              <EmptyStateRecommendations title="You May Also Like" />
             </div>
           </div>
         ) : (
