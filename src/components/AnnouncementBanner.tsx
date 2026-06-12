@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 
 const announcements = [
   "Free Shipping on all orders above ₹999",
-  "Use code WELCOME10 for 10% off your first order",
-  "Handcrafted with love, just for you"
+  "Handcrafted with love, just for you",
+  "100% Authentic Artisanal Crochet Pieces"
 ];
 
 export default function AnnouncementBanner() {
