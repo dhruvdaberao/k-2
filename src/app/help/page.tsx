@@ -19,7 +19,7 @@ export default function HelpPage() {
       <div className="w-full flex flex-col gap-4">
         <Link 
           href="/about" 
-          className="w-full transition-colors rounded-2xl p-5 flex items-center justify-between shadow-sm hover:opacity-80"
+          className="w-full transition-colors rounded-2xl py-3 px-5 flex items-center justify-between shadow-sm hover:opacity-80"
           style={{ backgroundColor: '#EAE1D3', border: '1px solid #C4A484' }}
         >
           <div className="flex items-center gap-4" style={{ color: '#4a3219' }}>
@@ -31,7 +31,7 @@ export default function HelpPage() {
         
         <Link 
           href="/contact" 
-          className="w-full transition-colors rounded-2xl p-5 flex items-center justify-between shadow-sm hover:opacity-80"
+          className="w-full transition-colors rounded-2xl py-3 px-5 flex items-center justify-between shadow-sm hover:opacity-80"
           style={{ backgroundColor: '#EAE1D3', border: '1px solid #C4A484' }}
         >
           <div className="flex items-center gap-4" style={{ color: '#4a3219' }}>
@@ -43,7 +43,7 @@ export default function HelpPage() {
         
         <Link 
           href="/shipping" 
-          className="w-full transition-colors rounded-2xl p-5 flex items-center justify-between shadow-sm hover:opacity-80"
+          className="w-full transition-colors rounded-2xl py-3 px-5 flex items-center justify-between shadow-sm hover:opacity-80"
           style={{ backgroundColor: '#EAE1D3', border: '1px solid #C4A484' }}
         >
           <div className="flex items-center gap-4" style={{ color: '#4a3219' }}>
@@ -55,7 +55,7 @@ export default function HelpPage() {
         
         <Link 
           href="/returns" 
-          className="w-full transition-colors rounded-2xl p-5 flex items-center justify-between shadow-sm hover:opacity-80"
+          className="w-full transition-colors rounded-2xl py-3 px-5 flex items-center justify-between shadow-sm hover:opacity-80"
           style={{ backgroundColor: '#EAE1D3', border: '1px solid #C4A484' }}
         >
           <div className="flex items-center gap-4" style={{ color: '#4a3219' }}>
@@ -67,7 +67,7 @@ export default function HelpPage() {
 
         <Link 
           href="/terms" 
-          className="w-full transition-colors rounded-2xl p-5 flex items-center justify-between shadow-sm hover:opacity-80"
+          className="w-full transition-colors rounded-2xl py-3 px-5 flex items-center justify-between shadow-sm hover:opacity-80"
           style={{ backgroundColor: '#EAE1D3', border: '1px solid #C4A484' }}
         >
           <div className="flex items-center gap-4" style={{ color: '#4a3219' }}>
@@ -79,7 +79,7 @@ export default function HelpPage() {
         
         <Link 
           href="/privacy" 
-          className="w-full transition-colors rounded-2xl p-5 flex items-center justify-between shadow-sm hover:opacity-80"
+          className="w-full transition-colors rounded-2xl py-3 px-5 flex items-center justify-between shadow-sm hover:opacity-80"
           style={{ backgroundColor: '#EAE1D3', border: '1px solid #C4A484' }}
         >
           <div className="flex items-center gap-4" style={{ color: '#4a3219' }}>
