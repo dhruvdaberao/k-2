@@ -169,7 +169,7 @@ export default function WishlistPage() {
       </div>
 
       {items.length === 0 ? (
-        <div className="flex flex-col items-center justify-center pt-16 pb-32 text-center px-4 w-full">
+        <div className="flex flex-col items-center justify-center pt-16 pb-32 text-center mx-auto w-full">
           <div className="max-w-md w-full flex flex-col items-center">
             <div className="mb-6 flex justify-center">
               <img src="/nav-icons/empty-bag (3).png" alt="Empty Wishlist" style={{ width: '260px', height: '260px', objectFit: 'contain', padding: '10px' }} className="mx-auto" />
@@ -185,6 +185,10 @@ export default function WishlistPage() {
             >
               Browse Collections
             </Link>
+          </div>
+
+          <div className="mt-12 w-full max-w-5xl mx-auto border-t-2 border-[#E6DCCF] pt-12">
+            <EmptyStateRecommendations title="You May Also Like" />
           </div>
         </div>
       ) : wishlistProducts.length > 0 ? (

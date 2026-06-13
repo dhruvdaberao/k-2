@@ -11,7 +11,7 @@ export default function Gallery({
   alt?: string;
   heartButton?: React.ReactNode;
 }) {
-  const validImages = images?.filter(img => typeof img === 'string' && img.trim() !== '');
+  const validImages = images?.filter(img => typeof img === 'string' && img.trim() !== '' && img.trim() !== 'null' && img.trim() !== 'undefined');
   const list = validImages?.length ? validImages : ["/placeholder.png"];
   const [active, setActive] = React.useState(0);
   const [touchStart, setTouchStart] = React.useState<number | null>(null);

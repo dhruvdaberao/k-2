@@ -256,7 +256,7 @@ export default function CartPage() {
   }
 
   return (
-    <main className="cart-page py-4 py-md-5 px-3 bg-[#FAF7F2] min-h-screen">
+    <main className="cart-page py-4 py-md-5 bg-[#FAF7F2] min-h-screen">
       <div className="container" style={{ maxWidth: '1100px' }}>
         {/* Header - centered matching Collections */}
         <header className="mb-8 text-center pt-2">
@@ -265,7 +265,7 @@ export default function CartPage() {
 
         {cartItems.length === 0 ? (
           /* Minimalist Empty State */
-          <div className="flex flex-col items-center justify-center pt-20 pb-32 text-center px-4 mx-auto w-full">
+          <div className="flex flex-col items-center justify-center pt-20 pb-32 text-center mx-auto w-full">
             <div className="max-w-md w-full flex flex-col items-center">
               <div className="mb-6 flex justify-center">
                 <img src="/nav-icons/empty-cart.png" alt="Empty Bag" style={{ width: '260px', height: '260px', objectFit: 'contain', padding: '10px' }} className="mx-auto" />
