@@ -949,7 +949,7 @@ return (
             </div>
 
             <div className="checkout-actions checkout-actions--between">
-              <button type="button" className="btn-secondary checkout-button checkout-button--ghost" onClick={() => setStep(1)}>
+              <button type="button" className="btn-secondary checkout-button checkout-button--ghost bg-white" onClick={() => setStep(1)}>
                 &larr; Back
               </button>
               <button type="button" className="btn-primary checkout-button" onClick={handlePaymentNext}>
@@ -1030,7 +1030,7 @@ return (
             <CheckoutAddons currentCartSlugs={finalItems.map((item) => item.id)} onAdded={handleAddonAdded} />
 
             <div className="checkout-actions checkout-actions--between">
-              <button type="button" className="btn-secondary checkout-button checkout-button--ghost" onClick={() => setStep(2)}>
+              <button type="button" className="btn-secondary checkout-button checkout-button--ghost bg-white" onClick={() => setStep(2)}>
                 &larr; Back
               </button>
               <button

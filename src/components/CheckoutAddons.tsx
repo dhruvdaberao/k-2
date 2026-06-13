@@ -106,8 +106,8 @@ export default function CheckoutAddons({ currentCartSlugs, onAdded }: CheckoutAd
                                 onClick={() => handleAdd(product)}
                                 disabled={isAdded}
                                 className={`px-3 py-2 text-xs font-bold rounded-lg transition-all flex-shrink-0 ${isAdded
-                                        ? "bg-green-50 text-green-700 cursor-default border border-green-100"
-                                        : "border border-transparent hover:opacity-90"
+                                        ? "bg-green-50 text-green-700 cursor-default border-0"
+                                        : "border-0 outline-none hover:opacity-90"
                                     }`}
                                 style={!isAdded ? { backgroundColor: '#4A3219', color: '#ffffff' } : {}}
                             >
