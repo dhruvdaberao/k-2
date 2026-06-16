@@ -32,6 +32,7 @@ export default function ImageWithFallback({
             {...rest}
             src={imgSrc}
             alt={alt}
+            unoptimized={true}
             onError={() => {
                 setImgSrc(fallbackSrc);
             }}
