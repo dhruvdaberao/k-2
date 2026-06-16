@@ -9,9 +9,11 @@ export const metadata: Metadata = {
 export default function ContactPage() {
     return (
         <main className="px-4 pt-28 pb-12 max-w-3xl mx-auto">
-            <div className="flex items-center gap-3" style={{ marginTop: '40px', marginBottom: '32px' }}>
-                <BackButton />
-                <h1 className="font-serif text-3xl font-bold m-0 text-[#2f2a26]">Contact Us</h1>
+            <div className="relative flex items-center justify-center" style={{ marginTop: '40px', marginBottom: '32px' }}>
+                <div className="absolute left-0">
+                    <BackButton />
+                </div>
+                <h1 className="font-serif text-3xl font-bold m-0 text-[#2f2a26] text-center">Contact Us</h1>
             </div>
             <p className="text-stone-600 mb-8 max-w-xl text-base md:text-lg">
                 Have a question about a custom order or need help with a purchase? We&apos;d love to hear from you.

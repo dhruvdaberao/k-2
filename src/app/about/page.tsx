@@ -10,9 +10,11 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <main className="container pb-12 max-w-4xl mx-auto px-4">
-      <div className="flex items-center gap-3 mb-10" style={{ marginTop: '40px' }}>
-        <BackButton />
-        <h1 className="font-serif text-3xl md:text-5xl font-bold m-0 text-[#2f2a26]">About Us</h1>
+      <div className="relative flex items-center justify-center mb-10" style={{ marginTop: '40px' }}>
+        <div className="absolute left-0">
+          <BackButton />
+        </div>
+        <h1 className="font-serif text-3xl md:text-5xl font-bold m-0 text-[#2f2a26] text-center">About Us</h1>
       </div>
       <div className="text-center mb-10">
         <p className="text-stone-500 text-lg md:text-xl max-w-2xl mx-auto italic">
