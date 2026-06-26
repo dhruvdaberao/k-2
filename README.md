@@ -69,10 +69,6 @@ src/
 └── types/          # TypeScript definitions
 ```
 
-## 📖 Developer Guide
-
-For detailed technical documentation, including the product system, database schema, review logic, and authentication flow, please refer to the [DEVELOPER_GUIDE.md](./DEVELOPER_GUIDE.md).
-
 ## 📄 License
 
 This project is private and proprietary.
